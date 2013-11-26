@@ -31,6 +31,7 @@ namespace EGSE
         private DecoderThread _dThread;                         // поток декодирования данных из потока USB
         private FTDIThread _fThread;                            // поток чтения данных из USB
         private USBCfg _cfg;                                    // настройки устройства USB и потока чтения данных из USB
+        private Decoder _dec;
 
         /// <summary>
         /// Функция вызывается когда меняется состояние подключения USB устройства
@@ -43,20 +44,15 @@ namespace EGSE
             {
                 _dThread.resetDecoder();
             }
-            //
-            if (state == true)
-            {
-                byte[] tBuf = { 1, 2 };
-                _fThread.SendCmd(1,ref tBuf);
-            }
         }
 
         public Device(string Serial, Decoder dec)
         {
+            _dec = dec;
             _fThread = new FTDIThread(Serial, _cfg);
             _fThread.onStateChanged = onDevStateChanged;
 
-            _dThread = new DecoderThread(dec, _fThread);
+            _dThread = new DecoderThread(_dec, _fThread);
         }
 
         ~Device()
@@ -64,9 +60,18 @@ namespace EGSE
 
         }
 
+        /// <summary>
+        /// Функция выдает команду в USB
+        /// </summary>
+        /// <param name="addr">адрес, по которому нужно передать данные</param>
+        /// <param name="data">сами данные</param>
+        /// <returns></returns>
         public bool SendCmd(uint addr, ref byte[] data)
         {
-            _fThread.SendCmd(addr, ref data);
+            byte[] dataOut;
+
+            //!_dec.encode(addr, ref data, dataOut);
+            //!_fThread.WriteBuf(ref dataOut);
             return true;
         }
     }

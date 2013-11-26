@@ -19,6 +19,7 @@
  *  1.1.00  -   Убрал из модулей Windows.Forms - не нужно вызывать messagebox.show - мы будем в случае ошибки логгировать в текстовый файл, выставляя признак в объекте FTDI о том, что произошла ошибка
  *              Проверить все комментарии типа //! и /*! - закоментирована важная информация, в дальнейшем нужно будет ее учесть
  *              Оставил только основные функции работы с FTDI, всю работу с EEPROM убрал
+ *  1.2.00 (27.11.2013) - перенес инициализацию делегатов в конструктор, чтобы их вызов не занимал лишнее время
 **
 */
 using System;
@@ -35,7 +36,27 @@ namespace FTD2XX_NET
 	/// </summary>
 	public class FTDICustom
 	{
-		#region CONSTRUCTOR_DESTRUCTOR
+        tFT_OpenEx FT_OpenEx;
+        tFT_Close  FT_Close;
+        tFT_Read FT_Read;
+        tFT_Write FT_Write;
+        tFT_GetQueueStatus FT_GetQueueStatus;
+        tFT_GetStatus FT_GetStatus;
+        tFT_ResetDevice FT_ResetDevice;
+        tFT_ResetPort FT_ResetPort;
+        tFT_CyclePort FT_CyclePort;
+        tFT_Rescan FT_Rescan;
+        tFT_Reload FT_Reload;
+        tFT_Purge FT_Purge;
+        tFT_SetTimeouts FT_SetTimeouts;
+        tFT_GetDriverVersion FT_GetDriverVersion;
+        tFT_GetLibraryVersion FT_GetLibraryVersion;
+        tFT_SetBitMode FT_SetBitMode;
+        tFT_SetLatencyTimer FT_SetLatencyTimer;
+        tFT_GetLatencyTimer FT_GetLatencyTimer;
+        tFT_SetUSBParameters FT_SetUSBParameters;
+
+        #region CONSTRUCTOR_DESTRUCTOR
 		// constructor
 		/// <summary>
 		/// Constructor for the FTDI class.
@@ -60,28 +81,73 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL != IntPtr.Zero)
 			{
 				// Set up our function pointers for use through our exported methods
-                pFT_Open = GetProcAddress(hFTD2XXDLL, "FT_Open");
+//                pFT_Open = GetProcAddress(hFTD2XXDLL, "FT_Open");
                 pFT_OpenEx = GetProcAddress(hFTD2XXDLL, "FT_OpenEx");
+                if (pFT_OpenEx != IntPtr.Zero)
+                {
+                    FT_OpenEx = (tFT_OpenEx)Marshal.GetDelegateForFunctionPointer(pFT_OpenEx, typeof(tFT_OpenEx));
+                }
+                else
+                {
+
+                }
+
                 pFT_Close = GetProcAddress(hFTD2XXDLL, "FT_Close");
+                FT_Close = (tFT_Close)Marshal.GetDelegateForFunctionPointer(pFT_Close, typeof(tFT_Close));
+
                 pFT_Read = GetProcAddress(hFTD2XXDLL, "FT_Read");
+                FT_Read = (tFT_Read)Marshal.GetDelegateForFunctionPointer(pFT_Read, typeof(tFT_Read));
+
                 pFT_Write = GetProcAddress(hFTD2XXDLL, "FT_Write");
+                FT_Write = (tFT_Write)Marshal.GetDelegateForFunctionPointer(pFT_Write, typeof(tFT_Write));
+
                 pFT_GetQueueStatus = GetProcAddress(hFTD2XXDLL, "FT_GetQueueStatus");
+                FT_GetQueueStatus = (tFT_GetQueueStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetQueueStatus, typeof(tFT_GetQueueStatus));
+
                 pFT_GetStatus = GetProcAddress(hFTD2XXDLL, "FT_GetStatus");
+                FT_GetStatus = (tFT_GetStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetStatus, typeof(tFT_GetStatus));
+
                 pFT_ResetDevice = GetProcAddress(hFTD2XXDLL, "FT_ResetDevice");
+                FT_ResetDevice = (tFT_ResetDevice)Marshal.GetDelegateForFunctionPointer(pFT_ResetDevice, typeof(tFT_ResetDevice));
+
                 pFT_ResetPort = GetProcAddress(hFTD2XXDLL, "FT_ResetPort");
+                FT_ResetPort = (tFT_ResetPort)Marshal.GetDelegateForFunctionPointer(pFT_ResetPort, typeof(tFT_ResetPort));
+
                 pFT_CyclePort = GetProcAddress(hFTD2XXDLL, "FT_CyclePort");
+                FT_CyclePort = (tFT_CyclePort)Marshal.GetDelegateForFunctionPointer(pFT_CyclePort, typeof(tFT_CyclePort));
+
                 pFT_Rescan = GetProcAddress(hFTD2XXDLL, "FT_Rescan");
+                FT_Rescan = (tFT_Rescan)Marshal.GetDelegateForFunctionPointer(pFT_Rescan, typeof(tFT_Rescan));
+
                 pFT_Reload = GetProcAddress(hFTD2XXDLL, "FT_Reload");
+                FT_Reload = (tFT_Reload)Marshal.GetDelegateForFunctionPointer(pFT_Reload, typeof(tFT_Reload));
+
                 pFT_Purge = GetProcAddress(hFTD2XXDLL, "FT_Purge");
+                FT_Purge = (tFT_Purge)Marshal.GetDelegateForFunctionPointer(pFT_Purge, typeof(tFT_Purge));
+
                 pFT_SetTimeouts = GetProcAddress(hFTD2XXDLL, "FT_SetTimeouts");
+                FT_SetTimeouts = (tFT_SetTimeouts)Marshal.GetDelegateForFunctionPointer(pFT_SetTimeouts, typeof(tFT_SetTimeouts));
+
                 pFT_GetDriverVersion = GetProcAddress(hFTD2XXDLL, "FT_GetDriverVersion");
+                FT_GetDriverVersion = (tFT_GetDriverVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetDriverVersion, typeof(tFT_GetDriverVersion));
+
                 pFT_GetLibraryVersion = GetProcAddress(hFTD2XXDLL, "FT_GetLibraryVersion");
+                FT_GetLibraryVersion = (tFT_GetLibraryVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetLibraryVersion, typeof(tFT_GetLibraryVersion));
+
                 pFT_SetDeadmanTimeout = GetProcAddress(hFTD2XXDLL, "FT_SetDeadmanTimeout");
+
                 pFT_SetBitMode = GetProcAddress(hFTD2XXDLL, "FT_SetBitMode");
+                FT_SetBitMode = (tFT_SetBitMode)Marshal.GetDelegateForFunctionPointer(pFT_SetBitMode, typeof(tFT_SetBitMode));
+                
                 pFT_SetLatencyTimer = GetProcAddress(hFTD2XXDLL, "FT_SetLatencyTimer");
+                FT_SetLatencyTimer = (tFT_SetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_SetLatencyTimer, typeof(tFT_SetLatencyTimer));
+
                 pFT_GetLatencyTimer = GetProcAddress(hFTD2XXDLL, "FT_GetLatencyTimer");
+                FT_GetLatencyTimer = (tFT_GetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_GetLatencyTimer, typeof(tFT_GetLatencyTimer));
+
                 pFT_SetUSBParameters = GetProcAddress(hFTD2XXDLL, "FT_SetUSBParameters");
-  			}
+                FT_SetUSBParameters = (tFT_SetUSBParameters)Marshal.GetDelegateForFunctionPointer(pFT_SetUSBParameters, typeof(tFT_SetUSBParameters));
+            }
 			else
 			{
 				// Failed to load our DLL - alert the user
@@ -566,30 +632,16 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if ((pFT_OpenEx != IntPtr.Zero))
+			// Call FT_OpenEx
+			ftStatus = FT_OpenEx(serialnumber, FT_OPEN_BY_SERIAL_NUMBER, ref ftHandle);
+
+			// Appears that the handle value can be non-NULL on a fail, so set it explicitly
+			if (ftStatus != FT_STATUS.FT_OK)
+				ftHandle = IntPtr.Zero;
+
+            if (ftHandle != IntPtr.Zero)
 			{
-				tFT_OpenEx FT_OpenEx = (tFT_OpenEx)Marshal.GetDelegateForFunctionPointer(pFT_OpenEx, typeof(tFT_OpenEx));
-				tFT_SetBitMode FT_SetBitMode = (tFT_SetBitMode)Marshal.GetDelegateForFunctionPointer(pFT_SetBitMode, typeof(tFT_SetBitMode));
-
-				// Call FT_OpenEx
-				ftStatus = FT_OpenEx(serialnumber, FT_OPEN_BY_SERIAL_NUMBER, ref ftHandle);
-
-				// Appears that the handle value can be non-NULL on a fail, so set it explicitly
-				if (ftStatus != FT_STATUS.FT_OK)
-					ftHandle = IntPtr.Zero;
-
-				if (ftHandle != IntPtr.Zero)
-				{
-                    FT_SetBitMode(ftHandle, 0, FT_BIT_MODES.FT_BIT_MODE_SYNC_FIFO);         // для поддержки USB 2.0
-				}
-			}
-			else
-			{
-				if (pFT_OpenEx == IntPtr.Zero)
-				{
-					//!MessageBox.Show("Failed to load function FT_OpenEx.");
-				}
+                FT_SetBitMode(ftHandle, 0, FT_BIT_MODES.FT_BIT_MODE_SYNC_FIFO);         // для поддержки USB 2.0
 			}
 			return ftStatus;
 		}
@@ -612,25 +664,12 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_Close != IntPtr.Zero)
-			{
-				tFT_Close FT_Close = (tFT_Close)Marshal.GetDelegateForFunctionPointer(pFT_Close, typeof(tFT_Close));
+			// Call FT_Close
+			ftStatus = FT_Close(ftHandle);
 
-				// Call FT_Close
-				ftStatus = FT_Close(ftHandle);
-
-				if (ftStatus == FT_STATUS.FT_OK)
-				{
-					ftHandle = IntPtr.Zero;
-				}
-			}
-			else
+            if (ftStatus == FT_STATUS.FT_OK)
 			{
-				if (pFT_Close == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_Close.");
-				}
+				ftHandle = IntPtr.Zero;
 			}
 			return ftStatus;
 		}
@@ -656,29 +695,16 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_Read != IntPtr.Zero)
+			// If the buffer is not big enough to receive the amount of data requested, adjust the number of bytes to read
+			if (dataBuffer.Length < numBytesToRead)
 			{
-				tFT_Read FT_Read = (tFT_Read)Marshal.GetDelegateForFunctionPointer(pFT_Read, typeof(tFT_Read));
-
-				// If the buffer is not big enough to receive the amount of data requested, adjust the number of bytes to read
-				if (dataBuffer.Length < numBytesToRead)
-				{
-					numBytesToRead = (uint)dataBuffer.Length;
-				}
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_Read
-					ftStatus = FT_Read(ftHandle, dataBuffer, numBytesToRead, ref numBytesRead);
-				}
+				numBytesToRead = (uint)dataBuffer.Length;
 			}
-			else
+
+			if (ftHandle != IntPtr.Zero)
 			{
-				if (pFT_Read == IntPtr.Zero)
-				{
-			//!		MessageBox.Show("Failed to load function FT_Read.");
-				}
+				// Call FT_Read
+				ftStatus = FT_Read(ftHandle, dataBuffer, numBytesToRead, ref numBytesRead);
 			}
 			return ftStatus;
 		}
@@ -703,23 +729,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_Write != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_Write FT_Write = (tFT_Write)Marshal.GetDelegateForFunctionPointer(pFT_Write, typeof(tFT_Write));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_Write
-					ftStatus = FT_Write(ftHandle, dataBuffer, (UInt32)numBytesToWrite, ref numBytesWritten);
-				}
-			}
-			else
-			{
-				if (pFT_Write == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_Write.");
-				}
+				// Call FT_Write
+				ftStatus = FT_Write(ftHandle, dataBuffer, (UInt32)numBytesToWrite, ref numBytesWritten);
 			}
 			return ftStatus;
 		}
@@ -741,23 +754,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_ResetDevice != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_ResetDevice FT_ResetDevice = (tFT_ResetDevice)Marshal.GetDelegateForFunctionPointer(pFT_ResetDevice, typeof(tFT_ResetDevice));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_ResetDevice
-					ftStatus = FT_ResetDevice(ftHandle);
-				}
-			}
-			else
-			{
-				if (pFT_ResetDevice == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_ResetDevice.");
-				}
+				// Call FT_ResetDevice
+				ftStatus = FT_ResetDevice(ftHandle);
 			}
 			return ftStatus;
 		}
@@ -780,23 +780,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_Purge != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_Purge FT_Purge = (tFT_Purge)Marshal.GetDelegateForFunctionPointer(pFT_Purge, typeof(tFT_Purge));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_Purge
-					ftStatus = FT_Purge(ftHandle, purgemask);
-				}
-			}
-			else
-			{
-				if (pFT_Purge == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_Purge.");
-				}
+				// Call FT_Purge
+				ftStatus = FT_Purge(ftHandle, purgemask);
 			}
 			return ftStatus;
 		}
@@ -818,23 +805,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_ResetPort != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_ResetPort FT_ResetPort = (tFT_ResetPort)Marshal.GetDelegateForFunctionPointer(pFT_ResetPort, typeof(tFT_ResetPort));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_ResetPort
-					ftStatus = FT_ResetPort(ftHandle);
-				}
-			}
-			else
-			{
-				if (pFT_ResetPort == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_ResetPort.");
-				}
+				// Call FT_ResetPort
+				ftStatus = FT_ResetPort(ftHandle);
 			}
 			return ftStatus;
 		}
@@ -857,36 +831,18 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if ((pFT_CyclePort != IntPtr.Zero) & (pFT_Close != IntPtr.Zero))
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_CyclePort FT_CyclePort = (tFT_CyclePort)Marshal.GetDelegateForFunctionPointer(pFT_CyclePort, typeof(tFT_CyclePort));
-				tFT_Close FT_Close = (tFT_Close)Marshal.GetDelegateForFunctionPointer(pFT_Close, typeof(tFT_Close));
-
-				if (ftHandle != IntPtr.Zero)
+				// Call FT_CyclePort
+				ftStatus = FT_CyclePort(ftHandle);
+				if (ftStatus == FT_STATUS.FT_OK)
 				{
-					// Call FT_CyclePort
-					ftStatus = FT_CyclePort(ftHandle);
+					// If successful, call FT_Close
+					ftStatus = FT_Close(ftHandle);
 					if (ftStatus == FT_STATUS.FT_OK)
 					{
-						// If successful, call FT_Close
-						ftStatus = FT_Close(ftHandle);
-						if (ftStatus == FT_STATUS.FT_OK)
-						{
-							ftHandle = IntPtr.Zero;
-						}
+						ftHandle = IntPtr.Zero;
 					}
-				}
-			}
-			else
-			{
-				if (pFT_CyclePort == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_CyclePort.");
-				}
-				if (pFT_Close == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_Close.");
 				}
 			}
 			return ftStatus;
@@ -909,21 +865,8 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_Rescan != IntPtr.Zero)
-			{
-				tFT_Rescan FT_Rescan = (tFT_Rescan)Marshal.GetDelegateForFunctionPointer(pFT_Rescan, typeof(tFT_Rescan));
-
-				// Call FT_Rescan
-				ftStatus = FT_Rescan();
-			}
-			else
-			{
-				if (pFT_Rescan == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_Rescan.");
-				}
-			}
+			// Call FT_Rescan
+			ftStatus = FT_Rescan();
 			return ftStatus;
 		}
 
@@ -947,21 +890,8 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_Reload != IntPtr.Zero)
-			{
-				tFT_Reload FT_Reload = (tFT_Reload)Marshal.GetDelegateForFunctionPointer(pFT_Reload, typeof(tFT_Reload));
-
-				// Call FT_Reload
-				ftStatus = FT_Reload(VendorID, ProductID);
-			}
-			else
-			{
-				if (pFT_Reload == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_Reload.");
-				}
-			}
+			// Call FT_Reload
+			ftStatus = FT_Reload(VendorID, ProductID);
 			return ftStatus;
 		}
 
@@ -992,11 +922,6 @@ namespace FTD2XX_NET
 			// If the DLL hasn't been loaded, just return here
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
-
-			// Check for our required function pointers being set up
-			if (pFT_SetBitMode != IntPtr.Zero)
-			{
-				tFT_SetBitMode FT_SetBitMode = (tFT_SetBitMode)Marshal.GetDelegateForFunctionPointer(pFT_SetBitMode, typeof(tFT_SetBitMode));
 
 				if (ftHandle != IntPtr.Zero)
 				{
@@ -1098,14 +1023,6 @@ namespace FTD2XX_NET
 					// Call FT_SetBitMode
 					ftStatus = FT_SetBitMode(ftHandle, Mask, BitMode);
 				}
-			}
-			else
-			{
-				if (pFT_SetBitMode == IntPtr.Zero)
-				{
-					//!MessageBox.Show("Failed to load function FT_SetBitMode.");
-				}
-			}
 			return ftStatus;
 		}
 
@@ -1128,23 +1045,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_GetQueueStatus != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_GetQueueStatus FT_GetQueueStatus = (tFT_GetQueueStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetQueueStatus, typeof(tFT_GetQueueStatus));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_GetQueueStatus
-					ftStatus = FT_GetQueueStatus(ftHandle, ref RxQueue);
-				}
-			}
-			else
-			{
-				if (pFT_GetQueueStatus == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_GetQueueStatus.");
-				}
+				// Call FT_GetQueueStatus
+				ftStatus = FT_GetQueueStatus(ftHandle, ref RxQueue);
 			}
 			return ftStatus;
 		}
@@ -1167,26 +1071,13 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_GetStatus != IntPtr.Zero)
-			{
-				tFT_GetStatus FT_GetStatus = (tFT_GetStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetStatus, typeof(tFT_GetStatus));
+			UInt32 RxQueue = 0;
+			UInt32 EventStatus = 0;
 
-				UInt32 RxQueue = 0;
-				UInt32 EventStatus = 0;
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_GetStatus
-					ftStatus = FT_GetStatus(ftHandle, ref RxQueue, ref TxQueue, ref EventStatus);
-				}
-			}
-			else
+			if (ftHandle != IntPtr.Zero)
 			{
-				if (pFT_GetStatus == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_GetStatus.");
-				}
+				// Call FT_GetStatus
+				ftStatus = FT_GetStatus(ftHandle, ref RxQueue, ref TxQueue, ref EventStatus);
 			}
 			return ftStatus;
 		}
@@ -1210,23 +1101,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_SetTimeouts != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_SetTimeouts FT_SetTimeouts = (tFT_SetTimeouts)Marshal.GetDelegateForFunctionPointer(pFT_SetTimeouts, typeof(tFT_SetTimeouts));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_SetTimeouts
-					ftStatus = FT_SetTimeouts(ftHandle, ReadTimeout, WriteTimeout);
-				}
-			}
-			else
-			{
-				if (pFT_SetTimeouts == IntPtr.Zero)
-				{
-					//!MessageBox.Show("Failed to load function FT_SetTimeouts.");
-				}
+				// Call FT_SetTimeouts
+				ftStatus = FT_SetTimeouts(ftHandle, ReadTimeout, WriteTimeout);
 			}
 			return ftStatus;
 		}
@@ -1250,23 +1128,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_GetDriverVersion != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_GetDriverVersion FT_GetDriverVersion = (tFT_GetDriverVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetDriverVersion, typeof(tFT_GetDriverVersion));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_GetDriverVersion
-					ftStatus = FT_GetDriverVersion(ftHandle, ref DriverVersion);
-				}
-			}
-			else
-			{
-				if (pFT_GetDriverVersion == IntPtr.Zero)
-				{
-//!					MessageBox.Show("Failed to load function FT_GetDriverVersion.");
-				}
+				// Call FT_GetDriverVersion
+				ftStatus = FT_GetDriverVersion(ftHandle, ref DriverVersion);
 			}
 			return ftStatus;
 		}
@@ -1289,21 +1154,8 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_GetLibraryVersion != IntPtr.Zero)
-			{
-				tFT_GetLibraryVersion FT_GetLibraryVersion = (tFT_GetLibraryVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetLibraryVersion, typeof(tFT_GetLibraryVersion));
-
-				// Call FT_GetLibraryVersion
-				ftStatus = FT_GetLibraryVersion(ref LibraryVersion);
-			}
-			else
-			{
-				if (pFT_GetLibraryVersion == IntPtr.Zero)
-				{
-					//!MessageBox.Show("Failed to load function FT_GetLibraryVersion.");
-				}
-			}
+			// Call FT_GetLibraryVersion
+			ftStatus = FT_GetLibraryVersion(ref LibraryVersion);
 			return ftStatus;
 		}
 
@@ -1366,14 +1218,9 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_SetLatencyTimer != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_SetLatencyTimer FT_SetLatencyTimer = (tFT_SetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_SetLatencyTimer, typeof(tFT_SetLatencyTimer));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-                    /*!
+                   /*!
                     FT_DEVICE DeviceType = FT_DEVICE.FT_DEVICE_UNKNOWN;
 					// Set Bit Mode does not apply to FT8U232AM, FT8U245AM or FT8U100AX devices
 					GetDeviceType(ref DeviceType);
@@ -1386,15 +1233,7 @@ namespace FTD2XX_NET
 					}
                     */
 					// Call FT_SetLatencyTimer
-					ftStatus = FT_SetLatencyTimer(ftHandle, Latency);
-				}
-			}
-			else
-			{
-				if (pFT_SetLatencyTimer == IntPtr.Zero)
-				{
-					//!MessageBox.Show("Failed to load function FT_SetLatencyTimer.");
-				}
+				ftStatus = FT_SetLatencyTimer(ftHandle, Latency);
 			}
 			return ftStatus;
 		}
@@ -1417,23 +1256,10 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_GetLatencyTimer != IntPtr.Zero)
+			if (ftHandle != IntPtr.Zero)
 			{
-				tFT_GetLatencyTimer FT_GetLatencyTimer = (tFT_GetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_GetLatencyTimer, typeof(tFT_GetLatencyTimer));
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_GetLatencyTimer
-					ftStatus = FT_GetLatencyTimer(ftHandle, ref Latency);
-				}
-			}
-			else
-			{
-				if (pFT_GetLatencyTimer == IntPtr.Zero)
-				{
-					//!MessageBox.Show("Failed to load function FT_GetLatencyTimer.");
-				}
+				// Call FT_GetLatencyTimer
+				ftStatus = FT_GetLatencyTimer(ftHandle, ref Latency);
 			}
 			return ftStatus;
 		}
@@ -1458,25 +1284,12 @@ namespace FTD2XX_NET
 			if (hFTD2XXDLL == IntPtr.Zero)
 				return ftStatus;
 
-			// Check for our required function pointers being set up
-			if (pFT_SetUSBParameters != IntPtr.Zero)
-			{
-				tFT_SetUSBParameters FT_SetUSBParameters = (tFT_SetUSBParameters)Marshal.GetDelegateForFunctionPointer(pFT_SetUSBParameters, typeof(tFT_SetUSBParameters));
+			UInt32 OutTransferSize = InTransferSize;
 
-				UInt32 OutTransferSize = InTransferSize;
-
-				if (ftHandle != IntPtr.Zero)
-				{
-					// Call FT_SetUSBParameters
-					ftStatus = FT_SetUSBParameters(ftHandle, InTransferSize, OutTransferSize);
-				}
-			}
-			else
+            if (ftHandle != IntPtr.Zero)
 			{
-				if (pFT_SetUSBParameters == IntPtr.Zero)
-				{
-					//!MessageBox.Show("Failed to load function FT_SetUSBParameters.");
-				}
+				// Call FT_SetUSBParameters
+				ftStatus = FT_SetUSBParameters(ftHandle, InTransferSize, OutTransferSize);
 			}
 			return ftStatus;
 		}

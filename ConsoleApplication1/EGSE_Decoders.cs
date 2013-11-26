@@ -4,7 +4,7 @@
  *
  * Модуль декодеров
 **
-** Author: Семенов Александр
+** Author: Семенов Александр, Коробейщиков Иван
 ** Project: КИА
 ** Module: EDGE Decoders
 ** Requires: 
