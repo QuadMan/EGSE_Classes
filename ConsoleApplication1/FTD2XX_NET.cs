@@ -1,5 +1,4 @@
-/*
-** FTD2XX_NET.cs
+/*** FTD2XX_NET.cs
 **
 ** Copyright © 2009-2012 Future Technology Devices International Limited
 ** (с) 2013 Семенов Александр, ИКИ РАН
@@ -34,14 +33,14 @@ namespace FTD2XX_NET
 	/// <summary>
 	/// Class wrapper for FTD2XX.DLL
 	/// </summary>
-	public class FTDI
+	public class FTDICustom
 	{
 		#region CONSTRUCTOR_DESTRUCTOR
 		// constructor
 		/// <summary>
 		/// Constructor for the FTDI class.
 		/// </summary>
-		public FTDI()
+		public FTDICustom()
 		{
 			// If FTD2XX.DLL is NOT loaded already, load it
 			if (hFTD2XXDLL == IntPtr.Zero)
@@ -93,7 +92,7 @@ namespace FTD2XX_NET
 		/// <summary>
 		/// Destructor for the FTDI class.
 		/// </summary>
-		~FTDI()
+		~FTDICustom()
 		{
 			// FreeLibrary here - we should only do this if we are completely finished
 			FreeLibrary(hFTD2XXDLL);
@@ -571,7 +570,7 @@ namespace FTD2XX_NET
 			if ((pFT_OpenEx != IntPtr.Zero))
 			{
 				tFT_OpenEx FT_OpenEx = (tFT_OpenEx)Marshal.GetDelegateForFunctionPointer(pFT_OpenEx, typeof(tFT_OpenEx));
-				//!tFT_SetFlowControl FT_SetFlowControl = (tFT_SetFlowControl)Marshal.GetDelegateForFunctionPointer(pFT_SetFlowControl, typeof(tFT_SetFlowControl));
+				tFT_SetBitMode FT_SetBitMode = (tFT_SetBitMode)Marshal.GetDelegateForFunctionPointer(pFT_SetBitMode, typeof(tFT_SetBitMode));
 
 				// Call FT_OpenEx
 				ftStatus = FT_OpenEx(serialnumber, FT_OPEN_BY_SERIAL_NUMBER, ref ftHandle);
@@ -582,6 +581,7 @@ namespace FTD2XX_NET
 
 				if (ftHandle != IntPtr.Zero)
 				{
+                    FT_SetBitMode(ftHandle, 0, FT_BIT_MODES.FT_BIT_MODE_SYNC_FIFO);         // для поддержки USB 2.0
 				}
 			}
 			else

@@ -41,6 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EGSE_Decoders.cs" />
+    <Compile Include="EGSE_Device.cs" />
+    <Compile Include="EGSE_THREADING_Decoders.cs" />
+    <Compile Include="EGSE_THREADING_FTDI.cs" />
+    <Compile Include="EGSE_USB_FTDI.cs" />
+    <Compile Include="EGSE_Utilites.cs" />
     <Compile Include="FTD2XX_NET.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
