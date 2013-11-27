@@ -1,6 +1,6 @@
 ﻿/*** EDGE_Device.cs
 **
-** (с) 2013 Семенов Александр, ИКИ РАН
+** (с) 2013 ИКИ РАН
  *
  * Модуль устройства USB
 **
@@ -18,7 +18,7 @@
 
 using System;
 using EGSE.Threading;
-using EGSE.Decoders;
+using EGSE.Decoders.USB;
 using EGSE.USB;
 
 namespace EGSE
@@ -31,7 +31,7 @@ namespace EGSE
         private DecoderThread _dThread;                         // поток декодирования данных из потока USB
         private FTDIThread _fThread;                            // поток чтения данных из USB
         private USBCfg _cfg;                                    // настройки устройства USB и потока чтения данных из USB
-        private Decoder _dec;
+        private USBDecoder _dec;
 
         /// <summary>
         /// Функция вызывается когда меняется состояние подключения USB устройства
@@ -46,18 +46,21 @@ namespace EGSE
             }
         }
 
-        public Device(string Serial, Decoder dec)
+        /// <summary>
+        /// Создает процессы по чтению данных из USB и декодированию этих данных
+        /// Все, что нужно, для обеспечения связи по USB
+        /// </summary>
+        /// <param name="Serial">Серийный номер USB устройства, с которого нужно получать данные</param>
+        /// <param name="dec">Класс декодера, который нужно использовать в приборе</param>
+        /// <param name="cfg">Конфигурация драйвера USB (настройка параметров потока, буферов чтения и тд)</param>
+        public Device(string Serial, USBDecoder dec, USBCfg cfg)
         {
             _dec = dec;
+            _cfg = cfg;
             _fThread = new FTDIThread(Serial, _cfg);
             _fThread.onStateChanged = onDevStateChanged;
 
             _dThread = new DecoderThread(_dec, _fThread);
-        }
-
-        ~Device()
-        {
-
         }
 
         /// <summary>
@@ -66,13 +69,13 @@ namespace EGSE
         /// <param name="addr">адрес, по которому нужно передать данные</param>
         /// <param name="data">сами данные</param>
         /// <returns></returns>
-        public bool SendCmd(uint addr, ref byte[] data)
+        public bool SendCmd(uint addr, byte[] data)
         {
             byte[] dataOut;
 
-            //!_dec.encode(addr, ref data, dataOut);
-            //!_fThread.WriteBuf(ref dataOut);
-            return true;
+            _dec.encode(addr, data, out dataOut);
+            bool res = _fThread.WriteBuf(dataOut);
+            return res;
         }
     }
 }

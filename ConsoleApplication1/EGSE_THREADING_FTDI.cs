@@ -1,6 +1,6 @@
 ﻿/*** EDGE_THREADING_FTDI.cs
 **
-** (с) 2013 Семенов Александр, ИКИ РАН
+** (с) 2013 ИКИ РАН
  *
  * Модуль потока чтения данных из USB и запись команд в USB
 **
@@ -86,6 +86,7 @@ namespace EGSE.Threading
             }
         }
 
+        // скорость чтения данных из USB
         public float speedBytesSec
         {
             get
@@ -130,7 +131,7 @@ namespace EGSE.Threading
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public bool WriteBuf(ref byte[] data)
+        public bool WriteBuf(byte[] data)
         {
             if (_cmdQueue.Count < 5) {
                 _cmdQueue.Enqueue(data);

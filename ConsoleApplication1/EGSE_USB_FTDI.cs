@@ -1,6 +1,6 @@
 ﻿/*** EDGE_USB_FTDI.cs
 **
-** (с) 2013 Семенов Александр, ИКИ РАН
+** (с) 2013 ИКИ РАН
  *
  * Модуль обертка для драйвера FTDI
 **
@@ -40,14 +40,25 @@ namespace EGSE.USB
         private bool _isOpen;
         public byte[] _inBuf;           //! переделать под свойство get
 
+        /// <summary>
+        /// Максимальное значение считанного буфера FTDI
+        /// Можно определить (косвенно) было ли переполнение буфера (если значение равно 65535)
+        /// </summary>
         public uint maxBufSize
         {
+            set
+            {
+                _maxBufSize = value;
+            }
             get
             {
                 return _maxBufSize;
             }
         }
 
+        /// <summary>
+        /// Открыто ли устройство
+        /// </summary>
         public bool isOpen
         {
             get
@@ -94,6 +105,10 @@ namespace EGSE.USB
             if ((res == FTDICustom.FT_STATUS.FT_OK) && (bytesToRead > 0))
             {
                 res = _ftdi.Read(_inBuf, bytesToRead, ref bytesReaded);
+                if (bytesReaded > _maxBufSize)
+                {
+                    _maxBufSize = bytesReaded;
+                }
             }
             _isOpen = (res == FTDICustom.FT_STATUS.FT_OK);
 

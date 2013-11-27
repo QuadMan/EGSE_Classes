@@ -1,8 +1,8 @@
 ﻿/*** EDGE_Decoders.cs
 **
-** (с) 2013 Семенов Александр, ИКИ РАН
+** (с) 2013 ИКИ РАН
  *
- * Модуль декодеров
+ * Модуль декодеров протоколов USB
 **
 ** Author: Семенов Александр, Коробейщиков Иван
 ** Project: КИА
@@ -15,17 +15,18 @@
 **
 ** History:
 **  0.1.0	(26.11.2013) -	Начальная версия
+ *  0.1.1   (27.11.2013) - Поменял заголовки функций, будем пользоваться передачей массивов
 **
 */
 
 using System;
 
-namespace EGSE.Decoders
+namespace EGSE.Decoders.USB
 {
     /// <summary>
     /// Класс сообщения, которыми обменивается по USB 
     /// </summary>
-    public class ProtocolMsg
+    public class USBProtocolMsg
     {
         // адрес, которому принадлежат данные
         public uint addr;
@@ -36,7 +37,7 @@ namespace EGSE.Decoders
     /// <summary>
     /// Абстрактный класс декодера
     /// </summary>
-    public abstract class Decoder
+    public abstract class USBDecoder
     {
         // сброс конечного автомата состояния протокола в исходное состояние
         abstract public void reset();
@@ -47,7 +48,7 @@ namespace EGSE.Decoders
         /// </summary>
         /// <param name="buf">буфер с данными для декодирования</param>
         /// <param name="bufSz">размер буфера для декодирования</param>
-        abstract public void decode(ref byte[] buf, uint bufSz);
+        abstract public void decode(byte[] buf, uint offset, int bufSz);
 
         /// <summary>
         /// Функция кодирования данных
@@ -55,30 +56,30 @@ namespace EGSE.Decoders
         /// <param name="addr">адрес, по которому данные должны быть переданы</param>
         /// <param name="buf">данные для передачи</param>
         /// <param name="bufOut">выходной буфер</param>
-        abstract public void encode(uint addr, ref byte[] buf, out byte[] bufOut);
+        abstract public void encode(uint addr, byte[] buf, out byte[] bufOut);
 
         /// <summary>
         /// Делегат, вызываемый при возникновении ошибки в декодере
         /// </summary>
         /// <param name="errBuf">буфер, содержащий ошибку</param>
         /// <param name="bufPos">указатель в буфере, где произошла ошибка</param>
-        public delegate void onProtocolErrorDelegate(ref byte[] errBuf, uint bufPos);
+        public delegate void onProtocolErrorDelegate(byte[] errBuf, uint bufPos);
         public onProtocolErrorDelegate onProtocolError;
 
         /// <summary>
         /// Делегат, вызываемый при распознавании очередного сообщения декодером
         /// </summary>
         /// <param name="msg"></param>
-        public delegate void onMessageDelegate(out ProtocolMsg msg);
+        public delegate void onMessageDelegate(out USBProtocolMsg msg);
         public onMessageDelegate onMessage;
     }
 
     /// <summary>
     /// Класс декодера протокола типа 5D 4E ADDR LEN_HI LEN_LO DATA...DATA CRC8
     /// </summary>
-    public class Dec5D4ECRC : Decoder
+    public class USB_5D4ECRC : USBDecoder
     {
-        public Dec5D4ECRC()
+        public USB_5D4ECRC()
         {
 
         }
@@ -88,12 +89,12 @@ namespace EGSE.Decoders
 
         }
 
-        override public void decode(ref byte[] buf, uint bufSz)
+        override public void decode(byte[] buf, uint offset, int bufSz)
         {
 
         }
 
-        override public void encode(uint addr, ref byte[] buf, out byte[] bufOut)
+        override public void encode(uint addr, byte[] buf, out byte[] bufOut)
         {
             bufOut = new byte[10];
         }
