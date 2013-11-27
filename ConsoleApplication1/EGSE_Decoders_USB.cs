@@ -47,8 +47,7 @@ namespace EGSE.Decoders.USB
         /// Функция декодирования буфера
         /// </summary>
         /// <param name="buf">буфер с данными для декодирования</param>
-        /// <param name="bufSz">размер буфера для декодирования</param>
-        abstract public void decode(byte[] buf, uint offset, int bufSz);
+        abstract public void decode(byte[] buf);
 
         /// <summary>
         /// Функция кодирования данных
@@ -89,7 +88,7 @@ namespace EGSE.Decoders.USB
 
         }
 
-        override public void decode(byte[] buf, uint offset, int bufSz)
+        override public void decode(byte[] buf)
         {
 
         }

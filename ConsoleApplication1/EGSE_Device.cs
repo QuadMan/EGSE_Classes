@@ -25,6 +25,7 @@ namespace EGSE
 {
     /// <summary>
     /// Общий класс устройства КИА
+    /// При наследовании, необходимо в функции onDevStateChanged вызывать base.onDevStateChanged(state)
     /// </summary>
     public class Device
     {
@@ -33,20 +34,7 @@ namespace EGSE
         private USBCfg _cfg;                                    // настройки устройства USB и потока чтения данных из USB
         private USBDecoder _dec;
 
-        /// <summary>
-        /// Функция вызывается когда меняется состояние подключения USB устройства
-        /// Должна быть переопределена в потомке
-        /// </summary>
-        /// <param name="state">Состояние USB устройства - открыто (true) или закрыто (false)</param>
-        virtual public void onDevStateChanged(bool state)
-        {
-            if (_dThread != null)
-            {
-                _dThread.resetDecoder();
-            }
-        }
-
-        /// <summary>
+         /// <summary>
         /// Создает процессы по чтению данных из USB и декодированию этих данных
         /// Все, что нужно, для обеспечения связи по USB
         /// </summary>
@@ -61,6 +49,26 @@ namespace EGSE
             _fThread.onStateChanged = onDevStateChanged;
 
             _dThread = new DecoderThread(_dec, _fThread);
+        }
+
+        ~Device()
+        {
+            _fThread.Finish();
+            _dThread.Finish();
+            // TODO: нужно ли ждать Join от потоков?
+        }
+
+        /// <summary>
+        /// Функция вызывается когда меняется состояние подключения USB устройства
+        /// Должна быть переопределена в потомке
+        /// </summary>
+        /// <param name="state">Состояние USB устройства - открыто (true) или закрыто (false)</param>
+        virtual public void onDevStateChanged(bool state)
+        {
+            if (_dThread != null)
+            {
+                _dThread.resetDecoder();
+            }
         }
 
         /// <summary>

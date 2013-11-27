@@ -98,13 +98,26 @@ namespace EGSE.USB
             return res;
         }
 
-        public FTDICustom.FT_STATUS ReadAll(ref uint bytesReaded)
+        public FTDICustom.FT_STATUS GetBytesAvailable(ref uint bytesAvailable)
+        {
+            return _ftdi.GetRxBytesAvailable(ref bytesAvailable);
+        }
+
+        public FTDICustom.FT_STATUS ReadBuf(byte[] inBuf, uint bytesToRead, ref uint bytesReaded)
+        {
+            bytesReaded = 0;
+            if (inBuf == null) return FTDICustom.FT_STATUS.FT_OK;
+
+            return _ftdi.Read(inBuf, bytesToRead, ref bytesReaded);
+        }
+
+        public FTDICustom.FT_STATUS ReadAll(byte[] inBuf, ref uint bytesReaded)
         {
             uint bytesToRead = 0;
             FTDICustom.FT_STATUS res = _ftdi.GetRxBytesAvailable(ref bytesToRead);
             if ((res == FTDICustom.FT_STATUS.FT_OK) && (bytesToRead > 0))
             {
-                res = _ftdi.Read(_inBuf, bytesToRead, ref bytesReaded);
+                res = _ftdi.Read(inBuf, bytesToRead, ref bytesReaded);
                 if (bytesReaded > _maxBufSize)
                 {
                     _maxBufSize = bytesReaded;

@@ -32,12 +32,13 @@ namespace EGSE.Threading
     /// </summary>
     class FTDIThread
     {
+        const uint FTDI_MIN_BUF_SIZE = 2 * 1024;
         private Queue<byte[]> _cmdQueue;
 
         // на сколько мс засыпаем, когда устройство не подключено
         private const int FTDI_DEFAULT_SLEEP_WHEN_NOT_CONNECTED = 1000;
-        // Размер кольцевого буфера входящих данных из USB (30 МБ)
-        private const uint FTDI_THREAD_BUF_SIZE_BYTES_DEFAULT = 30*1024*1024;
+        // Размер кольцевого буфера входящих данных из USB (см. класс AManager)
+        private const uint FTDI_THREAD_BUF_SIZE_BYTES_DEFAULT = 100;//30*1024*1024;
         // поток чтения/записи в USB
         private Thread _thread;
         // доступ к функциям контроллера FTDI
@@ -45,47 +46,49 @@ namespace EGSE.Threading
         // конфигурация устройства
         private USBCfg _cfg;
         // кольцевой буфер входящих данных
-        public CBuf bigBuf;
+        public AManager bigBuf;
         //
         private uint _bytesWritten = 0;
         // скорость получения данных по USB
         private float _speed;
-        private int _tickCount;
+        //private int _tickCount;
         private int _tickDelta;
         private int _lastTickCount;
         private UInt64 _dataReaded;
+        private volatile bool _terminateFlag;
 
         // делегат, вызываемый при смене состояния подключения устройства
         public delegate void onStateChangedDelegate(bool state);
         public onStateChangedDelegate onStateChanged;
 
-        // есть ли данные для чтения из буфера
-        public uint dataBytesAvailable
-        {
-            get
-            {
-                return (curWritePos - curReadPos);
-            }
-        }
+        
+                // есть ли данные для чтения из буфера
+                public int dataBytesAvailable
+                {
+                    get
+                    {
+                        return bigBuf.getBytesAvailable;
+                    }
+                }
+        /*
+                // текущая позиция указателя чтения в кольцевом буфере
+                public uint curReadPos
+                {
+                    get
+                    {
+                        return bigBuf.curReadPos;
+                    }
+                }
 
-        // текущая позиция указателя чтения в кольцевом буфере
-        public uint curReadPos
-        {
-            get
-            {
-                return bigBuf.curReadPos;
-            }
-        }
-
-        // текущая позиция указателя записи в кольцевом буфере
-        public uint curWritePos
-        {
-            get
-            {
-                return bigBuf.curWritePos;
-            }
-        }
-
+                // текущая позиция указателя записи в кольцевом буфере
+                public uint curWritePos
+                {
+                    get
+                    {
+                        return bigBuf.curWritePos;
+                    }
+                }
+                */
         // скорость чтения данных из USB
         public float speedBytesSec
         {
@@ -105,15 +108,16 @@ namespace EGSE.Threading
         public FTDIThread(string Serial, USBCfg cfg, uint bufSize = FTDI_THREAD_BUF_SIZE_BYTES_DEFAULT)
         {
             _speed = 0;
-            _tickCount = 0;
+            //_tickCount = 0;
             _tickDelta = 0;
             _lastTickCount = 0;
             _dataReaded = 0;
-            
+            _terminateFlag = false;
+
             _cmdQueue = new Queue<byte[]>();
 
             _cfg    = cfg;
-            bigBuf  = new CBuf(bufSize);
+            bigBuf  = new AManager(bufSize);
             _ftdi   = new FTDI(Serial,_cfg);
 
             _thread = new Thread(Execution);
@@ -163,8 +167,9 @@ namespace EGSE.Threading
         {
             uint bytesReaded = 0;
             bool _lastOpened = false;       // изначально устройство не подключено
+            uint bytesAvailable = 0;
 
-            while (true)
+            while (!_terminateFlag)
             {
                 // устройство не открыто, пытаемся открыть
                 if (!_ftdi.isOpen)
@@ -194,13 +199,15 @@ namespace EGSE.Threading
                         }
                     }
                     //
-                    _ftdi.ReadAll(ref bytesReaded);
-                    if (bytesReaded > 0)                    // пишем полученные данные в кольцевой буфер
+                    if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XX_NET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDI_MIN_BUF_SIZE))
                     {
-                        System.Console.WriteLine("reading " + bytesReaded.ToString());
-                        bytesReaded = 0;
-                        //!_ftdi._inBuf.CopyTo(_bigBuf, _bigBuf.curWritePos);
-                        calcSpeed(bytesReaded);
+                        _ftdi.ReadBuf(bigBuf.getWriteBuf, bytesAvailable, ref bytesReaded);
+                        if (bytesReaded > 0)                   
+                        {
+                            System.Console.WriteLine("reading " + bytesReaded.ToString());
+                            bytesReaded = 0;
+                            calcSpeed(bytesReaded);
+                        }
                     }
                 }
 
@@ -216,6 +223,11 @@ namespace EGSE.Threading
 
                 System.Threading.Thread.Sleep(_cfg.sleep);
             }
+        }
+
+        public void Finish()
+        {
+            _terminateFlag = true;
         }
     }
 }

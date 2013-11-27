@@ -41,14 +41,15 @@ namespace EGSE.Threading
         // поток входных данных
         private Stream _fStream;
         // максимальный размер буфера, который был доступен для чтения
-        private uint _maxCBufSize;
+        private int _maxCBufSize;
         // сам поток, в котором будет происходить обработка
         private Thread _thread;
+        private volatile bool _terminateFlag;
 
         /// <summary>
         /// Максимальный размер кольцевого буфера 
         /// </summary>
-        public uint maxCBufSize
+        public int maxCBufSize
         {
             set
             {
@@ -72,6 +73,7 @@ namespace EGSE.Threading
             _maxCBufSize = 0;
             _fThread = fThread;
             _fStream = null;
+            _terminateFlag = false;
 
             _thread = new Thread(Execution);
             _thread.Start();
@@ -102,8 +104,8 @@ namespace EGSE.Threading
         /// </summary>
         private void Execution()
         {
-            uint bytesToRead = 0;
-            while (true)
+            int bytesToRead = 0;
+            while (!_terminateFlag)
             {
                 if (_resetDecoderFlag)                              // если нужно перевеси декодер в начальное состояние
                 {
@@ -118,10 +120,15 @@ namespace EGSE.Threading
                     {
                         _maxCBufSize = bytesToRead;
                     }
-                    //_dec.GetData(_ftdi.bigBuf, bytesToRead);     // декодируем буфер
+                    _dec.decode(_fThread.bigBuf.getReadBuf);     // декодируем буфер
                 }
                 System.Threading.Thread.Sleep(1);
             }
+        }
+
+        public void Finish()
+        {
+            _terminateFlag = true;
         }
 
         /// <summary>
@@ -138,7 +145,7 @@ namespace EGSE.Threading
                 bytesReaded = _fStream.Read(tmpBuf, 0, READ_BUF_SIZE_IN_BYTES);
                 if (bytesReaded > 0)
                 {
-                    _dec.decode(tmpBuf,0,tmpBuf.Length);
+                    _dec.decode(tmpBuf);
                 }
                 else
                 {

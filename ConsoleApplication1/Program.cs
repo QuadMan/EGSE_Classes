@@ -50,6 +50,17 @@ namespace ConsoleApplication1
             }
         }
         */
+
+        static void testB(byte[] bufSeg)
+        {
+            if (bufSeg != null)
+            {
+                bufSeg[0] = 2;
+                bufSeg[1] = 3;
+            }
+        }
+
+
         static void Main(string[] args)
         {
             /*
