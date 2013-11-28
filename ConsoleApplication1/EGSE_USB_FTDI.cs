@@ -36,7 +36,7 @@ namespace EGSE.USB
         private FTDICustom _ftdi;
         private string _sNum;
         private USBCfg _cfg;
-        private uint _maxBufSize;
+        private int _maxBufSize;
         private bool _isOpen;
         public byte[] _inBuf;           //! переделать под свойство get
 
@@ -44,7 +44,7 @@ namespace EGSE.USB
         /// Максимальное значение считанного буфера FTDI
         /// Можно определить (косвенно) было ли переполнение буфера (если значение равно 65535)
         /// </summary>
-        public uint maxBufSize
+        public int maxBufSize
         {
             set
             {
@@ -98,12 +98,12 @@ namespace EGSE.USB
             return res;
         }
 
-        public FTDICustom.FT_STATUS GetBytesAvailable(ref uint bytesAvailable)
+        public FTDICustom.FT_STATUS GetBytesAvailable(ref int bytesAvailable)
         {
             return _ftdi.GetRxBytesAvailable(ref bytesAvailable);
         }
 
-        public FTDICustom.FT_STATUS ReadBuf(byte[] inBuf, uint bytesToRead, ref uint bytesReaded)
+        public FTDICustom.FT_STATUS ReadBuf(byte[] inBuf, int bytesToRead, ref int bytesReaded)
         {
             bytesReaded = 0;
             if (inBuf == null) return FTDICustom.FT_STATUS.FT_OK;
@@ -111,9 +111,9 @@ namespace EGSE.USB
             return _ftdi.Read(inBuf, bytesToRead, ref bytesReaded);
         }
 
-        public FTDICustom.FT_STATUS ReadAll(byte[] inBuf, ref uint bytesReaded)
+        public FTDICustom.FT_STATUS ReadAll(byte[] inBuf, ref int bytesReaded)
         {
-            uint bytesToRead = 0;
+            int bytesToRead = 0;
             FTDICustom.FT_STATUS res = _ftdi.GetRxBytesAvailable(ref bytesToRead);
             if ((res == FTDICustom.FT_STATUS.FT_OK) && (bytesToRead > 0))
             {

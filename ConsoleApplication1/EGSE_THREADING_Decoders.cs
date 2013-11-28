@@ -41,7 +41,7 @@ namespace EGSE.Threading
         // поток входных данных
         private Stream _fStream;
         // максимальный размер буфера, который был доступен для чтения
-        private int _maxCBufSize;
+        private uint _maxCBufSize;
         // сам поток, в котором будет происходить обработка
         private Thread _thread;
         private volatile bool _terminateFlag;
@@ -49,7 +49,7 @@ namespace EGSE.Threading
         /// <summary>
         /// Максимальный размер кольцевого буфера 
         /// </summary>
-        public int maxCBufSize
+        public uint maxCBufSize
         {
             set
             {
@@ -104,7 +104,7 @@ namespace EGSE.Threading
         /// </summary>
         private void Execution()
         {
-            int bytesToRead = 0;
+            uint bytesToRead = 0;
             while (!_terminateFlag)
             {
                 if (_resetDecoderFlag)                              // если нужно перевеси декодер в начальное состояние
@@ -113,14 +113,15 @@ namespace EGSE.Threading
                     _dec.reset();
                 }
 
-                bytesToRead = _fThread.dataBytesAvailable;          // сколько байт можно считать из потока
+                bytesToRead = (uint)_fThread.bigBuf.bytesAvailable;       // сколько байт можно считать из потока
                 if (bytesToRead >= READ_BUF_SIZE_IN_BYTES)          // будем читать большими порциями
                 {
                     if (bytesToRead > _maxCBufSize)                 // для статистики рассчитаем максимальную заполненность буфера, которая была
                     {
                         _maxCBufSize = bytesToRead;
                     }
-                    _dec.decode(_fThread.bigBuf.getReadBuf);     // декодируем буфер
+                    _dec.decode(_fThread.bigBuf.getReadBuf);        // декодируем буфер
+                    _fThread.bigBuf.bytesAvailable -= (int)bytesToRead;
                 }
                 System.Threading.Thread.Sleep(1);
             }
@@ -137,19 +138,14 @@ namespace EGSE.Threading
         /// </summary>
         private void ExecutionStream()
         {
-            int bytesReaded = 0;
+            int bytesReaded = 1;
             byte[] tmpBuf = new byte[READ_BUF_SIZE_IN_BYTES];
-            bool streamFinished = false;
-            while (!streamFinished)
+            while (bytesReaded > 0)
             {
                 bytesReaded = _fStream.Read(tmpBuf, 0, READ_BUF_SIZE_IN_BYTES);
                 if (bytesReaded > 0)
                 {
                     _dec.decode(tmpBuf);
-                }
-                else
-                {
-                    streamFinished = true;
                 }
                 System.Threading.Thread.Sleep(1);
             }

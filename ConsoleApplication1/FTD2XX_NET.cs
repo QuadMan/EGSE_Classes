@@ -189,12 +189,12 @@ namespace FTD2XX_NET
 		private delegate FT_STATUS tFT_Close(IntPtr ftHandle);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Read(IntPtr ftHandle, byte[] lpBuffer, UInt32 dwBytesToRead, ref UInt32 lpdwBytesReturned);
+		private delegate FT_STATUS tFT_Read(IntPtr ftHandle, byte[] lpBuffer, Int32 dwBytesToRead, ref Int32 lpdwBytesReturned);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate FT_STATUS tFT_Write(IntPtr ftHandle, byte[] lpBuffer, UInt32 dwBytesToWrite, ref UInt32 lpdwBytesWritten);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_GetQueueStatus(IntPtr ftHandle, ref UInt32 lpdwAmountInRxQueue);
+		private delegate FT_STATUS tFT_GetQueueStatus(IntPtr ftHandle, ref Int32 lpdwAmountInRxQueue);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
 		private delegate FT_STATUS tFT_GetStatus(IntPtr ftHandle, ref UInt32 lpdwAmountInRxQueue, ref UInt32 lpdwAmountInTxQueue, ref UInt32 lpdwEventStatus);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -686,7 +686,7 @@ namespace FTD2XX_NET
 		/// <param name="dataBuffer">An array of bytes which will be populated with the data read from the device.</param>
 		/// <param name="numBytesToRead">The number of bytes requested from the device.</param>
 		/// <param name="numBytesRead">The number of bytes actually read.</param>
-		public FT_STATUS Read(byte[] dataBuffer, UInt32 numBytesToRead, ref UInt32 numBytesRead)
+		public FT_STATUS Read(byte[] dataBuffer, Int32 numBytesToRead, ref Int32 numBytesRead)
 		{
 			// Initialise ftStatus to something other than FT_OK
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
@@ -698,7 +698,7 @@ namespace FTD2XX_NET
 			// If the buffer is not big enough to receive the amount of data requested, adjust the number of bytes to read
 			if (dataBuffer.Length < numBytesToRead)
 			{
-				numBytesToRead = (uint)dataBuffer.Length;
+				numBytesToRead = dataBuffer.Length;
 			}
 
 			if (ftHandle != IntPtr.Zero)
@@ -1036,7 +1036,7 @@ namespace FTD2XX_NET
 		/// </summary>
 		/// <returns>FT_STATUS value from FT_GetQueueStatus in FTD2XX.DLL</returns>
 		/// <param name="RxQueue">The number of bytes available to be read.</param>
-		public FT_STATUS GetRxBytesAvailable(ref UInt32 RxQueue)
+		public FT_STATUS GetRxBytesAvailable(ref Int32 RxQueue)
 		{
 			// Initialise ftStatus to something other than FT_OK
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;

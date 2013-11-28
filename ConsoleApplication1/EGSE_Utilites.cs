@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace EGSE.UTILITES
 {
@@ -34,9 +35,8 @@ namespace EGSE.UTILITES
         private uint _curWPos;
         private uint _count;
         private uint _bufSize;
+        //private Object thisLock = new Object();
 
-        private uint _tmpCount;
-        private uint _tmpPos;
         private int _bytesInBuffer;
 
         /// <summary>
@@ -56,20 +56,16 @@ namespace EGSE.UTILITES
             _count = 0;
         }
 
-        public int getBytesAvailable
+        public int bytesAvailable
         {
             get
             {
-                _tmpCount = _count;
-                _tmpPos = _curRPos;
-                _bytesInBuffer = 0;
-                while (_tmpCount > 0)
-                {
-                    _bytesInBuffer += AData[_tmpPos].Length;
-                    _tmpPos = (_tmpPos + 1) % _bufSize;
-                }
-
                 return _bytesInBuffer;
+            }
+
+            set
+            {
+                Interlocked.Exchange(ref _bytesInBuffer, value);
             }
         }
 
@@ -103,38 +99,6 @@ namespace EGSE.UTILITES
                 else
                 {
                     return null;
-                }
-            }
-        }
-
-        public uint getReadBufIdx
-        {
-            get
-            {
-                if (_count > 0) {
-                    _curRPos = (_curRPos + 1) % _bufSize;
-                    _count--;
-                    return _curRPos;
-                }
-                else {
-                    return NO_DATA_AVAILABLE;
-                }
-            }
-        }
-
-        public uint getWriteBufIdx
-        {
-            get
-            {
-                if (_count < _bufSize)
-                {
-                    _curWPos = (_curWPos + 1) % _bufSize;
-                    _count++;
-                    return _curWPos;
-                }
-                else
-                {
-                    return NO_DATA_AVAILABLE;
                 }
             }
         }

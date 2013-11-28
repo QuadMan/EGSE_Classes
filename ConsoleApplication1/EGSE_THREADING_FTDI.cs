@@ -62,33 +62,19 @@ namespace EGSE.Threading
         public onStateChangedDelegate onStateChanged;
 
         
-                // есть ли данные для чтения из буфера
-                public int dataBytesAvailable
-                {
-                    get
-                    {
-                        return bigBuf.getBytesAvailable;
-                    }
-                }
-        /*
-                // текущая позиция указателя чтения в кольцевом буфере
-                public uint curReadPos
-                {
-                    get
-                    {
-                        return bigBuf.curReadPos;
-                    }
-                }
+        // есть ли данные для чтения из буфера
+        public int dataBytesAvailable
+        {
+            get
+            {
+                return bigBuf.bytesAvailable;
+            }
+            set
+            {
+                bigBuf.bytesAvailable = value;
+            }
+        }
 
-                // текущая позиция указателя записи в кольцевом буфере
-                public uint curWritePos
-                {
-                    get
-                    {
-                        return bigBuf.curWritePos;
-                    }
-                }
-                */
         // скорость чтения данных из USB
         public float speedBytesSec
         {
@@ -147,7 +133,7 @@ namespace EGSE.Threading
         /// <summary>
         /// Функция вычисляет скорость чтения данных по USB через замеры секундных интервалов и объема полученных за это время данных
         /// </summary>
-        private void calcSpeed(uint bytesReaded)
+        private void calcSpeed(int bytesReaded)
         {
             _tickDelta = Environment.TickCount - _lastTickCount;
             if (_tickDelta > 1000)
@@ -158,16 +144,16 @@ namespace EGSE.Threading
             }
             else
             {
-                _dataReaded += bytesReaded;
+                _dataReaded += (UInt64)bytesReaded;
             }
         }
 
         // основная функция потока чтения и записи данных в USB FTDI
         private void Execution()
         {
-            uint bytesReaded = 0;
+            int bytesReaded = 0;
             bool _lastOpened = false;       // изначально устройство не подключено
-            uint bytesAvailable = 0;
+            int bytesAvailable = 0;
 
             while (!_terminateFlag)
             {
@@ -204,6 +190,8 @@ namespace EGSE.Threading
                         _ftdi.ReadBuf(bigBuf.getWriteBuf, bytesAvailable, ref bytesReaded);
                         if (bytesReaded > 0)                   
                         {
+                            bigBuf.bytesAvailable += bytesReaded;
+
                             System.Console.WriteLine("reading " + bytesReaded.ToString());
                             bytesReaded = 0;
                             calcSpeed(bytesReaded);
