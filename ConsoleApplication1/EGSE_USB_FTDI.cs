@@ -20,13 +20,34 @@ using FTD2XX_NET;
 
 namespace EGSE.USB
 {
+    /// <summary>
+    /// Настройка параметров USB устройства
+    /// </summary>
     public struct USBCfg
     {
+        /// <summary>
+        /// сколько поток чтения данных из USB может "спать"
+        /// </summary>
         public int sleep;
+        /// <summary>
+        /// размер буфера чтения USB устройства
+        /// </summary>
         public uint rBufSz;
+        /// <summary>
+        /// размер буфера записи USB устройства
+        /// </summary>
         public uint wBufSz;
+        /// <summary>
+        /// Величина таймаута чтения USB устройства
+        /// </summary>
         public uint rTO;
+        /// <summary>
+        /// Величина таймаута записи USB устройства
+        /// </summary>
         public uint wTO;
+        /// <summary>
+        /// Значение latency
+        /// </summary>
         public uint latency;
     }
 

@@ -32,7 +32,7 @@ namespace EGSE
         private DecoderThread _dThread;                         // поток декодирования данных из потока USB
         private FTDIThread _fThread;                            // поток чтения данных из USB
         private USBCfg _cfg;                                    // настройки устройства USB и потока чтения данных из USB
-        private USBDecoder _dec;
+        private USBProtocolBase _dec;
 
          /// <summary>
         /// Создает процессы по чтению данных из USB и декодированию этих данных
@@ -41,7 +41,7 @@ namespace EGSE
         /// <param name="Serial">Серийный номер USB устройства, с которого нужно получать данные</param>
         /// <param name="dec">Класс декодера, который нужно использовать в приборе</param>
         /// <param name="cfg">Конфигурация драйвера USB (настройка параметров потока, буферов чтения и тд)</param>
-        public Device(string Serial, USBDecoder dec, USBCfg cfg)
+        public Device(string Serial, USBProtocolBase dec, USBCfg cfg)
         {
             _dec = dec;
             _cfg = cfg;
@@ -51,6 +51,9 @@ namespace EGSE
             _dThread = new DecoderThread(_dec, _fThread);
         }
 
+        /// <summary>
+        /// Деструктор устройства
+        /// </summary>
         ~Device()
         {
             _fThread.Finish();

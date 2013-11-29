@@ -20,6 +20,7 @@ using EGSE.Decoders.USB;
 using EGSE.Threading;
 using System.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace EGSE.Threading
 {
@@ -33,7 +34,7 @@ namespace EGSE.Threading
         // размер буфера, при достижении которого происходит считывание данных из источника
         private const int READ_BUF_SIZE_IN_BYTES = 10 * 1024;
         // декодер, использующийся для декодирования данных
-        private USBDecoder _dec;
+        private USBProtocolBase _dec;
         // признак, что нужно перевести декодер в начальное состояние (например, при подключении/отключении устройства)
         private bool _resetDecoderFlag;
         // поток входных данных из USB
@@ -44,6 +45,7 @@ namespace EGSE.Threading
         private uint _maxCBufSize;
         // сам поток, в котором будет происходить обработка
         private Thread _thread;
+        // флаг остановки потока
         private volatile bool _terminateFlag;
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace EGSE.Threading
         /// </summary>
         /// <param name="dec">Декодер, который будем использовать</param>
         /// <param name="fThread">Поток, из которого получаем данные для декодирования</param>
-        public DecoderThread(USBDecoder dec, FTDIThread fThread)
+        public DecoderThread(USBProtocolBase dec, FTDIThread fThread)
         {
             _dec = dec;
             _resetDecoderFlag = false;
@@ -84,7 +86,7 @@ namespace EGSE.Threading
         /// </summary>
         /// <param name="dec">Декодер, который будем использовать</param>
         /// <param name="fStream">Stream, откуда будем брать данные для декодирования</param>
-        public DecoderThread(USBDecoder dec, Stream fStream)
+        public DecoderThread(USBProtocolBase dec, Stream fStream)
         {
             _dec = dec;
             _fStream = fStream;
@@ -127,6 +129,9 @@ namespace EGSE.Threading
             }
         }
 
+        /// <summary>
+        /// выставляем флаг остановки потока
+        /// </summary>
         public void Finish()
         {
             _terminateFlag = true;
@@ -135,11 +140,17 @@ namespace EGSE.Threading
         /// <summary>
         /// Дополнительный поток получения и декодирования данных из Stream
         /// Останавливается, когда считали 0 байт
+        /// 566 ms (byte to byte)
+        /// 144 ms (copyTo)
         /// </summary>
         private void ExecutionStream()
         {
             int bytesReaded = 1;
             byte[] tmpBuf = new byte[READ_BUF_SIZE_IN_BYTES];
+#if DEBUG_TIME
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+#endif
             while (bytesReaded > 0)
             {
                 bytesReaded = _fStream.Read(tmpBuf, 0, READ_BUF_SIZE_IN_BYTES);
@@ -149,6 +160,16 @@ namespace EGSE.Threading
                 }
                 System.Threading.Thread.Sleep(1);
             }
+#if DEBUG_TIME
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+
+            // Format and display the TimeSpan value.
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds / 10);
+            Console.WriteLine("RunTime " + elapsedTime);
+#endif
         }
 
         /// <summary>

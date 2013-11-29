@@ -1,21 +1,19 @@
-﻿/*** EDGE_Decoders.cs
+﻿/*** EDGE_Decoders_USB.cs
 **
 ** (с) 2013 ИКИ РАН
  *
- * Модуль декодеров протоколов USB
+ * Базовый класс модуля протоколов USB и сообщений
 **
 ** Author: Семенов Александр, Коробейщиков Иван
 ** Project: КИА
-** Module: EDGE Decoders
+** Module: EDGE Decoders USB
 ** Requires: 
 ** Comments:
- * - пришлось уйти от интерфейса в сторону абстрактного класса, так как необходимо привязаться к функциям абстрактного класса, а не интерфейса 
- * 
- * - нужно написать юнит-тест для декодера
 **
 ** History:
-**  0.1.0	(26.11.2013) -	Начальная версия
+**  0.1.0	(26.11.2013) - Начальная версия
  *  0.1.1   (27.11.2013) - Поменял заголовки функций, будем пользоваться передачей массивов
+ *  0.1.2   (29.11.2013) - Выделил отдельный базовый класс протокола и сообщения протокола
 **
 */
 
@@ -24,25 +22,64 @@ using System;
 namespace EGSE.Decoders.USB
 {
     /// <summary>
-    /// Класс сообщения, которыми обменивается по USB 
+    /// Базовый класс сообщения
+    /// TODO: возможно, его вывести выше в иерархии, и использовать как базу для всего
     /// </summary>
-    public class USBProtocolMsg
+    public class MsgBase
     {
-        // адрес, которому принадлежат данные
-        public uint addr;
-        // данные
-        public byte[] buf;
+        /// <summary>
+        /// Данные сообщения
+        /// </summary>
+        public byte[] data;
+        /// <summary>
+        /// Длина сообщения
+        /// </summary>
+        public int dataLen;
     }
 
     /// <summary>
-    /// Абстрактный класс декодера
+    /// Класс обмена сообщениями по протоколам в USB
     /// </summary>
-    public abstract class USBDecoder
+    public class USBProtocolMsg : MsgBase
     {
-        // сброс конечного автомата состояния протокола в исходное состояние
+        /// <summary>
+        /// Адрес, по которому пришло сообщение
+        /// </summary>
+        public uint addr;
+
+        /// <summary>
+        /// Создаем сообщение с заданными размером буфера (максимальным, который поддерживается
+        /// текущим протоколом)
+        /// </summary>
+        /// <param name="maxDataLen">максимальный размер буфера данных</param>
+        public USBProtocolMsg(uint maxDataLen)
+        {
+            data = new byte[maxDataLen];
+            dataLen = 0;
+            addr = 0;
+        }
+
+        /// <summary>
+        /// Очищаем класс сообщения
+        /// TODO: может быть это и не нужно
+        /// </summary>
+        public void clear()
+        {
+            dataLen = 0;
+            addr = 0;
+        }
+    }
+
+    /// <summary>
+    /// Абстрактный класс протокола USB
+    /// </summary>
+    public abstract class USBProtocolBase
+    {
+        /// <summary>
+        /// сброс конечного автомата состояния протокола в исходное состояние 
+        /// </summary>
         abstract public void reset();
 
-        // функция декодирования буфера
         /// <summary>
         /// Функция декодирования буфера
         /// </summary>
@@ -55,48 +92,28 @@ namespace EGSE.Decoders.USB
         /// <param name="addr">адрес, по которому данные должны быть переданы</param>
         /// <param name="buf">данные для передачи</param>
         /// <param name="bufOut">выходной буфер</param>
-        abstract public void encode(uint addr, byte[] buf, out byte[] bufOut);
+        abstract public bool encode(uint addr, byte[] buf, out byte[] bufOut);
 
         /// <summary>
-        /// Делегат, вызываемый при возникновении ошибки в декодере
+        ///  Определение делегата обработки ошибок протокола
         /// </summary>
         /// <param name="errBuf">буфер, содержащий ошибку</param>
         /// <param name="bufPos">указатель в буфере, где произошла ошибка</param>
         public delegate void onProtocolErrorDelegate(byte[] errBuf, uint bufPos);
+
+        /// <summary>
+        /// Делегат, вызываемый при возникновении ошибки в декодере
+        /// </summary>
         public onProtocolErrorDelegate onProtocolError;
 
         /// <summary>
-        /// Делегат, вызываемый при распознавании очередного сообщения декодером
+        /// Определение делегата обработки сообщения
         /// </summary>
         /// <param name="msg"></param>
-        public delegate void onMessageDelegate(out USBProtocolMsg msg);
+        public delegate void onMessageDelegate(MsgBase msg);
+        /// <summary>
+        /// Делегат, вызываемый при распознавании очередного сообщения декодером
+        /// </summary>
         public onMessageDelegate onMessage;
-    }
-
-    /// <summary>
-    /// Класс декодера протокола типа 5D 4E ADDR LEN_HI LEN_LO DATA...DATA CRC8
-    /// </summary>
-    public class USB_5D4ECRC : USBDecoder
-    {
-        public USB_5D4ECRC()
-        {
-
-        }
-
-        override public void reset()
-        {
-
-        }
-
-        override public void decode(byte[] buf)
-        {
-
-        }
-
-        override public void encode(uint addr, byte[] buf, out byte[] bufOut)
-        {
-            bufOut = new byte[10];
-        }
-
     }
 }
