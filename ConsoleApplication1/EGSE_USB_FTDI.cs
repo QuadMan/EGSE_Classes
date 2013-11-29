@@ -163,7 +163,7 @@ namespace EGSE.USB
         {
             bytesWritten = 0;
             FTDICustom.FT_STATUS res = _ftdi.Write(buf, buf.Length, ref bytesWritten);
-            _isOpen = (res != FTDICustom.FT_STATUS.FT_OK);
+            _isOpen = (res == FTDICustom.FT_STATUS.FT_OK);
 
             return FTDICustom.FT_STATUS.FT_OK;
         }

@@ -26,6 +26,7 @@
 using System;
 using EGSE.Decoders.USB;
 using System.IO;
+using System.Collections.Generic;
 
 namespace EGSE.Decoders.USB {
 
@@ -54,9 +55,11 @@ namespace EGSE.Decoders.USB {
             private int _msgLen = 0;
             private bool _firstMsg = true;
 
-            private FileStream _fStream;
+            private TextWriter _fEncStream;
+            private FileStream _fDecStream;
             // писать бинарный лог данных USB (при вызове соответствующего конструктора)
-            public bool writeBinaryLog = false;
+            public bool writeEncLog = false;
+            public bool writeDecLog = false;
             
             /// <summary>
             /// Создаем декодер
@@ -64,7 +67,7 @@ namespace EGSE.Decoders.USB {
             public USB_7C6EDecoder()
             {
                 _tmpMsg = new USBProtocolMsg(DECODER_MAX_DATA_LEN);
-                _tmpErrMsg = new USBProtocolErrorMsg(DECODER_MAX_DATA_LEN);
+                _tmpErrMsg = new USBProtocolErrorMsg(70000);        // FIXIT: убрать константу
                 reset();
             }
 
@@ -73,17 +76,22 @@ namespace EGSE.Decoders.USB {
             /// </summary>
             /// <param name="fStream">Поток файла, куда пишем</param>
             /// <param name="writeBinLog">Флаг - писать сразу или нет</param>
-            public USB_7C6EDecoder(FileStream fStream, bool writeBinLog) : this()
+            public USB_7C6EDecoder(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog) : this()
             {
-                if (fStream.CanRead)
+                _fDecStream = null;
+                _fEncStream = null;
+
+                writeDecLog = false;
+
+                if ((fDecStream != null) && (fDecStream.CanRead))
                 {
-                    _fStream = fStream;
+                    _fDecStream = fDecStream;
+                    writeDecLog = wDecLog;
                 }
-                else
-                {
-                    _fStream = null;
-                }
-                writeBinaryLog = writeBinLog;
+                //
+                _fEncStream = fEncStream;
+                
+                writeEncLog = wEncLog;
             }
 
             /// <summary>
@@ -136,14 +144,14 @@ namespace EGSE.Decoders.USB {
             {
                 int i = 0;
                 //
-                if (writeBinaryLog && (_fStream != null))
+                if (writeDecLog && (_fDecStream != null))
                 {
-                    _fStream.Write(buf, 0, bufSize);
+                    _fDecStream.Write(buf, 0, bufSize);
                 }
                 //
                 while (i < bufSize)
                 { 
-                    _bt = buf[i++];
+                    _bt = buf[i];
                     switch (_iStep) {
                         case 0 : if (_bt != 0x7C) {
                                 if (!_firstMsg)                      // если после предыдущего сообщения сразу не встречается 0x7C - считаем ошибкой
@@ -155,7 +163,7 @@ namespace EGSE.Decoders.USB {
                                         makeErrorMsg(buf, i, bufSize);     // сформируем сообщение об ошибке и передадим его делегату
                                     }
                                 }
-                                continue;
+                                _iStep = -1;
                             }
                             break;
                         case 1 : if (_bt != 0x6E) {
@@ -165,7 +173,7 @@ namespace EGSE.Decoders.USB {
                                 {
                                     makeErrorMsg(buf, i, bufSize);         // сформируем сообщение об ошибке и передадим его делегату
                                 }
-                                continue;
+                                _iStep = -1;
                             }
                             break;
                         case 2 : _tmpMsg.addr = _bt;
@@ -179,41 +187,43 @@ namespace EGSE.Decoders.USB {
                             _tmpMsg.dataLen = _msgLen;
                             break;
                         default :
-
-                            //if (bufSize - i >= _msgLen)                //  в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
-                            //{
-                            //    Array.Copy(buf, i, _tmpMsg.data, _bufI, _msgLen); 
-                            //    if (onMessage != null)
-                            //    {
-                            //        onMessage(_tmpMsg);
-                            //    }
-                            //    _firstMsg = false;
-                            //    _iStep = -1;
-                            //    _bufI = 0;
-                            //    i += _msgLen-1;//? _tmpMsg.len;
-                            //}
-                            //else                                    // копируем только часть, до конца буфера 
-                            //{
-                            //    _dt = bufSize - i;
-                            //    Array.Copy(buf,i,_tmpMsg.data, _bufI, _dt);
-                            //    _bufI += _dt;
-                            //    _msgLen -= _dt;
-                            //    i += _dt;
-                            //}
-
-                            _tmpMsg.data[_bufI++] = _bt;
-                            if (--_msgLen == 0)
+                            if (bufSize - i >= _msgLen)                //  в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
                             {
+                                Array.Copy(buf, i, _tmpMsg.data, _bufI, _msgLen);
                                 if (onMessage != null)
                                 {
                                     onMessage(_tmpMsg);
                                 }
+                                _firstMsg = false;
                                 _iStep = -1;
                                 _bufI = 0;
+                                i += _msgLen - 1;//? _tmpMsg.len;
                             }
+                            else                                    // копируем только часть, до конца буфера 
+                            {
+                                _dt = bufSize - i;
+                                Array.Copy(buf, i, _tmpMsg.data, _bufI, _dt);
+                                _bufI += _dt;
+                                _msgLen -= _dt;
+                                i += _dt;
+                            }
+                            
+                            // медленный вариант, для проверки
+                            //_tmpMsg.data[_bufI++] = _bt;
+                            //if (--_msgLen == 0)
+                            //{
+                            //    if (onMessage != null)
+                            //    {
+                            //        onMessage(_tmpMsg);
+                            //    }
+                            //    _iStep = -1;
+                            //    _bufI = 0;
+                            //}
+                            
                             break;
                     }
                     _iStep++;
+                    i++;
                 }
             }
 
@@ -241,6 +251,10 @@ namespace EGSE.Decoders.USB {
                 bufOut[3] = bufLen;
                 Array.Copy(buf, 0, bufOut, 4, buf.Length);
 
+                if (writeEncLog && (_fEncStream != null)) 
+                {
+                    _fEncStream.WriteLine(BitConverter.ToString(bufOut));
+                }
                 return true;
             }
 

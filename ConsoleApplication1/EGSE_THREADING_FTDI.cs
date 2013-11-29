@@ -164,9 +164,9 @@ namespace EGSE.Threading
                     // если есть команды для выдачи в USB
                     if (_cmdQueue.Count > 0)
                     {
-                        byte[] _buf = _cmdQueue.Dequeue();
+                        byte[] _buf = _cmdQueue.Peek();
                         FTD2XX_NET.FTDICustom.FT_STATUS res = _ftdi.WriteBuf(ref _buf,out _bytesWritten);
-                        if ((res == FTD2XX_NET.FTDICustom.FT_STATUS.FT_OK) && (_bytesWritten == _cmdQueue.Peek().Length))
+                        if ((res == FTD2XX_NET.FTDICustom.FT_STATUS.FT_OK) && (_bytesWritten == _buf.Length))
                         {
                             _cmdQueue.Dequeue();
                         }

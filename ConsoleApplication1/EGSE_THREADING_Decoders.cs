@@ -32,7 +32,7 @@ namespace EGSE.Threading
     class DecoderThread
     {
         // размер буфера, при достижении которого происходит считывание данных из источника
-        private const int READ_BUF_SIZE_IN_BYTES = 10 * 1024;
+        private const int READ_BUF_SIZE_IN_BYTES = 1024;
         // декодер, использующийся для декодирования данных
         private USBProtocolBase _dec;
         // признак, что нужно перевести декодер в начальное состояние (например, при подключении/отключении устройства)
@@ -157,7 +157,7 @@ namespace EGSE.Threading
                 bytesReaded = _fStream.Read(tmpBuf, 0, READ_BUF_SIZE_IN_BYTES);
                 if (bytesReaded > 0)
                 {
-                    _dec.decode(tmpBuf, READ_BUF_SIZE_IN_BYTES);
+                    _dec.decode(tmpBuf, bytesReaded);
                 }
                 System.Threading.Thread.Sleep(1);
             }
