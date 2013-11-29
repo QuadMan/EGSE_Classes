@@ -62,19 +62,6 @@ namespace EGSE.Threading
         public onStateChangedDelegate onStateChanged;
 
         
-        // есть ли данные для чтения из буфера
-        public int dataBytesAvailable
-        {
-            get
-            {
-                return bigBuf.bytesAvailable;
-            }
-            set
-            {
-                bigBuf.bytesAvailable = value;
-            }
-        }
-
         // скорость чтения данных из USB
         public float speedBytesSec
         {
@@ -187,10 +174,10 @@ namespace EGSE.Threading
                     //
                     if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XX_NET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDI_MIN_BUF_SIZE))
                     {
-                        _ftdi.ReadBuf(bigBuf.getWriteBuf, bytesAvailable, ref bytesReaded);
+                        _ftdi.ReadBuf(bigBuf.writeBuf, bytesAvailable, ref bytesReaded);
                         if (bytesReaded > 0)                   
                         {
-                            bigBuf.bytesAvailable += bytesReaded;
+                            bigBuf.addLastWriteBufSize(bytesReaded);
 
                             //System.Console.WriteLine("reading {0}, speed = {1}", bytesReaded.ToString(), speedBytesSec);
                             calcSpeed(bytesReaded);

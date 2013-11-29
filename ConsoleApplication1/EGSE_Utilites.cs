@@ -31,12 +31,14 @@ namespace EGSE.UTILITES
         public const  uint NO_DATA_AVAILABLE = 0xFFFF;
         private const uint FTDI_BUF_SIZE = 70000;
         public byte[][] AData;
+        public int[] ALen;
         private uint _curRPos;
         private uint _curWPos;
         private int _count;
         private uint _bufSize;
-        private uint _oldPos;
+        private uint _lastRPos;
         //private Object thisLock = new Object();
+        private uint _lastWPos;
 
         private int _bytesInBuffer;
 
@@ -48,13 +50,23 @@ namespace EGSE.UTILITES
         {
             _bufSize = bufSize;
             AData = new byte[_bufSize][];
+            ALen = new int[_bufSize];
             for (uint i = 0; i < _bufSize; i++)
             {
                 AData[i] = new byte[FTDI_BUF_SIZE];
+                ALen[i] = 0;
             }
+            _lastRPos = 0;
+            _lastWPos = 0;
             _curWPos = 0;
-            _curWPos = 0;
+            _curRPos = 0;
             _count = 0;
+        }
+
+        public void addLastWriteBufSize(int bufSize)
+        {
+            ALen[_lastWPos] = bufSize;
+            _bytesInBuffer += bufSize;
         }
 
         public int bytesAvailable
@@ -64,23 +76,32 @@ namespace EGSE.UTILITES
                 return _bytesInBuffer;
             }
 
-            set
+            //set
+            //{
+            //    Interlocked.Exchange(ref _bytesInBuffer, value);
+            //}
+        }
+
+        public int readBufSize
+        {
+            get
             {
-                Interlocked.Exchange(ref _bytesInBuffer, value);
+                return ALen[_lastRPos];
             }
         }
 
-        public byte[] getReadBuf
+        public byte[] readBuf
         {
             get
             {
                 if (_count > 0)
                 {
-                    _oldPos = _curRPos;
+                    _lastRPos = _curRPos;
                     Interlocked.Decrement(ref _count);//--;
                     _curRPos = (_curRPos + 1) % _bufSize;
-                    System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}", _count, _bytesInBuffer);
-                    return AData[_oldPos];
+                    _bytesInBuffer -= ALen[_lastRPos];
+                    //System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}, RPos = {2}", _count, _bytesInBuffer,_curRPos);
+                    return AData[_lastRPos];
                 }
                 else
                 {
@@ -89,17 +110,17 @@ namespace EGSE.UTILITES
             }
         }
 
-        public byte[] getWriteBuf
+        public byte[] writeBuf
         {
             get
             {
                 if (_count < _bufSize)
                 {
-                    _oldPos = _curWPos;
+                    _lastWPos = _curWPos;
                     _curWPos = (_curWPos + 1) % _bufSize;
                     Interlocked.Increment(ref _count);//++;
-                    System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}", _count, _bytesInBuffer);
-                    return AData[_oldPos];
+                    //System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}, WPos = {2}", _count, _bytesInBuffer,_curWPos);
+                    return AData[_lastWPos];
                 }
                 else
                 {
