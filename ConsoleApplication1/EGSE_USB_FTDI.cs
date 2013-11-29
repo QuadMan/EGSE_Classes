@@ -49,6 +49,16 @@ namespace EGSE.USB
         /// Значение latency
         /// </summary>
         public uint latency;
+
+        public USBCfg(int sleep)
+        {
+            this.sleep = 10;
+            rBufSz = 65535;
+            wBufSz = 1000;
+            rTO = 10;
+            wTO = 10;
+            latency = 2;
+        }
     }
 
     class FTDI

@@ -33,8 +33,9 @@ namespace EGSE.UTILITES
         public byte[][] AData;
         private uint _curRPos;
         private uint _curWPos;
-        private uint _count;
+        private int _count;
         private uint _bufSize;
+        private uint _oldPos;
         //private Object thisLock = new Object();
 
         private int _bytesInBuffer;
@@ -75,9 +76,11 @@ namespace EGSE.UTILITES
             {
                 if (_count > 0)
                 {
+                    _oldPos = _curRPos;
+                    Interlocked.Decrement(ref _count);//--;
                     _curRPos = (_curRPos + 1) % _bufSize;
-                    _count--;
-                    return AData[_curRPos];
+                    System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}", _count, _bytesInBuffer);
+                    return AData[_oldPos];
                 }
                 else
                 {
@@ -92,9 +95,11 @@ namespace EGSE.UTILITES
             {
                 if (_count < _bufSize)
                 {
+                    _oldPos = _curWPos;
                     _curWPos = (_curWPos + 1) % _bufSize;
-                    _count++;
-                    return AData[_curWPos];
+                    Interlocked.Increment(ref _count);//++;
+                    System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}", _count, _bytesInBuffer);
+                    return AData[_oldPos];
                 }
                 else
                 {

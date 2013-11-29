@@ -71,6 +71,27 @@ namespace EGSE.Decoders.USB
     }
 
     /// <summary>
+    /// Класс ошибки декодера, который выдается в делегат при обнаружении ошибки протокола
+    /// </summary>
+    public class USBProtocolErrorMsg : MsgBase
+    {
+        /// <summary>
+        /// Позиция ошибки в буфере
+        /// </summary>
+        public uint bufPos;
+
+        /// <summary>
+        /// Создаем сообщение с ошибкой
+        /// </summary>
+        public USBProtocolErrorMsg(uint maxDataLen)
+        {
+            data = new byte[maxDataLen];
+            dataLen = 0;
+            bufPos = 0;
+        }
+    }
+
+    /// <summary>
     /// Абстрактный класс протокола USB
     /// </summary>
     public abstract class USBProtocolBase
@@ -88,6 +109,7 @@ namespace EGSE.Decoders.USB
 
         /// <summary>
         /// Функция кодирования данных
+        /// Если функция выполняется с ошибкой, bufOut = null
         /// </summary>
         /// <param name="addr">адрес, по которому данные должны быть переданы</param>
         /// <param name="buf">данные для передачи</param>
@@ -97,9 +119,8 @@ namespace EGSE.Decoders.USB
         /// <summary>
         ///  Определение делегата обработки ошибок протокола
         /// </summary>
-        /// <param name="errBuf">буфер, содержащий ошибку</param>
-        /// <param name="bufPos">указатель в буфере, где произошла ошибка</param>
-        public delegate void onProtocolErrorDelegate(byte[] errBuf, uint bufPos);
+        /// <param name="errMsg">класс сообщения, порожденный от MsgBase, описывающиё ошибку</param>
+        public delegate void onProtocolErrorDelegate(MsgBase errMsg);
 
         /// <summary>
         /// Делегат, вызываемый при возникновении ошибки в декодере

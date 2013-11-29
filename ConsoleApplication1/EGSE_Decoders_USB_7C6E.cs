@@ -41,6 +41,8 @@ namespace EGSE.Decoders.USB {
             private uint _errorsCount = 0;
             // сообщение, которое мы собираем и при окончании, пересылаем дальше в делегат
             private USBProtocolMsg _tmpMsg;
+            // сообщение об ошибке в протоколе
+            private USBProtocolErrorMsg _tmpErrMsg;
             // внутренние переменные
             private int _dt = 0;
             private int _bufI = 0;
@@ -53,6 +55,7 @@ namespace EGSE.Decoders.USB {
             public USB_7C6EDecoder()
             {
                 _tmpMsg = new USBProtocolMsg(DECODER_MAX_DATA_LEN);
+                _tmpErrMsg = new USBProtocolErrorMsg(DECODER_MAX_DATA_LEN);
                 reset();
             }
             
@@ -68,6 +71,23 @@ namespace EGSE.Decoders.USB {
                 _errorsCount = 0;
                 _firstMsg = true;
                 _tmpMsg.clear();
+            }
+
+
+            /// <summary>
+            /// Формируем сообщение об ошибке и отпарвляем его в делегат
+            /// </summary>
+            /// <param name="buf">буфер, содержащий ошибку</param>
+            /// <param name="bufPos">позиция в буфере, где обнаружена ошибка</param>
+            /// <param name="bLen">длина буфера</param>
+            private void makeErrorMsg(byte[] buf, int bufPos, int bLen)
+            {
+                if (onProtocolError != null)    
+                {
+                    Array.Copy(buf, _tmpErrMsg.data, bLen);
+                    _tmpErrMsg.bufPos = (uint)bufPos;
+                    onProtocolError(_tmpErrMsg);
+                }
             }
 
             /// <summary>
@@ -86,14 +106,22 @@ namespace EGSE.Decoders.USB {
                                 continue;
                             }
                             else {
-                                if (!_firstMsg) { _errorsCount++;  }     // если после предыдущего сообщения сразу не встречается 0x7C - считаем ошибкой
+                                if (!_firstMsg)                      // если после предыдущего сообщения сразу не встречается 0x7C - считаем ошибкой
+                                {
+                                    _firstMsg = true;
+                                    _errorsCount++;
+                                    makeErrorMsg(buf, i, bLen);     // сформируем сообщение об ошибке и передадим его делегату
+                                }     
                             }
                             break;
                         case 1 : if (_bt != 0x6E) {
                                 _iStep = 0;
                                 continue;
                             }
-                            else { _errorsCount++; }
+                            else { 
+                                _errorsCount++;
+                                makeErrorMsg(buf, i, bLen);         // сформируем сообщение об ошибке и передадим его делегату
+                            }
                             break;
                         case 2 : _tmpMsg.addr = _bt;
                             break;
@@ -106,7 +134,7 @@ namespace EGSE.Decoders.USB {
                             _tmpMsg.dataLen = _msgLen;
                             break;
                         default :
-                            if (bLen - i >= _msgLen) //  в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
+                            if (bLen - i >= _msgLen)                //  в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
                             {
                                 Array.Copy(buf, i, _tmpMsg.data, _bufI, _msgLen); 
                                 if (onMessage != null)
@@ -118,7 +146,7 @@ namespace EGSE.Decoders.USB {
                                 _bufI = 0;
                                 i += _msgLen;//? _tmpMsg.len;
                             }
-                            else                    // копируем только часть, до конца буфера 
+                            else                                    // копируем только часть, до конца буфера 
                             {
                                 _dt = bLen-i;
                                 Array.Copy(buf,i,_tmpMsg.data, _bufI, _dt);
@@ -134,9 +162,11 @@ namespace EGSE.Decoders.USB {
 
             /// <summary>
             /// Кодируем сообщение в соответствии с протоколом
+            /// Можем закодировать только сообщение длиной не больше 256 байт
+            /// Адрес должен быть не больше 255
             /// </summary>
             /// <param name="addr">адрес, по которому нужно передать данные</param>
-            /// <param name="buf">данные</param>
+            /// <param name="buf">данные (максимум 256 байт)</param>
             /// <param name="bufOut">выходной буфер</param>
             override public bool encode(uint addr, byte[] buf, out byte[] bufOut)
             {

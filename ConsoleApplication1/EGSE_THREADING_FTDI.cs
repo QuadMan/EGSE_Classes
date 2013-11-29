@@ -32,7 +32,7 @@ namespace EGSE.Threading
     /// </summary>
     class FTDIThread
     {
-        const uint FTDI_MIN_BUF_SIZE = 2 * 1024;
+        const uint FTDI_MIN_BUF_SIZE = 1 * 1024;
         private Queue<byte[]> _cmdQueue;
 
         // на сколько мс засыпаем, когда устройство не подключено
@@ -139,7 +139,7 @@ namespace EGSE.Threading
             if (_tickDelta > 1000)
             {
                 _lastTickCount = Environment.TickCount;
-                _speed = (float)_dataReaded / _lastTickCount * 1000;
+                _speed = (float)_dataReaded / _tickDelta * 1000;
                 _dataReaded = 0;
             }
             else
@@ -192,9 +192,9 @@ namespace EGSE.Threading
                         {
                             bigBuf.bytesAvailable += bytesReaded;
 
-                            System.Console.WriteLine("reading " + bytesReaded.ToString());
-                            bytesReaded = 0;
+                            //System.Console.WriteLine("reading {0}, speed = {1}", bytesReaded.ToString(), speedBytesSec);
                             calcSpeed(bytesReaded);
+                            bytesReaded = 0;
                         }
                     }
                 }
