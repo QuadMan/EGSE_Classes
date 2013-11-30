@@ -105,6 +105,7 @@ namespace EGSE.Decoders.USB
         /// Функция декодирования буфера
         /// </summary>
         /// <param name="buf">буфер с данными для декодирования</param>
+        /// <param name="bufSize">размер буфера с данными</param>
         abstract public void decode(byte[] buf, int bufSize);
 
         /// <summary>
