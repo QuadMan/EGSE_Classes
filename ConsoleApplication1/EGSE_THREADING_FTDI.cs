@@ -151,11 +151,11 @@ namespace EGSE.Threading
                     {
                         // производим настройки устройства
                         //!config _ftdi cfg
-                        System.Console.WriteLine("yahoo...");
+//                        System.Console.WriteLine("yahoo...");
                     }
                     else 
                     {
-                        System.Console.WriteLine("connecting...");
+  //                      System.Console.WriteLine("connecting...");
                         System.Threading.Thread.Sleep(FTDI_DEFAULT_SLEEP_WHEN_NOT_CONNECTED);    // пока устройство не подключено, поспим
                     }
                 }
@@ -177,10 +177,10 @@ namespace EGSE.Threading
                         _ftdi.ReadBuf(bigBuf.writeBuf, bytesAvailable, ref bytesReaded);
                         if (bytesReaded > 0)                   
                         {
-                            bigBuf.addLastWriteBufSize(bytesReaded);
+                            bigBuf.moveNextWrite(bytesReaded);
 
-                            //System.Console.WriteLine("reading {0}, speed = {1}", bytesReaded.ToString(), speedBytesSec);
                             calcSpeed(bytesReaded);
+                            System.Console.WriteLine("speed = {0}", speedBytesSec);
                             bytesReaded = 0;
                         }
                     }
@@ -203,6 +203,7 @@ namespace EGSE.Threading
         public void Finish()
         {
             _terminateFlag = true;
+            _thread.Join(1000);
         }
     }
 }

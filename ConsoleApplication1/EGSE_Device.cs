@@ -51,15 +51,50 @@ namespace EGSE
             _dThread = new DecoderThread(_dec, _fThread);
         }
 
+        public float speed
+        {
+            get
+            {
+                return _fThread.speedBytesSec;
+            }
+        }
+
+
+        public uint globalBufSize
+        {
+            get
+            {
+                return _dThread.maxCBufSize;
+            }
+            set
+            {
+                _dThread.maxCBufSize = 0;
+            }
+        }
+
+        public void finishAll()
+        {
+            _fThread.Finish();
+            _dThread.Finish();
+        }
+
         /// <summary>
         /// Деструктор устройства
         /// </summary>
         ~Device()
         {
-            _fThread.Finish();
-            _dThread.Finish();
             // TODO: нужно ли ждать Join от потоков?
         }
+
+        /// <summary>
+        /// Определение делегата обработки сообщения
+        /// </summary>
+        /// <param name="msg"></param>
+        public delegate void onNewStateDelegate(bool state);
+        /// <summary>
+        /// Делегат, вызываемый при распознавании очередного сообщения декодером
+        /// </summary>
+        public onNewStateDelegate onNewState;
 
         /// <summary>
         /// Функция вызывается когда меняется состояние подключения USB устройства
@@ -71,6 +106,10 @@ namespace EGSE
             if (_dThread != null)
             {
                 _dThread.resetDecoder();
+            }
+            if (onNewState != null)
+            {
+                onNewState(state);
             }
         }
 

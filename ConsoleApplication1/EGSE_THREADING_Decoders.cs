@@ -122,8 +122,8 @@ namespace EGSE.Threading
                     {
                         _maxCBufSize = bytesToRead;
                     }
-                    _dec.decode(_fThread.bigBuf.readBuf,_fThread.bigBuf.readBufSize);        // декодируем буфер
-                    
+                    _dec.decode(_fThread.bigBuf.readBuf, _fThread.bigBuf.readBufSize);        // декодируем буфер
+                    _fThread.bigBuf.moveNextRead();
                     //_fThread.bigBuf.bytesAvailable -= (int)bytesToRead;
                 }
                 System.Threading.Thread.Sleep(1);
@@ -136,6 +136,7 @@ namespace EGSE.Threading
         public void Finish()
         {
             _terminateFlag = true;
+            _thread.Join(1000);
         }
 
         /// <summary>
