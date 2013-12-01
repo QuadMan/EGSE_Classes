@@ -38,7 +38,7 @@ namespace EGSE.Threading
         // на сколько мс засыпаем, когда устройство не подключено
         private const int FTDI_DEFAULT_SLEEP_WHEN_NOT_CONNECTED = 1000;
         // Размер кольцевого буфера входящих данных из USB (см. класс AManager)
-        private const uint FTDI_THREAD_BUF_SIZE_BYTES_DEFAULT = 100;//30*1024*1024;
+        private const uint FTDI_THREAD_BUF_SIZE_BYTES_DEFAULT = 100;
         // поток чтения/записи в USB
         private Thread _thread;
         // доступ к функциям контроллера FTDI
@@ -46,7 +46,7 @@ namespace EGSE.Threading
         // конфигурация устройства
         private USBCfg _cfg;
         // кольцевой буфер входящих данных
-        public AManager bigBuf;
+        public BigBufferManager bigBuf;
         //
         private uint _bytesWritten = 0;
         // скорость получения данных по USB
@@ -90,7 +90,7 @@ namespace EGSE.Threading
             _cmdQueue = new Queue<byte[]>();
 
             _cfg    = cfg;
-            bigBuf  = new AManager(bufSize);
+            bigBuf  = new BigBufferManager(bufSize);
             _ftdi   = new FTDI(Serial,_cfg);
 
             _thread = new Thread(Execution);
@@ -180,7 +180,9 @@ namespace EGSE.Threading
                             bigBuf.moveNextWrite(bytesReaded);
 
                             calcSpeed(bytesReaded);
+#if DEBUG_TEXT
                             System.Console.WriteLine("speed = {0}", speedBytesSec);
+#endif
                             bytesReaded = 0;
                         }
                     }

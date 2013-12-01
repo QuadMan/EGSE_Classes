@@ -28,7 +28,7 @@ namespace EGSE
     /// При наследовании, необходимо в функции onDevStateChanged вызывать base.onDevStateChanged(state)
     /// </summary>
     public class Device
-    {
+    {      
         private DecoderThread _dThread;                         // поток декодирования данных из потока USB
         private FTDIThread _fThread;                            // поток чтения данных из USB
         private USBCfg _cfg;                                    // настройки устройства USB и потока чтения данных из USB
@@ -59,16 +59,13 @@ namespace EGSE
             }
         }
 
-
         public uint globalBufSize
         {
             get
             {
-                return _dThread.maxCBufSize;
-            }
-            set
-            {
+                uint res = _dThread.maxCBufSize;
                 _dThread.maxCBufSize = 0;
+                return res;
             }
         }
 

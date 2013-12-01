@@ -9,12 +9,13 @@ using EGSE.Decoders.USB;
 using EGSE.Threading;
 using EGSE;
 using System.IO;
+using System.Collections.Specialized;
 //using EGSE;
 //using EGSE.Decoders;
 
+
 namespace ConsoleApplication1
 {
-
     class Program
     {
         static Device _dev;
@@ -22,10 +23,12 @@ namespace ConsoleApplication1
 
         static void onDecMsg(MsgBase msg)
         {
-            //USBProtocolMsg msg1 = msg as USBProtocolMsg;
-            //if (msg1 != null) {
-            //    System.Console.WriteLine("addr={0}", msg1.addr);
-            //}
+            USBProtocolMsg msg1 = msg as USBProtocolMsg;
+            if (msg1 != null)
+            {
+                //System.Console.WriteLine("addr={0}", msg1.addr);
+                //AManager.Run(msg as USBProtocolMsg);
+            }
             //System.Console.WriteLine("errCnt={0}", _dec.errorsCount);
         }
 
@@ -37,13 +40,23 @@ namespace ConsoleApplication1
             }
         }
 
+        static void fastDecode()
+        {
+
+        }
+
+        static void TMDecoder(USBProtocolMsg msg)
+        {
+            //Array.Copy(msg.data, raw, msg.data.Length);
+            //fastDecode();
+        }
 
         static void Main(string[] args)
         {
             /* Для проверки  декодера из файла или буфера */
             //USB_7C6EDecoder dec = new USB_7C6EDecoder();
             ////dec.onMessage = onDecMsg;
-            ///*
+            
             //byte[] tmpBuf = new byte[10];
             //tmpBuf[0] = 0x7C;
             //tmpBuf[1] = 0x6E;
