@@ -30,6 +30,31 @@ using EGSE.Protocols;
 namespace EGSE.Utilites
 {
     /// <summary>
+    /// Статический класс позволяет накладывать байтовый поток на структуру
+    /// Пример: объявляем структуру
+    ///         [StructLayout(LayoutKind.Sequential,Pack = 1)]
+    ///         struct testS
+    ///         {
+    ///                 byte header;
+    ///                 int size;
+    ///                 byte flag;
+    ///         }
+    ///         и вызываем функцию 
+    ///         testS ts = ByteArrayToStructure.make<testS>(byteBuf);
+    /// </summary>
+    public static class ByteArrayToStructure
+    {
+        public static T make<T>(byte[] bytes) where T : struct
+        {
+            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            T stuff = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(),
+                typeof(T));
+            handle.Free();
+            return stuff;
+        }
+    }
+
+    /// <summary>
     /// Значение телеметрического параметра, изменения которого необходимо отслеживать (обычно для логгирования изменения состояния - контактные датчики, включени питания и т.д.)
     /// Пример использования:
     /// static void tFunc(int val)
@@ -154,56 +179,6 @@ namespace EGSE.Utilites
             sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}:{3:D3}:{4:D3}:", hour, min, sec, msec, mcsec);
 
             return sb.ToString();
-        }
-    }
-
-    /// <summary>
-    /// Класс, поддерживающий получение, преобразование данных АЦП
-    /// Обладает возможностью высчитывания среднего значения
-    /// Для вывода результата могут использоваться калибровочные данные
-    /// </summary>
-    class ADC
-    {
-        private const uint AVERAGE_LEVEL = 5;
-        private float[][] adcVal;
-        private Measure[] measures;
-
-        public ADC(uint adcCount)
-        {
-            adcVal = new float[adcCount][];
-            for (uint i = 0; i < adcCount; i++)
-            {
-                adcVal[i] = new float[AVERAGE_LEVEL];
-                measures[i] = null;
-            }
-        }
-
-        public void AddVal(uint idx, float val)
-        {
-
-        }
-
-        public float Average(float[] vals) {
-            return 0;
-        }
-
-        public float GetVal(uint idx)
-        {
-            if (measures[idx] != null)
-            {
-                float resultVal = 0;
-                //try {
-                measures[idx].getData(Average(adcVal[idx]), ref resultVal);
-                //catch ()
-                //}
-                return resultVal;
-
-            }
-            else return Average(adcVal[idx]);
-        }
-
-        public void setCalibration(uint idx, Measure measure) {
-
         }
     }
 
@@ -386,38 +361,6 @@ namespace EGSE.Utilites
                     return null;
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Класс рассчета значений по калибровочным данным
-    /// </summary>
-    class Measure
-    {
-        public Measure()
-        {
-
-        }
-
-        ~Measure()
-        {
-
-        }
-
-        public bool loadFromFile(string fName)
-        {
-            return true;
-        }
-
-        public bool addData(float x, float y)
-        {
-            return true;
-        }
-
-        public bool getData(float val, ref float res)
-        {
-            res = 0;
-            return true;
         }
     }
 }
