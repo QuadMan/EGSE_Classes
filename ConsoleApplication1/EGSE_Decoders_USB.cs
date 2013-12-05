@@ -79,7 +79,10 @@ namespace EGSE.Decoders.USB
         /// Позиция ошибки в буфере
         /// </summary>
         public uint bufPos;
-
+        /// <summary>
+        /// Признак ошибки
+        /// </summary>
+        public string Msg;
         /// <summary>
         /// Создаем сообщение с ошибкой
         /// </summary>

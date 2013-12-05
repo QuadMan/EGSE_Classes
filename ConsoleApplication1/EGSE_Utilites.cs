@@ -297,9 +297,9 @@ namespace EGSE.UTILITES
                 _curRPos = (_curRPos + 1) % _bufSize;
                 _count--;
                 _bytesInBuffer -= ALen[_lastRPos];
-#if DEBUG_TEXT
+//#if DEBUG_TEXT
                 System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}, RPos = {2}", _count, _bytesInBuffer,_curRPos);
-#endif
+//#endif
             }
         }
 
@@ -317,9 +317,9 @@ namespace EGSE.UTILITES
                 _count++;
                 ALen[_lastWPos] = bufSize;
                 _bytesInBuffer += bufSize;
-#if DEBUG_TEXT
+//#if DEBUG_TEXT
                 System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}, WPos = {2}", _count, _bytesInBuffer, _curWPos);
-#endif
+//#endif
             }
         }
 

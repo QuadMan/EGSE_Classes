@@ -238,17 +238,17 @@ namespace EGSE.Decoders.USB {
             /// <param name="bufOut">выходной буфер</param>
             override public bool encode(uint addr, byte[] buf, out byte[] bufOut)
             {
-                bufOut = null;
+                bufOut = null; 
                 if ((buf.Length > 256) || (addr > 255))
                 {
                     return false;
                 }
-                byte bufLen = (buf.Length == 256) ? (byte)0 : checked ((byte)buf.Length);
+                byte bufLen = (buf.Length == 256) ? (byte)0 : (byte)buf.Length;
 
                 bufOut = new byte[buf.Length+4];
                 bufOut[0] = 0x7C;
                 bufOut[1] = 0x6E;
-                bufOut[2] = checked ((byte)addr);
+                bufOut[2] = (byte)addr; 
                 bufOut[3] = bufLen;
                 Array.Copy(buf, 0, bufOut, 4, buf.Length);
 
