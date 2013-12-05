@@ -34,7 +34,8 @@ namespace EGSE.Threading
     {
         const uint FTDI_MIN_BUF_SIZE = 1 * 1024;
         private Queue<byte[]> _cmdQueue;
-
+        // время на закрытие потока
+        private const int TIMEOUT_TO_CLOSING_THREAD = 1000;
         // на сколько мс засыпаем, когда устройство не подключено
         private const int FTDI_DEFAULT_SLEEP_WHEN_NOT_CONNECTED = 1000;
         // Размер кольцевого буфера входящих данных из USB (см. класс AManager)
@@ -56,12 +57,9 @@ namespace EGSE.Threading
         private int _lastTickCount;
         private UInt64 _dataReaded;
         private volatile bool _terminateFlag;
-
         // делегат, вызываемый при смене состояния подключения устройства
         public delegate void onStateChangedDelegate(bool state);
-        public onStateChangedDelegate onStateChanged;
-
-        
+        public onStateChangedDelegate onStateChanged;        
         // скорость чтения данных из USB
         public float speedBytesSec
         {
@@ -70,7 +68,6 @@ namespace EGSE.Threading
                 return _speed;
             }
         }
-
         // поток получения и записи данных в USB FTDI
         /// <summary>
         /// Создаем поток, ожидающий подключения устройства с серийным номером
@@ -151,11 +148,9 @@ namespace EGSE.Threading
                     {
                         // производим настройки устройства
                         //!config _ftdi cfg
-//                        System.Console.WriteLine("yahoo...");
                     }
                     else 
                     {
-  //                      System.Console.WriteLine("connecting...");
                         System.Threading.Thread.Sleep(FTDI_DEFAULT_SLEEP_WHEN_NOT_CONNECTED);    // пока устройство не подключено, поспим
                     }
                 }
@@ -187,7 +182,6 @@ namespace EGSE.Threading
                         }
                     }
                 }
-
                 // если состояние устройства изменилось
                 if (_lastOpened != _ftdi.isOpen)
                 {
@@ -197,15 +191,13 @@ namespace EGSE.Threading
                         onStateChanged(_ftdi.isOpen);           // вызываем делегата
                     }
                 }
-
                 System.Threading.Thread.Sleep(_cfg.sleep);
             }
         }
-
         public void Finish()
         {
             _terminateFlag = true;
-            _thread.Join(1000);
+            _thread.Join(TIMEOUT_TO_CLOSING_THREAD);
         }
     }
 }
