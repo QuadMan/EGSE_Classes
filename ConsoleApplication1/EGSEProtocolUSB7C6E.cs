@@ -25,15 +25,16 @@
 */
 
 using System;
-using EGSE.Decoders.USB;
 using System.IO;
 using System.Collections.Generic;
 
-namespace EGSE.Decoders.USB {
+using EGSE.Protocols;
 
+namespace EGSE.Protocols 
+{
     /// <summary>
     /// </summary>
-        public class USB_7C6EDecoder : USBProtocolBase
+        public class ProtocolUSB7C6E : ProtocolUSBBase
         {
             // максимальное количество ошибок декдера, при котором мы перестаем вызывать делегата
             private const uint MAX_ERRORS_COUNT = 100;
@@ -47,9 +48,9 @@ namespace EGSE.Decoders.USB {
             // сколько ошибок протокола зафиксировал декодер
             private uint _errorsCount = 0;
             // сообщение, которое мы собираем и при окончании, пересылаем дальше в делегат
-            private USBProtocolMsg _tmpMsg;
+            private ProtocolMsg _tmpMsg;
             // сообщение об ошибке в протоколе
-            private USBProtocolErrorMsg _tmpErrMsg;
+            private ProtocolErrorMsg _tmpErrMsg;
             // внутренние переменные
             private int _dt = 0;
             private int _bufI = 0;
@@ -65,10 +66,10 @@ namespace EGSE.Decoders.USB {
             /// <summary>
             /// Создаем декодер
             /// </summary>
-            public USB_7C6EDecoder()
+            public ProtocolUSB7C6E()
             {
-                _tmpMsg = new USBProtocolMsg(DECODER_MAX_DATA_LEN);
-                _tmpErrMsg = new USBProtocolErrorMsg(70000);        // FIXIT: убрать константу
+                _tmpMsg = new ProtocolMsg(DECODER_MAX_DATA_LEN);
+                _tmpErrMsg = new ProtocolErrorMsg(70000);        // FIXIT: убрать константу
                 reset();
             }
 
@@ -77,7 +78,7 @@ namespace EGSE.Decoders.USB {
             /// </summary>
             /// <param name="fStream">Поток файла, куда пишем</param>
             /// <param name="writeBinLog">Флаг - писать сразу или нет</param>
-            public USB_7C6EDecoder(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog) : this()
+            public ProtocolUSB7C6E(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog) : this()
             {
                 _fDecStream = null;
                 _fEncStream = null;

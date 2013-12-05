@@ -16,7 +16,8 @@
 */
 
 using System;
-using FTD2XX_NET;
+
+using FTD2XXNET;
 
 namespace EGSE.USB
 {
@@ -61,7 +62,7 @@ namespace EGSE.USB
         }
     }
 
-    class FTDI
+    class USBFTDI
     {
         private const uint MAX_FTDI_IN_BUF_IN_BYTES = 65 * 1024;
         private FTDICustom _ftdi;
@@ -98,7 +99,7 @@ namespace EGSE.USB
             }
         }
 
-        public FTDI(string Serial, USBCfg cfg)
+        public USBFTDI(string Serial, USBCfg cfg)
         {
             _ftdi = new FTDICustom();
             _sNum = Serial;

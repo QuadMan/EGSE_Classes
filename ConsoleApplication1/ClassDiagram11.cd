@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="EGSE.Utilites.TMValue">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <NestedTypes>
+      <Delegate Name="EGSE.Utilites.TMValue.onFunctionDelegate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>EGSEUtilites.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAgAAAACAAAgAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>EGSEUtilites.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EGSE.Utilites.EgseTime">
+    <Position X="4.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAgAAAAAAAQAAAGAAQAAAAAAAAAAAAAAAASQIAAAAA=</HashCode>
+      <FileName>EGSEUtilites.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EGSE.Utilites.ADC">
+    <Position X="1" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gCAAAAAAAAAAQAAAAEAAEAAAAoAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EGSEUtilites.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EGSE.Utilites.BigBufferManager">
+    <Position X="2.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAKBAGAADAAAAAAAAiADAAKEAAAgAAAAACCAAAAAAAA=</HashCode>
+      <FileName>EGSEUtilites.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EGSE.Utilites.Measure">
+    <Position X="1" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>EGSEUtilites.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

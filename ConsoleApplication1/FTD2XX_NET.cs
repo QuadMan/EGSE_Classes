@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.IO;
 
-namespace FTD2XX_NET
+namespace FTD2XXNET
 {
 	/// <summary>
 	/// Class wrapper for FTD2XX.DLL

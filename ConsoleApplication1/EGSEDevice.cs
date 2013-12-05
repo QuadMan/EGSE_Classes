@@ -18,8 +18,9 @@
 */
 
 using System;
+
 using EGSE.Threading;
-using EGSE.Decoders.USB;
+using EGSE.Protocols;
 using EGSE.USB;
 
 namespace EGSE
@@ -30,10 +31,10 @@ namespace EGSE
     /// </summary>
     public class Device
     {      
-        private DecoderThread _dThread;                         // поток декодирования данных из потока USB
+        private ProtocolThread _dThread;                         // поток декодирования данных из потока USB
         private FTDIThread _fThread;                            // поток чтения данных из USB
         private USBCfg _cfg;                                    // настройки устройства USB и потока чтения данных из USB
-        private USBProtocolBase _dec;
+        private ProtocolUSBBase _dec;
 
          /// <summary>
         /// Создает процессы по чтению данных из USB и декодированию этих данных
@@ -42,14 +43,14 @@ namespace EGSE
         /// <param name="Serial">Серийный номер USB устройства, с которого нужно получать данные</param>
         /// <param name="dec">Класс декодера, который нужно использовать в приборе</param>
         /// <param name="cfg">Конфигурация драйвера USB (настройка параметров потока, буферов чтения и тд)</param>
-        public Device(string Serial, USBProtocolBase dec, USBCfg cfg)
+        public Device(string Serial, ProtocolUSBBase dec, USBCfg cfg)
         {
             _dec = dec;
             _cfg = cfg;
             _fThread = new FTDIThread(Serial, _cfg);
             _fThread.onStateChanged = onDevStateChanged;
 
-            _dThread = new DecoderThread(_dec, _fThread);
+            _dThread = new ProtocolThread(_dec, _fThread);
         }
 
         public float speed

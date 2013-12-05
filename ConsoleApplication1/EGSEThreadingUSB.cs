@@ -18,12 +18,13 @@
 */
 
 using System;
-using EGSE.USB;
 using System.Threading;
-using EGSE.UTILITES;
-using EGSE.Decoders;
-using EGSE.Threading;
 using System.Collections.Generic;
+
+using EGSE.USB;
+using EGSE.Utilites;
+using EGSE.Protocols;
+using EGSE.Threading;
 
 namespace EGSE.Threading
 {
@@ -43,7 +44,7 @@ namespace EGSE.Threading
         // поток чтения/записи в USB
         private Thread _thread;
         // доступ к функциям контроллера FTDI
-        private FTDI   _ftdi;
+        private USBFTDI   _ftdi;
         // конфигурация устройства
         private USBCfg _cfg;
         // кольцевой буфер входящих данных
@@ -88,7 +89,7 @@ namespace EGSE.Threading
 
             _cfg    = cfg;
             bigBuf  = new BigBufferManager(bufSize);
-            _ftdi   = new FTDI(Serial,_cfg);
+            _ftdi   = new USBFTDI(Serial,_cfg);
 
             _thread = new Thread(Execution);
             _thread.Start();
@@ -144,7 +145,7 @@ namespace EGSE.Threading
                 // устройство не открыто, пытаемся открыть
                 if (!_ftdi.isOpen)
                 {
-                    if ((_ftdi.Open() == FTD2XX_NET.FTDICustom.FT_STATUS.FT_OK) && (_ftdi.isOpen))
+                    if ((_ftdi.Open() == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (_ftdi.isOpen))
                     {
                         // производим настройки устройства
                         //!config _ftdi cfg
@@ -160,14 +161,14 @@ namespace EGSE.Threading
                     if (_cmdQueue.Count > 0)
                     {
                         byte[] _buf = _cmdQueue.Peek();
-                        FTD2XX_NET.FTDICustom.FT_STATUS res = _ftdi.WriteBuf(ref _buf,out _bytesWritten);
-                        if ((res == FTD2XX_NET.FTDICustom.FT_STATUS.FT_OK) && (_bytesWritten == _buf.Length))
+                        FTD2XXNET.FTDICustom.FT_STATUS res = _ftdi.WriteBuf(ref _buf,out _bytesWritten);
+                        if ((res == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (_bytesWritten == _buf.Length))
                         {
                             _cmdQueue.Dequeue();
                         }
                     }
                     //
-                    if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XX_NET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDI_MIN_BUF_SIZE))
+                    if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDI_MIN_BUF_SIZE))
                     {
                         _ftdi.ReadBuf(bigBuf.writeBuf, bytesAvailable, ref bytesReaded);
                         if (bytesReaded > 0)                   

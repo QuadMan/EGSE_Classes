@@ -16,11 +16,12 @@
 */
 
 using System;
-using EGSE.Decoders.USB;
-using EGSE.Threading;
 using System.Threading;
 using System.IO;
 using System.Diagnostics;
+
+using EGSE.Protocols;
+using EGSE.Threading;
 
 namespace EGSE.Threading
 {
@@ -29,12 +30,12 @@ namespace EGSE.Threading
     /// В классе на данный момент два конструктора, один - для подключения к USB,
     /// другой - для получения данных из Stream
     /// </summary>
-    class DecoderThread
+    class ProtocolThread
     {
         // размер буфера, при достижении которого происходит считывание данных из источника
         private const int READ_BUF_SIZE_IN_BYTES = 1024;
         // декодер, использующийся для декодирования данных
-        private USBProtocolBase _dec;
+        private ProtocolUSBBase _dec;
         // признак, что нужно перевести декодер в начальное состояние (например, при подключении/отключении устройства)
         private bool _resetDecoderFlag;
         // поток входных данных из USB
@@ -68,7 +69,7 @@ namespace EGSE.Threading
         /// </summary>
         /// <param name="dec">Декодер, который будем использовать</param>
         /// <param name="fThread">Поток, из которого получаем данные для декодирования</param>
-        public DecoderThread(USBProtocolBase dec, FTDIThread fThread)
+        public ProtocolThread(ProtocolUSBBase dec, FTDIThread fThread)
         {
             _dec = dec;
             _resetDecoderFlag = false;
@@ -86,7 +87,7 @@ namespace EGSE.Threading
         /// </summary>
         /// <param name="dec">Декодер, который будем использовать</param>
         /// <param name="fStream">Stream, откуда будем брать данные для декодирования</param>
-        public DecoderThread(USBProtocolBase dec, Stream fStream)
+        public ProtocolThread(ProtocolUSBBase dec, Stream fStream)
         {
             _dec = dec;
             _fStream = fStream;

@@ -19,7 +19,7 @@
 
 using System;
 
-namespace EGSE.Decoders.USB
+namespace EGSE.Protocols
 {
     /// <summary>
     /// Базовый класс сообщения
@@ -40,7 +40,7 @@ namespace EGSE.Decoders.USB
     /// <summary>
     /// Класс обмена сообщениями по протоколам в USB
     /// </summary>
-    public class USBProtocolMsg : MsgBase
+    public class ProtocolMsg : MsgBase
     {
         /// <summary>
         /// Адрес, по которому пришло сообщение
@@ -52,7 +52,7 @@ namespace EGSE.Decoders.USB
         /// текущим протоколом)
         /// </summary>
         /// <param name="maxDataLen">максимальный размер буфера данных</param>
-        public USBProtocolMsg(uint maxDataLen)
+        public ProtocolMsg(uint maxDataLen)
         {
             data = new byte[maxDataLen];
             dataLen = 0;
@@ -73,7 +73,7 @@ namespace EGSE.Decoders.USB
     /// <summary>
     /// Класс ошибки декодера, который выдается в делегат при обнаружении ошибки протокола
     /// </summary>
-    public class USBProtocolErrorMsg : MsgBase
+    public class ProtocolErrorMsg : MsgBase
     {
         /// <summary>
         /// Позиция ошибки в буфере
@@ -86,7 +86,7 @@ namespace EGSE.Decoders.USB
         /// <summary>
         /// Создаем сообщение с ошибкой
         /// </summary>
-        public USBProtocolErrorMsg(uint maxDataLen)
+        public ProtocolErrorMsg(uint maxDataLen)
         {
             data = new byte[maxDataLen];
             dataLen = 0;
@@ -97,7 +97,7 @@ namespace EGSE.Decoders.USB
     /// <summary>
     /// Абстрактный класс протокола USB
     /// </summary>
-    public abstract class USBProtocolBase
+    public abstract class ProtocolUSBBase
     {
         /// <summary>
         /// сброс конечного автомата состояния протокола в исходное состояние 

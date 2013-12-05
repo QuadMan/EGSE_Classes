@@ -19,14 +19,15 @@
 **
 */
 
-using EGSE.Decoders.USB;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
-namespace EGSE.UTILITES
+using EGSE.Protocols;
+
+namespace EGSE.Utilites
 {
     /// <summary>
     /// Значение телеметрического параметра, изменения которого необходимо отслеживать (обычно для логгирования изменения состояния - контактные датчики, включени питания и т.д.)
