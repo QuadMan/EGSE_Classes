@@ -55,19 +55,22 @@ namespace EGSE.Protocols
         private byte _curByte = 0; // текущий байт
         private uint _posByte = 0; // позиция текущего байта в буфере
         private uint _posMsg = 0; // позиция сообщения в буфере
-        private bool _succFrame = true; // флаг обработанного кадра
+        private bool _succFrame = true; // флаг обработанного кадра (? может быть заменить на более понятное название переменной?)
         private int _maxErrorCount = 0;
         private int _errorCount = 0;
         private TextWriter _fEncStream;
         private FileStream _fDecStream;
+        
         /// <summary>
         /// Включить лог Encoder-а
         /// </summary>
         public bool writeEncLog = false;
+        
         /// <summary>
         /// Включить лог Decoder-а
         /// </summary>
         public bool writeDecLog = false;
+        
         /// <summary>
         /// коснтруктор
         /// </summary>
@@ -77,6 +80,7 @@ namespace EGSE.Protocols
             _errorFrame = new ProtocolErrorMsg(MAX_FRAME_LEN);  
             reset();
         }
+
         /// <summary>
         /// конструктор с поддержкой логеров
         /// </summary>
@@ -96,6 +100,7 @@ namespace EGSE.Protocols
             _fEncStream = fEncStream;
             writeEncLog = wEncLog;
         }
+
         /// <summary>
         /// сброс текущего состояния декодера
         /// </summary>
@@ -106,6 +111,7 @@ namespace EGSE.Protocols
             _msgLen = 0;
             _posMsg = 0;
         }
+        
         private void OnErrorFrame(byte[] buf, uint bufPos, int bLen, string msg)
         {
             _errorCount++;
@@ -154,7 +160,7 @@ namespace EGSE.Protocols
                         }
                         break;                    
                     case DecoderState.s4D:
-                        _state = DecoderState.sADDR;
+                        _state = DecoderState.sADDR; //?логика работы отличается от DecoderState.s5E, где ты тот же вариант делаешь через if () else { }, лучше делать везде одинаково
                         if (0x4D != _curByte)
                         {
                             OnErrorFrame(buf, _posByte, bufSize, "После 0x5E отсутствует 0x4D");
@@ -166,7 +172,7 @@ namespace EGSE.Protocols
                         _state = DecoderState.sNBH;
                         break;
                     case DecoderState.sNBH:
-                        _msgLen = _curByte * MAX_BYTE;
+                        _msgLen = _curByte * MAX_BYTE; //? почему умножаешь, а не сдвигаешь?
                         _state = DecoderState.sNBL;
                         break;
                     case DecoderState.sNBL:
@@ -182,7 +188,7 @@ namespace EGSE.Protocols
                         }
                         break;
                     case DecoderState.sMSG:
-                        _package.data[_posMsg] = _curByte;
+                        _package.data[_posMsg] = _curByte; //? лучше делать [_posMsg++]
                         _posMsg++;
                         if (_posMsg == _msgLen)
                         {
@@ -213,6 +219,7 @@ namespace EGSE.Protocols
                 _posByte++;
             }
         }
+
         /// <summary>
         /// Кодируем буфер
         /// </summary>
@@ -241,8 +248,8 @@ namespace EGSE.Protocols
                 OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения");
                 return false;  
             }            
-            bufOut[4] = (byte)buf.Length;
-            bufOut[5] = 0;
+            bufOut[4] = (byte)buf.Length; //? проверял на размере входных данных больше 255?
+            bufOut[5] = 0;                
             for (byte i = 0; i < 5; i++)            
             {
                 bufOut[5] = _crc8Table[bufOut[5] ^ bufOut[i]];
