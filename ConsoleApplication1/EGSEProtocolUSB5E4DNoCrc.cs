@@ -18,7 +18,7 @@ namespace EGSE.Protocols
     /// <summary>
     /// класс декодера по протоколу 5E4D
     /// </summary>
-    public class ProtocolUSB5E4D : ProtocolUSBBase
+    public class ProtocolUSB5E4DNoCrc : ProtocolUSBBase
     {
         private enum DecoderState
         {
@@ -76,7 +76,7 @@ namespace EGSE.Protocols
         /// <summary>
         /// коснтруктор
         /// </summary>
-        public ProtocolUSB5E4D()
+        public ProtocolUSB5E4DNoCrc()
         {
             _package = new ProtocolMsg(MAX_FRAME_LEN);
             _errorFrame = new ProtocolErrorMsg(MAX_FRAME_LEN);  
@@ -90,7 +90,8 @@ namespace EGSE.Protocols
         /// <param name="fEncStream"></param>
         /// <param name="wDecLog"></param>
         /// <param name="wEncLog"></param>
-        public ProtocolUSB5E4D(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog): this()
+        public ProtocolUSB5E4DNoCrc(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog)
+            : this()
         {
             _fDecStream = null;
             _fEncStream = null;
@@ -179,16 +180,16 @@ namespace EGSE.Protocols
                         break;
                     case DecoderState.sNBL:
                         _msgLen += _curByte;
-                        _state = DecoderState.sCRCH;
-                        break;
-                    case DecoderState.sCRCH:
                         _state = DecoderState.sMSG;
-                        if (_crc8 != _curByte)
-                        {
-                            OnErrorFrame(buf, _posByte, bufSize, "CRC8 заголовка расчитан неверно");
-                            reset();
-                        }
                         break;
+                    //case DecoderState.sCRCH:
+                    //    _state = DecoderState.sMSG;
+                    //    if (_crc8 != _curByte)
+                    //    {
+                    //        OnErrorFrame(buf, _posByte, bufSize, "CRC8 заголовка расчитан неверно");
+                    //        reset();
+                    //    }
+                    //    break;
                     case DecoderState.sMSG:
                         _package.data[_posMsg] = _curByte; //? лучше делать [_posMsg++]
                         _posMsg++;
@@ -231,15 +232,15 @@ namespace EGSE.Protocols
         /// <returns>true, если кодирование успешно</returns>
         override public bool encode(uint addr, byte[] buf, out byte[] bufOut)
         {
-            if (buf.Length > MAX_FRAME_LEN - HEAD_FRAME_LEN)
+            if (buf.Length > MAX_FRAME_LEN - HEAD_FRAME_LEN) //TODO: ! проверить
             {
                 bufOut = null;
                 OnErrorFrame(buf, 0, buf.Length, "Превышен максимальный размер кадра");
                 return false;
             }
-            bufOut = new byte[buf.Length + 7];
+            bufOut = new byte[buf.Length + 6];
             bufOut[0] = 0x5E;
-            bufOut[1] = 0x4D;             
+            bufOut[1] = 0x4D;
             try
             {               
                bufOut[2] = checked((byte)addr);
@@ -251,12 +252,12 @@ namespace EGSE.Protocols
                 return false;  
             }            
             bufOut[4] = (byte)buf.Length; //? проверял на размере входных данных больше 255?
-            bufOut[5] = 0;                
-            for (byte i = 0; i < 5; i++)            
-            {
-                bufOut[5] = _crc8Table[bufOut[5] ^ bufOut[i]];
-            }
-            Array.Copy(buf, 0, bufOut, 6, buf.Length);
+            //bufOut[5] = 0;                
+            //for (byte i = 0; i < 5; i++)            
+            //{
+            //    bufOut[5] = _crc8Table[bufOut[5] ^ bufOut[i]];
+            //}
+            Array.Copy(buf, 0, bufOut, 5, buf.Length);
             bufOut[bufOut.GetUpperBound(0)] = 0;
             for (byte i = 0; i < bufOut.GetUpperBound(0); i++)  
             {

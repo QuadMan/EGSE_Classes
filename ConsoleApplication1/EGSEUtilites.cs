@@ -9,13 +9,32 @@
 ** Module: EDGE UTILITES
 ** Requires: 
 ** Comments:
+ * ==================================================
  * StopWatch для высокоточного замера времени
-**
+** ==================================================
+ *Работа с битовыми полями в структуре:
+ *[StructLayout(LayoutKind.Sequential)]
+  public struct Rgb16 {
+        private readonly UInt16 raw;
+        public byte R{get{return (byte)((raw>>0)&0x1F);}}
+        public byte G{get{return (byte)((raw>>5)&0x3F);}}
+        public byte B{get{return (byte)((raw>>11)&0x1F);}}
+
+        public Rgb16(byte r, byte g, byte b)
+        {
+          Contract.Requires(r<0x20);
+          Contract.Requires(g<0x40);
+          Contract.Requires(b<0x20);
+          raw=r|g<<5|b<<11;
+        }
+    }
 ** History:
 **  0.1.0	(26.11.2013) -	Начальная версия
  *  0.2.0   (01.12.2013) - Ввел новые классы TMValue, EgseTime, ADC
  *                       - комментарии, рефакторинг
  *                       TODO: в bigBufferManager ввести признак переполнения буфера!
+ *  0.2.1   (06.12.2013) - в класс EgseTime добавлена возможность кодировки времени
+ *                        коррекция декодера времени
 **
 */
 
@@ -24,8 +43,6 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-
-using EGSE.Protocols;
 
 namespace EGSE.Utilites
 {
@@ -131,7 +148,7 @@ namespace EGSE.Utilites
     /// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время
     /// Необходимо заполнить поле данных времени data (6 байт)
     /// </summary>
-    class EgseTime
+    public class EgseTime
     {
         /// <summary>
         /// Данные времени (6 байт)
@@ -163,9 +180,23 @@ namespace EGSE.Utilites
             day = ((uint)data[0] << 3) | ((uint)data[1] >> 5);
             hour = ((uint)data[1] & 0x1F);
             min = ((uint)data[2] >> 2);
-            sec = ((uint)data[2] << 4) | ((uint)data[3] >> 4);
-            msec = ((uint)data[3] << 4) | ((uint)data[4] >> 6);
-            mcsec =((uint)data[4] << 8) | (uint)data[5];
+            sec = ((uint)(data[2] & 3) << 4) | ((uint)data[3] >> 4);
+            msec = ((uint)(data[3] & 0xF) << 4) | ((uint)data[4] >> 6);
+            mcsec =((uint)(data[4] & 3) << 8) | (uint)data[5];
+        }
+
+        public void Encode()
+        {
+            DateTime now = DateTime.Now;
+            data[0] = 0;
+            data[1] = (byte)now.Hour;
+            data[2] = (byte)(now.Minute << 2);
+            data[2] |= (byte)(now.Second >> 4);
+            data[3] = (byte)(now.Second << 4);
+            data[3] |= (byte)(now.Millisecond >> 6);
+
+            data[4] = (byte)(now.Millisecond << 2);
+            data[5] = 0;
         }
 
         /// <summary>

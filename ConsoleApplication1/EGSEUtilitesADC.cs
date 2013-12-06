@@ -21,7 +21,7 @@ using System.Collections.Generic;
 namespace EGSE.Utilites
 {
     /// <summary>
-    /// Структура калибровочной кривой
+    /// Структура калибровочных значений
     /// </summary>
     struct CalibrationValue
     {
@@ -70,6 +70,10 @@ namespace EGSE.Utilites
         private uint _chCount;
         private float[][] _adcVal;
         private CalibrationValues[] _cValues;
+
+        /// <summary>
+        /// Указатель для каждого канала позиции, куда добавлять новое значение
+        /// </summary>
         private byte[] _curDataPtr;
 
         public ADC()

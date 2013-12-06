@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "Cons
 EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelingProject1", "ModelingProject1\ModelingProject1.modelproj", "{59145876-8736-4165-8FDB-50E60CA8E5FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cyclogram", "..\Cyclogram\cyclogram\cyclogram.csproj", "{6930AC5E-B33F-4598-BFF7-F5C2FD2ED56A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{59145876-8736-4165-8FDB-50E60CA8E5FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59145876-8736-4165-8FDB-50E60CA8E5FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59145876-8736-4165-8FDB-50E60CA8E5FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6930AC5E-B33F-4598-BFF7-F5C2FD2ED56A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6930AC5E-B33F-4598-BFF7-F5C2FD2ED56A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6930AC5E-B33F-4598-BFF7-F5C2FD2ED56A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6930AC5E-B33F-4598-BFF7-F5C2FD2ED56A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
