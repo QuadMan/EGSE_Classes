@@ -25,12 +25,11 @@ namespace EGSE.Protocols
             sADDR,  // 3 байт: адрес посылки
             sNBH,   // 4 байт: старший байт размера сообщения
             sNBL,   // 5 байт: младший байт размера сообщения
-            sCRCH,  // 6 байт: CRC8ATM для заголовка кадра
-            sMSG,   // 7..N байт: сообщение          
+            sMSG,   // 6..N байт: сообщение          
             sCRC    // N+1 байт: CRC8ATM для всего кадра
         }
-        private ProtocolMsg _package;
-        private ProtocolErrorMsg _errorFrame;
+        private ProtocolMsgEventArgs _package;
+        private ProtocolErrorEventArgs _errorFrame;
         private const uint PROTOCOL_FRAME_SIZE = 6;       
         private const uint MAX_FRAME_LEN = 65535;
         private const uint MAX_ERROR_COUNT = 100;
@@ -76,10 +75,10 @@ namespace EGSE.Protocols
         /// </summary>
         public ProtocolUSB5E4DNoCrc()
         {
-            _package = new ProtocolMsg(MAX_FRAME_LEN);
-            _errorFrame = new ProtocolErrorMsg(MAX_FRAME_LEN);
+            _package = new ProtocolMsgEventArgs(MAX_FRAME_LEN);
+            _errorFrame = new ProtocolErrorEventArgs(MAX_FRAME_LEN);
             _maxErrorCount = (int)MAX_ERROR_COUNT;
-            reset();
+            Reset();
         }
 
         /// <summary>
@@ -106,7 +105,7 @@ namespace EGSE.Protocols
         /// <summary>
         /// сброс текущего состояния декодера
         /// </summary>
-        override public void reset()
+        override public void Reset()
         {
             _state = DecoderState.s5E;
             _crc8 = 0;
@@ -119,14 +118,11 @@ namespace EGSE.Protocols
             _errorCount++;
             if (_maxErrorCount > _errorCount)
             {
-                if (onProtocolError != null)
-                {
-                    Array.Copy(buf, _errorFrame.data, bLen);
-                    _errorFrame.bufPos = bufPos;
-                    _errorFrame.dataLen = (bLen > 256) ? 255 : bLen;
+                    Array.Copy(buf, _errorFrame.Data, bLen);
+                    _errorFrame.ErrorPos = bufPos;
+                    _errorFrame.DataLen = (bLen > 256) ? 255 : bLen;
                     _errorFrame.Msg = msg;
-                    onProtocolError(_errorFrame);
-                }
+                    OnProtocolError(_errorFrame);
             }
         }
         /// <summary>
@@ -134,7 +130,7 @@ namespace EGSE.Protocols
         /// </summary>
         /// <param name="buf">буфер данных</param>
         /// <param name="bufSize">размер данных(в байтах)</param>
-        override public void decode(byte[] buf, int bufSize)
+        override public void Decode(byte[] buf, int bufSize)
         {
             _posByte = 0;
             if (writeDecLog && (_fDecStream != null))
@@ -154,7 +150,7 @@ namespace EGSE.Protocols
                                 _isFinishFrame = false;
                                 OnErrorFrame(buf, _posByte, bufSize, "После сообщения не встретился 0x5E");
                             }                            
-                            reset();
+                            Reset();
                         }    
                         else
                         {
@@ -165,7 +161,7 @@ namespace EGSE.Protocols
                         if (0x4D != _curByte)
                         {
                             OnErrorFrame(buf, _posByte, bufSize, "После 0x5E отсутствует 0x4D");
-                            reset();
+                            Reset();
                         }
                         else
                         {
@@ -173,7 +169,7 @@ namespace EGSE.Protocols
                         }
                         break;
                     case DecoderState.sADDR:
-                        _package.addr = _curByte;
+                        _package.Addr = _curByte;
                         _state = DecoderState.sNBH;
                         break;
                     case DecoderState.sNBH:
@@ -185,10 +181,10 @@ namespace EGSE.Protocols
                         _state = DecoderState.sMSG;
                         break;
                     case DecoderState.sMSG:
-                        _package.data[_posMsg++] = _curByte;
+                        _package.Data[_posMsg++] = _curByte;
                         if (_posMsg == _msgLen)
                         {
-                            _package.dataLen = (int)_posMsg;
+                            _package.DataLen = (int)_posMsg;
                             _state = DecoderState.sCRC;
                         }
                         break;
@@ -199,13 +195,10 @@ namespace EGSE.Protocols
                         }
                         else
                         { 
-                            if (onMessage != null)
-                            {
-                                onMessage(_package);
-                                _isFinishFrame = true;
-                            }
+                            OnProtocolMsg(_package);
+                            _isFinishFrame = true;
                         }
-                        reset();
+                        Reset();
                         break;                                        
                 }
                 if (DecoderState.s5E != _state)
@@ -223,7 +216,7 @@ namespace EGSE.Protocols
         /// <param name="buf">данные</param>
         /// <param name="bufOut">посылка</param>
         /// <returns>true, если кодирование успешно</returns>
-        override public bool encode(uint addr, byte[] buf, out byte[] bufOut)
+        override public bool Encode(uint addr, byte[] buf, out byte[] bufOut)
         {
             if (buf.Length > MAX_FRAME_LEN - PROTOCOL_FRAME_SIZE) // длина пакета данных = макс.длина(65535) - длина заголовка(5e 4d addr nbh nbl <data> crc)
             {
