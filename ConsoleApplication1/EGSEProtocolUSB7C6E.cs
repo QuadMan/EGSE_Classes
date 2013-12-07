@@ -48,9 +48,9 @@ namespace EGSE.Protocols
             // сколько ошибок протокола зафиксировал декодер
             private uint _errorsCount = 0;
             // сообщение, которое мы собираем и при окончании, пересылаем дальше в делегат
-            private ProtocolMsg _tmpMsg;
+            private ProtocolMsgEventArgs _tmpMsg;
             // сообщение об ошибке в протоколе
-            private ProtocolErrorMsg _tmpErrMsg;
+            private ProtocolErrorEventArgs _tmpErrMsg;
             // внутренние переменные
             private int _dt = 0;
             private int _bufI = 0;
@@ -68,9 +68,9 @@ namespace EGSE.Protocols
             /// </summary>
             public ProtocolUSB7C6E()
             {
-                _tmpMsg = new ProtocolMsg(DECODER_MAX_DATA_LEN);
-                _tmpErrMsg = new ProtocolErrorMsg(70000);        // FIXIT: убрать константу
-                reset();
+                _tmpMsg = new ProtocolMsgEventArgs(DECODER_MAX_DATA_LEN);
+                _tmpErrMsg = new ProtocolErrorEventArgs(70000);        // FIXIT: убрать константу
+                Reset();
             }
 
             /// <summary>
@@ -110,7 +110,7 @@ namespace EGSE.Protocols
             /// <summary>
             /// Вызывается при инициализации декодера
             /// </summary>
-            override public void reset()
+            override public void Reset()
             {
                 _iStep = 0;
                 _bt = 0;
@@ -118,7 +118,6 @@ namespace EGSE.Protocols
                 _msgLen = 0;
                 _errorsCount = 0;
                 _firstMsg = true;
-                _tmpMsg.clear();
             }
 
 
@@ -130,19 +129,16 @@ namespace EGSE.Protocols
             /// <param name="bLen">длина буфера</param>
             private void makeErrorMsg(byte[] buf, int bufPos, int bLen)
             {
-                if (onProtocolError != null)    
-                {
-                    Array.Copy(buf, _tmpErrMsg.data, bLen);
-                    _tmpErrMsg.bufPos = (uint)bufPos;
-                    onProtocolError(_tmpErrMsg);
-                }
+                Array.Copy(buf, _tmpErrMsg.Data, bLen);
+                _tmpErrMsg.ErrorPos = (uint)bufPos;
+                OnProtocolError(_tmpErrMsg);
             }
 
             /// <summary>
             /// Декодируем весь буфер
             /// </summary>
             /// <param name="buf">входной буфер сообщения</param>
-            override public void decode(byte[] buf, int bufSize)
+            override public void Decode(byte[] buf, int bufSize)
             {
                 int i = 0;
                 //
@@ -178,7 +174,7 @@ namespace EGSE.Protocols
                                 _iStep = -1;
                             }
                             break;
-                        case 2 : _tmpMsg.addr = _bt;
+                        case 2 : _tmpMsg.Addr = _bt;
                             break;
                         case 3 : if (_bt == 0) {
                                 _msgLen = 256;
@@ -186,16 +182,13 @@ namespace EGSE.Protocols
                             else {
                                 _msgLen = _bt;
                             }
-                            _tmpMsg.dataLen = _msgLen;
+                            _tmpMsg.DataLen = _msgLen;
                             break;
                         default :
                             if (bufSize - i >= _msgLen)                //  в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
                             {
-                                Array.Copy(buf, i, _tmpMsg.data, _bufI, _msgLen);
-                                if (onMessage != null)
-                                {
-                                    onMessage(_tmpMsg);
-                                }
+                                Array.Copy(buf, i, _tmpMsg.Data, _bufI, _msgLen);
+                                OnProtocolMsg(_tmpMsg);
                                 _firstMsg = false;
                                 _iStep = -1;
                                 _bufI = 0;
@@ -204,7 +197,7 @@ namespace EGSE.Protocols
                             else                                    // копируем только часть, до конца буфера 
                             {
                                 _dt = bufSize - i;
-                                Array.Copy(buf, i, _tmpMsg.data, _bufI, _dt);
+                                Array.Copy(buf, i, _tmpMsg.Data, _bufI, _dt);
                                 _bufI += _dt;
                                 _msgLen -= _dt;
                                 i += _dt;
@@ -237,7 +230,7 @@ namespace EGSE.Protocols
             /// <param name="addr">адрес, по которому нужно передать данные</param>
             /// <param name="buf">данные (максимум 256 байт)</param>
             /// <param name="bufOut">выходной буфер</param>
-            override public bool encode(uint addr, byte[] buf, out byte[] bufOut)
+            override public bool Encode(uint addr, byte[] buf, out byte[] bufOut)
             {
                 bufOut = null; 
                 if ((buf.Length > 256) || (addr > 255))
