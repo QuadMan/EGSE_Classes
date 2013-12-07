@@ -25,120 +25,130 @@ namespace EGSE.Protocols
     /// Базовый класс сообщения
     /// TODO: возможно, его вывести выше в иерархии, и использовать как базу для всего
     /// </summary>
-    public class MsgBase
+    public class MsgBase : EventArgs
     {
         /// <summary>
         /// Данные сообщения
         /// </summary>
-        public byte[] data;
+        public byte[] Data;
         /// <summary>
         /// Длина сообщения
         /// </summary>
-        public int dataLen;
+        public int DataLen;
     }
-
     /// <summary>
-    /// Класс обмена сообщениями по протоколам в USB
+    /// Класс обмена сообщениями по протоколам USB
     /// </summary>
-    public class ProtocolMsg : MsgBase
+    public class ProtocolMsgEventArgs : MsgBase
     {
         /// <summary>
         /// Адрес, по которому пришло сообщение
         /// </summary>
-        public uint addr;
-
+        public uint Addr;
         /// <summary>
-        /// Создаем сообщение с заданными размером буфера (максимальным, который поддерживается
-        /// текущим протоколом)
+        /// Конструктор события: декодером обнаружено сообщение 
         /// </summary>
-        /// <param name="maxDataLen">максимальный размер буфера данных</param>
-        public ProtocolMsg(uint maxDataLen)
+        /// <param name="maxDataLen">Размер буфера</param>
+        public ProtocolMsgEventArgs(uint maxDataLen)
         {
-            data = new byte[maxDataLen];
-            dataLen = 0;
-            addr = 0;
-        }
-
-        /// <summary>
-        /// Очищаем класс сообщения
-        /// TODO: может быть это и не нужно
-        /// </summary>
-        public void clear()
-        {
-            dataLen = 0;
-            addr = 0;
+            Data = new byte[maxDataLen];
+            DataLen = 0;
+            Addr = 0;
         }
     }
-
     /// <summary>
-    /// Класс ошибки декодера, который выдается в делегат при обнаружении ошибки протокола
+    /// Класс ошибки кодера
     /// </summary>
-    public class ProtocolErrorMsg : MsgBase
+    public class ProtocolErrorEventArgs : MsgBase
     {
         /// <summary>
         /// Позиция ошибки в буфере
         /// </summary>
-        public uint bufPos;
+        public uint ErrorPos;
         /// <summary>
         /// Признак ошибки
         /// </summary>
         public string Msg;
         /// <summary>
-        /// Создаем сообщение с ошибкой
+        /// Конструктор события: ошибка в кодере
         /// </summary>
-        public ProtocolErrorMsg(uint maxDataLen)
+        /// <param name="maxDataLen">Размер буфера</param>
+        public ProtocolErrorEventArgs(uint maxDataLen)
         {
-            data = new byte[maxDataLen];
-            dataLen = 0;
-            bufPos = 0;
+            Data = new byte[maxDataLen];
+            DataLen = 0;
+            ErrorPos = 0;
         }
     }
-
     /// <summary>
     /// Абстрактный класс протокола USB
     /// </summary>
     public abstract class ProtocolUSBBase
     {
         /// <summary>
-        /// сброс конечного автомата состояния протокола в исходное состояние 
+        /// Сброс конечного автомата состояния протокола в исходное состояние 
         /// </summary>
-        abstract public void reset();
-
+        public abstract void Reset();
         /// <summary>
-        /// Функция декодирования буфера
+        /// Метод декодирования данных
         /// </summary>
-        /// <param name="buf">буфер с данными для декодирования</param>
-        /// <param name="bufSize">размер буфера с данными</param>
-        abstract public void decode(byte[] buf, int bufSize);
-
+        /// <param name="buf">Буфер с данными для декодирования</param>
+        /// <param name="bufLen">Размер буфера с данными</param>
+        public abstract void Decode(byte[] buf, int bufLen);
         /// <summary>
-        /// Функция кодирования данных
+        /// Метод кодирования данных
         /// Если функция выполняется с ошибкой, bufOut = null
         /// </summary>
-        /// <param name="addr">адрес, по которому данные должны быть переданы</param>
-        /// <param name="buf">данные для передачи</param>
-        /// <param name="bufOut">выходной буфер</param>
-        abstract public bool encode(uint addr, byte[] buf, out byte[] bufOut);
+        /// <param name="addr">Адрес, по которому данные должны быть переданы</param>
+        /// <param name="buf">Буфер для передачи</param>
+        /// <param name="bufOut">Выходной буфер</param>
+        /// <returns>false если функция выполнена с ошибкой</returns>
+        public virtual bool Encode(uint addr, byte[] buf, out byte[] bufOut)
+        {
+            bufOut = null;
+            return false;
+        }
+        /// <summary>
+        /// Объявление делегата обработки ошибок протокола
+        /// </summary>
+        /// <param name="e">Класс описывающий ошибку протокола</param>
+        public delegate void ProtocolErrorEventHandler(ProtocolErrorEventArgs e);
+        /// <summary>
+        /// Объявление события: возникновение ошибки протокола в декодере
+        /// </summary>
+        public event ProtocolErrorEventHandler GotProtocolError;
+        /// <summary>
+        /// Обертка события: возникновение ошибки протокола в декодере
+        /// </summary>
+        /// <param name="e">Класс описывающий ошибку протокола</param>
+        protected virtual void OnProtocolError(ProtocolErrorEventArgs e)
+        {
+            if (GotProtocolError != null)
+            {
+                GotProtocolError(e);
+            }
 
+        }
         /// <summary>
-        ///  Определение делегата обработки ошибок протокола
+        /// Объявление делегата обработки сообщений протокола
         /// </summary>
-        /// <param name="errMsg">класс сообщения, порожденный от MsgBase, описывающиё ошибку</param>
-        public delegate void onProtocolErrorDelegate(MsgBase errMsg);
+        /// <param name="e">Класс описывающий сообщение протокола</param>
+        public delegate void ProtocolMsgEventHandler(ProtocolMsgEventArgs e);
+        /// <summary>
+        /// Объявление события: возникновение сообщения протокола в декодере
+        /// </summary>
+        public event ProtocolMsgEventHandler GotProtocolMsg;
+        /// <summary>
+        /// Обертка события: возникновение сообщения протокола в декодере
+        /// </summary>
+        /// <param name="e">Класс описывающий сообщение протокола</param>
+        protected virtual void OnProtocolMsg(ProtocolMsgEventArgs e)
+        {
+            if (GotProtocolMsg != null)
+            {
+                GotProtocolMsg(e);
+            }
 
-        /// <summary>
-        /// Делегат, вызываемый при возникновении ошибки в декодере
-        /// </summary>
-        public onProtocolErrorDelegate onProtocolError;
-
-        /// <summary>
-        /// Определение делегата обработки сообщения
-        /// </summary>
-        /// <param name="msg"></param>
-        public delegate void onMessageDelegate(MsgBase msg);
-        /// <summary>
-        /// Делегат, вызываемый при распознавании очередного сообщения декодером
-        /// </summary>
-        public onMessageDelegate onMessage;
+        }
     }
 }
