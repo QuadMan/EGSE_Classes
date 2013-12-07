@@ -113,7 +113,7 @@ namespace EGSE.Threading
                 if (_resetDecoderFlag)                              // если нужно перевеси декодер в начальное состояние
                 {
                     _resetDecoderFlag = false;
-                    _dec.reset();
+                    _dec.Reset();
                 }
 
                 bytesToRead = (uint)_fThread.bigBuf.bytesAvailable;       // сколько байт можно считать из потока
@@ -123,7 +123,7 @@ namespace EGSE.Threading
                     {
                         _maxCBufSize = bytesToRead;
                     }
-                    _dec.decode(_fThread.bigBuf.readBuf, _fThread.bigBuf.readBufSize);        // декодируем буфер
+                    _dec.Decode(_fThread.bigBuf.readBuf, _fThread.bigBuf.readBufSize);        // декодируем буфер
                     _fThread.bigBuf.moveNextRead();
                     //_fThread.bigBuf.bytesAvailable -= (int)bytesToRead;
                 }
@@ -159,7 +159,7 @@ namespace EGSE.Threading
                 bytesReaded = _fStream.Read(tmpBuf, 0, READ_BUF_SIZE_IN_BYTES);
                 if (bytesReaded > 0)
                 {
-                    _dec.decode(tmpBuf, bytesReaded);
+                    _dec.Decode(tmpBuf, bytesReaded);
                 }
                 System.Threading.Thread.Sleep(1);
             }
