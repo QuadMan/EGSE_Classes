@@ -12,6 +12,7 @@
  *                       пока после выполнения всех записей в log-файл необходимо вызвать метод FlushAll()
 ** TODO: указать в конструкторе путь, где создавать структуру директорий в формате ГГММ/ДД/
  * при создании лог-файла необходимо перед расширением добавлять следующий текст "_HHMMSS"
+ * TODO: при закрытии лог-файла проверяем, если размер его равен 0, то стираем файл
  * 
 ** History:
 **  0.1.0	(05.12.2013) -	Начальная версия
@@ -29,7 +30,7 @@ namespace EGSE.Utilites
     /// <summary>
     /// Класс единичного текстлога
     /// </summary>
-    class TxtLog
+    public class TxtLogger
     {
         /// <summary>
         /// Имя файла
@@ -61,7 +62,7 @@ namespace EGSE.Utilites
         /// Конструктор, принимает имя файла
         /// </summary>
         /// <param name="fName"></param>
-        public TxtLog(string fName)
+        public TxtLogger(string fName)
         {
             _fName = fName;
             _enableTextWrite = true;
@@ -140,26 +141,26 @@ namespace EGSE.Utilites
         {
             _sw.Flush();
         }
-        ~TxtLog()
+        ~TxtLogger()
         {
         }
     }
     /// <summary>
     /// Класс множества текстлогов
     /// </summary>
-    class TxtLoggers
+    public class TxtLoggers
     {
         /// <summary>
         /// txtLoggers   -  Коллекция единичных логгеров
         /// </summary>
-        List<TxtLog>txtLoggers;
+        List<TxtLogger>txtLoggers;
  
         /// <summary>
         /// Конструктор по-умолчанию
         /// </summary>
         public TxtLoggers()
         {
-            txtLoggers = new List<TxtLog>();
+            txtLoggers = new List<TxtLogger>();
         }
 
         /// <summary>
@@ -167,7 +168,7 @@ namespace EGSE.Utilites
         /// </summary>
         public void AddFile(string filename)
         {
-            txtLoggers.Add(new TxtLog(filename));
+            txtLoggers.Add(new TxtLogger(filename));
         }
 
         /// <summary>
@@ -177,7 +178,7 @@ namespace EGSE.Utilites
         {
             set
             {
-                foreach (TxtLog tl in txtLoggers)
+                foreach (TxtLogger tl in txtLoggers)
                     tl.LogEnable = value;
             }
         }
@@ -188,14 +189,14 @@ namespace EGSE.Utilites
         /// </summary>
         public void FlushAll()
         {
-            foreach (TxtLog tl in txtLoggers)
+            foreach (TxtLogger tl in txtLoggers)
                 tl.LogFlush(); 
         }
 
         /// <summary>
         /// Индексатор для текстлога
         /// </summary>
-        public TxtLog this[int i]
+        public TxtLogger this[int i]
         {
             get
             {

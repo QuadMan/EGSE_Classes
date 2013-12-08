@@ -101,10 +101,7 @@ namespace EGSE.Utilites
         /// Значение параметра
         /// </summary>
         public int value;
-        /// <summary>
-        /// Функция, которую нужно вызвать при изменении параметра
-        /// </summary>
-        public onFunctionDelegate function;
+
         /// <summary>
         /// Нужно ли проверять параметр на изменение значения
         /// </summary>
@@ -127,7 +124,7 @@ namespace EGSE.Utilites
         public TMValue(int val, onFunctionDelegate fun, bool mkTest)
         {
             value = val;
-            function = fun;
+            onNewState = fun;
             makeTest = mkTest;
         }
 
@@ -137,10 +134,93 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="val">Новое значение</param>
         public void SetVal(int val) {
-            if ((makeTest) && (function != null) && (value != val)) {
-                function(val);
+            bool _changed = true;
+            if (makeTest) {
+                _changed = value != val;
             }
+            if (_changed)
+            {
+                onNewState(val);
+            }
+
             value = val;
+        }
+    }
+
+    /// <summary>
+    /// Класс, позволяющий отслеживать изменения значений, которые влияют на отображение интерфейса
+    /// (параметры имитаторов, значения включения полукомплектов и т.д.) и которые может устанавливать пользователь
+    /// Пример работы:
+    /// ControlValue HSIParameters;
+    /// при получении данных от устройства, делаем HSIParameters.GetValue = value;
+    /// при изменении пользователем интерфейса, делаем HSIParameters.SetValue = value;
+    /// в таймере, вызываемом 2 раза в секунду, выполняем проверку
+    /// if (HSIParameters.TimerTick() == ControlValue.ValueState.vsChanged) {
+    /// нужно обновить экран, так как значение, пришедшее от прибора не совпадает с установленным
+    /// }
+    /// </summary>
+    public class ControlValue
+    {
+        public enum ValueState {vsUnchanged, vsChanged, vsCounting }
+        private int _oldGetValue;
+        private int _getValue;
+        private int _setValue;
+        private int _timerCnt;
+
+        public ControlValue()
+        {
+            _oldGetValue = -1;
+            _getValue = 0;
+            _setValue = 0;
+            _timerCnt = 0;
+        }
+
+        public void RefreshGetValue() {
+            _timerCnt = 2;
+        }
+
+        public int GetValue
+        {
+            get
+            {
+                return _getValue;
+            }
+            set
+            {
+                _oldGetValue = _getValue;
+                _getValue = value;
+            }
+        }
+
+        public int SetValue
+        {
+            get { return _setValue; }
+            set
+            {
+                _setValue = value;
+
+                TimerSet(2);
+            }
+        }
+
+        private void TimerSet(int timerVal)
+        {
+            _timerCnt = timerVal;
+        }
+
+        public ValueState TimerTick()
+        {
+            if (--_timerCnt == 0)
+            {
+                if (Changed()) { return ValueState.vsChanged; }
+                else { return ValueState.vsUnchanged; }
+            }
+            return ValueState.vsCounting;
+        }
+
+        private bool Changed()
+        {
+            return (_oldGetValue != _getValue) || (_setValue != _getValue);
         }
     }
 
