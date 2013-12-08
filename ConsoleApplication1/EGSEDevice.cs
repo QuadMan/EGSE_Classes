@@ -122,7 +122,7 @@ namespace EGSE
         {
             byte[] dataOut;
 
-            _dec.encode(addr, data, out dataOut);
+            _dec.Encode(addr, data, out dataOut);
             bool res = _fThread.WriteBuf(dataOut);
             return res;
         }

@@ -8,8 +8,6 @@
  * Module: EDGE_Decoders_USB_5E4D
  */
 
-//! Вопрос - про появление первой ошибки декодера - может быть анализировать ошибки только после корректного получения первой посылки? Чтобы декодер не выдавал всегда ошибку при первом подключении?
-
 using System;
 using System.IO;
 
@@ -31,11 +29,11 @@ namespace EGSE.Protocols
             sMSG,   // 7..N байт: сообщение          
             sCRC    // N+1 байт: CRC8ATM для всего кадра
         }
-        private ProtocolMsg _package;
-        private ProtocolErrorMsg _errorFrame;
-        private const uint HEAD_FRAME_LEN = 5;       
-        private const uint MAX_BYTE = 256;
+        private ProtocolMsgEventArgs _package;
+        private ProtocolErrorEventArgs _errorFrame;
+        private const uint PROTOCOL_FRAME_SIZE = 7;       
         private const uint MAX_FRAME_LEN = 65535;
+        private const uint MAX_ERROR_COUNT = 100;
         private static byte[] _crc8Table = new byte[256] 
             {
                 0x00, 0x91, 0xe3, 0x72, 0x07, 0x96, 0xe4, 0x75, 0x0e, 0x9f, 0xed, 0x7c, 0x09, 0x98, 0xea, 0x7b, 0x1c, 0x8d, 0xff, 0x6e, 0x1b, 0x8a, 0xf8, 
@@ -52,81 +50,79 @@ namespace EGSE.Protocols
                 0x2c, 0x5e, 0xcf
             };       
         private DecoderState _state = DecoderState.s5E;
-        private uint _msgLen = 0; // длина сообщения
-        private byte _crc8 = 0; // расчитанный на текущем шаге CRC8
-        private byte _curByte = 0; // текущий байт
-        private uint _posByte = 0; // позиция текущего байта в буфере
-        private uint _posMsg = 0; // позиция сообщения в буфере
-        private bool _succFrame = true; // флаг обработанного кадра (? может быть заменить на более понятное название переменной?)
+        private uint _lenMsg = 0; // длина сообщения текущего кадра
+        private byte _curCRC8 = 0;
+        private byte _curByte = 0;
+        private uint _posCurByte = 0;
+        private uint _posMsg = 0; // позиция сообщения текущего кадра в буфере 
+        private bool _isFinishFrame = false; // false - первую ошибку не считаем, иначе считаем
         private int _maxErrorCount = 0;
-        private int _errorCount = 0;
-        private TextWriter _fEncStream;
-        private FileStream _fDecStream;
+        private int _curErrorCount = 0;
+        private TextWriter _encLogStream;
+        private FileStream _decLogStream;
         
         /// <summary>
         /// Включить лог Encoder-а
         /// </summary>
-        public bool writeEncLog = false;
+        public bool IsWriteEncLog = false;
         
         /// <summary>
         /// Включить лог Decoder-а
         /// </summary>
-        public bool writeDecLog = false;
+        public bool IsWriteDecLog = false;
         
         /// <summary>
-        /// коснтруктор
+        /// Коснтруктор по-умолчанию
         /// </summary>
         public ProtocolUSB5E4D()
         {
-            _package = new ProtocolMsg(MAX_FRAME_LEN);
-            _errorFrame = new ProtocolErrorMsg(MAX_FRAME_LEN);  
-            reset();
+            _package = new ProtocolMsgEventArgs(MAX_FRAME_LEN);
+            _errorFrame = new ProtocolErrorEventArgs(MAX_FRAME_LEN);
+            _maxErrorCount = (int)MAX_ERROR_COUNT;
+            Reset();
         }
 
         /// <summary>
-        /// конструктор с поддержкой логеров
+        /// Конструктор с поддержкой логеров
         /// </summary>
-        /// <param name="fDecStream"></param>
+        /// <param name="argDecLogStream"></param>
         /// <param name="fEncStream"></param>
         /// <param name="wDecLog"></param>
         /// <param name="wEncLog"></param>
-        public ProtocolUSB5E4D(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog): this()
+        public ProtocolUSB5E4D(FileStream argDecLogStream, TextWriter fEncStream, bool wDecLog, bool wEncLog): this()
         {
-            _fDecStream = null;
-            _fEncStream = null;
-            if ((fDecStream != null) && (fDecStream.CanRead))
+            _decLogStream = null;
+            _encLogStream = null;
+            if ((argDecLogStream != null) && (argDecLogStream.CanRead))
             {
-                _fDecStream = fDecStream;
-                writeDecLog = wDecLog;
+                _decLogStream = argDecLogStream;
+                IsWriteDecLog = wDecLog;
             }
-            _fEncStream = fEncStream;
-            writeEncLog = wEncLog;
+            _encLogStream = fEncStream;
+            IsWriteEncLog = wEncLog;
         }
 
         /// <summary>
         /// сброс текущего состояния декодера
         /// </summary>
-        override public void reset()
+        override public void Reset()
         {
             _state = DecoderState.s5E;
-            _crc8 = 0;
-            _msgLen = 0;
+            _curCRC8 = 0;
+            _lenMsg = 0;
             _posMsg = 0;
         }
         
         private void OnErrorFrame(byte[] buf, uint bufPos, int bLen, string msg)
         {
-            _errorCount++;
-            if (_maxErrorCount > _errorCount)
+            _curErrorCount++;
+            if (_maxErrorCount > _curErrorCount)
             {
-                if (onProtocolError != null)
-                {
-                    Array.Copy(buf, _errorFrame.data, bLen);
-                    _errorFrame.bufPos = bufPos;
-                    _errorFrame.dataLen = (bLen > 256) ? 255 : bLen;
-                    _errorFrame.Msg = msg;
-                    onProtocolError(_errorFrame);
-                }
+                Array.Copy(buf, _errorFrame.Data, bLen);
+                _errorFrame.ErrorPos = bufPos;
+                _errorFrame.DataLen = (bLen > 256) ? 255 : bLen;
+                _errorFrame.Msg = msg;
+                OnProtocolError(_errorFrame);
             }
         }
         /// <summary>
@@ -134,27 +130,27 @@ namespace EGSE.Protocols
         /// </summary>
         /// <param name="buf">буфер данных</param>
         /// <param name="bufSize">размер данных(в байтах)</param>
-        override public void decode(byte[] buf, int bufSize)
+        override public void Decode(byte[] buf, int bufSize)
         {
-            _posByte = 0;
-            if (writeDecLog && (_fDecStream != null))
+            _posCurByte = 0;
+            if (IsWriteDecLog && (_decLogStream != null))
             {
-                _fDecStream.Write(buf, 0, bufSize);
+                _decLogStream.Write(buf, 0, bufSize);
             }
-            while (_posByte < bufSize)
+            while (_posCurByte < bufSize)
             {
-                _curByte = buf[_posByte];                
+                _curByte = buf[_posCurByte];                
                 switch (_state)
                 {
                     case DecoderState.s5E:                        
                         if (0x5E != _curByte)
                         {
-                            if (_succFrame)
+                            if (_isFinishFrame)
                             {
-                                _succFrame = false;
-                                OnErrorFrame(buf, _posByte, bufSize, "После сообщения не встретился 0x5E");
+                                _isFinishFrame = false;
+                                OnErrorFrame(buf, _posCurByte, bufSize, "После сообщения не встретился 0x5E");
                             }                            
-                            reset();
+                            Reset();
                         }    
                         else
                         {
@@ -162,63 +158,62 @@ namespace EGSE.Protocols
                         }
                         break;                    
                     case DecoderState.s4D:
-                        _state = DecoderState.sADDR; //?логика работы отличается от DecoderState.s5E, где ты тот же вариант делаешь через if () else { }, лучше делать везде одинаково
                         if (0x4D != _curByte)
                         {
-                            OnErrorFrame(buf, _posByte, bufSize, "После 0x5E отсутствует 0x4D");
-                            reset();
+                            OnErrorFrame(buf, _posCurByte, bufSize, "После 0x5E отсутствует 0x4D");
+                            Reset();
+                        }
+                        else
+                        {
+                            _state = DecoderState.sADDR;
                         }
                         break;
                     case DecoderState.sADDR:
-                        _package.addr = _curByte;
+                        _package.Addr = _curByte;
                         _state = DecoderState.sNBH;
                         break;
                     case DecoderState.sNBH:
-                        _msgLen = _curByte * MAX_BYTE; //? почему умножаешь, а не сдвигаешь?
+                        _lenMsg = (uint)(_curByte << 8); 
                         _state = DecoderState.sNBL;
                         break;
                     case DecoderState.sNBL:
-                        _msgLen += _curByte;
+                        _lenMsg += _curByte;
                         _state = DecoderState.sCRCH;
                         break;
                     case DecoderState.sCRCH:
                         _state = DecoderState.sMSG;
-                        if (_crc8 != _curByte)
+                        if (_curCRC8 != _curByte)
                         {
-                            OnErrorFrame(buf, _posByte, bufSize, "CRC8 заголовка расчитан неверно");
-                            reset();
+                            OnErrorFrame(buf, _posCurByte, bufSize, "CRC8 заголовка расчитан неверно");
+                            Reset();
                         }
                         break;
                     case DecoderState.sMSG:
-                        _package.data[_posMsg] = _curByte; //? лучше делать [_posMsg++]
-                        _posMsg++;
-                        if (_posMsg == _msgLen)
+                        _package.Data[_posMsg++] = _curByte;
+                        if (_posMsg == _lenMsg)
                         {
-                            _package.dataLen = (int)_posMsg;
+                            _package.DataLen = (int)_posMsg;
                             _state = DecoderState.sCRC;
                         }
                         break;
                     case DecoderState.sCRC:
-                        if (_crc8 != _curByte)
+                        if (_curCRC8 != _curByte)
                         {
-                            OnErrorFrame(buf, _posByte, bufSize, "CRC8 кадра расчитан неверно");
+                            OnErrorFrame(buf, _posCurByte, bufSize, "CRC8 кадра расчитан неверно");
                         }
                         else
                         { 
-                            if (onMessage != null)
-                            {
-                                onMessage(_package);
-                                _succFrame = true;
-                            }
+                            OnProtocolMsg(_package);
+                            _isFinishFrame = true;
                         }
-                        reset();
+                        Reset();
                         break;                                        
                 }
                 if (DecoderState.s5E != _state)
                 {
-                    _crc8 = _crc8Table[_crc8 ^ _curByte];
+                    _curCRC8 = _crc8Table[_curCRC8 ^ _curByte];
                 }                
-                _posByte++;
+                _posCurByte++;
             }
         }
 
@@ -229,15 +224,15 @@ namespace EGSE.Protocols
         /// <param name="buf">данные</param>
         /// <param name="bufOut">посылка</param>
         /// <returns>true, если кодирование успешно</returns>
-        override public bool encode(uint addr, byte[] buf, out byte[] bufOut)
+        override public bool Encode(uint addr, byte[] buf, out byte[] bufOut)
         {
-            if (buf.Length > MAX_FRAME_LEN - HEAD_FRAME_LEN)
+            if (buf.Length > MAX_FRAME_LEN - PROTOCOL_FRAME_SIZE)  // длина пакета данных = макс.длина(65535) - длина заголовка(5e 4d addr nbh nbl crch <data> crc)
             {
                 bufOut = null;
                 OnErrorFrame(buf, 0, buf.Length, "Превышен максимальный размер кадра");
                 return false;
             }
-            bufOut = new byte[buf.Length + 7];
+            bufOut = new byte[buf.Length + PROTOCOL_FRAME_SIZE + 1];
             bufOut[0] = 0x5E;
             bufOut[1] = 0x4D;             
             try
@@ -250,7 +245,7 @@ namespace EGSE.Protocols
                 OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения");
                 return false;  
             }            
-            bufOut[4] = (byte)buf.Length; //? проверял на размере входных данных больше 255?
+            bufOut[4] = unchecked((byte)buf.Length);
             bufOut[5] = 0;                
             for (byte i = 0; i < 5; i++)            
             {
@@ -262,9 +257,9 @@ namespace EGSE.Protocols
             {
                 bufOut[bufOut.GetUpperBound(0)] = _crc8Table[bufOut[bufOut.GetUpperBound(0)] ^ bufOut[i]];
             }
-            if (writeEncLog && (_fEncStream != null))
+            if (IsWriteEncLog && (_encLogStream != null))
             {
-                _fEncStream.WriteLine(BitConverter.ToString(bufOut));
+                _encLogStream.WriteLine(BitConverter.ToString(bufOut));
             }
             return true;
         }
