@@ -287,7 +287,7 @@ namespace EGSE.Utilites
         {
             Decode();
             sb.Clear();
-            sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}:{3:D3}:{4:D3}:", hour, min, sec, msec, mcsec);
+            sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}.{3:D3}.{4:D3}", hour, min, sec, msec, mcsec);
 
             return sb.ToString();
         }
