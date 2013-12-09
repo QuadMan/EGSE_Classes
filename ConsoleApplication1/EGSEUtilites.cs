@@ -210,7 +210,7 @@ namespace EGSE.Utilites
 
         public ValueState TimerTick()
         {
-            if (--_timerCnt == 0)
+            if ((_timerCnt > 0) && (--_timerCnt == 0))
             {
                 if (Changed()) { return ValueState.vsChanged; }
                 else { return ValueState.vsUnchanged; }
