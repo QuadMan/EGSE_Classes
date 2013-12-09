@@ -35,6 +35,7 @@
  *                       TODO: в bigBufferManager ввести признак переполнения буфера!
  *  0.2.1   (06.12.2013) - в класс EgseTime добавлена возможность кодировки времени
  *                        коррекция декодера времени
+ *  0.2.2   (10.12.2013) - добавил функцию конвертации HEX-строки в массив байт
 **
 */
 
@@ -46,6 +47,30 @@ using System.Threading;
 
 namespace EGSE.Utilites
 {
+
+    /// <summary>
+    /// Класс конвертации различных величин
+    /// </summary>
+    public static class Converter
+    {
+        /// <summary>
+        /// Строка шестнадцатеричных чисел в массив байт
+        /// </summary>
+        /// <param name="HexStr">Строка HEX чисел, разделенных пробелами</param>
+        /// <returns>Массив байт</returns>
+        public static byte[] HexStrToByteArray(string HexStr)
+        {
+            string[] hexValuesSplit = HexStr.Split(' ');
+            byte[] outBuf = new byte[hexValuesSplit.Length];
+            int i = 0;
+            foreach (String hex in hexValuesSplit)
+            {
+                outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
+            }
+            return outBuf;
+        }
+    }
+
     /// <summary>
     /// Статический класс позволяет накладывать байтовый поток на структуру
     /// Пример: объявляем структуру
