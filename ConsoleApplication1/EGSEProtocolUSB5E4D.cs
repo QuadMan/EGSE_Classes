@@ -32,7 +32,7 @@ namespace EGSE.Protocols
         private ProtocolMsgEventArgs _package;
         private ProtocolErrorEventArgs _errorFrame;
         private const uint PROTOCOL_FRAME_SIZE = 7;       
-        private const uint MAX_FRAME_LEN = 65537;
+        private const uint MAX_FRAME_LEN = 65535;
         private const uint MAX_ERROR_COUNT = 100;
         private static byte[] _crc8Table = new byte[256] 
             {
