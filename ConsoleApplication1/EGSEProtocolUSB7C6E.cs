@@ -29,6 +29,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using EGSE.Protocols;
+using EGSE.Utilites;
 
 namespace EGSE.Protocols 
 {
@@ -57,7 +58,7 @@ namespace EGSE.Protocols
             private int _msgLen = 0;
             private bool _firstMsg = true;
 
-            private TextWriter _fEncStream;
+            private TxtLogger _fEncStream;
             private FileStream _fDecStream;
             // писать бинарный лог данных USB (при вызове соответствующего конструктора)
             public bool writeEncLog = false;
@@ -78,7 +79,7 @@ namespace EGSE.Protocols
             /// </summary>
             /// <param name="fStream">Поток файла, куда пишем</param>
             /// <param name="writeBinLog">Флаг - писать сразу или нет</param>
-            public ProtocolUSB7C6E(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog) : this()
+            public ProtocolUSB7C6E(FileStream fDecStream, TxtLogger fEncStream, bool wDecLog, bool wEncLog) : this()
             {
                 _fDecStream = null;
                 _fEncStream = null;
@@ -177,7 +178,7 @@ namespace EGSE.Protocols
                         case 2 : _tmpMsg.Addr = _bt;
                             break;
                         case 3 : if (_bt == 0) {
-                                _msgLen = 256;
+                                _msgLen = (int)DECODER_MAX_DATA_LEN;
                             }
                             else {
                                 _msgLen = _bt;
@@ -248,7 +249,7 @@ namespace EGSE.Protocols
 
                 if (writeEncLog && (_fEncStream != null)) 
                 {
-                    _fEncStream.WriteLine(BitConverter.ToString(bufOut));
+                    _fEncStream.LogText = Converter.ByteArrayToHexStr(bufOut);
                 }
                 return true;
             }

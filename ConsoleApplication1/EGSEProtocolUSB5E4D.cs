@@ -8,6 +8,7 @@
  * Module: EDGE_Decoders_USB_5E4D
  */
 
+using EGSE.Utilites;
 using System;
 using System.IO;
 
@@ -58,7 +59,7 @@ namespace EGSE.Protocols
         private bool _isFinishFrame = false; // false - первую ошибку не считаем, иначе считаем
         private int _maxErrorCount = 0;
         private int _curErrorCount = 0;
-        private TextWriter _encLogStream;
+        private TxtLogger _encLogStream;
         private FileStream _decLogStream;
         
         /// <summary>
@@ -89,7 +90,8 @@ namespace EGSE.Protocols
         /// <param name="fEncStream"></param>
         /// <param name="wDecLog"></param>
         /// <param name="wEncLog"></param>
-        public ProtocolUSB5E4D(FileStream argDecLogStream, TextWriter fEncStream, bool wDecLog, bool wEncLog): this()
+        public ProtocolUSB5E4D(FileStream argDecLogStream, TxtLogger fEncStream, bool wDecLog, bool wEncLog)
+            : this()
         {
             _decLogStream = null;
             _encLogStream = null;
@@ -259,7 +261,7 @@ namespace EGSE.Protocols
             }
             if (IsWriteEncLog && (_encLogStream != null))
             {
-                _encLogStream.WriteLine(BitConverter.ToString(bufOut));
+                _encLogStream.LogText = Converter.ByteArrayToHexStr(bufOut);
             }
             return true;
         }

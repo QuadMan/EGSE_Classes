@@ -86,11 +86,11 @@ namespace EGSE.Utilites.ADC
     /// <summary>
     /// Структура калибровочных значений
     /// </summary>
-    public struct CalibrationValue
+    public struct CValue
     {
         public float XVal;
         public float YVal;
-        public CalibrationValue(float x, float y)
+        public CValue(float x, float y)
         {
             XVal = x;
             YVal = y;
@@ -102,29 +102,29 @@ namespace EGSE.Utilites.ADC
     /// <summary>
     /// Класс рассчета значений по калибровочным данным
     /// </summary>
-    class CalibrationValues
+    public class CalibrationValues
     {
         /// <summary>
         /// Калибровочные данные
         /// </summary>
-        private List<CalibrationValue> _listValues;
+        private List<CValue> _listValues;
 
         /// <summary>
         /// Конструктор по умолчанию
         /// </summary>
         public CalibrationValues()
         {
-            _listValues = new List<CalibrationValue>();
+            _listValues = new List<CValue>();
         }
 
         /// <summary>
         /// Конструктор
         /// </summary>
         /// <param name="cValues">Массив калибровочных данных</param>
-        public CalibrationValues(CalibrationValue[] cValues)
+        public CalibrationValues(CValue[] cValues)
         {
-            _listValues = new List<CalibrationValue>();
-            foreach (CalibrationValue cv in cValues)
+            _listValues = new List<CValue>();
+            foreach (CValue cv in cValues)
                 _listValues.Add(cv);
         }
 
@@ -133,9 +133,9 @@ namespace EGSE.Utilites.ADC
         /// новых калибровочных данных
         /// </summary>
         /// <param name="cValue">Новые калибровочные данные</param>
-        private void Sort(CalibrationValue cValue)
+        private void Sort(CValue cValue)
         {
-            foreach (CalibrationValue cv in _listValues)
+            foreach (CValue cv in _listValues)
                 if (cv.XVal == cValue.XVal)
                 {
                     ADCException exc = new ADCException("Ошибка: значение " + cValue.XVal + " с полем х = " + cValue.XVal + " уже существует!");
@@ -149,7 +149,7 @@ namespace EGSE.Utilites.ADC
         /// Метод добавляет новые калибровочные данные
         /// </summary>
         /// <param name="cValue">Калибровочные данные</param>
-        public void Add(CalibrationValue cValue)
+        public void Add(CValue cValue)
         {
             if (_listValues == null)
                 _listValues.Add(cValue);
@@ -331,7 +331,7 @@ namespace EGSE.Utilites.ADC
     /// Обладает возможностью высчитывания среднего значения
     /// Для вывода результата могут использоваться калибровочные данные
     /// </summary>
-    class ADC
+    public class ADC
     {
         /// <summary>
         /// List каналов

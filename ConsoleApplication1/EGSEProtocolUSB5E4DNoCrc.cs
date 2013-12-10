@@ -8,6 +8,7 @@
  * Module: EDGE_Decoders_USB_5E4D
  */
 
+using EGSE.Utilites;
 using System;
 using System.IO;
 
@@ -57,7 +58,7 @@ namespace EGSE.Protocols
         private bool _isFinishFrame = false; // флаг обработанного кадра (false - первую ошибку не считаем, иначе считаем)
         private int _maxErrorCount = 0;
         private int _errorCount = 0;
-        private TextWriter _fEncStream;
+        private TxtLogger _fEncStream;
         private FileStream _fDecStream;
         
         /// <summary>
@@ -88,7 +89,7 @@ namespace EGSE.Protocols
         /// <param name="fEncStream"></param>
         /// <param name="wDecLog"></param>
         /// <param name="wEncLog"></param>
-        public ProtocolUSB5E4DNoCrc(FileStream fDecStream, TextWriter fEncStream, bool wDecLog, bool wEncLog)
+        public ProtocolUSB5E4DNoCrc(FileStream fDecStream, TxtLogger fEncStream, bool wDecLog, bool wEncLog)
             : this()
         {
             _fDecStream = null;
@@ -246,7 +247,7 @@ namespace EGSE.Protocols
             }
             if (writeEncLog && (_fEncStream != null))
             {
-                _fEncStream.WriteLine(BitConverter.ToString(bufOut));
+                _fEncStream.LogText = Converter.ByteArrayToHexStr(bufOut);
             }
             return true;
         }
