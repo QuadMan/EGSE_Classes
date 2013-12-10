@@ -69,6 +69,14 @@ namespace EGSE.Utilites
             }
             return outBuf;
         }
+
+        public static string ByteArrayToHexStr(byte[] data, string delimeter = " ")
+        {
+            string hex = BitConverter.ToString(data);
+            hex = hex.Replace("-", delimeter);
+            return hex;
+        }
+
     }
 
     /// <summary>

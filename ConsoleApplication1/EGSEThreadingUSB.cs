@@ -170,18 +170,18 @@ namespace EGSE.Threading
                     //
                     if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDI_MIN_BUF_SIZE))
                     {
-                        _ftdi.ReadBuf(bigBuf.writeBuf, bytesAvailable, ref bytesReaded);
-                        if (bytesReaded > 0)                   
-                        {
-                            bigBuf.moveNextWrite(bytesReaded);
+                            _ftdi.ReadBuf(bigBuf.writeBuf, bytesAvailable, ref bytesReaded);
+                            if (bytesReaded > 0)
+                            {
+                                bigBuf.moveNextWrite(bytesReaded);
 
-                            calcSpeed(bytesReaded);
+                                calcSpeed(bytesReaded);
 #if DEBUG_TEXT
-                            System.Console.WriteLine("speed = {0}", speedBytesSec);
+                                System.Console.WriteLine("speed = {0}", speedBytesSec);
 #endif
-                            bytesReaded = 0;
+                                bytesReaded = 0;
+                            }
                         }
-                    }
                 }
                 // если состояние устройства изменилось
                 if (_lastOpened != _ftdi.isOpen)
