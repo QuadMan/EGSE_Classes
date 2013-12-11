@@ -99,6 +99,8 @@ namespace EGSE.Utilites
                         _sw.Write("{0:d2}:{1:d2}:{2:d2}:{3:d3} ", _logtime.Hour, _logtime.Minute, _logtime.Second, _logtime.Millisecond);
                     }
                     _sw.WriteLine(value);
+                    // введена для отладки USB, может быть вдальнейшем ввести параметр лога
+                    _sw.Flush();
                 }
                     
             }

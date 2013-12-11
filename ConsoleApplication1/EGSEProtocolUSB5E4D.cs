@@ -32,7 +32,7 @@ namespace EGSE.Protocols
         }
         private ProtocolMsgEventArgs _package;
         private ProtocolErrorEventArgs _errorFrame;
-        private const uint PROTOCOL_FRAME_SIZE = 7;       
+        private const uint PROTOCOL_FRAME_SIZE = 6;       
         private const uint MAX_FRAME_LEN = 65536;
         private const uint MAX_ERROR_COUNT = 100;
         private static byte[] _crc8Table = new byte[256] 
@@ -254,10 +254,10 @@ namespace EGSE.Protocols
                 bufOut[5] = _crc8Table[bufOut[5] ^ bufOut[i]];
             }
             Array.Copy(buf, 0, bufOut, 6, buf.Length);
-            bufOut[bufOut.GetUpperBound(0)] = 0;
-            for (byte i = 0; i < bufOut.GetUpperBound(0); i++)  
+            bufOut[6 + buf.Length] = 0;
+            for (uint i = PROTOCOL_FRAME_SIZE; i < bufOut.Length-1; i++)  
             {
-                bufOut[bufOut.GetUpperBound(0)] = _crc8Table[bufOut[bufOut.GetUpperBound(0)] ^ bufOut[i]];
+                bufOut[bufOut.Length-1] = _crc8Table[bufOut[bufOut.Length-1] ^ bufOut[i]];
             }
             if (IsWriteEncLog && (_encLogStream != null))
             {

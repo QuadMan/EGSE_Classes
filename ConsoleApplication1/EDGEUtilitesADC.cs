@@ -129,6 +129,17 @@ namespace EGSE.Utilites.ADC
         }
 
         /// <summary>
+        /// Внутренний метод определяющий способ сортировки для метода Sort()
+        /// </summary>
+        /// <param name="cv_1">Объект CalibrationValue</param>
+        /// <param name="cv_2">Объект CalibrationValue</param>
+        /// <returns>Результат сравнения</returns>
+        private static int CompareCalibrationValues(CValue cv_1, CValue cv_2)
+        {
+            return cv_1.XVal.CompareTo(cv_2.XVal);
+        }
+
+        /// <summary>
         /// Внутренний метод проводящий сортировку при добавлении 
         /// новых калибровочных данных
         /// </summary>
@@ -142,7 +153,7 @@ namespace EGSE.Utilites.ADC
                     throw exc;
                 }
             _listValues.Add(cValue);
-            _listValues.Sort();
+            _listValues.Sort(CompareCalibrationValues);
         }
 
         /// <summary>

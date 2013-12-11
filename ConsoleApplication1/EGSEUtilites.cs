@@ -70,11 +70,63 @@ namespace EGSE.Utilites
             return outBuf;
         }
 
+        /// <summary>
+        /// Функция преобразует массив байт в строку.
+        /// Байты в строке будут разделяться строкой, заданной в delimeter
+        /// </summary>
+        /// <param name="data">Массив байт</param>
+        /// <param name="delimeter">Разделитель между байтами в строке</param>
+        /// <returns>Результирующая строка</returns>
         public static string ByteArrayToHexStr(byte[] data, string delimeter = " ")
         {
             string hex = BitConverter.ToString(data);
             hex = hex.Replace("-", delimeter);
             return hex;
+        }
+
+        /// <summary>
+        /// Переводит скорость в строку (с добавлением размерности)
+        /// </summary>
+        /// <param name="speedInBytes">Скорость в байтах</param>
+        /// <returns>Срока скорости</returns>
+        public static string SpeedToStr(float speedInBytes)
+        {
+            float kbs = speedInBytes / 1024;
+            if (kbs > 1000)
+            {
+                float mbs = kbs / 1024;
+                if (mbs > 1000) {
+                    return mbs.ToString("0.0")+" мб/сек";
+                }
+                return kbs.ToString("0.0")+" кб/сек";
+            }
+            return speedInBytes.ToString("0.0")+" байт/сек";
+        }
+
+        /// <summary>
+        /// Переводит размер файла в строку (с добавлением размерности)
+        /// </summary>
+        /// <param name="fileSizeInBytes">Размер файла в байтах</param>
+        /// <returns>Строка размера файла</returns>
+        public static string FileSizeToStr(UInt64 fileSizeInBytes)
+        {
+            float kb = fileSizeInBytes / 1024;
+            float mb = kb / 1024;
+            float gb = mb / 1024;
+            if (gb > 1)
+            {
+                return gb.ToString("0.0") + " ГБайт";
+            }
+            else if (mb > 1)
+            {
+                return mb.ToString("0.0") + " MБайт";
+            }
+            else if (kb > 1)
+            {
+                return kb.ToString("0.0") + " КБайт";
+            }
+            else
+                return fileSizeInBytes.ToString() + " байт";
         }
 
     }
