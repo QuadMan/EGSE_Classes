@@ -152,14 +152,16 @@ namespace EGSE.Utilites
         /// Нажатие кнопок
         /// Нажатие чекбоксов
         /// Выбор элемента комбобокса
+        /// 
+        /// Если элемент не найден, то возвращает null
         /// </summary>
         /// <param name="reaEv"></param>
-        /// <returns>строку с описанием нажатого элемента</returns>
+        /// <returns>строку с описанием нажатого элемента (null, если ничего не найдено)</returns>
         public static string ElementClicked(MouseEventArgs reaEv)
         {
 
             string strRes = null;
-            string[] strVerb = { "Нажато: ", "Снято нажатие: ", "Выбран: " };
+            string[] strVerb = { "Нажата ", "Снято нажатие: ", "Выбран: " };
 
 
             if (reaEv.Source.GetType().Equals(typeof(Button)))
@@ -167,7 +169,7 @@ namespace EGSE.Utilites
                 Button elemSource = reaEv.Source as Button;
 
                 if (elemSource != null)
-                    strRes += strVerb[0] + "кнопка: \"" + elemSource.Content + "\"";
+                    strRes += "Нажата кнопка: \"" + elemSource.Content + "\"";
             }
             else if (reaEv.Source.GetType().Equals(typeof(CheckBox)))
             {
@@ -175,9 +177,9 @@ namespace EGSE.Utilites
                 if (elemSource != null)
                 {
                     if (!(bool)elemSource.IsChecked)
-                        strRes += strVerb[0];
+                        strRes += "Выбран ";//strVerb[0];
                     else
-                        strRes += strVerb[1];
+                        strRes += "Снят ";// strVerb[1];
                     strRes += "чекбокс: \"" + elemSource.Content + "\"";
                 }
             }
@@ -186,7 +188,7 @@ namespace EGSE.Utilites
                 ComboBoxItem elemSource = reaEv.Source as ComboBoxItem;
 
                 if (elemSource != null)
-                    strRes += strVerb[2] + "комбобокс: \"" + elemSource.Content + "\"";
+                    strRes += "Выбран комбобокс: \"" + elemSource.Content + "\"";
             }
             return strRes;
         }
