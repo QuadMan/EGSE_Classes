@@ -44,10 +44,27 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Drawing;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Data;
+
 
 namespace EGSE.Utilites
 {
@@ -131,6 +148,51 @@ namespace EGSE.Utilites
             }
             else
                 return fileSizeInBytes.ToString() + " байт";
+        }
+
+        /// <summary>
+        /// Определяет нажатый элемент
+        /// Обрабатываются:
+        /// Нажатие кнопок
+        /// Нажатие чекбоксов
+        /// Выбор элемента комбобокса
+        /// </summary>
+        /// <param name="reaEv"></param>
+        /// <returns>строку с описанием нажатого элемента</returns>
+        public static string ElementClicked(MouseEventArgs reaEv)
+        {
+
+            string strRes = null;
+            string[] strVerb = { "Нажато: ", "Снято нажатие: ", "Выбран: " };
+
+
+            if (reaEv.Source.GetType().Equals(typeof(Button)))
+            {
+                Button elemSource = reaEv.Source as Button;
+
+                if (elemSource != null)
+                    strRes += strVerb[0] + "кнопка: \"" + elemSource.Content + "\"";
+            }
+            else if (reaEv.Source.GetType().Equals(typeof(CheckBox)))
+            {
+                CheckBox elemSource = reaEv.Source as CheckBox;
+                if (elemSource != null)
+                {
+                    if (!(bool)elemSource.IsChecked)
+                        strRes += strVerb[0];
+                    else
+                        strRes += strVerb[1];
+                    strRes += "чекбокс: \"" + elemSource.Content + "\"";
+                }
+            }
+            else if (reaEv.Source.GetType().Equals(typeof(ComboBoxItem)))
+            {
+                ComboBoxItem elemSource = reaEv.Source as ComboBoxItem;
+
+                if (elemSource != null)
+                    strRes += strVerb[2] + "комбобокс: \"" + elemSource.Content + "\"";
+            }
+            return strRes;
         }
 
     }
