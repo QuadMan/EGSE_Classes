@@ -696,20 +696,21 @@ namespace EGSE.Utilites
     }
     /// <summary>
     /// Класс позволяет сохранять в ini-файл параметры экземплеров окон
-    /// Сохраняет: позицию, размеры, состояние(развернуто/свернуто) окна
+    /// Сохраняет: позицию, размеры, состояние(развернуто/свернуто) окна, видимость
     /// </summary>
-    class WindowsRestorer
+    public static class WindowsRestorer
     {
         /// <summary>
         /// Сохраняем параметры окна
         /// </summary>
         /// <param name="win">Экземпляр окна</param>
         /// <returns>true, если функция выполнена успешно</returns>
-        static public bool SaveWindow(Window win)
+        public static bool Save(Window win)
         {
             try
             {
                 IniFile _ini = new IniFile();
+                _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
                 _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
                 _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
                 return true;
@@ -724,29 +725,48 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="win">Экземпляр окна</param>
         /// <returns>true, если функция выполнена успешно</returns>
-        static public bool LoadWindow(Window win)
+        public static bool Load(Window win)
         {
             try
             {
                 IniFile _ini = new IniFile();
-                if (_ini.IsKeyExists("Bounds", win.Title) && _ini.IsKeyExists("WindowState", win.Title))
+                if (_ini.IsKeyExists("Bounds", win.Title))
                 {
-                    RectConverter _conv = new RectConverter();
+                    System.ComponentModel.TypeConverter _conv =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
                     Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
                     win.Left = _rect.Left;
                     win.Top = _rect.Top;
                     win.Height = _rect.Size.Height;
                     win.Width = _rect.Size.Width;
-                    System.ComponentModel.TypeConverter _conv2 =
-                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
-                    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title)); ;
-                    return true;
                 }
                 else
                 {
-                    SaveWindow(win);
-                    return false;
+                     _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
                 }
+
+                if (_ini.IsKeyExists("WindowState", win.Title))  
+                {
+                    System.ComponentModel.TypeConverter _conv2 =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
+                    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
+                }
+                else 
+                {
+                    _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
+                }
+                if (_ini.IsKeyExists("Visibility", win.Title))
+                {
+                    System.ComponentModel.TypeConverter _conv3 =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Visibility));
+                    win.Visibility = (Visibility)_conv3.ConvertFromString(_ini.Read("Visibility", win.Title)); 
+                }
+                else
+                {
+                    _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
+                }                                 
+                return true;
+              
             }
             catch (Exception e)
             {
