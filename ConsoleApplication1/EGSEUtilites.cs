@@ -45,13 +45,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using System.Windows;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -620,6 +618,161 @@ namespace EGSE.Utilites
                 {
                     return null;
                 }
+            }
+        }
+    }
+    /// <summary>
+    /// Класс работы с ini-файлом
+    /// </summary>
+    public class IniFile
+    {
+        /// <summary>
+        /// Путь к ini-файлу
+        /// </summary>
+        private string _path;
+        /// <summary>
+        /// Имя exe-файла (Название группы параметра по-умолчанию) 
+        /// </summary>
+        private string _exe = Assembly.GetExecutingAssembly().GetName().Name;
+        [DllImport("kernel32")]
+        static extern long WritePrivateProfileString(string section, string key, string value, string filePath);
+        [DllImport("kernel32")]
+        static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+        /// <summary>
+        /// Конструктор конкретного ini-файла.
+        /// </summary>
+        /// <param name="iniPath">Полный путь к ini-файлу</param>
+        public IniFile(string iniPath = null)
+        {
+            _path = new FileInfo(iniPath ?? _exe + ".ini").FullName.ToString();
+        }
+        /// <summary>
+        /// Считать параметр
+        /// </summary>
+        /// <param name="key">Название параметра</param>
+        /// <param name="section">Название группы параметра</param>
+        /// <returns>Значение параметра</returns>
+        public string Read(string key, string section = null)
+        {
+            var RetVal = new StringBuilder(255);
+            GetPrivateProfileString(section ?? _exe, key, "", RetVal, 255, _path);
+            return RetVal.ToString();
+        }
+        /// <summary>
+        /// Записать параметр
+        /// </summary>
+        /// <param name="key">Название параметра</param>
+        /// <param name="value">Значение параметра</param>
+        /// <param name="section">Название группы параметра</param>
+        public void Write(string key, string value, string section = null)
+        {
+            WritePrivateProfileString(section ?? _exe, key, value, _path);
+        }
+        /// <summary>
+        /// Удалить параметр
+        /// </summary>
+        /// <param name="key">Название параметра</param>
+        /// <param name="section">Название группы параметра</param>
+        public void DeleteKey(string key, string section = null)
+        {
+            Write(key, null, section ?? _exe);
+        }
+        /// <summary>
+        /// Удалить группу параметров
+        /// </summary>
+        /// <param name="section">Название группы параметра</param>
+        public void DeleteSection(string section = null)
+        {
+            Write(null, null, section ?? _exe);
+        }
+        /// <summary>
+        /// Проверка на существование параметра
+        /// </summary>
+        /// <param name="key">Название параметра</param>
+        /// <param name="section">Название группы параметра</param>
+        /// <returns>Результат проверки</returns>
+        public bool IsKeyExists(string key, string section = null)
+        {
+            return Read(key, section).Length > 0;
+        }
+    }
+    /// <summary>
+    /// Класс позволяет сохранять в ini-файл параметры экземплеров окон
+    /// Сохраняет: позицию, размеры, состояние(развернуто/свернуто) окна, видимость
+    /// </summary>
+    public static class WindowsRestorer
+    {
+        /// <summary>
+        /// Сохраняем параметры окна
+        /// </summary>
+        /// <param name="win">Экземпляр окна</param>
+        /// <returns>true, если функция выполнена успешно</returns>
+        public static bool Save(Window win)
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
+                _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
+                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        /// <summary>
+        /// Загружаем сохраненные параметры окна
+        /// </summary>
+        /// <param name="win">Экземпляр окна</param>
+        /// <returns>true, если функция выполнена успешно</returns>
+        public static bool Load(Window win)
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                if (_ini.IsKeyExists("Bounds", win.Title))
+                {
+                    System.ComponentModel.TypeConverter _conv =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
+                    Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
+                    win.Left = _rect.Left;
+                    win.Top = _rect.Top;
+                    win.Height = _rect.Size.Height;
+                    win.Width = _rect.Size.Width;
+                }
+                else
+                {
+                     _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
+                }
+
+                if (_ini.IsKeyExists("WindowState", win.Title))  
+                {
+                    System.ComponentModel.TypeConverter _conv2 =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
+                    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
+                }
+                else 
+                {
+                    _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
+                }
+                if (_ini.IsKeyExists("Visibility", win.Title))
+                {
+                    System.ComponentModel.TypeConverter _conv3 =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Visibility));
+                    win.Visibility = (Visibility)_conv3.ConvertFromString(_ini.Read("Visibility", win.Title)); 
+                }
+                else
+                {
+                    _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
+                }                                 
+                return true;
+              
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
     }
