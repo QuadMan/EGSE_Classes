@@ -254,10 +254,15 @@ namespace EGSE.Protocols
                 bufOut[5] = _crc8Table[bufOut[5] ^ bufOut[i]];
             }
             Array.Copy(buf, 0, bufOut, 6, buf.Length);
-            bufOut[6 + buf.Length] = 0;
-            for (uint i = PROTOCOL_FRAME_SIZE; i < bufOut.Length-1; i++)  
+        //    bufOut[6 + buf.Length] = 0;
+        //    for (uint i = PROTOCOL_FRAME_SIZE; i < bufOut.Length-1; i++)  
+        //    {
+        //        bufOut[bufOut.Length-1] = _crc8Table[bufOut[bufOut.Length-1] ^ bufOut[i]];
+        //    }
+            bufOut[bufOut.GetUpperBound(0)] = 0;
+            for (byte i = 0; i < bufOut.GetUpperBound(0) - 1; i++)
             {
-                bufOut[bufOut.Length-1] = _crc8Table[bufOut[bufOut.Length-1] ^ bufOut[i]];
+                bufOut[bufOut.GetUpperBound(0)] = _crc8Table[bufOut[bufOut.GetUpperBound(0)] ^ bufOut[i]];
             }
             if (IsWriteEncLog && (_encLogStream != null))
             {
