@@ -43,18 +43,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EGSE_Decoders_USB.cs" />
-    <Compile Include="EGSE_Device.cs" />
-    <Compile Include="EGSE_THREADING_Decoders.cs" />
-    <Compile Include="EGSE_THREADING_FTDI.cs" />
-    <Compile Include="EGSE_USB_FTDI.cs" />
-    <Compile Include="EGSE_Utilites.cs" />
+    <Compile Include="EDGEUtilitesADC.cs" />
+    <Compile Include="EGSECyclogramCommands.cs" />
+    <Compile Include="EGSECyclogramFile.cs" />
+    <Compile Include="EGSEDevice.cs" />
+    <Compile Include="EGSEProtocolUSB.cs" />
+    <Compile Include="EGSEProtocolUSB5E4D.cs" />
+    <Compile Include="EGSEProtocolUSB5E4DNoCrc.cs" />
+    <Compile Include="EGSEProtocolUSB7C6E.cs" />
+    <Compile Include="EGSEThreadingCyclogram.cs" />
+    <Compile Include="EGSEThreadingProtocol.cs" />
+    <Compile Include="EGSEThreadingUSB.cs" />
+    <Compile Include="EGSEUSBFTDI.cs" />
+    <Compile Include="EGSEUtilites.cs" />
+    <Compile Include="EGSEUtilitesTextlog.cs" />
     <Compile Include="FTD2XX_NET.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
