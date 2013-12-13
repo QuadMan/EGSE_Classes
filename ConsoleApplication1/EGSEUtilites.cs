@@ -700,14 +700,58 @@ namespace EGSE.Utilites
     /// Класс позволяет сохранять в ini-файл параметры экземплеров окон
     /// Сохраняет: позицию, размеры, состояние(развернуто/свернуто) окна, видимость
     /// </summary>
-    public static class WindowsRestorer
+    public static class AppSettings
     {
+        /// <summary>
+        /// Записываем параметр param в секцию section, значением value
+        /// </summary>
+        /// <param name="param">Параметр приложения</param>
+        /// <param name="value">Значение параметра</param>
+        /// <param name="section">секция, по-умолчанию, MAIN</param>
+        /// <returns></returns>
+        public static bool Save(string param, string value, string section="MAIN")
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                _ini.Write(param, value, section);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Загружаем параметр из файла
+        /// </summary>
+        /// <param name="param">Название параметра</param>
+        /// <param name="section">Секция</param>
+        /// <returns>Строка-значение параметра, null - если параметр не найден</returns>
+        public static string Load(string param, string section = "MAIN")
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                if (_ini.IsKeyExists(param, section))
+                {
+                    return _ini.Read(param, section);
+                }
+                else return null;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
         /// <summary>
         /// Сохраняем параметры окна
         /// </summary>
         /// <param name="win">Экземпляр окна</param>
         /// <returns>true, если функция выполнена успешно</returns>
-        public static bool Save(Window win)
+        public static bool SaveWindow(Window win)
         {
             try
             {
@@ -727,7 +771,7 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="win">Экземпляр окна</param>
         /// <returns>true, если функция выполнена успешно</returns>
-        public static bool Load(Window win)
+        public static bool LoadWindow(Window win)
         {
             try
             {
