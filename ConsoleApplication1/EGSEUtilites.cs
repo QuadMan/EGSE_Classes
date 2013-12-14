@@ -758,7 +758,7 @@ namespace EGSE.Utilites
                 IniFile _ini = new IniFile();
                 _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
                 _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
-                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
+                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
                 return true;
             }
             catch (Exception e)
@@ -788,7 +788,7 @@ namespace EGSE.Utilites
                 }
                 else
                 {
-                     _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
+                     _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
                 }
 
                 if (_ini.IsKeyExists("WindowState", win.Title))  
