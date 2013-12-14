@@ -1,40 +1,41 @@
-﻿/*
- * EDGE_Decoders_USB_5E4D.cs
- * 
- * Copyright(c) 2013 IKI RSSI, laboratory №711
- * 
- * Author: Коробейщиков Иван
- * Project: EDGE
- * Module: EDGE_Decoders_USB_5E4D
- */
-
-using EGSE.Utilites;
-using System;
-using System.IO;
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEProtocolUSB5E4D.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Коробейщиков Иван</author>
+//-----------------------------------------------------------------------
 
 namespace EGSE.Protocols
 {
+    using System;
+    using System.IO;
+
+    using EGSE.Utilites;
+
     /// <summary>
-    /// класс декодера по протоколу 5E4D
+    /// класс декодера по протоколу 5E4D.
     /// </summary>
     public class ProtocolUSB5E4D : ProtocolUSBBase
     {
-        private enum DecoderState
-        {
-            s5E,    // 1 байт: 0x5E 
-            s4D,    // 2 байт: 0x4D
-            sADDR,  // 3 байт: адрес посылки
-            sNBH,   // 4 байт: старший байт размера сообщения
-            sNBL,   // 5 байт: младший байт размера сообщения
-            sCRCH,  // 6 байт: CRC8ATM для заголовка кадра
-            sMSG,   // 7..N байт: сообщение          
-            sCRC    // N+1 байт: CRC8ATM для всего кадра
-        }
-        private ProtocolMsgEventArgs _package;
-        private ProtocolErrorEventArgs _errorFrame;
-        private const uint PROTOCOL_FRAME_SIZE = 6;       
-        private const uint MAX_FRAME_LEN = 65536;
-        private const uint MAX_ERROR_COUNT = 100;
+        /// <summary>
+        /// Длина заголовка кадра.
+        /// </summary>
+        private const uint FrameHeaderSize = 6;
+
+        /// <summary>
+        /// Максимально допустимый размер кадра.
+        /// </summary>
+        private const uint MaxFrameLen = 65536;
+
+        /// <summary>
+        /// Максимально допустимое количество ошибок декодера.
+        /// Остальные ошибки не будут фиксироваться.
+        /// </summary>
+        private const uint MaxErrorCount = 100;
+
+        /// <summary>
+        /// Вспомогательная таблица для быстрого расчета CRC8ATM.
+        /// </summary>
         private static byte[] _crc8Table = new byte[256] 
             {
                 0x00, 0x91, 0xe3, 0x72, 0x07, 0x96, 0xe4, 0x75, 0x0e, 0x9f, 0xed, 0x7c, 0x09, 0x98, 0xea, 0x7b, 0x1c, 0x8d, 0xff, 0x6e, 0x1b, 0x8a, 0xf8, 
@@ -49,96 +50,217 @@ namespace EGSE.Protocols
                 0xeb, 0x8c, 0x1d, 0x6f, 0xfe, 0x8b, 0x1a, 0x68, 0xf9, 0x82, 0x13, 0x61, 0xf0, 0x85, 0x14, 0x66, 0xf7, 0xa8, 0x39, 0x4b, 0xda, 0xaf, 0x3e, 
                 0x4c, 0xdd, 0xa6, 0x37, 0x45, 0xd4, 0xa1, 0x30, 0x42, 0xd3, 0xb4, 0x25, 0x57, 0xc6, 0xb3, 0x22, 0x50, 0xc1, 0xba, 0x2b, 0x59, 0xc8, 0xbd, 
                 0x2c, 0x5e, 0xcf
-            };       
+            };
+
+        /// <summary>
+        /// Экземпляр события: декодером обнаружено сообщение.
+        /// </summary>
+        private ProtocolMsgEventArgs _package;
+
+        /// <summary>
+        /// Экземпляр события: ошибка в декодере.
+        /// </summary>
+        private ProtocolErrorEventArgs _errorFrame;
+  
+        /// <summary>
+        /// Текущее состояние декодера.
+        /// </summary>
         private DecoderState _state = DecoderState.s5E;
-        private uint _lenMsg = 0; // длина сообщения текущего кадра
+
+        /// <summary>
+        /// Длина сообщения текущего кадра.
+        /// </summary>
+        private uint _lenMsg = 0;
+
+        /// <summary>
+        /// CRC8 посчитанный на текущем шаге декодера.
+        /// </summary>
         private byte _curCRC8 = 0;
+
+        /// <summary>
+        /// Текущий байт, обрабатываемый декодером.
+        /// </summary>
         private byte _curByte = 0;
+
+        /// <summary>
+        /// Позиция текущего байта в буфере.
+        /// </summary>
         private uint _posCurByte = 0;
-        private uint _posMsg = 0; // позиция сообщения текущего кадра в буфере 
-        private bool _isFinishFrame = false; // false - первую ошибку не считаем, иначе считаем
-        private int _maxErrorCount = 0;
+
+        /// <summary>
+        /// Позиция сообщения текущего кадра в буфере.
+        /// </summary>
+        private uint _posMsg = 0;
+
+        /// <summary>
+        /// Флаг обработки первой ошибки.
+        /// false - первую ошибку не считаем, иначе считаем.
+        /// </summary>
+        private bool _finishFrame = false;
+
+        /// <summary>
+        /// Текущее кол-во ошибок декодера.
+        /// </summary>
         private int _curErrorCount = 0;
+
+        /// <summary>
+        /// логер Encoder-а.
+        /// </summary>
         private TxtLogger _encLogStream;
+
+        /// <summary>
+        /// логер Decoder-а.
+        /// </summary>
         private FileStream _decLogStream;
-        
+
         /// <summary>
-        /// Включить лог Encoder-а
+        /// Логирование кодированного потока.
         /// </summary>
-        public bool IsWriteEncLog = false;
-        
+        private bool _writeEncLog = false;
+
         /// <summary>
-        /// Включить лог Decoder-а
+        /// Логирование декодированного потока.
         /// </summary>
-        public bool IsWriteDecLog = false;
-        
+        private bool _writeDecLog = false;
+
         /// <summary>
-        /// Коснтруктор по-умолчанию
+        /// Initializes a new instance of the <see cref="ProtocolUSB5E4D" /> class.
+        /// Инициализация нового экземпляра класса.
         /// </summary>
         public ProtocolUSB5E4D()
         {
-            _package = new ProtocolMsgEventArgs(MAX_FRAME_LEN);
-            _errorFrame = new ProtocolErrorEventArgs(MAX_FRAME_LEN);
-            _maxErrorCount = (int)MAX_ERROR_COUNT;
+            _package = new ProtocolMsgEventArgs(MaxFrameLen);
+            _errorFrame = new ProtocolErrorEventArgs(MaxFrameLen);
             Reset();
         }
 
         /// <summary>
-        /// Конструктор с поддержкой логеров
+        /// Initializes a new instance of the <see cref="ProtocolUSB5E4D" /> class.
+        /// Инициализация нового экземпляра класса, с подключением логеров.
         /// </summary>
-        /// <param name="argDecLogStream"></param>
-        /// <param name="fEncStream"></param>
-        /// <param name="wDecLog"></param>
-        /// <param name="wEncLog"></param>
-        public ProtocolUSB5E4D(FileStream argDecLogStream, TxtLogger fEncStream, bool wDecLog, bool wEncLog)
+        /// <param name="decLogStream">Ссылка на экземпляр логера Decoder-а.</param>
+        /// <param name="encLogStream">Ссылка на экземпляр логера Encoder-а.</param>
+        /// <param name="decLogEnable">Включить логер Decoder-а</param>
+        /// <param name="encLogEnable">Включить логер Encoder-а</param>
+        public ProtocolUSB5E4D(FileStream decLogStream, TxtLogger encLogStream, bool decLogEnable, bool encLogEnable)
             : this()
         {
-            _decLogStream = null;
-            _encLogStream = null;
-            if ((argDecLogStream != null) && (argDecLogStream.CanRead))
+            decLogStream = null;
+            encLogStream = null;
+            if ((decLogStream != null) && decLogStream.CanRead)
             {
-                _decLogStream = argDecLogStream;
-                IsWriteDecLog = wDecLog;
+                _decLogStream = decLogStream;
+                _writeDecLog = decLogEnable;
             }
-            _encLogStream = fEncStream;
-            IsWriteEncLog = wEncLog;
+
+            _encLogStream = encLogStream;
+            _writeEncLog = encLogEnable;
         }
 
         /// <summary>
-        /// сброс текущего состояния декодера
+        /// Состояния декодера.
         /// </summary>
-        override public void Reset()
+        private enum DecoderState
+        {
+            /// <summary>
+            /// 1 байт: 0x5E.
+            /// </summary>
+            s5E,
+
+            /// <summary>
+            /// 2 байт: 0x4D.
+            /// </summary>
+            s4D,
+
+            /// <summary>
+            /// 3 байт: адрес посылки.
+            /// </summary>
+            sADDR,
+
+            /// <summary>
+            /// 4 байт: старший байт размера сообщения.
+            /// </summary>
+            sNBH,
+
+            /// <summary>
+            /// 5 байт: младший байт размера сообщения.
+            /// </summary>
+            sNBL,
+
+            /// <summary>
+            /// 6 байт: CRC8ATM для заголовка кадра.
+            /// </summary>
+            sCRCH,
+
+            /// <summary>
+            /// 7..N байт: сообщение.
+            /// </summary>
+            sMSG,
+
+            /// <summary>
+            /// N+1 байт: CRC8ATM для всего кадра.
+            /// </summary>
+            sCRC
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether enabled log encoder stream.
+        /// Включить лог Encoder-а.
+        /// </summary>
+        public bool WriteEncLog
+        {
+            get
+            {
+                return _writeEncLog;
+            }
+
+            set
+            {
+                _writeEncLog = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether enabled log decoder stream.
+        /// Включить лог Decoder-а.
+        /// </summary>
+        public bool WriteDecLog
+        {
+            get
+            {
+                return _writeDecLog;
+            }
+
+            set
+            {
+                _writeDecLog = value;
+            }
+        }
+
+        /// <summary>
+        /// Сброс текущего состояния декодера.
+        /// </summary>
+        public override void Reset()
         {
             _state = DecoderState.s5E;
             _curCRC8 = 0;
             _lenMsg = 0;
             _posMsg = 0;
         }
-        
-        private void OnErrorFrame(byte[] buf, uint bufPos, int bLen, string msg)
-        {
-            _curErrorCount++;
-            if (_maxErrorCount > _curErrorCount)
-            {
-                Array.Copy(buf, _errorFrame.Data, bLen);
-                _errorFrame.ErrorPos = bufPos;
-                _errorFrame.DataLen = (bLen > 256) ? 255 : bLen;
-                _errorFrame.Msg = msg;
-                OnProtocolError(_errorFrame);
-            }
-        }
+
         /// <summary>
         /// Циклический декодер буфера данных
         /// </summary>
         /// <param name="buf">буфер данных</param>
         /// <param name="bufSize">размер данных(в байтах)</param>
-        override public void Decode(byte[] buf, int bufSize)
+        public override void Decode(byte[] buf, int bufSize)
         {
             _posCurByte = 0;
-            if (IsWriteDecLog && (_decLogStream != null))
+            if (_writeDecLog && (_decLogStream != null))
             {
                 _decLogStream.Write(buf, 0, bufSize);
             }
+
             while (_posCurByte < bufSize)
             {
                 _curByte = buf[_posCurByte];                
@@ -147,17 +269,19 @@ namespace EGSE.Protocols
                     case DecoderState.s5E:                        
                         if (0x5E != _curByte)
                         {
-                            if (_isFinishFrame)
+                            if (_finishFrame)
                             {
-                                _isFinishFrame = false;
+                                _finishFrame = false;
                                 OnErrorFrame(buf, _posCurByte, bufSize, "После сообщения не встретился 0x5E");
-                            }                            
+                            }  
+                          
                             Reset();
                         }    
                         else
                         {
                             _state = DecoderState.s4D;
                         }
+
                         break;                    
                     case DecoderState.s4D:
                         if (0x4D != _curByte)
@@ -169,6 +293,7 @@ namespace EGSE.Protocols
                         {
                             _state = DecoderState.sADDR;
                         }
+
                         break;
                     case DecoderState.sADDR:
                         _package.Addr = _curByte;
@@ -189,6 +314,7 @@ namespace EGSE.Protocols
                             OnErrorFrame(buf, _posCurByte, bufSize, "CRC8 заголовка расчитан неверно");
                             Reset();
                         }
+
                         break;
                     case DecoderState.sMSG:
                         _package.Data[_posMsg++] = _curByte;
@@ -197,6 +323,7 @@ namespace EGSE.Protocols
                             _package.DataLen = (int)_posMsg;
                             _state = DecoderState.sCRC;
                         }
+
                         break;
                     case DecoderState.sCRC:
                         if (_curCRC8 != _curByte)
@@ -206,15 +333,18 @@ namespace EGSE.Protocols
                         else
                         { 
                             OnProtocolMsg(_package);
-                            _isFinishFrame = true;
+                            _finishFrame = true;
                         }
+
                         Reset();
                         break;                                        
                 }
+
                 if (DecoderState.s5E != _state)
                 {
                     _curCRC8 = _crc8Table[_curCRC8 ^ _curByte];
-                }                
+                }
+
                 _posCurByte++;
             }
         }
@@ -223,18 +353,20 @@ namespace EGSE.Protocols
         /// Кодируем буфер
         /// </summary>
         /// <param name="addr">0..255 адресный байт</param>
-        /// <param name="buf">данные</param>
-        /// <param name="bufOut">посылка</param>
+        /// <param name="buf">Буфер данных</param>
+        /// <param name="bufOut">Буфер сформированной посылки</param>
         /// <returns>true, если кодирование успешно</returns>
-        override public bool Encode(uint addr, byte[] buf, out byte[] bufOut)
+        public override bool Encode(uint addr, byte[] buf, out byte[] bufOut)
         {
-            if (buf.Length > MAX_FRAME_LEN - PROTOCOL_FRAME_SIZE)  // длина пакета данных = макс.длина(65535) - длина заголовка(5e 4d addr nbh nbl crch <data> crc)
+            // длина пакета данных = макс.длина(65535) - (длина заголовка(5e 4d addr nbh nbl crch) + crc)
+            if (buf.Length > MaxFrameLen - (FrameHeaderSize + 1))  
             {
                 bufOut = null;
                 OnErrorFrame(buf, 0, buf.Length, "Превышен максимальный размер кадра");
                 return false;
             }
-            bufOut = new byte[buf.Length + PROTOCOL_FRAME_SIZE + 1];
+
+            bufOut = new byte[buf.Length + FrameHeaderSize + 1];
             bufOut[0] = 0x5E;
             bufOut[1] = 0x4D;             
             try
@@ -246,29 +378,48 @@ namespace EGSE.Protocols
             {
                 OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения");
                 return false;  
-            }            
+            }
+
             bufOut[4] = unchecked((byte)buf.Length);
             bufOut[5] = 0;                
             for (byte i = 0; i < 5; i++)            
             {
                 bufOut[5] = _crc8Table[bufOut[5] ^ bufOut[i]];
             }
+
             Array.Copy(buf, 0, bufOut, 6, buf.Length);
-        //    bufOut[6 + buf.Length] = 0;
-        //    for (uint i = PROTOCOL_FRAME_SIZE; i < bufOut.Length-1; i++)  
-        //    {
-        //        bufOut[bufOut.Length-1] = _crc8Table[bufOut[bufOut.Length-1] ^ bufOut[i]];
-        //    }
             bufOut[bufOut.GetUpperBound(0)] = 0;
             for (byte i = 0; i < bufOut.GetUpperBound(0) - 1; i++)
             {
                 bufOut[bufOut.GetUpperBound(0)] = _crc8Table[bufOut[bufOut.GetUpperBound(0)] ^ bufOut[i]];
             }
-            if (IsWriteEncLog && (_encLogStream != null))
+
+            if (_writeEncLog && (_encLogStream != null))
             {
                 _encLogStream.LogText = Converter.ByteArrayToHexStr(bufOut);
             }
+
             return true;
+        }
+
+        /// <summary>
+        /// Формирует событие: ошибка декодера.
+        /// </summary>
+        /// <param name="buf">Буфер с ошибкой</param>
+        /// <param name="pos">Позиция ошибки в буфере</param>
+        /// <param name="len">Размер буфера</param>
+        /// <param name="msg">Описание ошибки</param>
+        private void OnErrorFrame(byte[] buf, uint pos, int len, string msg)
+        {
+            _curErrorCount++;
+            if ((int)MaxErrorCount > _curErrorCount)
+            {
+                Array.Copy(buf, _errorFrame.Data, len);
+                _errorFrame.ErrorPos = pos;
+                _errorFrame.DataLen = (len > 256) ? 255 : len;
+                _errorFrame.Msg = msg;
+                OnProtocolError(_errorFrame);
+            }
         }
     }
 }
