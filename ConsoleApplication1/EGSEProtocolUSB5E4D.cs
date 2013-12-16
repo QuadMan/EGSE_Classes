@@ -32,7 +32,7 @@ namespace EGSE.Protocols
         }
         private ProtocolMsgEventArgs _package;
         private ProtocolErrorEventArgs _errorFrame;
-        private const uint PROTOCOL_FRAME_SIZE = 6;       
+        private const uint PROTOCOL_FRAME_SIZE = 7;       
         private const uint MAX_FRAME_LEN = 65536;
         private const uint MAX_ERROR_COUNT = 100;
         private static byte[] _crc8Table = new byte[256] 
@@ -234,7 +234,7 @@ namespace EGSE.Protocols
                 OnErrorFrame(buf, 0, buf.Length, "Превышен максимальный размер кадра");
                 return false;
             }
-            bufOut = new byte[buf.Length + PROTOCOL_FRAME_SIZE + 1];
+            bufOut = new byte[buf.Length + PROTOCOL_FRAME_SIZE];
             bufOut[0] = 0x5E;
             bufOut[1] = 0x4D;             
             try
@@ -260,7 +260,7 @@ namespace EGSE.Protocols
         //        bufOut[bufOut.Length-1] = _crc8Table[bufOut[bufOut.Length-1] ^ bufOut[i]];
         //    }
             bufOut[bufOut.GetUpperBound(0)] = 0;
-            for (byte i = 0; i < bufOut.GetUpperBound(0) - 1; i++)
+            for (byte i = 0; i < bufOut.GetUpperBound(0); i++)
             {
                 bufOut[bufOut.GetUpperBound(0)] = _crc8Table[bufOut[bufOut.GetUpperBound(0)] ^ bufOut[i]];
             }

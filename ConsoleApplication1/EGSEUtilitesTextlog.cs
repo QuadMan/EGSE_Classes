@@ -30,8 +30,34 @@ namespace EGSE.Utilites
     /// <summary>
     /// Класс единичного текстлога
     /// </summary>
-    public class TxtLogger
+    public class TxtLogger //: IDisposable
     {
+        //private bool disposed = false;
+
+        //public void Dispose()
+        //{
+        //    Cleanup(true);
+        //    GC.SuppressFinalize(this);
+        //}
+
+        //private void Cleanup(bool disposing)
+        //{
+        //    if (!this.disposed)
+        //    {
+        //        if (disposing)
+        //        {
+        //            _sw.Flush();
+
+        //        }
+        //    }
+        //    disposed = true;
+        //}
+
+        //~TxtLogger()
+        //{
+        //    Cleanup(false);
+        //}
+
         /// <summary>
         /// Имя файла
         /// Объект StreamWriter, работающий с log-файлом
@@ -143,9 +169,6 @@ namespace EGSE.Utilites
         {
             _sw.Flush();
         }
-        ~TxtLogger()
-        {
-        }
     }
     /// <summary>
     /// Класс множества текстлогов
@@ -204,6 +227,12 @@ namespace EGSE.Utilites
             {
                 return txtLoggers[i];
             }
+        }
+
+        ~TxtLoggers()
+        {
+            foreach (TxtLogger tl in txtLoggers)
+                tl.Dispose(); 
         }
     }
 }
