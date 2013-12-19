@@ -72,10 +72,11 @@ namespace EGSE.Utilites
         /// Формируется при первомм обращении к классу.
         /// </summary>
         private static ResourceManager[] _rm;
+
         /// <summary>
         /// Возвращает строку из ресурса, соответствующую заданому ключу.
         /// </summary>
-        /// <param name="mark">Ключ</param>
+        /// <param name="mark">Ключ строки</param>
         /// <returns>Значение строки в ресурсах</returns>
         public static string Get(string mark)
         {
@@ -86,7 +87,7 @@ namespace EGSE.Utilites
                 int i = 0;
                 foreach (string s in assembly.GetManifestResourceNames())
                 {
-                    _rm[i++] = new ResourceManager(s.Replace(@".resources", ""), assembly);
+                    _rm[i++] = new ResourceManager(s.Replace(@".resources", string.Empty), assembly);
                 }
             }
 #if (DEBUG)
@@ -107,7 +108,7 @@ namespace EGSE.Utilites
                         else
                         {
                             throw new Exception(@"В ресурсах обнаружен дубликат, ключ: " + mark + @", значение 1: " + firstFindStr + @", значение 2: " + findStr);
-                        };
+                        }
 #else
                         return findStr;
 #endif
@@ -131,6 +132,7 @@ namespace EGSE.Utilites
             return @"Ресурс не найден";
         }
     }
+
     /// <summary>
     /// Класс конвертации различных величин
     /// </summary>
