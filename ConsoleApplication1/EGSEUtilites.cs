@@ -58,11 +58,79 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
-
+using System.Resources;
 
 namespace EGSE.Utilites
 {
-
+    /// <summary>
+    /// Класс для работы со строковыми ресусрами.
+    /// (Если define DEBUG, ищет дубликаты в ресурсах)
+    /// </summary>
+    public static class Resource
+    {
+        /// <summary>
+        /// Формируется при первомм обращении к классу.
+        /// </summary>
+        private static ResourceManager[] _rm;
+        /// <summary>
+        /// Возвращает строку из ресурса, соответствующую заданому ключу.
+        /// </summary>
+        /// <param name="mark">Ключ</param>
+        /// <returns>Значение строки в ресурсах</returns>
+        public static string Get(string mark)
+        {
+            if (null == _rm)
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                _rm = new ResourceManager[assembly.GetManifestResourceNames().Length];
+                int i = 0;
+                foreach (string s in assembly.GetManifestResourceNames())
+                {
+                    _rm[i++] = new ResourceManager(s.Replace(@".resources", ""), assembly);
+                }
+            }
+#if (DEBUG)
+            string firstFindStr = null;
+#endif
+            foreach (ResourceManager rm in _rm)
+            {
+                try
+                {
+                    string findStr = rm.GetString(mark);
+                    if ((null != findStr) && (findStr.Length > 0))
+                    {
+#if (DEBUG)
+                        if (null == firstFindStr)
+                        {
+                            firstFindStr = findStr;
+                        }                            
+                        else
+                        {
+                            throw new Exception(@"В ресурсах обнаружен дубликат, ключ: " + mark + @", значение 1: " + firstFindStr + @", значение 2: " + findStr);
+                        };
+#else
+                        return findStr;
+#endif
+                    }
+                }
+                catch (MissingManifestResourceException)
+                {
+                    continue;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+            }
+#if (DEBUG)
+            if (null != firstFindStr)
+            {
+                return firstFindStr;
+            }
+#endif
+            return @"Ресурс не найден";
+        }
+    }
     /// <summary>
     /// Класс конвертации различных величин
     /// </summary>
