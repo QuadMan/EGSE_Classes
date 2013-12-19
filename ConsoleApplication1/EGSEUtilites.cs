@@ -340,15 +340,18 @@ namespace EGSE.Utilites
         // значение счетчика времени до проверки совпадения GetValue и SetValue
         private int _timerCnt;
         //
+        private int _defaultValue;
+        //
         private bool _updatingGetState;
 
-        public ControlValue()
+        public ControlValue(int defaultValue = 0)
         {
             _oldGetValue = -1;
             _getValue = 0;
             _setValue = 0;
             _timerCnt = 0;
             _updatingGetState = false;
+            _defaultValue = defaultValue;
         }
 
         public bool AddProperty(UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
@@ -403,6 +406,7 @@ namespace EGSE.Utilites
                     {
                         _setValue &= ~(1 << cv.bitIdx);
                     }
+                    _setValue |= _defaultValue;
                     TimerSet(UPDATE_TIMEOUT_TICKS);            // значение установили, ждем 2 секунды до проверки Get и SetValue
                     cv.func((uint)_setValue);
                 }

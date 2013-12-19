@@ -56,7 +56,9 @@
         }
 **
 ** History:
-**  0.1.0	(10.12.2013) -	Начальная версия 	
+**  0.1.0	(10.12.2013) -	Начальная версия 
+ *  0.2.0   (18.12.2013) - Доработал класс CalibrationValues и Channel, чтобы была настройка - считать-ли отрицательные значения правильными при рассчетах
+ *                          (выявилась ошибка при расчете значения, превышающего калибровочные данные - видимо, прямая экстраполируется неправильно)
 **
 */
 
@@ -173,8 +175,10 @@ namespace EGSE.Utilites.ADC
         /// </summary>
         /// <param name="xValue">Входящее калибровочное значение</param>
         /// <returns>Калибровочное значение YVal</returns>
-        public float Get(float xValue)
+        public float Get(float xValue, bool NegativeIsOk)
         {
+            float value = 0;
+
             if (_listValues.Count == 1)
             {
                 ADCException exc = new ADCException("Ошибка: мало калибровочных данных!");
@@ -187,8 +191,12 @@ namespace EGSE.Utilites.ADC
                     ADCException exc = new ADCException("Ошибка: деление на 0! Значения: " + _listValues[1].XVal);
                     throw exc;
                 }
-                return (_listValues[0].YVal - (_listValues[1].YVal - _listValues[0].YVal) * (_listValues[0].XVal - xValue)
+                value = (_listValues[0].YVal - (_listValues[1].YVal - _listValues[0].YVal) * (_listValues[0].XVal - xValue)
                         / (_listValues[1].XVal - _listValues[0].XVal));
+                if ((NegativeIsOk == false) && (value < 0)) {
+                    value = 0;
+                }
+                return value;
             }
             else if (xValue >= _listValues[_listValues.Count - 1].XVal)
             {
@@ -197,8 +205,12 @@ namespace EGSE.Utilites.ADC
                     ADCException exc = new ADCException("Ошибка: деление на 0! Значения: " + _listValues[_listValues.Count - 1].XVal);
                     throw exc;
                 }
-                return (_listValues[_listValues.Count - 1].YVal + (_listValues[_listValues.Count - 1].YVal - _listValues[_listValues.Count - 2].YVal) * (xValue - _listValues[_listValues.Count - 1].XVal)
-                        / (_listValues[_listValues.Count - 1].XVal - _listValues[_listValues.Count - 2].XVal));
+                value = (_listValues[_listValues.Count - 1].YVal + (_listValues[_listValues.Count - 1].YVal - _listValues[_listValues.Count - 2].YVal) * (xValue - _listValues[_listValues.Count - 1].XVal)
+                        / (_listValues[_listValues.Count - 1].XVal - _listValues[_listValues.Count - 2].XVal)); 
+                if ((NegativeIsOk == false) && (value < 0)) {
+                    value = 0;
+                }
+                return value;
             }
             else
                 for (int i = 0; i < _listValues.Count; i++)
@@ -209,8 +221,12 @@ namespace EGSE.Utilites.ADC
                             ADCException exc = new ADCException("Ошибка: деление на 0! Значения: " + _listValues[i].XVal);
                             throw exc;
                         }
-                        return (_listValues[i - 1].YVal + (_listValues[i].YVal - _listValues[i - 1].YVal) * (xValue - _listValues[i - 1].XVal)
-                                / (_listValues[i].XVal - _listValues[i - 1].XVal));
+                        value = (_listValues[i - 1].YVal + (_listValues[i].YVal - _listValues[i - 1].YVal) * (xValue - _listValues[i - 1].XVal)
+                                / (_listValues[i].XVal - _listValues[i - 1].XVal)); 
+                        if ((NegativeIsOk == false) && (value < 0)) {
+                            value = 0;
+                        }
+                        return value;
                     }
                         
             return 0;
@@ -258,6 +274,12 @@ namespace EGSE.Utilites.ADC
         private CalibrationValues _clbrtValues;
 
         /// <summary>
+        /// Отрицательные значение некорректны для данного канала, если при расчетах будут получатся
+        /// значения меньше 0, выдаем 0
+        /// </summary>
+        public bool NegativeValuesIsCorrect;
+
+        /// <summary>
         /// Конструктор для класса Channel
         /// </summary>
         /// <param name="id">Новый ID канала
@@ -281,6 +303,8 @@ namespace EGSE.Utilites.ADC
             for (int i = 0; i < averageLevel; i++)
                 _listDatas.Add(0);
             _clbrtValues = calibration;
+
+            NegativeValuesIsCorrect = false;
         }
 
         /// <summary>
@@ -331,7 +355,7 @@ namespace EGSE.Utilites.ADC
 
             if (_clbrtValues == null)
                 return fMidle;
-            return _clbrtValues.Get(fMidle); 
+            return _clbrtValues.Get(fMidle,NegativeValuesIsCorrect); 
         }
     }
 //*****************************************************************************

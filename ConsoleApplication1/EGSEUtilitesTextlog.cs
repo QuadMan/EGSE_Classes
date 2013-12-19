@@ -284,8 +284,8 @@ namespace EGSE.Utilites
 
         ~TxtLoggers()
         {
-            foreach (TxtLogger tl in txtLoggers)
-                tl.Dispose(); 
+            //foreach (TxtLogger tl in txtLoggers)
+            //    tl.Dispose(); 
         }
     }
 }

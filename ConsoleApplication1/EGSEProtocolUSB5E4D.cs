@@ -145,8 +145,8 @@ namespace EGSE.Protocols
         public ProtocolUSB5E4D(FileStream decLogStream, TxtLogger encLogStream, bool decLogEnable, bool encLogEnable)
             : this()
         {
-            decLogStream = null;
-            encLogStream = null;
+            _decLogStream = null;
+            _encLogStream = null;
             if ((decLogStream != null) && decLogStream.CanRead)
             {
                 _decLogStream = decLogStream;
@@ -376,7 +376,7 @@ namespace EGSE.Protocols
             }
             catch (OverflowException)
             {
-                OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения");
+                OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения"); // где переполнение, лучше указать
                 return false;  
             }
 
@@ -389,7 +389,7 @@ namespace EGSE.Protocols
 
             Array.Copy(buf, 0, bufOut, 6, buf.Length);
             bufOut[bufOut.GetUpperBound(0)] = 0;
-            for (byte i = 0; i < bufOut.GetUpperBound(0) - 1; i++)
+            for (byte i = 0; i < bufOut.GetUpperBound(0); i++)
             {
                 bufOut[bufOut.GetUpperBound(0)] = _crc8Table[bufOut[bufOut.GetUpperBound(0)] ^ bufOut[i]];
             }

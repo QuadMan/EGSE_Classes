@@ -17,6 +17,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace EGSE.Cyclogram
 {
@@ -38,7 +40,7 @@ namespace EGSE.Cyclogram
     /// <summary>
     /// Класс команды циклограммы
     /// </summary>
-    public class CyclogramCommand 
+    public class CyclogramLine : INotifyPropertyChanged
     {
         /// <summary>
         /// Идентификатор неизвестной команды
@@ -46,9 +48,14 @@ namespace EGSE.Cyclogram
         public const int CYC_UNKNOWN_COMMAND_ID = -1;
 
         /// <summary>
+        /// Является ли эта строка командой
+        /// </summary>
+        public bool isCommand;
+
+        /// <summary>
         /// Название команды
         /// </summary>
-        public string name;
+        public string cmdName;
 
         /// <summary>
         /// Функция тестирования команды
@@ -81,11 +88,6 @@ namespace EGSE.Cyclogram
         public uint cycIdx;
 
         /// <summary>
-        /// На какой строке файла циклограмм находится команда
-        /// </summary>
-        public int onLine;
-
-        /// <summary>
         /// Параметры команды
         /// </summary>
         public string[] parameters;
@@ -99,22 +101,88 @@ namespace EGSE.Cyclogram
         /// <summary>
         /// Задержка перед выполнением этой команды, в милисекундах
         /// </summary>
-        public int delayBeforeCmdMs;
+        //public int delayBeforeCmdMs;
 
         /// <summary>
         /// Абсолютное время выполнения этой команды (в данный моммент не используется)
         /// </summary>
-        public string absoluteTime;
+        //public string absoluteTime;
 
         /// <summary>
         /// Была ли ошибка при распозновании этой команды
         /// </summary>
         public string errorInCommand;
 
+        public bool wasError
+        {
+            get
+            {
+                return (errorInCommand != "");
+            }
+        }
+
+        public int DelayOriginal;
+
+            private int _line;
+            private string _absoluteTime;
+            private int _delay;
+            private string _delayStr;
+            private string _command;
+
+            public int Line { get { return _line; } set { _line = value; FirePropertyChangedEvent("Line"); } }
+            public string AbsoluteTime 
+            { 
+                get 
+                {
+                    if (isCommand) return _absoluteTime;
+                    else return "";
+                } 
+                set 
+                { 
+                    _absoluteTime = value;
+                    FirePropertyChangedEvent("AbsoluteTime"); 
+                } 
+            }
+            public int Delay 
+            { 
+                get 
+                { 
+                    return _delay; 
+                }
+ 
+                set 
+                { 
+                    _delay = value; 
+                    //FirePropertyChangedEvent("Delay"); 
+                    FirePropertyChangedEvent("DelayStr"); 
+                } 
+            }
+            public string DelayStr 
+            { 
+                get 
+                { 
+                    if (isCommand) return  ((float)_delay / 1000).ToString();
+                    else return "";
+                } 
+            }
+            public string Command { get { return _command; } set { _command = value; FirePropertyChangedEvent("Command"); } }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+            private void FirePropertyChangedEvent(string propertyName)
+            {
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+
+            public void RestoreDelay()
+            {
+                //Debug.WriteLine("delay restore:{0}",DelayOriginal);
+                Delay = DelayOriginal;
+            }
+
         /// <summary>
         /// Конструктор по-умолчанию
         /// </summary>
-        public CyclogramCommand()
+        public CyclogramLine()
         {
             clear();
         }
@@ -126,10 +194,10 @@ namespace EGSE.Cyclogram
         /// <param name="testFunc">Функция тестирования</param>
         /// <param name="execFunc">Функция выполнения</param>
         /// <param name="color">Цвет команды</param>
-        public CyclogramCommand(string name, testFunctionDelegate testFunc, execFunctionDelegate execFunc, string color)
+        public CyclogramLine(string name, testFunctionDelegate testFunc, execFunctionDelegate execFunc, string color)
         {
             clear();
-            this.name = name;
+            this.cmdName = name;
             testFunction = testFunc;
             execFunction = execFunc;
             this.color = color;
@@ -140,20 +208,23 @@ namespace EGSE.Cyclogram
         /// </summary>
         public void clear()
         {
-            name = "";
+            cmdName = "";
+            _command = "";
             testFunction = null;
             execFunction = null;
             color = "";
             id = CYC_UNKNOWN_COMMAND_ID;
             cycFullFileName = "";
             cycIdx = 0;
-            onLine = 0;
-
-            parameters = null;
+            _line = 0;
+            isCommand = false;
             comments = "";
+            DelayOriginal = 0;
+            
+            parameters = null;
 
-            delayBeforeCmdMs = 0;
-            absoluteTime = "";
+            _delay = 0;
+            AbsoluteTime = "";
             errorInCommand = "";
         }
 
@@ -189,7 +260,7 @@ namespace EGSE.Cyclogram
             string tFunStr = "";
             string eFunStr = "";
             string errsStr = "";
-            string commStr = "";
+            //string commStr = "";
             if (testFunction != null)
             {
                 tFunStr = testFunction.Method.ToString();
@@ -202,11 +273,11 @@ namespace EGSE.Cyclogram
             {
                 errsStr = " Errors:" + errorInCommand;
             }
-            if (comments != "")
-            {
-                commStr = " Comments:" + comments;
-            }
-            return "<"+onLine.ToString()+"> "+name + " " + tFunStr + " " + eFunStr + errsStr + commStr;
+            //if (comments != "")
+            //{
+            //    commStr = " Comments:" + comments;
+            //}
+            return "<" + _line.ToString() + "> " + cmdName + " " + tFunStr + " " + eFunStr + errsStr;// +commStr;
         }
     }
 
@@ -216,7 +287,7 @@ namespace EGSE.Cyclogram
     /// В случае поддерживаемых команд, ключем словаря является название команды (должно быть уникальным)
     /// В случае команд из файла циклограмм, ключем является номер (порядковый) команды циклограммы
     /// </summary>
-    public class CyclogramCommands : Dictionary<string, CyclogramCommand>
+    public class CyclogramCommands : Dictionary<string, CyclogramLine>
     {
         private int _totalCommandsCount;
 
@@ -233,7 +304,7 @@ namespace EGSE.Cyclogram
         /// <param name="cmd">Команда</param>
         /// <returns>Если ключ уникален, команда добавляется и возвращается TRUE, в противном случае, команда
         /// не добавляется и функция возвращает FALSE</returns>
-        public bool AddCommand(string cmdKey, CyclogramCommand cmd)
+        public bool AddCommand(string cmdKey, CyclogramLine cmd)
         {
             if (ContainsKey(cmdKey))
             {
