@@ -155,6 +155,7 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="reaEv"></param>
         /// <returns>строку с описанием нажатого элемента (null, если ничего не найдено)</returns>
+        /*
         public static string ElementClicked(MouseEventArgs reaEv)
         {
 
@@ -190,7 +191,7 @@ namespace EGSE.Utilites
             }
             return strRes;
         }
-
+        */
     }
 
     /// <summary>
@@ -308,24 +309,121 @@ namespace EGSE.Utilites
     /// </summary>
     public class ControlValue
     {
-        public enum ValueState {vsUnchanged, vsChanged, vsCounting }
-        private int _oldGetValue;
-        private int _getValue;
-        private int _setValue;
-        private int _timerCnt;
+        private const int UPDATE_TIMEOUT_TICKS = 3;
+        public delegate void setFunctionDelegate(UInt32 value);
 
-        public ControlValue()
+        struct CVProperty
+        {
+            public UIElement cb;
+            public UInt16 bitIdx;
+            public UInt16 bitLen;
+            public setFunctionDelegate func;
+
+            public CVProperty(UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
+            {
+                cb = _cb;
+                bitIdx = _bitIdx;
+                bitLen = _bitLen;
+                func = _func;
+            }
+        };
+
+        List<CVProperty> cvpl = new List<CVProperty>();
+
+        public enum ValueState { vsUnchanged, vsChanged, vsCounting };
+        // старое значение, которое получили
+        private int _oldGetValue;
+        // значение, которое получаем из USB
+        private int _getValue;
+        // значение, которое уставливается из интерфейса
+        private int _setValue;
+        // значение счетчика времени до проверки совпадения GetValue и SetValue
+        private int _timerCnt;
+        //
+        private int _defaultValue;
+        //
+        private bool _updatingGetState;
+
+        public ControlValue(int defaultValue = 0)
         {
             _oldGetValue = -1;
             _getValue = 0;
             _setValue = 0;
             _timerCnt = 0;
+            _updatingGetState = false;
+            _defaultValue = defaultValue;
         }
 
+        public bool AddProperty(UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
+        {
+            if (_cb is CheckBox)
+            {
+                (_cb as CheckBox).Click += _cb_Click;
+            }
+            else if (_cb is ComboBox)
+            {
+                (_cb as ComboBox).SelectionChanged += ControlValue_SelectionChanged;
+            }
+            else return false;
+
+            cvpl.Add(new CVProperty(_cb, _bitIdx, _bitLen,_func));
+            return true;
+        }
+
+        void ControlValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (_updatingGetState) return;
+            foreach (CVProperty cv in cvpl)
+            {
+                if ((cv.cb is ComboBox) && (cv.cb == sender))
+                {
+                    Int32 mask = 0;
+                    for (UInt16 i = 0; i < cv.bitLen; i++)
+                    {
+                        mask |= (1 << (cv.bitIdx + i));
+                    }
+                    _setValue &= ~mask;
+                    _setValue |= (cv.cb as ComboBox).SelectedIndex << cv.bitIdx;
+                    TimerSet(UPDATE_TIMEOUT_TICKS);
+                    cv.func((uint)_setValue);
+                }
+            }            
+        }
+
+        void _cb_Click(object sender, RoutedEventArgs e)
+        {
+            if (_updatingGetState) return;
+
+            foreach (CVProperty cv in cvpl)
+            {
+                if ((cv.cb is CheckBox) && (cv.cb == sender))
+                {
+                    if ((bool)(cv.cb as CheckBox).IsChecked)
+                    {
+                        _setValue |= (1 << cv.bitIdx);
+                    }
+                    else
+                    {
+                        _setValue &= ~(1 << cv.bitIdx);
+                    }
+                    _setValue |= _defaultValue;
+                    TimerSet(UPDATE_TIMEOUT_TICKS);            // значение установили, ждем 2 секунды до проверки Get и SetValue
+                    cv.func((uint)_setValue);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Метод для принудительного вызова через определнное время проверки
+        /// установленного и полученного значений
+        /// </summary>
         public void RefreshGetValue() {
-            _timerCnt = 2;
+            _timerCnt = UPDATE_TIMEOUT_TICKS;
         }
 
+        /// <summary>
+        /// Значение, полученное из USB
+        /// </summary>
         public int GetValue
         {
             get
@@ -339,6 +437,9 @@ namespace EGSE.Utilites
             }
         }
 
+        /// <summary>
+        /// Значение, установленное из интерфейса
+        /// </summary>
         public int SetValue
         {
             get { return _setValue; }
@@ -346,25 +447,62 @@ namespace EGSE.Utilites
             {
                 _setValue = value;
 
-                TimerSet(2);
+                TimerSet(UPDATE_TIMEOUT_TICKS);            // значение установили, ждем 2 секунды до проверки Get и SetValue
             }
         }
 
+        /// <summary>
+        /// Устаналиваем, сколько "тиков" ждать
+        /// </summary>
+        /// <param name="timerVal"></param>
         private void TimerSet(int timerVal)
         {
             _timerCnt = timerVal;
         }
 
+        /// <summary>
+        /// Один тик таймера (вызывается из внешнего прерывания и может быть любым, хоть 1 секунда, хоть 500 мс)
+        /// </summary>
+        /// <returns>Функция возвращает результат проверки Set и Get значений, если время истекло, или vsCounting, если счет продолжается</returns>
         public ValueState TimerTick()
         {
-            if ((_timerCnt > 0) && (--_timerCnt == 0))
+            if ((_timerCnt > 0) && (--_timerCnt == 0))          // пришло время для проверки Get и Set Value
             {
-                if (Changed()) { return ValueState.vsChanged; }
-                else { return ValueState.vsUnchanged; }
+                //if (Changed()) { return ValueState.vsChanged; }
+                //else { return ValueState.vsUnchanged; }
+
+                if (Changed()) UpdateGetProperties();
             }
             return ValueState.vsCounting;
         }
 
+        private void UpdateGetProperties()
+        {
+            _updatingGetState = true;
+            foreach (CVProperty cv in cvpl)
+            {
+                if (cv.cb is CheckBox)
+                {
+                    (cv.cb as CheckBox).IsChecked = ((_getValue & (1 << cv.bitIdx)) > 0);
+                }
+                if (cv.cb is ComboBox)
+                {
+                    Int32 mask = 0;
+                    for (UInt16 i = 0; i < cv.bitLen; i++)
+                    {
+                        mask |= (1 << (cv.bitIdx + i));
+                    }
+                    (cv.cb as ComboBox).SelectedIndex = (_getValue & mask) >> cv.bitIdx;
+                }
+            }
+            _setValue = _getValue;
+            _updatingGetState = false;
+        }
+
+        /// <summary>
+        /// Проверяем значения
+        /// </summary>
+        /// <returns></returns>
         private bool Changed()
         {
             return (_oldGetValue != _getValue) || (_setValue != _getValue);

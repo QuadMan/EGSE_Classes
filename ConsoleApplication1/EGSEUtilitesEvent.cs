@@ -82,7 +82,7 @@ namespace EGSE.Utilites
     /// <summary>
     /// Класс генерации информации нажатия клавиши мыши на элементе
     /// </summary>
-    class EventClickToString
+    static public class EventClickToString
         {
 
             /// <summary>

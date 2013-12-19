@@ -145,8 +145,8 @@ namespace EGSE.Protocols
         public ProtocolUSB5E4DNoHeadCrc(FileStream decLogStream, TxtLogger encLogStream, bool decLogEnable, bool encLogEnable)
             : this()
         {
-            decLogStream = null;
-            encLogStream = null;
+            _decLogStream = null;
+            _encLogStream = null;
             if ((decLogStream != null) && decLogStream.CanRead)
             {
                 _decLogStream = decLogStream;
@@ -369,7 +369,7 @@ namespace EGSE.Protocols
             bufOut[4] = unchecked((byte)buf.Length);
             Array.Copy(buf, 0, bufOut, 5, buf.Length);
             bufOut[bufOut.GetUpperBound(0)] = 0;
-            for (byte i = 0; i < bufOut.GetUpperBound(0) - 1; i++)
+            for (byte i = 0; i < bufOut.GetUpperBound(0); i++)
             {
                 bufOut[bufOut.GetUpperBound(0)] = _crc8Table[bufOut[bufOut.GetUpperBound(0)] ^ bufOut[i]];
             }

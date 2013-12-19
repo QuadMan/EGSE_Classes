@@ -30,8 +30,34 @@ namespace EGSE.Utilites
     /// <summary>
     /// Класс единичного текстлога
     /// </summary>
-    public class TxtLogger
+    public class TxtLogger //: IDisposable
     {
+        //private bool disposed = false;
+
+        //public void Dispose()
+        //{
+        //    Cleanup(true);
+        //    GC.SuppressFinalize(this);
+        //}
+
+        //private void Cleanup(bool disposing)
+        //{
+        //    if (!this.disposed)
+        //    {
+        //        if (disposing)
+        //        {
+        //            _sw.Flush();
+
+        //        }
+        //    }
+        //    disposed = true;
+        //}
+
+        //~TxtLogger()
+        //{
+        //    Cleanup(false);
+        //}
+
         /// <summary>
         /// Имя файла
         /// Объект StreamWriter, работающий с log-файлом
@@ -64,10 +90,10 @@ namespace EGSE.Utilites
         /// <param name="fName"></param>
         public TxtLogger(string fName)
         {
-            _fName = fName;
             _enableTextWrite = true;
             _enableTimeWrite = true;
             _logtime = new DateTime();
+            _fName = MakeLoggerDir() + "\\" + GetLoggerFileName(fName);
             _sw = new StreamWriter(_fName, true);
         }
 
@@ -137,14 +163,64 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
+        /// Метод по имени файла возвращает полное имя файла с текущей датой в имени
+        /// </summary>
+        /// <param name="strFileName">Имя файла/или путь</param>
+        /// <returns>Полное имя файла</returns>
+        public string GetLoggerFileName(string strFileName)
+        {
+
+            string[] strName;
+            string strRes = null;
+
+            _logtime = DateTime.Now;
+
+            strName = strFileName.Split(new Char[] { '.' });
+            strRes += strName[0];
+            for (int i = 1; i < strName.GetLength(0) - 1; i++)
+                strRes += "." + strName[i];
+            strRes += System.String.Format("_{0:d2}_{1:d2}{2:d2}{3:d2}.", _logtime.Day, _logtime.Hour, _logtime.Minute, _logtime.Second);
+            strRes += strName[strName.GetLength(0) - 1];
+
+            return strRes;
+        }
+        /// <summary>
+        /// Метод создает директорию в папке с исполнительным кодом программы
+        /// </summary>
+        /// <returns>Строка с новой директорией</returns>
+        public string MakeLoggerDir()
+        {
+            string strRes = null;
+
+            strRes = GetLoggerDir();
+            Directory.CreateDirectory(strRes);
+            return strRes;
+        }
+
+        /// <summary>
+        /// Метод определяет директорию, в которой будут хранится текстлоги
+        /// </summary>
+        /// <returns>Строка с директорией</returns>
+        public string GetLoggerDir()
+        {
+            string strRes = null;
+
+            _logtime = DateTime.Now;
+            strRes = Directory.GetCurrentDirectory().ToString();
+            if (!strRes.EndsWith("\\") && !strRes.EndsWith("/"))
+                strRes += "\\";
+            strRes += "LOGS\\";
+            strRes += _logtime.Year.ToString().Substring(2);
+            strRes += System.String.Format("{0:d2}", _logtime.Month);
+            return strRes;
+        }
+
+        /// <summary>
         /// Метод, очищающий буфер и производящий сброс информации непосредственно в log-файл
         /// </summary>
         public void LogFlush()
         {
             _sw.Flush();
-        }
-        ~TxtLogger()
-        {
         }
     }
     /// <summary>
@@ -204,6 +280,12 @@ namespace EGSE.Utilites
             {
                 return txtLoggers[i];
             }
+        }
+
+        ~TxtLoggers()
+        {
+            //foreach (TxtLogger tl in txtLoggers)
+            //    tl.Dispose(); 
         }
     }
 }
