@@ -54,7 +54,7 @@
     <Compile Include="EGSEDevice.cs" />
     <Compile Include="EGSEProtocolUSB.cs" />
     <Compile Include="EGSEProtocolUSB5E4D.cs" />
-    <Compile Include="EGSEProtocolUSB5E4DNoCrc.cs" />
+    <Compile Include="EGSEProtocolUSB5E4DNoHeadCrc.cs" />
     <Compile Include="EGSEProtocolUSB7C6E.cs" />
     <Compile Include="EGSEThreadingCyclogram.cs" />
     <Compile Include="EGSEThreadingProtocol.cs" />
