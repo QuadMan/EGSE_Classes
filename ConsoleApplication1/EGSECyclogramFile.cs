@@ -19,6 +19,7 @@ using System;
 using EGSE.Cyclogram;
 using System.IO;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace EGSE.Cyclogram
 {
@@ -53,37 +54,20 @@ namespace EGSE.Cyclogram
         /// </summary>
         const int MAX_SECONDS_VALUE = 65535;
 
-        public string FileName;
-        /// <summary>
-        /// 
-        /// </summary>
-        public int curCommandLine;
-
-        /// <summary>
-        /// текущая команда
-        /// </summary>
+        // текущая команда
         private CyclogramLine _curCommand;
-
-        /// <summary>
-        /// Список доступных команд циклограммы
-        /// </summary>
+        // Список доступных команд циклограммы
         private CyclogramCommands _availableCommands;
-
-        /// <summary>
-        /// Текущая строка файла циклограмм
-        /// </summary>
+        // Текущая строка файла циклограмм
         private int _curLine;
-
-        /// <summary>
-        /// Была ли ошибка при парсинге файла
-        /// </summary>
+        // Была ли ошибка при парсинге файла
         private bool _wasError;
 
         /// <summary>
-        /// Признак присутствия команды на текущей строке при парсинге файла
+        /// Имя файла циклограмм
         /// </summary>
-        //private bool _commandExistsOnLine;
-
+        public string FileName;
+        
         /// <summary>
         /// Список команд, создаваемый из файла циклограмм
         /// </summary>
@@ -103,29 +87,26 @@ namespace EGSE.Cyclogram
         /// <summary>
         /// Конструктор
         /// </summary>
-        /// <param name="availableCommands">Список доступных команд циклограммы</param>
-        public CyclogramFile(CyclogramCommands availableCommands)
+        public CyclogramFile()
         {
-            curCommandLine = 0;
-            //_commandExistsOnLine = false;
             _curLine = 0;
             _wasError = false;
-            _availableCommands = availableCommands;
-            commands = new ObservableCollection<CyclogramLine>();
+            _availableCommands = null;
             _curCommand = new CyclogramLine();
+            commands = new ObservableCollection<CyclogramLine>();
         }
 
         /// <summary>
         /// Функция из строки вырезает комментарии и возвращает строку без комментариев по ссылке и сам комментарий в возвращаемом значении
         /// </summary>
         /// <param name="cycStr">Исходная строка, из которой исключаются комментарии</param>
-        /// <returns>Возвращает строку комментариев, если они ести и "", если их нет</returns>
+        /// <returns>Cтрока комментариев (если их нет, возвращет "")</returns>
         private string TakeComments(ref string cycStr)
         {
-            int commentStartPos = cycStr.IndexOf(CYC_COMMENT_CHAR);             // ищем начало комментариев
+            int commentStartPos = cycStr.IndexOf(CYC_COMMENT_CHAR);             
             if (commentStartPos != -1)
             {
-                string commentStr = cycStr.Substring(commentStartPos).Trim();   // получаем комментарии
+                string commentStr = cycStr.Substring(commentStartPos).Trim();   
 
                 cycStr = cycStr.Remove(commentStartPos).Trim();                 // убираем из исходной строки комментарии
 
@@ -146,8 +127,10 @@ namespace EGSE.Cyclogram
         /// <param name="timeStr">распознанное время из команды</param>
         private void tryParseTimeToken(string timeStr)
         {
-            string[] timeTokens = timeStr.Split('.');
-            if (timeTokens.Length == 1) // дробное значение не задано, считаем, что заданы секунды
+            string[] timeTokens = timeStr.Split('.');   // timeTokens[0] - значение секунд, timeTokens[1] - значение мс, если задано
+            
+            // дробное значение не задано, считаем, что заданы секунды
+            if (timeTokens.Length == 1) 
             {
                 try
                 {
@@ -157,16 +140,16 @@ namespace EGSE.Cyclogram
                         CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr+". Секунды должны быть заданы от 0 до " + MAX_SECONDS_VALUE.ToString());
                         throw exc;                        
                     }
-                    _curCommand.Delay = tempSec * 1000;
+                    _curCommand.DelayMs = tempSec * 1000;
+                    _curCommand.DelayOriginal = _curCommand.DelayMs;
                 }
                 catch (FormatException)
                 {
                     CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr);
                     throw exc;
                 }
-                _curCommand.DelayOriginal = _curCommand.Delay;
             }
-            else
+            else if (timeTokens.Length == 2) // задано и дробное значение
             {
                 try
                 {
@@ -180,31 +163,37 @@ namespace EGSE.Cyclogram
                     int ms = Int32.Parse(timeTokens[1]);
                     if ((ms < 0) && (ms > 999))
                     {
-                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды - " + timeStr + ". Милисекунды должны быть от 0 до 999.");
+                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr + ". Милисекунды должны быть от 0 до 999.");
                         throw exc;
                     }
 
-                    _curCommand.Delay = tempSec * 1000 + ms;
+                    _curCommand.DelayMs = tempSec * 1000 + ms;
+                    _curCommand.DelayOriginal = _curCommand.DelayMs;
                 }
                 catch (FormatException)
                 {
                     CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr);
                     throw exc;
                 }
-                _curCommand.DelayOriginal = _curCommand.Delay;
             }
-
+            else // ошибка задания времени (время разделено более одной точкой)
+            {
+                CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr);
+                throw exc;
+            }
         }
 
         /// <summary>
         /// Проверяем, что команда существует в списке доступных команд
-        /// Если команда не находится в списке, вызывается исключение
+        /// Если команда не находится в списке, вызывается исключение CyclogramParsingException
         /// Если команда в списке находится, переменной _curCommand присваиваются значения id, execFunction и testFunction
         /// Выставляется флаг cmdExists
         /// </summary>
         /// <param name="cmdStr">Название команды</param>
         private void tryParseCmdToken(string cmdStr)
         {
+            Debug.Assert(_availableCommands != null, "Список доступных команд циклограммы пуст!");
+
             bool cmdExists = false;
 
             foreach (var cmd in _availableCommands)
@@ -212,9 +201,9 @@ namespace EGSE.Cyclogram
                 if (cmd.Key == cmdStr)
                 {
                     cmdExists = true;
-                    _curCommand.id = cmd.Value.id;
-                    _curCommand.execFunction = cmd.Value.execFunction;
-                    _curCommand.testFunction = cmd.Value.testFunction;
+                    _curCommand.Id = cmd.Value.Id;
+                    _curCommand.ExecFunction = cmd.Value.ExecFunction;
+                    _curCommand.TestFunction = cmd.Value.TestFunction;
 
                     break;
                 }
@@ -233,43 +222,44 @@ namespace EGSE.Cyclogram
         /// <param name="cycStr">Строка циклограммы</param>
         public void TryParseString(string cycStr)
         {
+            _curCommand.Reset();
             // убираем лишнее пробелы из строки
             cycStr.Trim();
-            _curCommand.Command = cycStr;
+            // сохраняем на случай, если эта строка - только комментарий
+            _curCommand.Str = cycStr;   
             // убираем комментарии, сохраняя их в специальной переменной
-            _curCommand.comments += TakeComments(ref cycStr) + "\t";
-            //TakeComments(ref cycStr);
+            _curCommand.Comments += TakeComments(ref cycStr) + "\t";
             // вся строка - комментарий, выходим, нам здесь больше делать нечего
             if (cycStr == "") return;
+
             // кроме комментариев есть еще что-то, пытаемся понять, что, но в любом случае. считаем что должна быть команда
-            //_commandExistsOnLine = true;
-            _curCommand.isCommand = true;
+            _curCommand.IsCommand = true;
             // разделяем строку по словам (разделитель - пробел)
             string[] strTokens = cycStr.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries);
             // если нашли только одно слово, то генерим исключение об ошибке
             if (strTokens.Length <= 1)
             {
-                CyclogramParsingException exc = new CyclogramParsingException("Ошибка в строке " + cycStr + ". Формат задания команд: TIME CMD PARAMS #COMMENTS.");
+                CyclogramParsingException exc = new CyclogramParsingException("Ошибка в строке " + cycStr + ". Формат задания команд: ВРЕМЯ КОМАНДА ПАРАМЕТРЫ #КОММЕНТАРИИ");
                 throw exc;
             }
             // пытаемся разобрать время
             tryParseTimeToken(strTokens[0]);
             // пытаемся разобрать команду
             tryParseCmdToken(strTokens[1]);
-            //
-            _curCommand.Command = strTokens[1];
+            // составляем строку команды для отображения в циклограмме (выкидываем из исходной строки время, так как оно у нас в отдельном столбце)
+            _curCommand.Str = strTokens[1];
             // копируем параметры, если они есть в массив параметров команды
             if (strTokens.Length - 2 > 0)
             {
-                _curCommand.parameters = new string[strTokens.Length - 2];
-                System.Array.Copy(strTokens, 2, _curCommand.parameters, 0, _curCommand.parameters.Length);
+                _curCommand.Parameters = new string[strTokens.Length - 2];
+                System.Array.Copy(strTokens, 2, _curCommand.Parameters, 0, _curCommand.Parameters.Length);
                 for (UInt16 i = 2; i < strTokens.Length; i++)
                 {
-                    _curCommand.Command += " "+strTokens[i];
+                    _curCommand.Str += " "+strTokens[i];
                 }
             }
-            //
-            _curCommand.Command += " "+_curCommand.comments;
+            // добавляем комментарии к строке, если они есть
+            _curCommand.Str += " "+_curCommand.Comments;
             // выполняем функцию тестирования параметров команды
             _curCommand.runTestFunction();
         }
@@ -280,8 +270,12 @@ namespace EGSE.Cyclogram
         /// </summary>
         /// <param name="cycFName">Путь к файлу циклограмм</param>
         /// <param name="availableCommands">Список доступных команд</param>
-        public void TryLoad(string cycFName) //, CyclogramCommands availableCommands)
+        public void TryLoad(string cycFName, CyclogramCommands availableCommands)
         {
+            Debug.Assert(availableCommands != null, "Список доступных команд циклограммы пуст!");
+            string cycLine;
+
+            _availableCommands = availableCommands;
             _wasError = false;
             if (!File.Exists(cycFName))
             {
@@ -290,16 +284,8 @@ namespace EGSE.Cyclogram
                 throw exc;
             }
             FileName = cycFName;
-            //if (availableCommands == null)
-            //{
-            //    _wasError = true;
-            //    CyclogramParsingException exc = new CyclogramParsingException("Список доступных команд пуст, циклограмма не может быть загружена!");
-            //    throw exc;
-            //}
-            string cycLine;
-            _curLine = 1;
             commands.Clear();
-            curCommandLine = 0;
+            _curLine = 1;
             using (StreamReader sr = new StreamReader(cycFName))
             {
                 while (sr.Peek() >= 0)              // читам файл по строкам
@@ -312,13 +298,17 @@ namespace EGSE.Cyclogram
                     catch (CyclogramParsingException e)
                     {
                         _wasError = true;
-                        _curCommand.errorInCommand += e.Message + "\t";
+                        _curCommand.ErrorInCommand += e.Message + "\t";
+                    }
+                    catch
+                    {
+                        _wasError = true;
+                        _curCommand.ErrorInCommand += "Общая ошибка проверки команды.";
                     }
                     finally
                     {
                         _curCommand.Line = _curLine;
-                        //_curCommand.idx = commands.Count;
-                        commands.Add(_curCommand);   // ключ - номер текущей распознанной команды в файле циклограмм
+                        commands.Add(_curCommand);
                         //начинаем собирать новую команду
                         _curCommand = new CyclogramLine();
                     }
@@ -328,72 +318,76 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// 
+        /// Расчитывает абсолютное время для всех команд циклограммы в формате ЧЧ:ММ:СС.МСС
+        /// Может рассчитать относительно заданного времени
         /// </summary>
+        /// <param name="hr">час</param>
+        /// <param name="min">минута</param>
+        /// <param name="sec">секунда</param>
         public void CalcAbsoluteTime(int hr=0,int min=0, int sec=0)
         {
-            string aTime = "";
-            UInt32 timeInMs = 0;
-            UInt32 i = 0;
             DateTime dt = new DateTime(1, 1, 1, hr, min, sec, 0);
             foreach (CyclogramLine cl in commands)
             {
-                if (cl.isCommand)
+                if (cl.IsCommand)
                 {
                     cl.AbsoluteTime = dt.ToString("HH:mm:ss.fff");
-                    dt = dt.AddMilliseconds(cl.Delay);
+                    dt = dt.AddMilliseconds(cl.DelayMs);
                 }
             }
         }
 
+        /// <summary>
+        /// Позиционируемся на первую команду циклограммы
+        /// перемещаем указатель _curLine
+        /// </summary>
+        /// <returns>Если команда существует, возвращаем команду, если нет - null</returns>
         public CyclogramLine GetFirstCmd()
         {
-            //UInt16 idx = 0;
-            curCommandLine = 0;
+            _curLine = 0;
             foreach (CyclogramLine cl in commands)
             {
-                if (cl.isCommand)
+                if (cl.IsCommand)
                 {
-                    return commands[curCommandLine];
+                    return commands[_curLine];
                 }
-                curCommandLine++;
+                _curLine++;
             }
             return null;
         }
 
         /// <summary>
-        /// Получаем текущую команду
+        /// Получаем текущую строку (может быть не командой, нужно проверять IsCommand)
         /// </summary>
         /// <returns>Возвращает null, если дошли до конца списка команд</returns>
         public CyclogramLine GetCurCmd()
         {
-            if (curCommandLine == commands.Count - 1)
+            if (_curLine == commands.Count - 1)
                 return null;
             else
             {
-                return commands[curCommandLine];
+                if (commands[_curLine].IsCommand)
+                {
+                    return commands[_curLine];
+                }
+                else
+                {
+                    return GetNextCmd();
+                }
             }
         }
 
         /// <summary>
-        /// Получаем следующую команду
+        /// Ищем следующую команду
         /// </summary>
         /// <returns>Возвращает null, если больше команд нет</returns>
         public CyclogramLine GetNextCmd()
         {
-            //if (curCommandLine == commands.Count - 1)
-            //    return null;
-            //else
-            //{
-            //    curCommandLine++;
-            //    return commands[curCommandLine];// [curCommandIdx.ToString()];
-            //}
-            //curCommandLine++;
-            for (curCommandLine = curCommandLine + 1; curCommandLine < commands.Count; curCommandLine++)
+            for (_curLine = _curLine + 1; _curLine < commands.Count; _curLine++)
             {
-                if (commands[curCommandLine].isCommand)
+                if (commands[_curLine].IsCommand)
                 {
-                    return commands[curCommandLine];
+                    return commands[_curLine];
                 }
             }
             return null;
