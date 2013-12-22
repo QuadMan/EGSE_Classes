@@ -25,7 +25,7 @@ namespace EGSE.Cyclogram
         private CyclogramThread cThread;
         private string statusText;
 
-        public CyclogramCommands cycCommandsAvailable;
+        public CyclogramCommands cycCommandsAvailable = new CyclogramCommands();
 
         public CyclogramControl()
         {
@@ -36,9 +36,47 @@ namespace EGSE.Cyclogram
             cThread.ChangeStateEvent = onCycStateChange;
             cThread.FinishedEvent = onCycFinished;
             //
-            onCycStateChange(CurState.csNone);
-
+            setButtonsByState(CurState.csNone);
+            //
+            cycCommandsAvailable.AddCommand("NOP", new CyclogramLine("NOP", NopTest, NopExec, ""));
+            cycCommandsAvailable.AddCommand("STOP", new CyclogramLine("STOP", StopTest, StopExec, ""));
+            //cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, ""));
         }
+
+        public bool StopTest(string[] Params, out string errString)
+        {
+            errString = "";
+            return true;
+        }
+
+        public bool StopExec(string[] Params)
+        {
+            cThread.StopAndSetNextCmd();
+            return true;
+        }
+        
+        public bool NopTest(string[] Params, out string errString)
+        {
+            errString = "";
+            return true;
+        }
+
+        public bool NopExec(string[] Params)
+        {
+            return true;
+        }
+        
+        public bool LoopTest(string[] Params, out string errString)
+        {
+            errString = "";
+            return true;
+        }
+
+        public bool LoopExec(string[] Params)
+        {
+            return true;
+        }
+
 
         private void onCycFinished(string str)
         {
@@ -46,48 +84,66 @@ namespace EGSE.Cyclogram
         }
 
 
+        private void setButtonsByState(CurState cState)
+        {
+            switch (cState)
+            {
+                case CurState.csLoaded:
+                    StartBtn.IsEnabled = true;
+                    StopBtn.IsEnabled = false;
+                    StepBtn.IsEnabled = true;
+                    StatusLabel.Content = cThread._cycFile.FileName;
+                    break;
+                case CurState.csLoadedWithErrors:
+                    StartBtn.IsEnabled = false;
+                    StopBtn.IsEnabled = false;
+                    StepBtn.IsEnabled = false;
+                    statusText = "Ошибки в циклограмме!";
+                    StatusLabel.Content = statusText;
+                    break;
+                case CurState.csNone:
+                    StartBtn.IsEnabled = false;
+                    StopBtn.IsEnabled = false;
+                    StepBtn.IsEnabled = false;
+                    StatusLabel.Content = "";
+                    break;
+                case CurState.csRunning:
+                    StartBtn.IsEnabled = false;
+                    StopBtn.IsEnabled = true;
+                    StepBtn.IsEnabled = false;
+                    break;
+            }
+        }
+
         private void onCycStateChange(CurState cState)
         {
             DG.Dispatcher.Invoke(new Action(delegate
             {
-                switch (cState)
-                {
-                    case CurState.csLoaded:
-                        StartBtn.IsEnabled = true;
-                        StopBtn.IsEnabled = false;
-                        StepBtn.IsEnabled = true;
-                        StatusLabel.Content = cThread._cycFile.FileName;
-                        break;
-                    case CurState.csLoadedWithErrors:
-                        StartBtn.IsEnabled = false;
-                        StopBtn.IsEnabled = false;
-                        StepBtn.IsEnabled = false;
-                        statusText = "Ошибки в циклограмме!";
-                        StatusLabel.Content = statusText;
-                        break;
-                    case CurState.csNone:
-                        StartBtn.IsEnabled = false;
-                        StopBtn.IsEnabled = false;
-                        StepBtn.IsEnabled = false;
-                        StatusLabel.Content = "";
-                        break;
-                    case CurState.csRunning:
-                        StartBtn.IsEnabled = false;
-                        StopBtn.IsEnabled = true;
-                        StepBtn.IsEnabled = false;
-                        break;
-                }
+                setButtonsByState(cState);
             }));
         }
 
         private void StartBtn_Click(object sender, RoutedEventArgs e)
         {
-            cThread.Start();
+            CyclogramLine curCycLine = (CyclogramLine)DG.SelectedItem;
+
+            if (!curCycLine.IsCommand) return;
+
+            cThread.Start(curCycLine.Line);
         }
 
         private void StopBtn_Click(object sender, RoutedEventArgs e)
         {
             cThread.Stop();
+        }
+
+        private void StepBtn_Click(object sender, RoutedEventArgs e)
+        {
+            CyclogramLine curCycLine = (CyclogramLine)DG.SelectedItem;
+
+            if (!curCycLine.IsCommand) return;
+
+            cThread.Step(curCycLine.Line);
         }
 
         private void onNewCmd(CyclogramLine cycCommand)
@@ -108,9 +164,7 @@ namespace EGSE.Cyclogram
             dlg.DefaultExt = ".cyc"; // Default file extension 
             dlg.Filter = "Файл циклограмм (.cyc)|*.cyc"; // Filter files by extension 
 
-            Nullable<bool> res = dlg.ShowDialog();
-
-            if (res == true)
+            if (dlg.ShowDialog() == true)
             {
                 try
                 {

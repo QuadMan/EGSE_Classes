@@ -74,13 +74,24 @@ namespace EGSE.Utilites.ADC
     /// </summary>
     public class ADCException : ApplicationException
     {
-        public ADCException() { }
-        public ADCException(string message) : base(message) { }
-        public ADCException(string message, Exception ex) : base(message) { }
+        public ADCException() 
+        { 
+        }
+        
+        public ADCException(string message) : base(message) 
+        { 
+        }
+
+        public ADCException(string message, Exception ex) : base(message) 
+        { 
+        }
+        
         // Конструктор для обработки сериализации типа
         protected ADCException(System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext contex)
-            : base(info, contex) { }
+            : base(info, contex) 
+        { 
+        }
     }
 //*****************************************************************************
 //*****************************************************************************
@@ -92,6 +103,12 @@ namespace EGSE.Utilites.ADC
     {
         public float XVal;
         public float YVal;
+
+        /// <summary>
+        /// Конструктор значения
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public CValue(float x, float y)
         {
             XVal = x;
@@ -106,9 +123,7 @@ namespace EGSE.Utilites.ADC
     /// </summary>
     public class CalibrationValues
     {
-        /// <summary>
-        /// Калибровочные данные
-        /// </summary>
+        // Калибровочные данные
         private List<CValue> _listValues;
 
         /// <summary>

@@ -15,20 +15,20 @@
 **
 */
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-
 namespace EGSE.Cyclogram
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    
     /// <summary>
     /// Делегат для функции тесторования команды циклограммы
     /// </summary>
     /// <param name="Params">Массив параметров функции</param>
     /// <param name="errString">Строка ошибок, которые обнаружила фкнция проверки</param>
     /// <returns>TRUE, если результат проверки функции положительный</returns>
-    public delegate bool TestFunctionEventhandler(string[] Params, string errString);
+    public delegate bool TestFunctionEventhandler(string[] Params, out string errString);
 
     /// <summary>
     /// Делегат для функции выполнения команды циклограммы
@@ -110,18 +110,9 @@ namespace EGSE.Cyclogram
         {
             get
             {
-                return (ErrorInCommand != "");
+                return ErrorInCommand != "";
             }
         }
-
-        // Изначальное значение задержки выполнения команды
-        // используется для восстановления значения после отсчета времени при выполненении циклограммы
-        private int _delayOriginal;
-        private int _delayMs;
-        private string _delayStr;
-        private int _line;
-        private string _absoluteTime;       
-        private string _command;
 
         /// <summary>
         /// Строка, на которой находится команда
@@ -132,6 +123,7 @@ namespace EGSE.Cyclogram
             { 
                 return _line; 
             } 
+
             set 
             { 
                 _line = value; 
@@ -146,9 +138,16 @@ namespace EGSE.Cyclogram
         { 
             get 
             {
-                if (IsCommand) return _absoluteTime;
-                else return "";
+                if (IsCommand)
+                {
+                    return _absoluteTime;
+                }
+                else
+                {
+                    return "";
+                }
             } 
+
             set 
             { 
                 _absoluteTime = value;
@@ -171,18 +170,20 @@ namespace EGSE.Cyclogram
             { 
                 _delayMs = value;
                 _delayStr = "";
-                if (IsCommand) _delayStr = ((float)_delayMs / 1000).ToString();
+                if (IsCommand)
+                {
+                    _delayStr = ((float)_delayMs / 1000).ToString();
+                }
+
                 FirePropertyChangedEvent("DelayStr"); 
             } 
         }
 
+        /// <summary>
+        /// Устанавливает оригинальную задержку выпонения команд
+        /// </summary>
         public int DelayOriginal
         {
-            //get
-            //{
-            //    return _delayOriginal;
-            //}
-
             set
             {
                 _delayOriginal = value;
@@ -217,10 +218,26 @@ namespace EGSE.Cyclogram
             } 
         }
 
+        // Изначальное значение задержки выполнения команды
+        // используется для восстановления значения после отсчета времени при выполненении циклограммы
+        private int _delayOriginal;
+        private int _delayMs;
+        private string _delayStr;
+        private int _line;
+        private string _absoluteTime;
+        private string _command;
+
+        /// <summary>
+        /// Событие вызывается для обеспечения INotifyEvent - и вывода команд в таблицу
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+        
         private void FirePropertyChangedEvent(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         /// <summary>
@@ -284,52 +301,21 @@ namespace EGSE.Cyclogram
         /// Запуск и проверка результатов выполнения тестовой функции для данной команды
         /// В случае неудачного выполнения, функция генерирует исключение
         /// </summary>
-        public void runTestFunction()
+        public bool RunTestFunction()
         {
+            Debug.Assert(TestFunction != null, string.Format("Не задана функция тестирования команды {0}",CmdName));
+
             if (TestFunction != null)
             {
-                if (TestFunction(Parameters, ErrorInCommand))
+                string errInCommand;
+                if (!TestFunction(Parameters, out errInCommand))
                 {
-
-                }
-                else
-                {
-                    // TODO throw 
+                    ErrorInCommand += errInCommand+"\t";
+                    return false;
                 }
             }
-            else
-            {
-                // TODO throw;
-            }
-        }
 
-        /// <summary>
-        /// Используется для отладки, вывод информации о команде
-        /// </summary>
-        /// <returns></returns>
-        new public string ToString()
-        {
-            string tFunStr = "";
-            string eFunStr = "";
-            string errsStr = "";
-            //string commStr = "";
-            if (TestFunction != null)
-            {
-                tFunStr = TestFunction.Method.ToString();
-            }
-            if (ExecFunction != null)
-            {
-                eFunStr = ExecFunction.Method.ToString();
-            }
-            if (ErrorInCommand != "")
-            {
-                errsStr = " Errors:" + ErrorInCommand;
-            }
-            //if (comments != "")
-            //{
-            //    commStr = " Comments:" + comments;
-            //}
-            return "<" + _line.ToString() + "> " + CmdName + " " + tFunStr + " " + eFunStr + errsStr;// +commStr;
+            return true;
         }
     }
 
@@ -361,6 +347,7 @@ namespace EGSE.Cyclogram
             {
                 return false;
             }
+
             cmd.Id = _totalCommandsCount;
             Add(cmdKey, cmd);
             _totalCommandsCount++;
@@ -368,5 +355,4 @@ namespace EGSE.Cyclogram
             return true;
         }
     }
-
 }

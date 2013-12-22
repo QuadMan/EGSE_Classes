@@ -54,13 +54,14 @@
     <Compile Include="EGSEDevice.cs" />
     <Compile Include="EGSEProtocolUSB.cs" />
     <Compile Include="EGSEProtocolUSB5E4D.cs" />
-    <Compile Include="EGSEProtocolUSB5E4DNoCrc.cs" />
+    <Compile Include="EGSEProtocolUSB5E4DNoHeadCrc.cs" />
     <Compile Include="EGSEProtocolUSB7C6E.cs" />
     <Compile Include="EGSEThreadingCyclogram.cs" />
     <Compile Include="EGSEThreadingProtocol.cs" />
     <Compile Include="EGSEThreadingUSB.cs" />
     <Compile Include="EGSEUSBFTDI.cs" />
     <Compile Include="EGSEUtilites.cs" />
+    <Compile Include="EGSEUtilitesEvent.cs" />
     <Compile Include="EGSEUtilitesTextlog.cs" />
     <Compile Include="FTD2XX_NET.cs" />
     <Compile Include="Program.cs" />

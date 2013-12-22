@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using EGSE.Cyclogram;
 
@@ -69,6 +70,8 @@ namespace EGSE.Threading {
         private volatile bool _terminated;
         // признак, что циклограмма загружена без ошибок и можно ее выполнять
         private bool _cycLoaded;
+        // при завершении потока, нужно ли переходить на следующую команду
+        private bool _setNextCmd;
 
         /// <summary>
         /// путь до текущей циклограммы (для поддержки подгрузки циклограмм, сейчас не используется)
@@ -136,6 +139,8 @@ namespace EGSE.Threading {
 
             _cycFile = new CyclogramFile();
             _cycLoaded = false;
+
+	        _setNextCmd = false;
 	    }
 
         /// <summary>
@@ -158,6 +163,18 @@ namespace EGSE.Threading {
             }
         }
 
+        private void execCurCmdFunction()
+        {
+            if (curCmd == null) return;
+
+            bool cmdResult = curCmd.ExecFunction(curCmd.Parameters);            
+            // если команда выполнилась с ошибкой, вызовем соответствующий делегат
+            if ((!cmdResult) && (CommandExecErrorEvent != null))
+            {
+                CommandExecErrorEvent(curCmd);
+            }
+        }
+
         /// <summary>
         /// Поток выполнения циклограммы
         /// </summary>
@@ -177,7 +194,15 @@ namespace EGSE.Threading {
                 }
                 else // останавливаем поток
                 {
-                    changeState(CurState.csLoaded);       
+                    changeState(CurState.csLoaded);
+                    if (_setNextCmd)
+                    {
+                        curCmd = _cycFile.GetNextCmd();
+                        if (NextCommandEvent != null)
+                        {
+                            NextCommandEvent(curCmd);
+                        }
+                    }
                     continue;
                 }
 
@@ -188,12 +213,7 @@ namespace EGSE.Threading {
 
                 if ((curCmd.DelayMs <= 0) && (!_terminated))       // пришло время выполнить команду и мы не остановлены извне
                 {
-                    bool cmdResult = curCmd.ExecFunction(curCmd.Parameters);
-                    // если команда выполнилась с ошибкой, вызовем соответствующий делегат
-                    if ((!cmdResult) && (CommandExecErrorEvent != null))
-                    {
-                        CommandExecErrorEvent(curCmd);
-                    }
+                    execCurCmdFunction();
                     curCmd.RestoreDelay();
                     curCmd = _cycFile.GetNextCmd();
                     if (curCmd == null)
@@ -206,6 +226,12 @@ namespace EGSE.Threading {
                     }
                 }
             }
+            //восстанавливаем предыдущее значение задержки, если принудительно остановили циклограмму (по кнопку Стоп)
+            if (curCmd != null)
+            {
+                curCmd.RestoreDelay();
+            }
+
             if (FinishedEvent != null)
             {
                 FinishedEvent(_cycFile.FileName);
@@ -266,6 +292,7 @@ namespace EGSE.Threading {
 
         /// <summary>
         /// Запускаем циклограмму, если она успешно загружена
+        /// TODO: свести к Start(lineNum)
         /// </summary>
         public void Start()
         {
@@ -277,6 +304,7 @@ namespace EGSE.Threading {
                     changeState(CurState.csRunning);
                     _cycFile.CalcAbsoluteTime(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);     // рассчитаем абсолютные времена выполнения для команд циклограммы
 
+                    _setNextCmd = false;
                     _thread = new Thread(Execute);
                     _terminated = false;
                     _thread.Start();
@@ -288,8 +316,54 @@ namespace EGSE.Threading {
         ///  Запускаем циклограмму с определенной строки
         /// </summary>
         /// <param name="LineNum"></param>
-        public void Start(uint LineNum)
+        public void Start(int lineNum)
         {
+            if (!_cycLoaded) return;
+
+            setToLineNum(lineNum);
+            if (curCmd == null) return;
+
+            changeState(CurState.csRunning);
+            _cycFile.CalcAbsoluteTime(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, lineNum);     // рассчитаем абсолютные времена выполнения для команд циклограммы
+
+            _setNextCmd = false;
+            _thread = new Thread(Execute);
+            _terminated = false;
+            _thread.Start();
+        }
+
+        private void setToLineNum(int lineNum)
+        {
+            curCmd = null;
+            foreach (CyclogramLine cl in _cycFile.commands.Where(l => (l.IsCommand) && (l.Line == lineNum)))
+            {
+                curCmd = cl;
+                _cycFile.SetCmdLine(curCmd);
+                if (NextCommandEvent != null)
+                {
+                    NextCommandEvent(curCmd);
+                }
+                return;
+            }
+        }
+
+        public void Step(int lineNum)
+        {
+            if (!_cycLoaded) return;
+
+            setToLineNum(lineNum);
+            if (curCmd == null) return;
+
+            execCurCmdFunction();
+            curCmd = _cycFile.GetNextCmd();
+            if (curCmd == null)
+            {
+                changeState(CurState.csLoaded);       // больше команд нет, останавливаем поток выполнения циклограммы
+            }
+            if (NextCommandEvent != null)
+            {
+                NextCommandEvent(curCmd);
+            }
 
         }
 
@@ -299,6 +373,15 @@ namespace EGSE.Threading {
         public void Stop()
         {
             changeState(CurState.csLoaded);     // по изменению состояния, поток автоматически завершится
+        }
+
+        /// <summary>
+        /// Останавливаем выполнение циклограммы и переходим на следующую команду, если она есть
+        /// </summary>
+        public void StopAndSetNextCmd()
+        {
+            _setNextCmd = true;
+            changeState(CurState.csLoaded);
         }
     }
 

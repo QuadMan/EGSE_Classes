@@ -37,6 +37,8 @@
  *                        коррекция декодера времени
  *  0.2.2   (10.12.2013) - добавил функцию конвертации HEX-строки в массив байт
 **
+ *
+ * TODO: в классе BigBuff попробовать уйти от lock(this) в сторону InterlockedIncrement
 */
 
 using System;
@@ -312,25 +314,27 @@ namespace EGSE.Utilites
         private const int UPDATE_TIMEOUT_TICKS = 3;
         public delegate void setFunctionDelegate(UInt32 value);
 
-        struct CVProperty
+        class CVProperty
         {
-            public UIElement cb;
-            public UInt16 bitIdx;
-            public UInt16 bitLen;
-            public setFunctionDelegate func;
+            public int Idx;
+            public UIElement Control;
+            public UInt16 BitIdx;
+            public UInt16 BitLen;
+            public setFunctionDelegate Func;
 
-            public CVProperty(UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
+            public CVProperty(int _idx, UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
             {
-                cb = _cb;
-                bitIdx = _bitIdx;
-                bitLen = _bitLen;
-                func = _func;
+                Idx = _idx;
+                Control = _cb;
+                BitIdx = _bitIdx;
+                BitLen = _bitLen;
+                Func = _func;
             }
         };
 
         List<CVProperty> cvpl = new List<CVProperty>();
 
-        public enum ValueState { vsUnchanged, vsChanged, vsCounting };
+        private enum ValueState { vsUnchanged, vsChanged, vsCounting };
         // старое значение, которое получили
         private int _oldGetValue;
         // значение, которое получаем из USB
@@ -354,7 +358,7 @@ namespace EGSE.Utilites
             _defaultValue = defaultValue;
         }
 
-        public bool AddProperty(UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
+        public bool AddProperty(int _idx, UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
         {
             if (_cb is CheckBox)
             {
@@ -366,51 +370,51 @@ namespace EGSE.Utilites
             }
             else return false;
 
-            cvpl.Add(new CVProperty(_cb, _bitIdx, _bitLen,_func));
+            //TODO: проверить, что такого индекса еще нет
+            cvpl.Add(new CVProperty(_idx, _cb, _bitIdx, _bitLen,_func));
             return true;
+        }
+
+        private bool setCVProperty(CVProperty cv, int pValue)
+        {
+            if (cv == null) return false;
+
+            Int32 mask = 0;
+            for (UInt16 i = 0; i < cv.BitLen; i++)
+            {
+                mask |= (1 << (cv.BitIdx + i));
+            }
+            pValue &= (mask >> cv.BitIdx);
+            _setValue &= ~mask;
+            _setValue |= pValue << cv.BitIdx;
+            TimerSet(UPDATE_TIMEOUT_TICKS);
+            cv.Func((uint)_setValue);
+
+            return true;
+        }
+
+        public bool SetProperty(int pIdx, int pValue)
+        {
+            CVProperty cv = cvpl.Find(p => p.Idx == pIdx);
+
+            return setCVProperty(cv, pValue);
         }
 
         void ControlValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_updatingGetState) return;
-            foreach (CVProperty cv in cvpl)
-            {
-                if ((cv.cb is ComboBox) && (cv.cb == sender))
-                {
-                    Int32 mask = 0;
-                    for (UInt16 i = 0; i < cv.bitLen; i++)
-                    {
-                        mask |= (1 << (cv.bitIdx + i));
-                    }
-                    _setValue &= ~mask;
-                    _setValue |= (cv.cb as ComboBox).SelectedIndex << cv.bitIdx;
-                    TimerSet(UPDATE_TIMEOUT_TICKS);
-                    cv.func((uint)_setValue);
-                }
-            }            
+            CVProperty cv = cvpl.Find(p => (p.Control is ComboBox) && (p.Control == sender));
+            
+            setCVProperty(cv, (cv.Control as ComboBox).SelectedIndex);
         }
 
         void _cb_Click(object sender, RoutedEventArgs e)
         {
             if (_updatingGetState) return;
 
-            foreach (CVProperty cv in cvpl)
-            {
-                if ((cv.cb is CheckBox) && (cv.cb == sender))
-                {
-                    if ((bool)(cv.cb as CheckBox).IsChecked)
-                    {
-                        _setValue |= (1 << cv.bitIdx);
-                    }
-                    else
-                    {
-                        _setValue &= ~(1 << cv.bitIdx);
-                    }
-                    _setValue |= _defaultValue;
-                    TimerSet(UPDATE_TIMEOUT_TICKS);            // значение установили, ждем 2 секунды до проверки Get и SetValue
-                    cv.func((uint)_setValue);
-                }
-            }
+            CVProperty cv = cvpl.Find(p => (p.Control is CheckBox) && (p.Control == sender));
+
+            setCVProperty(cv, Convert.ToInt32((cv.Control as CheckBox).IsChecked));
         }
 
         /// <summary>
@@ -464,16 +468,12 @@ namespace EGSE.Utilites
         /// Один тик таймера (вызывается из внешнего прерывания и может быть любым, хоть 1 секунда, хоть 500 мс)
         /// </summary>
         /// <returns>Функция возвращает результат проверки Set и Get значений, если время истекло, или vsCounting, если счет продолжается</returns>
-        public ValueState TimerTick()
+        public void TimerTick()
         {
             if ((_timerCnt > 0) && (--_timerCnt == 0))          // пришло время для проверки Get и Set Value
             {
-                //if (Changed()) { return ValueState.vsChanged; }
-                //else { return ValueState.vsUnchanged; }
-
                 if (Changed()) UpdateGetProperties();
             }
-            return ValueState.vsCounting;
         }
 
         private void UpdateGetProperties()
@@ -481,18 +481,18 @@ namespace EGSE.Utilites
             _updatingGetState = true;
             foreach (CVProperty cv in cvpl)
             {
-                if (cv.cb is CheckBox)
+                if (cv.Control is CheckBox)
                 {
-                    (cv.cb as CheckBox).IsChecked = ((_getValue & (1 << cv.bitIdx)) > 0);
+                    (cv.Control as CheckBox).IsChecked = ((_getValue & (1 << cv.BitIdx)) > 0);
                 }
-                if (cv.cb is ComboBox)
+                if (cv.Control is ComboBox)
                 {
                     Int32 mask = 0;
-                    for (UInt16 i = 0; i < cv.bitLen; i++)
+                    for (UInt16 i = 0; i < cv.BitLen; i++)
                     {
-                        mask |= (1 << (cv.bitIdx + i));
+                        mask |= (1 << (cv.BitIdx + i));
                     }
-                    (cv.cb as ComboBox).SelectedIndex = (_getValue & mask) >> cv.bitIdx;
+                    (cv.Control as ComboBox).SelectedIndex = (_getValue & mask) >> cv.BitIdx;
                 }
             }
             _setValue = _getValue;

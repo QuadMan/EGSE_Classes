@@ -16,6 +16,7 @@
 */
 
 using System;
+using System.Linq;
 using EGSE.Cyclogram;
 using System.IO;
 using System.Collections.ObjectModel;
@@ -261,7 +262,11 @@ namespace EGSE.Cyclogram
             // добавляем комментарии к строке, если они есть
             _curCommand.Str += " "+_curCommand.Comments;
             // выполняем функцию тестирования параметров команды
-            _curCommand.runTestFunction();
+            if (!_curCommand.RunTestFunction())
+            {
+                CyclogramParsingException exc = new CyclogramParsingException("Ошибка при проверке команды " + _curCommand.CmdName);
+                throw exc;
+            }
         }
 
         /// <summary>
@@ -324,16 +329,14 @@ namespace EGSE.Cyclogram
         /// <param name="hr">час</param>
         /// <param name="min">минута</param>
         /// <param name="sec">секунда</param>
-        public void CalcAbsoluteTime(int hr=0,int min=0, int sec=0)
+        /// <param name="fromLineNum">с какой строки рассчитывать время, если запускаем циклограмму не с первой строки</param>
+        public void CalcAbsoluteTime(int hr=0,int min=0, int sec=0, int fromLineNum = 0)
         {
             DateTime dt = new DateTime(1, 1, 1, hr, min, sec, 0);
-            foreach (CyclogramLine cl in commands)
+            foreach (CyclogramLine cl in commands.Where(l => (l.IsCommand) && (l.Line >= fromLineNum)))
             {
-                if (cl.IsCommand)
-                {
-                    cl.AbsoluteTime = dt.ToString("HH:mm:ss.fff");
-                    dt = dt.AddMilliseconds(cl.DelayMs);
-                }
+                cl.AbsoluteTime = dt.ToString("HH:mm:ss.fff");
+                dt = dt.AddMilliseconds(cl.DelayMs);
             }
         }
 
@@ -354,6 +357,13 @@ namespace EGSE.Cyclogram
                 _curLine++;
             }
             return null;
+        }
+
+        public void SetCmdLine(CyclogramLine cl)
+        {
+            if (cl == null) return;
+
+            _curLine = cl.Line-1;       // TODO: убрать -1 (привести отсчет строк к одному виду)
         }
 
         /// <summary>
