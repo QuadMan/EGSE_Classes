@@ -92,6 +92,12 @@ namespace EGSE.Threading
             _ftdi   = new USBFTDI(Serial,_cfg);
 
             _thread = new Thread(Execution);
+            _thread.IsBackground = true;
+            //_thread.Start();
+        }
+
+        public void Start()
+        {
             _thread.Start();
         }
 

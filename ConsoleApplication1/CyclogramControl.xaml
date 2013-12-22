@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="300" d:DesignWidth="670" MinHeight="200" MinWidth="670">
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="39"/>
@@ -74,7 +74,8 @@
             <Button x:Name="StartBtn" Content="Старт" Width="68" Margin="5,7" Click="StartBtn_Click"/>
             <Button x:Name="StopBtn" Content="Стоп" Width="68" Margin="5,7" Click="StopBtn_Click"/>
             <Button x:Name="StepBtn" Content="Шаг" Width="68" Margin="5,7" Click="StepBtn_Click"/>
-            <Label Content="Повторить" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="30,0,0,0"/>
+            <CheckBox x:Name="TrackingModeCB" Content="Текущий шаг" Margin="30,13,5,7" Checked="TrackingModeCB_Checked" IsChecked="True"/>
+            <Label Content="Повторить" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,0,0"/>
             <ComboBox Width="72" Margin="5,7" SelectedIndex="0" VerticalContentAlignment="Center">
                 <ComboBoxItem Content="1 раз"/>
                 <ComboBoxItem Content="2 раза"/>

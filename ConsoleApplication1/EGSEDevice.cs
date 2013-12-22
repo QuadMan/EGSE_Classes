@@ -53,6 +53,11 @@ namespace EGSE
             _dThread = new ProtocolThread(_dec, _fThread);
         }
 
+        public void Start()
+        {
+            _fThread.Start();
+        }
+
         public float speed
         {
             get

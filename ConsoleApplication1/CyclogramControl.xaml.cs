@@ -43,6 +43,8 @@ namespace EGSE.Cyclogram
             //cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, ""));
         }
 
+        public bool IsTracingMode { get; set; }
+
         public bool StopTest(string[] Params, out string errString)
         {
             errString = "";
@@ -153,7 +155,10 @@ namespace EGSE.Cyclogram
             DG.Dispatcher.Invoke(new Action(delegate
             {
                 DG.SelectedItem = cycCommand;
-                DG.ScrollIntoView(cycCommand);
+                if (IsTracingMode)
+                {
+                    DG.ScrollIntoView(cycCommand);
+                }
             }));
         }
 
@@ -208,6 +213,11 @@ namespace EGSE.Cyclogram
                     }
                     break;
             }
+        }
+
+        private void TrackingModeCB_Checked(object sender, RoutedEventArgs e)
+        {
+            IsTracingMode = (bool)TrackingModeCB.IsChecked;
         }
     }
 }

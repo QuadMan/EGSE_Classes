@@ -59,8 +59,6 @@ namespace EGSE.Cyclogram
         private CyclogramLine _curCommand;
         // Список доступных команд циклограммы
         private CyclogramCommands _availableCommands;
-        // Текущая строка файла циклограмм
-        private int _curLine;
         // Была ли ошибка при парсинге файла
         private bool _wasError;
 
@@ -90,7 +88,7 @@ namespace EGSE.Cyclogram
         /// </summary>
         public CyclogramFile()
         {
-            _curLine = 0;
+            //!_curLine = 0;
             _wasError = false;
             _availableCommands = null;
             _curCommand = new CyclogramLine();
@@ -264,7 +262,7 @@ namespace EGSE.Cyclogram
             // выполняем функцию тестирования параметров команды
             if (!_curCommand.RunTestFunction())
             {
-                CyclogramParsingException exc = new CyclogramParsingException("Ошибка при проверке команды " + _curCommand.CmdName);
+                CyclogramParsingException exc = new CyclogramParsingException();//"Ошибка при проверке команды " + _curCommand.CmdName);
                 throw exc;
             }
         }
@@ -279,6 +277,7 @@ namespace EGSE.Cyclogram
         {
             Debug.Assert(availableCommands != null, "Список доступных команд циклограммы пуст!");
             string cycLine;
+            int curLineNum = 0;
 
             _availableCommands = availableCommands;
             _wasError = false;
@@ -288,9 +287,9 @@ namespace EGSE.Cyclogram
                 CyclogramParsingException exc = new CyclogramParsingException("Файл "+cycFName+" не существует!");
                 throw exc;
             }
+
             FileName = cycFName;
             commands.Clear();
-            _curLine = 1;
             using (StreamReader sr = new StreamReader(cycFName))
             {
                 while (sr.Peek() >= 0)              // читам файл по строкам
@@ -303,21 +302,21 @@ namespace EGSE.Cyclogram
                     catch (CyclogramParsingException e)
                     {
                         _wasError = true;
-                        _curCommand.ErrorInCommand += e.Message + "\t";
+                        //_curCommand.ErrorInCommand += e.Message + "\t";
                     }
                     catch
                     {
                         _wasError = true;
-                        _curCommand.ErrorInCommand += "Общая ошибка проверки команды.";
+                        _curCommand.ErrorInCommand += " Общая ошибка проверки команды.";
                     }
                     finally
                     {
-                        _curCommand.Line = _curLine;
+                        _curCommand.Line = curLineNum;
                         commands.Add(_curCommand);
                         //начинаем собирать новую команду
                         _curCommand = new CyclogramLine();
                     }
-                    _curLine++;
+                    curLineNum++;
                 }
             }
         }
@@ -345,6 +344,7 @@ namespace EGSE.Cyclogram
         /// перемещаем указатель _curLine
         /// </summary>
         /// <returns>Если команда существует, возвращаем команду, если нет - null</returns>
+        /*
         public CyclogramLine GetFirstCmd()
         {
             _curLine = 0;
@@ -358,7 +358,9 @@ namespace EGSE.Cyclogram
             }
             return null;
         }
+        */
 
+        /*
         public void SetCmdLine(CyclogramLine cl)
         {
             if (cl == null) return;
@@ -402,7 +404,7 @@ namespace EGSE.Cyclogram
             }
             return null;
         }
-
+        */
         /// <summary>
         /// Проверяем, есть ли на этой строке файла циклограмм команда
         /// </summary>
@@ -420,5 +422,74 @@ namespace EGSE.Cyclogram
 
             return false;
         }
+    }
+
+    public class CycPosition
+    {
+        private CyclogramFile _cFile ;
+        private int _curLine;
+        public EGSE.Threading.StepEventHandler SetCmdEvent;
+        private CyclogramLine _curCmd;
+
+        public CyclogramLine CurCmd
+        {
+            get { return _curCmd; }
+            private set
+            {
+                _curCmd = value;
+                if (_curCmd != null)
+                {
+                    _curLine = _curCmd.Line;
+                    if (SetCmdEvent != null)
+                    {
+                        SetCmdEvent(_curCmd);
+                    }
+                }
+            }
+        }
+
+        public CycPosition(CyclogramFile cFile)
+        {
+            _cFile = cFile;
+            _curLine = 0;
+            CurCmd = null;
+            SetCmdEvent = null;
+        }
+
+        public CyclogramLine SetToLine(int lineNum, bool findFirst = false)
+        {
+            _curCmd = null;
+            foreach (CyclogramLine cl in _cFile.commands.Where(l => (l.IsCommand)))
+            {
+                if (findFirst)
+                {
+                    if (cl.Line >= lineNum)
+                    {
+                        CurCmd = cl;
+                        return CurCmd;                                            
+                    }
+                }
+                else if (cl.Line == lineNum)
+                {
+                    CurCmd = cl;
+                    return CurCmd;                    
+                }
+            }
+            return null;
+        }
+
+        public CyclogramLine GetNextCmd()
+        {
+            for (int i = _curLine + 1; i < _cFile.commands.Count; i++)
+            {
+                if (_cFile.commands[i].IsCommand)
+                {
+                    CurCmd = _cFile.commands[i];
+                    return CurCmd;
+                }
+            }
+            return null;
+        }
+
     }
 }

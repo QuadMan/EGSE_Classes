@@ -79,6 +79,7 @@ namespace EGSE.Threading
             _terminateFlag = false;
 
             _thread = new Thread(Execution);
+            _thread.IsBackground = true;
             _thread.Start();
         }
 
