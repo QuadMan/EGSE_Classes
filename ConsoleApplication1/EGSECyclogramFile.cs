@@ -33,6 +33,7 @@ namespace EGSE.Cyclogram
         public CyclogramParsingException() { }
         public CyclogramParsingException(string message) : base(message) { }
         public CyclogramParsingException(string message, Exception ex) : base(message) { }
+        
         // Конструктор для обработки сериализации типа
         protected CyclogramParsingException(System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext contex)
@@ -43,7 +44,7 @@ namespace EGSE.Cyclogram
     /// <summary>
     /// Класс, предназначенный для работы с файлом циклограмм
     /// </summary>
-    public class CyclogramFile 
+    public class CyclogramFile
     {
         /// <summary>
         /// Символ комментария
@@ -66,7 +67,7 @@ namespace EGSE.Cyclogram
         /// Имя файла циклограмм
         /// </summary>
         public string FileName;
-        
+
         /// <summary>
         /// Список команд, создаваемый из файла циклограмм
         /// </summary>
@@ -99,19 +100,19 @@ namespace EGSE.Cyclogram
         /// Функция из строки вырезает комментарии и возвращает строку без комментариев по ссылке и сам комментарий в возвращаемом значении
         /// </summary>
         /// <param name="cycStr">Исходная строка, из которой исключаются комментарии</param>
-        /// <returns>Cтрока комментариев (если их нет, возвращет "")</returns>
+        /// <returns>Cтрока комментариев (если их нет, возвращет String.Empty)</returns>
         private string TakeComments(ref string cycStr)
         {
-            int commentStartPos = cycStr.IndexOf(CYC_COMMENT_CHAR);             
+            int commentStartPos = cycStr.IndexOf(CYC_COMMENT_CHAR);
             if (commentStartPos != -1)
             {
-                string commentStr = cycStr.Substring(commentStartPos).Trim();   
+                string commentStr = cycStr.Substring(commentStartPos).Trim();
 
                 cycStr = cycStr.Remove(commentStartPos).Trim();                 // убираем из исходной строки комментарии
 
-                return commentStr;                                              
+                return commentStr;
             }
-            else return "";
+            else return String.Empty;
         }
 
         /// <summary>
@@ -127,17 +128,17 @@ namespace EGSE.Cyclogram
         private void tryParseTimeToken(string timeStr)
         {
             string[] timeTokens = timeStr.Split('.');   // timeTokens[0] - значение секунд, timeTokens[1] - значение мс, если задано
-            
+
             // дробное значение не задано, считаем, что заданы секунды
-            if (timeTokens.Length == 1) 
+            if (timeTokens.Length == 1)
             {
                 try
                 {
                     int tempSec = Int32.Parse(timeTokens[0]);
                     if ((tempSec < 0) || (tempSec > MAX_SECONDS_VALUE))
                     {
-                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr+". Секунды должны быть заданы от 0 до " + MAX_SECONDS_VALUE.ToString());
-                        throw exc;                        
+                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr + ". Секунды должны быть заданы от 0 до " + MAX_SECONDS_VALUE.ToString());
+                        throw exc;
                     }
                     _curCommand.DelayMs = tempSec * 1000;
                     _curCommand.DelayOriginal = _curCommand.DelayMs;
@@ -148,7 +149,8 @@ namespace EGSE.Cyclogram
                     throw exc;
                 }
             }
-            else if (timeTokens.Length == 2) // задано и дробное значение
+            // задано и дробное значение
+            else if (timeTokens.Length == 2) 
             {
                 try
                 {
@@ -175,7 +177,8 @@ namespace EGSE.Cyclogram
                     throw exc;
                 }
             }
-            else // ошибка задания времени (время разделено более одной точкой)
+            // ошибка задания времени (время разделено более одной точкой)
+            else 
             {
                 CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr);
                 throw exc;
@@ -225,11 +228,11 @@ namespace EGSE.Cyclogram
             // убираем лишнее пробелы из строки
             cycStr.Trim();
             // сохраняем на случай, если эта строка - только комментарий
-            _curCommand.Str = cycStr;   
+            _curCommand.Str = cycStr;
             // убираем комментарии, сохраняя их в специальной переменной
             _curCommand.Comments += TakeComments(ref cycStr) + "\t";
             // вся строка - комментарий, выходим, нам здесь больше делать нечего
-            if (cycStr == "") return;
+            if (cycStr == String.Empty) return;
 
             // кроме комментариев есть еще что-то, пытаемся понять, что, но в любом случае. считаем что должна быть команда
             _curCommand.IsCommand = true;
@@ -254,11 +257,11 @@ namespace EGSE.Cyclogram
                 System.Array.Copy(strTokens, 2, _curCommand.Parameters, 0, _curCommand.Parameters.Length);
                 for (UInt16 i = 2; i < strTokens.Length; i++)
                 {
-                    _curCommand.Str += " "+strTokens[i];
+                    _curCommand.Str += " " + strTokens[i];
                 }
             }
             // добавляем комментарии к строке, если они есть
-            _curCommand.Str += " "+_curCommand.Comments;
+            _curCommand.Str += " " + _curCommand.Comments;
             // выполняем функцию тестирования параметров команды
             if (!_curCommand.RunTestFunction())
             {
@@ -284,7 +287,7 @@ namespace EGSE.Cyclogram
             if (!File.Exists(cycFName))
             {
                 _wasError = true;
-                CyclogramParsingException exc = new CyclogramParsingException("Файл "+cycFName+" не существует!");
+                CyclogramParsingException exc = new CyclogramParsingException("Файл " + cycFName + " не существует!");
                 throw exc;
             }
 
@@ -292,7 +295,8 @@ namespace EGSE.Cyclogram
             commands.Clear();
             using (StreamReader sr = new StreamReader(cycFName))
             {
-                while (sr.Peek() >= 0)              // читам файл по строкам
+                // читам файл по строкам
+                while (sr.Peek() >= 0)              
                 {
                     cycLine = sr.ReadLine();
                     try
@@ -329,7 +333,7 @@ namespace EGSE.Cyclogram
         /// <param name="min">минута</param>
         /// <param name="sec">секунда</param>
         /// <param name="fromLineNum">с какой строки рассчитывать время, если запускаем циклограмму не с первой строки</param>
-        public void CalcAbsoluteTime(int hr=0,int min=0, int sec=0, int fromLineNum = 0)
+        public void CalcAbsoluteTime(int hr = 0, int min = 0, int sec = 0, int fromLineNum = 0)
         {
             DateTime dt = new DateTime(1, 1, 1, hr, min, sec, 0);
             foreach (CyclogramLine cl in commands.Where(l => (l.IsCommand) && (l.Line >= fromLineNum)))
@@ -410,7 +414,7 @@ namespace EGSE.Cyclogram
         /// </summary>
         /// <param name="cycLine">Номер строки</param>
         /// <returns>Возвращает TRUE, если на этой строке есть команда</returns>
-        public bool isCmdExistsOnLine(uint cycLine)
+        public bool IsCmdExistsOnLine(uint cycLine)
         {
             foreach (var cmd in commands)
             {
@@ -426,7 +430,7 @@ namespace EGSE.Cyclogram
 
     public class CycPosition
     {
-        private CyclogramFile _cFile ;
+        private CyclogramFile _cFile;
         private int _curLine;
         public EGSE.Threading.StepEventHandler SetCmdEvent;
         private CyclogramLine _curCmd;
@@ -466,13 +470,13 @@ namespace EGSE.Cyclogram
                     if (cl.Line >= lineNum)
                     {
                         CurCmd = cl;
-                        return CurCmd;                                            
+                        return CurCmd;
                     }
                 }
                 else if (cl.Line == lineNum)
                 {
                     CurCmd = cl;
-                    return CurCmd;                    
+                    return CurCmd;
                 }
             }
             return null;

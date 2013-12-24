@@ -41,29 +41,14 @@
  * TODO: в классе BigBuff попробовать уйти от lock(this) в сторону InterlockedIncrement
 */
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.IO;
-using System.Reflection;
-using System.Windows;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Data;
-
-
 namespace EGSE.Utilites
 {
+    using System;
+    using System.IO;
+    using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.Text;
+    using System.Windows;
 
     /// <summary>
     /// Класс конвертации различных величин
@@ -74,16 +59,22 @@ namespace EGSE.Utilites
         /// Строка шестнадцатеричных чисел в массив байт
         /// </summary>
         /// <param name="HexStr">Строка HEX чисел, разделенных пробелами</param>
-        /// <returns>Массив байт</returns>
+        /// <returns>Массив байт или null, если HexStr пустая </returns>
         public static byte[] HexStrToByteArray(string HexStr)
         {
+            if (HexStr == string.Empty)
+            {
+                return null;
+            }
+
             string[] hexValuesSplit = HexStr.Split(' ');
             byte[] outBuf = new byte[hexValuesSplit.Length];
             int i = 0;
-            foreach (String hex in hexValuesSplit)
+            foreach (string hex in hexValuesSplit)
             {
                 outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
             }
+
             return outBuf;
         }
 
@@ -91,18 +82,23 @@ namespace EGSE.Utilites
         /// Строка шестнадцатеричных чисел в массив байт
         /// </summary>
         /// <param name="HexStr">Массив HEX чисел (в виде строк)</param>
-        /// <returns>Массив байт</returns>
+        /// <returns>Массив байт или null, если массив hexValues пуст</returns>
         public static byte[] HexStrToByteArray(string[] hexValues)
         {
+            if ((hexValues == null) || (hexValues.Length == 0))
+            {
+                return null;
+            }
+
             byte[] outBuf = new byte[hexValues.Length];
             int i = 0;
-            foreach (String hex in hexValues)
+            foreach (string hex in hexValues)
             {
                 outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
             }
+
             return outBuf;
         }
-
 
         /// <summary>
         /// Функция преобразует массив байт в строку.
@@ -110,9 +106,14 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="data">Массив байт</param>
         /// <param name="delimeter">Разделитель между байтами в строке</param>
-        /// <returns>Результирующая строка</returns>
+        /// <returns>Результирующая строка, возвращает пустую строку, если data = null</returns>
         public static string ByteArrayToHexStr(byte[] data, string delimeter = " ")
         {
+            if (data == null)
+            {
+                return string.Empty;
+            }
+
             string hex = BitConverter.ToString(data);
             hex = hex.Replace("-", delimeter);
             return hex;
@@ -129,12 +130,15 @@ namespace EGSE.Utilites
             if (kbs > 1000)
             {
                 float mbs = kbs / 1024;
-                if (mbs > 1000) {
-                    return mbs.ToString("0.0")+" мб/сек";
+                if (mbs > 1000)
+                {
+                    return mbs.ToString("0.0") + " мб/сек";
                 }
-                return kbs.ToString("0.0")+" кб/сек";
+
+                return kbs.ToString("0.0") + " кб/сек";
             }
-            return speedInBytes.ToString("0.0")+" байт/сек";
+
+            return speedInBytes.ToString("0.0") + " байт/сек";
         }
 
         /// <summary>
@@ -142,7 +146,7 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="fileSizeInBytes">Размер файла в байтах</param>
         /// <returns>Строка размера файла</returns>
-        public static string FileSizeToStr(UInt64 fileSizeInBytes)
+        public static string FileSizeToStr(ulong fileSizeInBytes)
         {
             float kb = fileSizeInBytes / 1024;
             float mb = kb / 1024;
@@ -160,7 +164,9 @@ namespace EGSE.Utilites
                 return kb.ToString("0.0") + " КБайт";
             }
             else
+            {
                 return fileSizeInBytes.ToString() + " байт";
+            }
         }
     }
 
@@ -179,11 +185,16 @@ namespace EGSE.Utilites
     /// </summary>
     public static class ByteArrayToStructure
     {
-        public static T make<T>(byte[] bytes) where T : struct
+        /// <summary>
+        /// Преобразуем массив байт в структуру
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static T Make<T>(byte[] bytes) where T : struct
         {
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-            T stuff = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(),
-                typeof(T));
+            T stuff = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
             handle.Free();
             return stuff;
         }
@@ -194,7 +205,7 @@ namespace EGSE.Utilites
     /// Пример использования:
     /// static void tFunc(int val)
     /// {
-    ///     string s = "";
+    ///     string s = String.Empty;
     ///     if ((val and 1) == 1) s += "ПК1 ВКЛ ";
     ///     if ((val and 2) == 2) s += "ПК2 ВКЛ ";
     ///     System.Console.WriteLine(s);
@@ -208,29 +219,30 @@ namespace EGSE.Utilites
         /// Описание делегата функции, которую нужно вызвать при изменении параметра
         /// </summary>
         /// <param name="val"></param>
-        public delegate void onFunctionDelegate(int val);
+        public delegate void ChangeValueEventHandler(int val);
 
         /// <summary>
         /// Делагат на изменение параметра
         /// </summary>
-        public onFunctionDelegate onNewState;
+        public ChangeValueEventHandler ChangeValueEvent;
 
         /// <summary>
         /// Значение параметра
         /// </summary>
-        public int value;
+        public int Value { get; set; }
 
         /// <summary>
         /// Нужно ли проверять параметр на изменение значения
         /// </summary>
-        public bool makeTest;
+        public bool MakeTest { get; set; }
 
         /// <summary>
         /// Конструктор по-умолчанию
         /// </summary>
-        public TMValue() {
-            value = -1;
-            makeTest = false;
+        public TMValue()
+        {
+            Value = -1;
+            MakeTest = false;
         }
 
         /// <summary>
@@ -238,12 +250,12 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="val">Значение</param>
         /// <param name="fun">Функция при изменении параметра, можно передать null</param>
-        /// <param name="mkTest">Нужно ли сравнивать старое и новое значение параметра</param>
-        public TMValue(int val, onFunctionDelegate fun, bool mkTest)
+        /// <param name="makeTest">Нужно ли сравнивать старое и новое значение параметра</param>
+        public TMValue(int val, ChangeValueEventHandler fun, bool makeTest)
         {
-            value = val;
-            onNewState = fun;
-            makeTest = mkTest;
+            Value = val;
+            ChangeValueEvent = fun;
+            MakeTest = makeTest;
         }
 
         /// <summary>
@@ -251,17 +263,20 @@ namespace EGSE.Utilites
         /// Если необходима проверка значения и определена функция проверки
         /// </summary>
         /// <param name="val">Новое значение</param>
-        public void SetVal(int val) {
+        public void SetVal(int val)
+        {
             bool _changed = true;
-            if (makeTest) {
-                _changed = value != val;
-            }
-            if (_changed)
+            if (MakeTest)
             {
-                onNewState(val);
+                _changed = Value != val;
             }
 
-            value = val;
+            if (_changed)
+            {
+                ChangeValueEvent(val);
+            }
+
+            Value = val;
         }
     }
 
@@ -271,53 +286,89 @@ namespace EGSE.Utilites
     /// </summary>
     public class EgseTime
     {
+        private const int DEFAULT_TIME_SIZE_BYTES = 6;
+
         /// <summary>
         /// Данные времени (6 байт)
         /// </summary>
-        public byte[] data;
+        public byte[] Data { get; set; }
 
-        public uint day;
-        public uint hour;
-        public uint min;
-        public uint sec;
-        public uint msec;
-        public uint mcsec;
+        /// <summary>
+        /// День
+        /// </summary>
+        public uint Day { get; private set; }
+
+        /// <summary>
+        /// Час
+        /// </summary>
+        public uint Hour { get; private set; }
+
+        /// <summary>
+        /// Минута
+        /// </summary>
+        public uint Min { get; private set; }
+
+        /// <summary>
+        /// Секунда
+        /// </summary>
+        public uint Sec { get; private set; }
+
+        /// <summary>
+        /// Миллисекунда
+        /// </summary>
+        public uint Msec { get; private set; }
+
+        /// <summary>
+        /// Микросекунда
+        /// </summary>
+        public uint Mcsec { get; private set; }
+
+        // строка со временем
         private StringBuilder sb;
 
+        /// <summary>
+        /// Конструктор по-умолчанию
+        /// </summary>
         public EgseTime()
         {
-            data = new byte[6];
-            day = 0;
-            hour = 0;
-            min = 0;
-            sec = 0;
-            msec = 0;
-            mcsec = 0;
+            Data = new byte[DEFAULT_TIME_SIZE_BYTES];
+            Day = 0;
+            Hour = 0;
+            Min = 0;
+            Sec = 0;
+            Msec = 0;
+            Mcsec = 0;
             sb = new StringBuilder();
         }
 
-        public void Decode() 
+        /// <summary>
+        /// Декодируем время из буфера в поля
+        /// </summary>
+        public void Decode()
         {
-            day = ((uint)data[0] << 3) | ((uint)data[1] >> 5);
-            hour = ((uint)data[1] & 0x1F);
-            min = ((uint)data[2] >> 2);
-            sec = ((uint)(data[2] & 3) << 4) | ((uint)data[3] >> 4);
-            msec = ((uint)(data[3] & 0xF) << 4) | ((uint)data[4] >> 6);
-            mcsec =((uint)(data[4] & 3) << 8) | (uint)data[5];
+            Day = ((uint)Data[0] << 3) | ((uint)Data[1] >> 5);
+            Hour = (uint)Data[1] & 0x1F;
+            Min = (uint)Data[2] >> 2;
+            Sec = ((uint)(Data[2] & 3) << 4) | ((uint)Data[3] >> 4);
+            Msec = ((uint)(Data[3] & 0xF) << 4) | ((uint)Data[4] >> 6);
+            Mcsec = ((uint)(Data[4] & 3) << 8) | (uint)Data[5];
         }
 
+        /// <summary>
+        /// Кодируем ТЕКУШЕЕ время в буфер
+        /// </summary>
         public void Encode()
         {
             DateTime now = DateTime.Now;
-            data[0] = 0;
-            data[1] = (byte)now.Hour;
-            data[2] = (byte)(now.Minute << 2);
-            data[2] |= (byte)(now.Second >> 4);
-            data[3] = (byte)(now.Second << 4);
-            data[3] |= (byte)(now.Millisecond >> 6);
+            Data[0] = 0;
+            Data[1] = (byte)now.Hour;
+            Data[2] = (byte)(now.Minute << 2);
+            Data[2] |= (byte)(now.Second >> 4);
+            Data[3] = (byte)(now.Second << 4);
+            Data[3] |= (byte)(now.Millisecond >> 6);
 
-            data[4] = (byte)(now.Millisecond << 2);
-            data[5] = 0;
+            Data[4] = (byte)(now.Millisecond << 2);
+            Data[5] = 0;
         }
 
         /// <summary>
@@ -328,7 +379,7 @@ namespace EGSE.Utilites
         {
             Decode();
             sb.Clear();
-            sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}.{3:D3}.{4:D3}", hour, min, sec, msec, mcsec);
+            sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}.{3:D3}.{4:D3}", Hour, Min, Sec, Msec, Mcsec);
 
             return sb.ToString();
         }
@@ -339,53 +390,64 @@ namespace EGSE.Utilites
     /// Представляет собой двумерный массив. Первый индекс которого является указателем на большой массив 
     /// максимальным размером 70 КБ. При чтении и записи изменяются указатели первого индекса двумерного массива.
     /// </summary>
-    class BigBufferManager
+    public class BigBufferManager
     {
         /// <summary>
         /// Размер буфера по-умолчанию
         /// </summary>
         private const uint DEFAULT_BUF_SIZE = 100;
+
         /// <summary>
         /// Размер единичных массивов (ограничен драйвером FTDI, который не передает больше 65 КБ за раз)
         /// </summary>
         private const uint FTDI_BUF_SIZE = 70000;
+
         /// <summary>
         /// Представление большого кольцевого буфера
         /// AData[positionIdx][dataIdx]
         /// </summary>
-        public byte[][] AData;
+        public byte[][] AData { get; set; }
+
         /// <summary>
         /// Здесь хранятся длины всех массивов, так как длина второго массива задана константой
         /// </summary>
-        private int[] ALen;
+        private int[] _aLen;
+
         /// <summary>
         /// Текущая позиция чтения
         /// </summary>
         private uint _curRPos;
+
         /// <summary>
         /// Текущая позиция записи
         /// </summary>
         private uint _curWPos;
+
         /// <summary>
         /// Количество элементов в кольцевом буфере
         /// </summary>
         private int _count;
+
         /// <summary>
         /// Размер кольцевого буфера (в количестве массивов по 70 КБ)
         /// </summary>
         private uint _bufSize;
+
         /// <summary>
         /// Последняя позиция чтения
         /// </summary>
         private uint _lastRPos;
+
         /// <summary>
         /// Последняя позиция записи
         /// </summary>
         private uint _lastWPos;
+
         /// <summary>
         /// Объект для защиты функций moveNextRead и moveNextWrite
         /// </summary>
-        private Object thisLock = new Object();
+        private object thisLock = new object();
+
         /// <summary>
         /// Размер буфера в байтах, счиается при вызове функций moveNextRead и moveNextWrite
         /// </summary>
@@ -399,12 +461,13 @@ namespace EGSE.Utilites
         {
             _bufSize = bufSize;
             AData = new byte[_bufSize][];
-            ALen = new int[_bufSize];
+            _aLen = new int[_bufSize];
             for (uint i = 0; i < _bufSize; i++)
             {
                 AData[i] = new byte[FTDI_BUF_SIZE];
-                ALen[i] = 0;
+                _aLen[i] = 0;
             }
+
             _lastRPos = 0;
             _lastWPos = 0;
             _curWPos = 0;
@@ -418,13 +481,13 @@ namespace EGSE.Utilites
         /// Обеспечивает защиту от одновременного изменения _count и _bytesInBuffer
         /// Изменяет _bytesInBuffer
         /// </summary>
-        public void moveNextRead()
+        public void MoveNextRead()
         {
             lock (this)
             {
                 _curRPos = (_curRPos + 1) % _bufSize;
                 _count--;
-                _bytesInBuffer -= ALen[_lastRPos];
+                _bytesInBuffer -= _aLen[_lastRPos];
 #if DEBUG_TEXT
                 System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}, RPos = {2}", _count, _bytesInBuffer,_curRPos);
 #endif
@@ -437,13 +500,13 @@ namespace EGSE.Utilites
         /// Изменяет _bytesInBuffer и записывает длину буфера в ALen
         /// </summary>
         /// <param name="bufSize">Сколько было записано в текущий буфер</param>
-        public void moveNextWrite(int bufSize)
+        public void MoveNextWrite(int bufSize)
         {
             lock (this)
             {
                 _curWPos = (_curWPos + 1) % _bufSize;
                 _count++;
-                ALen[_lastWPos] = bufSize;
+                _aLen[_lastWPos] = bufSize;
                 _bytesInBuffer += bufSize;
 #if DEBUG_TEXT
                 System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}, WPos = {2}", _count, _bytesInBuffer, _curWPos);
@@ -454,7 +517,7 @@ namespace EGSE.Utilites
         /// <summary>
         /// Возвращает количество байт в буфере
         /// </summary>
-        public int bytesAvailable
+        public int BytesAvailable
         {
             get
             {
@@ -465,11 +528,11 @@ namespace EGSE.Utilites
         /// <summary>
         /// Возвращает размер последнего буфера для чтения
         /// </summary>
-        public int readBufSize
+        public int ReadBufSize
         {
             get
             {
-                return ALen[_lastRPos];
+                return _aLen[_lastRPos];
             }
         }
 
@@ -477,20 +540,17 @@ namespace EGSE.Utilites
         /// Возвращает текущий буфер для чтения
         /// Если читать нечего, возвращает null
         /// </summary>
-        public byte[] readBuf
+        public byte[] ReadBuf
         {
             get
             {
-                if (_count > 0)
-                {
-                    _lastRPos = _curRPos;
-
-                    return AData[_lastRPos];
-                }
-                else
+                if (_count == 0)
                 {
                     return null;
                 }
+
+                _lastRPos = _curRPos;
+                return AData[_lastRPos];
             }
         }
 
@@ -498,23 +558,21 @@ namespace EGSE.Utilites
         /// Возвращает текущий буфер для записи
         /// Если писать некуда, возвращает null
         /// </summary>
-        public byte[] writeBuf
+        public byte[] WriteBuf
         {
             get
             {
-                if (_count < _bufSize)
-                {
-                    _lastWPos = _curWPos;
-
-                    return AData[_lastWPos];
-                }
-                else
+                if (_count >= _bufSize)
                 {
                     return null;
                 }
+
+                _lastWPos = _curWPos;
+                return AData[_lastWPos];
             }
         }
     }
+
     /// <summary>
     /// Класс работы с ini-файлом
     /// </summary>
@@ -524,14 +582,16 @@ namespace EGSE.Utilites
         /// Путь к ini-файлу
         /// </summary>
         private string _path;
+
         /// <summary>
         /// Имя exe-файла (Название группы параметра по-умолчанию) 
         /// </summary>
         private string _exe = Assembly.GetExecutingAssembly().GetName().Name;
         [DllImport("kernel32")]
-        static extern long WritePrivateProfileString(string section, string key, string value, string filePath);
+        private static extern long WritePrivateProfileString(string section, string key, string value, string filePath);
         [DllImport("kernel32")]
-        static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+
         /// <summary>
         /// Конструктор конкретного ini-файла.
         /// </summary>
@@ -540,6 +600,7 @@ namespace EGSE.Utilites
         {
             _path = new FileInfo(iniPath ?? _exe + ".ini").FullName.ToString();
         }
+
         /// <summary>
         /// Считать параметр
         /// </summary>
@@ -548,10 +609,11 @@ namespace EGSE.Utilites
         /// <returns>Значение параметра</returns>
         public string Read(string key, string section = null)
         {
-            var RetVal = new StringBuilder(255);
-            GetPrivateProfileString(section ?? _exe, key, "", RetVal, 255, _path);
-            return RetVal.ToString();
+            var retVal = new StringBuilder(255);
+            GetPrivateProfileString(section ?? _exe, key, string.Empty, retVal, 255, _path);
+            return retVal.ToString();
         }
+
         /// <summary>
         /// Записать параметр
         /// </summary>
@@ -562,6 +624,7 @@ namespace EGSE.Utilites
         {
             WritePrivateProfileString(section ?? _exe, key, value, _path);
         }
+
         /// <summary>
         /// Удалить параметр
         /// </summary>
@@ -571,6 +634,7 @@ namespace EGSE.Utilites
         {
             Write(key, null, section ?? _exe);
         }
+
         /// <summary>
         /// Удалить группу параметров
         /// </summary>
@@ -579,6 +643,7 @@ namespace EGSE.Utilites
         {
             Write(null, null, section ?? _exe);
         }
+
         /// <summary>
         /// Проверка на существование параметра
         /// </summary>
@@ -590,9 +655,10 @@ namespace EGSE.Utilites
             return Read(key, section).Length > 0;
         }
     }
+
     /// <summary>
-    /// Класс позволяет сохранять в ini-файл параметры экземплеров окон
-    /// Сохраняет: позицию, размеры, состояние(развернуто/свернуто) окна, видимость
+    /// Класс сохранения настроек приложения в Ini файл
+    /// Сохраняет и отдельные свойства и настройки окон: позицию, размеры, состояние(развернуто/свернуто) окна, видимость
     /// </summary>
     public static class AppSettings
     {
@@ -603,7 +669,7 @@ namespace EGSE.Utilites
         /// <param name="value">Значение параметра</param>
         /// <param name="section">секция, по-умолчанию, MAIN</param>
         /// <returns></returns>
-        public static bool Save(string param, string value, string section="MAIN")
+        public static bool Save(string param, string value, string section = "MAIN")
         {
             try
             {
@@ -632,7 +698,10 @@ namespace EGSE.Utilites
                 {
                     return _ini.Read(param, section);
                 }
-                else return null;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception e)
             {
@@ -660,6 +729,7 @@ namespace EGSE.Utilites
                 throw e;
             }
         }
+
         /// <summary>
         /// Загружаем сохраненные параметры окна
         /// </summary>
@@ -675,38 +745,56 @@ namespace EGSE.Utilites
                     System.ComponentModel.TypeConverter _conv =
                         System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
                     Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
-                    win.Left = _rect.Left;
-                    win.Top = _rect.Top;
-                    win.Height = _rect.Size.Height;
-                    win.Width = _rect.Size.Width;
+
+                    // сделал проверки на NaN и 0, так как для окон, которые не открывались значения (Left,Top,RenderSize) не рассчитываются системой, нужно придумать другой способ сохранения
+                    if (_rect.Left != double.NaN)
+                    {
+                        win.Left = _rect.Left;
+                    }
+
+                    if (_rect.Top != double.NaN)
+                    {
+                        win.Top = _rect.Top;
+                    }
+
+                    if (_rect.Size.Height != 0)
+                    {
+                        win.Height = _rect.Size.Height;
+                    }
+
+                    if (_rect.Size.Width != 0)
+                    {
+                        win.Width = _rect.Size.Width;
+                    }
                 }
                 else
                 {
-                     _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
+                    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
                 }
 
-                if (_ini.IsKeyExists("WindowState", win.Title))  
+                if (_ini.IsKeyExists("WindowState", win.Title))
                 {
                     System.ComponentModel.TypeConverter _conv2 =
                         System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
                     win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
                 }
-                else 
+                else
                 {
                     _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
                 }
+
                 if (_ini.IsKeyExists("Visibility", win.Title))
                 {
                     System.ComponentModel.TypeConverter _conv3 =
                         System.ComponentModel.TypeDescriptor.GetConverter(typeof(Visibility));
-                    win.Visibility = (Visibility)_conv3.ConvertFromString(_ini.Read("Visibility", win.Title)); 
+                    win.Visibility = (Visibility)_conv3.ConvertFromString(_ini.Read("Visibility", win.Title));
                 }
                 else
                 {
                     _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
-                }                                 
+                }
+
                 return true;
-              
             }
             catch (Exception e)
             {

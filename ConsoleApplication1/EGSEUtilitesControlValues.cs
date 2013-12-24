@@ -1,111 +1,178 @@
-﻿namespace EGSE.Utilites
+﻿/*** EDGEUtilitesControlValues.cs
+**
+** (с) 2013 ИКИ РАН
+ *
+ * Класс поддержки синхронизации значений USB и UI
+**
+** Author: Семенов Александр
+** Project: КИА
+** Module: EDGE UTILITES Control Values
+** Requires: 
+** Comments:
+*/
+
+namespace EGSE.Utilites
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Windows;
-    using System.Windows.Controls;
+    using System.Data.Odbc;
 
     /// <summary>
-    /// Класс, позволяющий отслеживать изменения значений, которые влияют на отображение интерфейса
-    /// (параметры имитаторов, значения включения полукомплектов и т.д.) и которые может устанавливать пользователь
-    /// Пример работы:
-    /// ControlValue HSIParameters;
-    /// при получении данных от устройства, делаем HSIParameters.GetValue = value;
-    /// при изменении пользователем интерфейса, делаем HSIParameters.SetValue = value;
-    /// в таймере, вызываемом 2 раза в секунду, выполняем проверку
-    /// if (HSIParameters.TimerTick() == ControlValue.ValueState.vsChanged) {
-    /// нужно обновить экран, так как значение, пришедшее от прибора не совпадает с установленным
-    /// }
+    /// Класс, позволяющий задавать и отслеживать изменения значений различных настроек и параметров
+    /// Например, есть регистр, содержащий параметры интерфейса (включен/выключен, скорость, и т.д.), необходимо синхронизировать настройки, сделанные пользователем
+    /// и полученные по USB
+    /// Для этого есть два свойства: UsbValue и UiValue (приватное), которые устанавливаются соответственно при получении данных с USB и из пользовательского интерфейса.
+    /// Далее, раз в секунду необходимо вызывать метод ControlValue.TimeTick(), который проверяет, в случае необходимости значения этий свойств (если свойства не совпадают, 
+    /// срабатывает событие, определенное для данного свойства).
+    /// По-умолчанию, свойство сверяется с данными из USB после установки свойства из пользовательского интерфейса, через 2 отсчета TimeTick.
+    /// Если значения различаются (установленные через пользовательский интерфейс и USB), в качестве основного устанавливается значение, полученное из USB.
+    /// 
+    /// Так как в одном байте обычно записано несколько свойств, для ControlValue доступен метод AddProperty, который позволяет
+    /// указывать побитно, какие биты отвечают за какое свойство.
+    /// К примеру, 
+    /// ControlValue.AddProperty(0, 4, 1, SetFunction, delegate(UInt32 value) { XsanImitatorReady = (value == 1); });
+    /// Этим методом мы говорим, что создаем свойство с индексом 0, начинающееся с 4-го бита, длиной в 1 бит. При установке этого свойства вызывается функция SetFunction,
+    /// Если значения UsbValue и UiValue не совпали при проверке, вызывается делегат (или функция), описанная в последнем параметре.
+    /// 
+    /// При получении значения из Usb, необходимо взвать метод ControlValue.UsbValue = value;
+    /// При установке значения из UI: ControlValue.SetProperty(0,1) - устанавливаем свойство с индексом 0 значением, равным 1.
+    /// 
     /// </summary>
     public class ControlValue
     {
+        // через сколько вызововк TimerTick проверять значения UsbValue и UiValue
         private const int UPDATE_TIMEOUT_TICKS = 3;
-        public delegate void setFunctionDelegate(UInt32 value);
+
+        /// <summary>
+        /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue
+        /// </summary>
+        /// <param name="value"></param>
+        public delegate void ControlValueEventHandler(UInt32 value);
 
         class CVProperty
         {
-            public int Idx;
-            public UIElement Control;
-            public UInt16 BitIdx;
-            public UInt16 BitLen;
-            public setFunctionDelegate Func;
+            /// <summary>
+            /// Индекс свойства, для обращения к нему в функциях SetCVProperties и GetCVProperties
+            /// </summary>
+//            public int Idx;
 
-            public CVProperty(int _idx, UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
+            /// <summary>
+            /// Индекс (в битах) с которого начинается значение
+            /// </summary>
+            public UInt16 BitIdx;
+
+            /// <summary>
+            /// Длина (в битах) значения
+            /// </summary>
+            public UInt16 BitLen;
+
+            /// <summary>
+            /// Делегат, вызваемый, когда необходимо записать значение в USB
+            /// </summary>
+            public ControlValueEventHandler SetUsbEvent;
+
+            /// <summary>
+            /// Делегат, вызываемый, когда значения из USB и заданные пользователем разошлись
+            /// </summary>
+            public ControlValueEventHandler ChangeEvent;
+
+            /// <summary>
+            /// Конструктор свойства
+            /// </summary>
+            /// <param name="_idx"></param>
+            /// <param name="_bitIdx"></param>
+            /// <param name="_bitLen"></param>
+            /// <param name="_setUsbEvent"></param>
+            /// <param name="_changeEvent"></param>
+            public CVProperty(UInt16 _bitIdx, UInt16 _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
             {
-                Idx = _idx;
-                Control = _cb;
+  //              Idx = _idx;
                 BitIdx = _bitIdx;
                 BitLen = _bitLen;
-                Func = _func;
+                SetUsbEvent = _setUsbEvent;
+                ChangeEvent = _changeEvent;
             }
         };
 
-        List<CVProperty> cvpl = new List<CVProperty>();
-
-        private enum ValueState { vsUnchanged, vsChanged, vsCounting };
-        // старое значение, которое получили
-        private int _oldGetValue;
+        /// Список свойств у значения управления
+        //private List<CVProperty> cvpl = new List<CVProperty>();
+        private Dictionary<int, CVProperty> _cvDictionary = new Dictionary<int, CVProperty>();
         // значение, которое получаем из USB
-        private int _getValue;
+        private Int32 _usbValue;
         // значение, которое уставливается из интерфейса
-        private int _setValue;
+        private Int32 _uiValue;
         // значение счетчика времени до проверки совпадения GetValue и SetValue
         private int _timerCnt;
-        //
+        // значение по-умолчанию, которое накладывается всегда на устанавливаемое значение
         private int _defaultValue;
-        //
-        private bool _updatingGetState;
-        //
-        private bool _updateUI;
 
-        public bool UpdateUI
-        {
-            get { return _updateUI; }
-            set { _updateUI = value; }
-        }
-
+        /// <summary>
+        /// Конструктор по-умолчанию
+        /// </summary>
+        /// <param name="defaultValue">Можем задать значение по-умолчанию, если нужно, чтобы определенные биты всегда были установлены</param>
         public ControlValue(int defaultValue = 0)
         {
-            _oldGetValue = -1;
-            _getValue = 0;
-            _setValue = 0;
+            _usbValue = 0;
+            _uiValue = 0;
             _timerCnt = 0;
-            _updatingGetState = false;
             _defaultValue = defaultValue;
         }
 
         /// <summary>
-        /// 
+        /// Добавляем свойство
         /// </summary>
         /// <param name="_idx"></param>
-        /// <param name="_cb">null тоже можно передавать</param>
         /// <param name="_bitIdx"></param>
         /// <param name="_bitLen"></param>
-        /// <param name="_func"></param>
+        /// <param name="_setUsbEvent"></param>
+        /// <param name="_changeEvent"></param>
         /// <returns></returns>
-        public bool AddProperty(int _idx, UIElement _cb, UInt16 _bitIdx, UInt16 _bitLen, setFunctionDelegate _func)
+        public bool AddProperty(int _idx, UInt16 _bitIdx, UInt16 _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
         {
-            if (_cb is CheckBox)
+            if (_cvDictionary.ContainsKey(_idx))
             {
-                (_cb as CheckBox).Click += _cb_Click;
+                return false;
             }
-            else if (_cb is ComboBox)
-            {
-                (_cb as ComboBox).SelectionChanged += ControlValue_SelectionChanged;
-            }
-            //else return false;
-
-            //TODO: проверить, что такого индекса еще нет
-            cvpl.Add(new CVProperty(_idx, _cb, _bitIdx, _bitLen, _func));
+            _cvDictionary.Add(_idx,new CVProperty(_bitIdx, _bitLen, _setUsbEvent, _changeEvent));
             return true;
         }
 
-        private bool setCVProperty(CVProperty cv, int pValue, bool autoSendValue = true)
+        /// <summary>
+        /// Получаем значение свойства из величины value
+        /// </summary>
+        /// <param name="cv">Описание свойства</param>
+        /// <param name="value">Значение величины, для которого нужно взять свойство</param>
+        /// <returns></returns>
+        private int GetCVProperty(CVProperty cv, int value)
         {
-            if (cv == null) return false;
+            if (cv == null) return -1;
+
+            Int32 mask = 0;
+            for (UInt16 i = 0; i < cv.BitLen; i++)
+            {
+                mask |= (1 << i);
+            }
+            value >>= cv.BitIdx;
+            value &= mask;
+
+            return value;
+        }
+
+        /// <summary>
+        /// Задаем значение свойства для величины pValue
+        /// </summary>
+        /// <param name="cv">Описание свойства</param>
+        /// <param name="pValue">Значение величины, к которому нужно применть установку свойства</param>
+        /// <param name="autoSendValue">Автоматически отправлять значение (вызовом делегата SetUsbEvent)</param>
+        /// <returns></returns>
+        public bool SetProperty(int pIdx, int pValue, bool autoSendValue = true)
+        {
+            if (!_cvDictionary.ContainsKey(pIdx)) return false;
+
+            CVProperty cv = _cvDictionary[pIdx];
 
             Int32 mask = 0;
             for (UInt16 i = 0; i < cv.BitLen; i++)
@@ -113,39 +180,15 @@
                 mask |= (1 << (cv.BitIdx + i));
             }
             pValue &= (mask >> cv.BitIdx);
-            _setValue &= ~mask;
-            _setValue |= pValue << cv.BitIdx;
+            _uiValue &= ~mask;
+            _uiValue |= pValue << cv.BitIdx;
             if (autoSendValue)
             {
-                TimerSet(UPDATE_TIMEOUT_TICKS);
-                cv.Func((uint)_setValue);
+                _timerCnt = UPDATE_TIMEOUT_TICKS;
+                cv.SetUsbEvent((uint)_uiValue);
             }
 
             return true;
-        }
-
-        public bool SetProperty(int pIdx, int pValue, bool autoSendValue = true)
-        {
-            CVProperty cv = cvpl.Find(p => p.Idx == pIdx);
-
-            return setCVProperty(cv, pValue, autoSendValue);
-        }
-
-        void ControlValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (_updatingGetState) return;
-            CVProperty cv = cvpl.Find(p => (p.Control is ComboBox) && (p.Control == sender));
-
-            setCVProperty(cv, (cv.Control as ComboBox).SelectedIndex);
-        }
-
-        void _cb_Click(object sender, RoutedEventArgs e)
-        {
-            if (_updatingGetState) return;
-
-            CVProperty cv = cvpl.Find(p => (p.Control is CheckBox) && (p.Control == sender));
-
-            setCVProperty(cv, Convert.ToInt32((cv.Control as CheckBox).IsChecked));
         }
 
         /// <summary>
@@ -160,40 +203,32 @@
         /// <summary>
         /// Значение, полученное из USB
         /// </summary>
-        public int GetValue
+        public int UsbValue
         {
             get
             {
-                return _getValue;
+                return _usbValue;
             }
             set
             {
-                _oldGetValue = _getValue;
-                _getValue = value;
+                _usbValue = value;
             }
         }
 
         /// <summary>
         /// Значение, установленное из интерфейса
         /// </summary>
-        public int SetValue
+        public int UIValue
         {
-            get { return _setValue; }
+            get
+            {
+                return _uiValue;
+            }
             set
             {
-                _setValue = value;
-
-                TimerSet(UPDATE_TIMEOUT_TICKS);            // значение установили, ждем 2 секунды до проверки Get и SetValue
+                _uiValue = value;
+                _timerCnt = UPDATE_TIMEOUT_TICKS;       // проверим значение из USB через некоторое время
             }
-        }
-
-        /// <summary>
-        /// Устаналиваем, сколько "тиков" ждать
-        /// </summary>
-        /// <param name="timerVal"></param>
-        private void TimerSet(int timerVal)
-        {
-            _timerCnt = timerVal;
         }
 
         /// <summary>
@@ -204,44 +239,31 @@
         {
             if ((_timerCnt > 0) && (--_timerCnt == 0))          // пришло время для проверки Get и Set Value
             {
-                if (Changed())
+                if (_uiValue != _usbValue)
                 {
-                    _updateUI = false;
-                    UpdateGetProperties();
+                    CheckPropertiesForChanging();
                 }
             }
-        }
-
-        private void UpdateGetProperties()
-        {
-            _updatingGetState = true;
-            foreach (CVProperty cv in cvpl)
-            {
-                if (cv.Control is CheckBox)
-                {
-                    (cv.Control as CheckBox).IsChecked = ((_getValue & (1 << cv.BitIdx)) > 0);
-                }
-                if (cv.Control is ComboBox)
-                {
-                    Int32 mask = 0;
-                    for (UInt16 i = 0; i < cv.BitLen; i++)
-                    {
-                        mask |= (1 << (cv.BitIdx + i));
-                    }
-                    (cv.Control as ComboBox).SelectedIndex = (_getValue & mask) >> cv.BitIdx;
-                }
-            }
-            _setValue = _getValue;
-            _updatingGetState = false;
         }
 
         /// <summary>
-        /// Проверяем значения
+        /// Проверяем UsbVal и UiVal на изменения в свойствах
+        /// Какие своцства изменились, для таких свойств вызваем делегаты ChangeEvent
         /// </summary>
-        /// <returns></returns>
-        private bool Changed()
+        private void CheckPropertiesForChanging()
         {
-            return (_oldGetValue != _getValue) || (_setValue != _getValue) || (_updateUI);
+            int usbVal;
+            int uiVal;
+
+            foreach (KeyValuePair<int, CVProperty> pair in _cvDictionary)
+            {
+                usbVal = GetCVProperty(pair.Value, _usbValue);
+                uiVal = GetCVProperty(pair.Value, _uiValue);
+                if ((usbVal != -1) && (uiVal != -1) && (usbVal != uiVal))
+                {
+                    pair.Value.ChangeEvent((uint)_usbValue);
+                }
+            }
         }
     }
 

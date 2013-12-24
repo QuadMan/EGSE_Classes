@@ -117,15 +117,15 @@ namespace EGSE.Threading
                     _dec.Reset();
                 }
 
-                bytesToRead = (uint)_fThread.bigBuf.bytesAvailable;       // сколько байт можно считать из потока
+                bytesToRead = (uint)_fThread.bigBuf.BytesAvailable;       // сколько байт можно считать из потока
                 if (bytesToRead >= READ_BUF_SIZE_IN_BYTES)          // будем читать большими порциями
                 {
                     if (bytesToRead > _maxCBufSize)                 // для статистики рассчитаем максимальную заполненность буфера, которая была
                     {
                         _maxCBufSize = bytesToRead;
                     }
-                    _dec.Decode(_fThread.bigBuf.readBuf, _fThread.bigBuf.readBufSize);        // декодируем буфер
-                    _fThread.bigBuf.moveNextRead();
+                    _dec.Decode(_fThread.bigBuf.ReadBuf, _fThread.bigBuf.ReadBufSize);        // декодируем буфер
+                    _fThread.bigBuf.MoveNextRead();
                     //_fThread.bigBuf.bytesAvailable -= (int)bytesToRead;
                 }
                 System.Threading.Thread.Sleep(1);

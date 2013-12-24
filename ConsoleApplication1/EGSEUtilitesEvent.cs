@@ -102,7 +102,7 @@ namespace EGSE.Utilites
                     if (elemSource != null)
                     {
                         strRes += GetString(GetParentElements(elemSource.Parent));
-                        strRes += "Нажата кнопка \"" + elemSource.Content + "\"";
+                        strRes += "Нажата кнопка " + elemSource.Content;
                     }
 
                 }
@@ -116,7 +116,7 @@ namespace EGSE.Utilites
                             strRes += "Снят флажок ";
                         else
                             strRes += "Активирован флажок ";
-                        strRes += "\"" + elemSource.Content + "\"";
+                        strRes += elemSource.Content;
 
 
                     }
@@ -128,7 +128,7 @@ namespace EGSE.Utilites
                     if (elemSource != null)
                     {
                         strRes += GetString(GetParentElements(elemSource.Parent));
-                        strRes += "Выбран элемент раскрывающегося списка \"" + elemSource.Content + "\"";
+                        strRes += "Выбран элемент раскрывающегося списка " + elemSource.Content;
                     }
                 }
                 return strRes;
@@ -146,9 +146,9 @@ namespace EGSE.Utilites
                 if (stkstrElements == null)
                     return null;
                 if (stkstrElements.Count != 0)
-                    strRes = "В блоке " + "\"" + stkstrElements.Pop() + "\"";
+                    strRes = "В блоке " + stkstrElements.Pop();
                 while (stkstrElements.Count != 0)
-                    strRes += ", блока " + "\"" + stkstrElements.Pop() + "\"";
+                    strRes += ", блока " + stkstrElements.Pop();
                 strRes += ": ";
                 return strRes;
             }

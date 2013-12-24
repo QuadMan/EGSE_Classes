@@ -176,10 +176,10 @@ namespace EGSE.Threading
                     //
                     if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDI_MIN_BUF_SIZE))
                     {
-                            _ftdi.ReadBuf(bigBuf.writeBuf, bytesAvailable, ref bytesReaded);
+                            _ftdi.ReadBuf(bigBuf.WriteBuf, bytesAvailable, ref bytesReaded);
                             if (bytesReaded > 0)
                             {
-                                bigBuf.moveNextWrite(bytesReaded);
+                                bigBuf.MoveNextWrite(bytesReaded);
 
                                 calcSpeed(bytesReaded);
 #if DEBUG_TEXT

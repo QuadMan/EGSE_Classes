@@ -38,16 +38,16 @@ namespace EGSE.Cyclogram
             //
             setButtonsByState(CurState.csNone);
             //
-            cycCommandsAvailable.AddCommand("NOP", new CyclogramLine("NOP", NopTest, NopExec, ""));
-            cycCommandsAvailable.AddCommand("STOP", new CyclogramLine("STOP", StopTest, StopExec, ""));
-            //cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, ""));
+            cycCommandsAvailable.AddCommand("NOP", new CyclogramLine("NOP", NopTest, NopExec, String.Empty));
+            cycCommandsAvailable.AddCommand("STOP", new CyclogramLine("STOP", StopTest, StopExec, String.Empty));
+            //cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, String.Empty));
         }
 
         public bool IsTracingMode { get; set; }
 
         public bool StopTest(string[] Params, out string errString)
         {
-            errString = "";
+            errString = String.Empty;
             return true;
         }
 
@@ -59,7 +59,7 @@ namespace EGSE.Cyclogram
         
         public bool NopTest(string[] Params, out string errString)
         {
-            errString = "";
+            errString = String.Empty;
             return true;
         }
 
@@ -70,7 +70,7 @@ namespace EGSE.Cyclogram
         
         public bool LoopTest(string[] Params, out string errString)
         {
-            errString = "";
+            errString = String.Empty;
             return true;
         }
 
@@ -107,7 +107,7 @@ namespace EGSE.Cyclogram
                     StartBtn.IsEnabled = false;
                     StopBtn.IsEnabled = false;
                     StepBtn.IsEnabled = false;
-                    StatusLabel.Content = "";
+                    StatusLabel.Content = String.Empty;
                     break;
                 case CurState.csRunning:
                     StartBtn.IsEnabled = false;
