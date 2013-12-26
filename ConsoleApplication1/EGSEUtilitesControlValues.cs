@@ -33,7 +33,7 @@ namespace EGSE.Utilites
     /// Так как в одном байте обычно записано несколько свойств, для ControlValue доступен метод AddProperty, который позволяет
     /// указывать побитно, какие биты отвечают за какое свойство.
     /// К примеру, 
-    /// ControlValue.AddProperty(0, 4, 1, SetFunction, delegate(UInt32 value) { XsanImitatorReady = (value == 1); });
+    /// ControlValue.AddProperty(0, 4, 1, SetFunction, delegate(UInt32 value) { KvvImitatorReady = (value == 1); });
     /// Этим методом мы говорим, что создаем свойство с индексом 0, начинающееся с 4-го бита, длиной в 1 бит. При установке этого свойства вызывается функция SetFunction,
     /// Если значения UsbValue и UiValue не совпали при проверке, вызывается делегат (или функция), описанная в последнем параметре.
     /// 
@@ -108,6 +108,8 @@ namespace EGSE.Utilites
         private int _timerCnt;
         // значение по-умолчанию, которое накладывается всегда на устанавливаемое значение
         private int _defaultValue;
+        // флаг говорящий о том, что не нужно записывать значения в USB, используется при первой инициализации
+        private bool _refreshFlag;
 
         /// <summary>
         /// Конструктор по-умолчанию
@@ -116,7 +118,7 @@ namespace EGSE.Utilites
         public ControlValue(int defaultValue = 0)
         {
             _usbValue = 0;
-            _uiValue = 0;
+            _uiValue = 0;  // пока не устновили через UI
             _timerCnt = 0;
             _defaultValue = defaultValue;
         }
@@ -182,6 +184,8 @@ namespace EGSE.Utilites
             pValue &= (mask >> cv.BitIdx);
             _uiValue &= ~mask;
             _uiValue |= pValue << cv.BitIdx;
+            if (_refreshFlag) return true;
+
             if (autoSendValue)
             {
                 _timerCnt = UPDATE_TIMEOUT_TICKS;
@@ -198,6 +202,7 @@ namespace EGSE.Utilites
         public void RefreshGetValue()
         {
             _timerCnt = UPDATE_TIMEOUT_TICKS;
+            _refreshFlag = true;
         }
 
         /// <summary>
@@ -239,7 +244,7 @@ namespace EGSE.Utilites
         {
             if ((_timerCnt > 0) && (--_timerCnt == 0))          // пришло время для проверки Get и Set Value
             {
-                if (_uiValue != _usbValue)
+                if ((_uiValue != _usbValue) | (_refreshFlag))
                 {
                     CheckPropertiesForChanging();
                 }
@@ -261,9 +266,11 @@ namespace EGSE.Utilites
                 uiVal = GetCVProperty(pair.Value, _uiValue);
                 if ((usbVal != -1) && (uiVal != -1) && (usbVal != uiVal))
                 {
-                    pair.Value.ChangeEvent((uint)_usbValue);
+                    pair.Value.ChangeEvent((uint)usbVal);
                 }
             }
+
+            _refreshFlag = false;
         }
     }
 

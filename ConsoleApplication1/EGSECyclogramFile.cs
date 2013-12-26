@@ -306,7 +306,7 @@ namespace EGSE.Cyclogram
                     catch (CyclogramParsingException e)
                     {
                         _wasError = true;
-                        //_curCommand.ErrorInCommand += e.Message + "\t";
+                        _curCommand.ErrorInCommand += e.Message + "\t";
                     }
                     catch
                     {
@@ -317,7 +317,8 @@ namespace EGSE.Cyclogram
                     {
                         _curCommand.Line = curLineNum;
                         commands.Add(_curCommand);
-                        //начинаем собирать новую команду
+
+                        //начинаем "собирать" новую команду
                         _curCommand = new CyclogramLine();
                     }
                     curLineNum++;

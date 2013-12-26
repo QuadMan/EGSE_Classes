@@ -1,5 +1,6 @@
 ﻿using EGSE.Cyclogram;
 using EGSE.Threading;
+using EGSE.Utilites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,7 +95,7 @@ namespace EGSE.Cyclogram
                     StartBtn.IsEnabled = true;
                     StopBtn.IsEnabled = false;
                     StepBtn.IsEnabled = true;
-                    StatusLabel.Content = cThread._cycFile.FileName;
+                    StatusLabel.Content = cThread.CycFile.FileName;
                     break;
                 case CurState.csLoadedWithErrors:
                     StartBtn.IsEnabled = false;
@@ -175,7 +176,7 @@ namespace EGSE.Cyclogram
                 {
                     DG.DataContext = null;
                     cThread.Load(dlg.FileName, cycCommandsAvailable);
-                    DG.DataContext = cThread._cycFile.commands;
+                    DG.DataContext = cThread.CycFile.commands;
                 }
                 catch (CyclogramParsingException exc)
                 {
@@ -218,6 +219,20 @@ namespace EGSE.Cyclogram
         private void TrackingModeCB_Checked(object sender, RoutedEventArgs e)
         {
             IsTracingMode = (bool)TrackingModeCB.IsChecked;
+        }
+
+        /// <summary>
+        /// Логгируем все нажания кнопок, чекбоксов и т.д.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void mouseLoggerEvent(object sender, MouseButtonEventArgs e)
+        {
+            string logEvent = EventClickToString.ElementClicked(e);
+            if (logEvent != null)
+            {
+                kia_xan.LogsClass.Instance.Files[kia_xan.LogsClass.OperatorIdx].LogText = logEvent;
+            }
         }
     }
 }

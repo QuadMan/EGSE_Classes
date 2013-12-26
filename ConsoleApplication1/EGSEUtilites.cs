@@ -44,6 +44,7 @@
 namespace EGSE.Utilites
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
     using System.Runtime.InteropServices;
@@ -200,85 +201,7 @@ namespace EGSE.Utilites
         }
     }
 
-    /// <summary>
-    /// Значение телеметрического параметра, изменения которого необходимо отслеживать (обычно для логгирования изменения состояния - контактные датчики, включени питания и т.д.)
-    /// Пример использования:
-    /// static void tFunc(int val)
-    /// {
-    ///     string s = String.Empty;
-    ///     if ((val and 1) == 1) s += "ПК1 ВКЛ ";
-    ///     if ((val and 2) == 2) s += "ПК2 ВКЛ ";
-    ///     System.Console.WriteLine(s);
-    /// }
-    /// TMValue val1 = new TMValue(0, tFunc, true);
-    /// val1.SetVal(3);
-    /// </summary>
-    public class TMValue
-    {
-        /// <summary>
-        /// Описание делегата функции, которую нужно вызвать при изменении параметра
-        /// </summary>
-        /// <param name="val"></param>
-        public delegate void ChangeValueEventHandler(int val);
 
-        /// <summary>
-        /// Делагат на изменение параметра
-        /// </summary>
-        public ChangeValueEventHandler ChangeValueEvent;
-
-        /// <summary>
-        /// Значение параметра
-        /// </summary>
-        public int Value { get; set; }
-
-        /// <summary>
-        /// Нужно ли проверять параметр на изменение значения
-        /// </summary>
-        public bool MakeTest { get; set; }
-
-        /// <summary>
-        /// Конструктор по-умолчанию
-        /// </summary>
-        public TMValue()
-        {
-            Value = -1;
-            MakeTest = false;
-        }
-
-        /// <summary>
-        /// Создаем параметр сразу 
-        /// </summary>
-        /// <param name="val">Значение</param>
-        /// <param name="fun">Функция при изменении параметра, можно передать null</param>
-        /// <param name="makeTest">Нужно ли сравнивать старое и новое значение параметра</param>
-        public TMValue(int val, ChangeValueEventHandler fun, bool makeTest)
-        {
-            Value = val;
-            ChangeValueEvent = fun;
-            MakeTest = makeTest;
-        }
-
-        /// <summary>
-        /// Присваивание значения
-        /// Если необходима проверка значения и определена функция проверки
-        /// </summary>
-        /// <param name="val">Новое значение</param>
-        public void SetVal(int val)
-        {
-            bool _changed = true;
-            if (MakeTest)
-            {
-                _changed = Value != val;
-            }
-
-            if (_changed)
-            {
-                ChangeValueEvent(val);
-            }
-
-            Value = val;
-        }
-    }
 
     /// <summary>
     /// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время
@@ -386,194 +309,6 @@ namespace EGSE.Utilites
     }
 
     /// <summary>
-    /// Класс менеджера для большого кольцевого буфера
-    /// Представляет собой двумерный массив. Первый индекс которого является указателем на большой массив 
-    /// максимальным размером 70 КБ. При чтении и записи изменяются указатели первого индекса двумерного массива.
-    /// </summary>
-    public class BigBufferManager
-    {
-        /// <summary>
-        /// Размер буфера по-умолчанию
-        /// </summary>
-        private const uint DEFAULT_BUF_SIZE = 100;
-
-        /// <summary>
-        /// Размер единичных массивов (ограничен драйвером FTDI, который не передает больше 65 КБ за раз)
-        /// </summary>
-        private const uint FTDI_BUF_SIZE = 70000;
-
-        /// <summary>
-        /// Представление большого кольцевого буфера
-        /// AData[positionIdx][dataIdx]
-        /// </summary>
-        public byte[][] AData { get; set; }
-
-        /// <summary>
-        /// Здесь хранятся длины всех массивов, так как длина второго массива задана константой
-        /// </summary>
-        private int[] _aLen;
-
-        /// <summary>
-        /// Текущая позиция чтения
-        /// </summary>
-        private uint _curRPos;
-
-        /// <summary>
-        /// Текущая позиция записи
-        /// </summary>
-        private uint _curWPos;
-
-        /// <summary>
-        /// Количество элементов в кольцевом буфере
-        /// </summary>
-        private int _count;
-
-        /// <summary>
-        /// Размер кольцевого буфера (в количестве массивов по 70 КБ)
-        /// </summary>
-        private uint _bufSize;
-
-        /// <summary>
-        /// Последняя позиция чтения
-        /// </summary>
-        private uint _lastRPos;
-
-        /// <summary>
-        /// Последняя позиция записи
-        /// </summary>
-        private uint _lastWPos;
-
-        /// <summary>
-        /// Объект для защиты функций moveNextRead и moveNextWrite
-        /// </summary>
-        private object thisLock = new object();
-
-        /// <summary>
-        /// Размер буфера в байтах, счиается при вызове функций moveNextRead и moveNextWrite
-        /// </summary>
-        private int _bytesInBuffer;
-
-        /// <summary>
-        /// Конструктор большого буфера
-        /// </summary>
-        /// <param name="bufSize">Размер буфера</param>
-        public BigBufferManager(uint bufSize = DEFAULT_BUF_SIZE)
-        {
-            _bufSize = bufSize;
-            AData = new byte[_bufSize][];
-            _aLen = new int[_bufSize];
-            for (uint i = 0; i < _bufSize; i++)
-            {
-                AData[i] = new byte[FTDI_BUF_SIZE];
-                _aLen[i] = 0;
-            }
-
-            _lastRPos = 0;
-            _lastWPos = 0;
-            _curWPos = 0;
-            _curRPos = 0;
-            _count = 0;
-            _bytesInBuffer = 0;
-        }
-
-        /// <summary>
-        /// Перемещает указатель чтения
-        /// Обеспечивает защиту от одновременного изменения _count и _bytesInBuffer
-        /// Изменяет _bytesInBuffer
-        /// </summary>
-        public void MoveNextRead()
-        {
-            lock (this)
-            {
-                _curRPos = (_curRPos + 1) % _bufSize;
-                _count--;
-                _bytesInBuffer -= _aLen[_lastRPos];
-#if DEBUG_TEXT
-                System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}, RPos = {2}", _count, _bytesInBuffer,_curRPos);
-#endif
-            }
-        }
-
-        /// <summary>
-        /// Перемещает указатель записи
-        /// Обеспечивает защиту от одновременного изменения _count и _bytesInBuffer
-        /// Изменяет _bytesInBuffer и записывает длину буфера в ALen
-        /// </summary>
-        /// <param name="bufSize">Сколько было записано в текущий буфер</param>
-        public void MoveNextWrite(int bufSize)
-        {
-            lock (this)
-            {
-                _curWPos = (_curWPos + 1) % _bufSize;
-                _count++;
-                _aLen[_lastWPos] = bufSize;
-                _bytesInBuffer += bufSize;
-#if DEBUG_TEXT
-                System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}, WPos = {2}", _count, _bytesInBuffer, _curWPos);
-#endif
-            }
-        }
-
-        /// <summary>
-        /// Возвращает количество байт в буфере
-        /// </summary>
-        public int BytesAvailable
-        {
-            get
-            {
-                return _bytesInBuffer;
-            }
-        }
-
-        /// <summary>
-        /// Возвращает размер последнего буфера для чтения
-        /// </summary>
-        public int ReadBufSize
-        {
-            get
-            {
-                return _aLen[_lastRPos];
-            }
-        }
-
-        /// <summary>
-        /// Возвращает текущий буфер для чтения
-        /// Если читать нечего, возвращает null
-        /// </summary>
-        public byte[] ReadBuf
-        {
-            get
-            {
-                if (_count == 0)
-                {
-                    return null;
-                }
-
-                _lastRPos = _curRPos;
-                return AData[_lastRPos];
-            }
-        }
-
-        /// <summary>
-        /// Возвращает текущий буфер для записи
-        /// Если писать некуда, возвращает null
-        /// </summary>
-        public byte[] WriteBuf
-        {
-            get
-            {
-                if (_count >= _bufSize)
-                {
-                    return null;
-                }
-
-                _lastWPos = _curWPos;
-                return AData[_lastWPos];
-            }
-        }
-    }
-
-    /// <summary>
     /// Класс работы с ini-файлом
     /// </summary>
     public class IniFile
@@ -662,6 +397,8 @@ namespace EGSE.Utilites
     /// </summary>
     public static class AppSettings
     {
+        private const int MAX_ITEMS_COUNT = 100;
+
         /// <summary>
         /// Записываем параметр param в секцию section, значением value
         /// </summary>
@@ -707,6 +444,83 @@ namespace EGSE.Utilites
             {
                 throw e;
             }
+        }
+
+        /// <summary>
+        /// Метод сохраняет в INI файл список
+        /// </summary>
+        /// <param name="strList">Список для сохранения</param>
+        /// <param name="section">Секция, в которую пишем</param>
+        /// <returns></returns>
+        public static bool SaveList(List<string> strList, string section)
+        {
+            if ((strList == null) || (strList.Count == 0)) {
+                return false;
+            }
+
+            try
+            {
+                IniFile _ini = new IniFile();
+                int i = 0;
+                foreach (string s in strList)
+                {
+                    _ini.Write("Item" + i.ToString(), s, section);
+                    if (i++ == MAX_ITEMS_COUNT)
+                    {
+                        break;
+                    }
+                }
+                
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
+        /// <summary>
+        /// Загружаем элементы из секции в список
+        /// Отбираем элементы ItemN, где N должен быть от 0 до MAX_ITEMS_COUNT-1
+        /// </summary>
+        /// <param name="strList">Список, в который загружаем элементы</param>
+        /// <param name="section">Секция, из которой загружаем элементы списка</param>
+        /// <returns></returns>
+        public static bool LoadList(List<string> strList, string section)
+        {
+            if (strList == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                IniFile _ini = new IniFile();
+                int i = 0;
+                string str = string.Empty;
+                strList.Clear();
+                while (i < MAX_ITEMS_COUNT)
+                {
+                    str = "Item" + i.ToString();
+                    if (_ini.IsKeyExists(str,section))
+                    {
+                        strList.Add(_ini.Read(str, section));
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    i++;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return true;
         }
 
         /// <summary>

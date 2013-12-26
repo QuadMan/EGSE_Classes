@@ -14,24 +14,12 @@
 **  0.1.0	(06.12.2013) -	Начальная версия
 **
 */
+namespace EGSE.Threading 
+{
+    using EGSE.Cyclogram;
+    using System;
+    using System.Threading;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using EGSE.Cyclogram;
-
-namespace EGSE.Threading {
-
-    /// <summary>
-    /// Состояния циклограммы
-    ///     csNone - ничего
-    ///     csLoaded - циклограмма загружена без ошибок
-    ///     csLoadedWithErrors - циклограмма загружена с ошибками
-    ///     csRunning - циклограмма выполняется
-    /// </summary>
-    public enum CurState { csNone, csLoaded, csLoadedWithErrors, csRunning };
-        
     /// <summary>
     /// Делегат, вызываемый при изменении состояния циклограмм (выполняет, пауза)
     /// </summary>
@@ -47,47 +35,40 @@ namespace EGSE.Threading {
     /// <summary>
     /// Делегат, вызываемый при окончании выполнения циклограммы
     /// </summary>
+    /// <param name="cycFileName">Имя файла циклограмм</param>
     public delegate void StartFinishEventHandler(string cycFileName);
 
     /// <summary>
     /// Делегат, вызываемый при возникновении ошибки выполнения команды циклограммы
     /// </summary>
-    /// <param name="cycCommand"></param>
+    /// <param name="cycCommand">Команда, которая произвела ошибку при выполнении</param>
     public delegate void ExecErrorEventHandler(CyclogramLine cycCommand);
 
+    /// <summary>
+    /// Состояния циклограммы
+    /// </summary>
+    public enum CurState 
+    {
+        /// csNone - ничего не загружено, начальное состояние
+        csNone, 
+        
+        /// csLoaded - циклограмма загружена без ошибок
+        csLoaded, 
+        
+        /// csLoadedWithErrors - циклограмма загружена с ошибками
+        csLoadedWithErrors,
+        
+        /// csRunning - циклограмма выполняется
+        csRunning 
+    }
+        
     /// <summary>
     /// Класс потока циклограммы
     /// </summary>
     public class CyclogramThread
     {
-        // поток циклограммы
-        private Thread _thread;
-        // состояние циклограммы
-        private CurState _state;
-        // файл циклограммы
-        public CyclogramFile _cycFile;
-        // признак завершения потока циклограммы
-        private volatile bool _terminated;
-        // признак, что циклограмма загружена без ошибок и можно ее выполнять
-        private bool _cycLoaded;
-        // при завершении потока, нужно ли переходить на следующую команду
-        private bool _setNextCmd;
-
-        private CycPosition _cPos;
-
-        /// <summary>
-        /// путь до текущей циклограммы (для поддержки подгрузки циклограмм, сейчас не используется)
-        /// </summary>
-        //public string curCycFileName { get;  set; }
-        /// <summary>
-        /// Текущая строка выполнения команды в файле цкилограмм
-        /// </summary>
-        //public uint curLineNum { get; set; }
-
-        /// <summary>
-        /// текущая команда
-        /// </summary>
-        //!public CyclogramLine curCmd;
+        /// файл циклограммы
+        public CyclogramFile CycFile;
 
         /// <summary>
         /// Метод, вызываемый при изменении состояния циклограммы
@@ -100,14 +81,24 @@ namespace EGSE.Threading {
         /// </summary>
         public StepEventHandler DelaySecondEvent;
 
+        /// <summary>
+        /// Событие, вызываемое при переходе на следующую команду
+        /// </summary>
         private StepEventHandler _nextCommandEvent;
+
         /// <summary>
         /// Событие, вызываемое при переходе на новую команду
         /// </summary>
         public StepEventHandler NextCommandEvent
         {
-            get { return _nextCommandEvent; }
-            set { _nextCommandEvent = value;
+            get 
+            { 
+                return _nextCommandEvent; 
+            }
+
+            set 
+            { 
+                _nextCommandEvent = value;
                 _cPos.SetCmdEvent = value;
             } 
         }
@@ -138,34 +129,52 @@ namespace EGSE.Threading {
             }
         }
 
-	    /// <summary>
-	    /// Основной конструктор
-	    /// </summary>
+        /// поток циклограммы
+        private Thread _thread;
+
+        /// состояние циклограммы
+        private CurState _state;
+
+        /// признак завершения потока циклограммы
+        private volatile bool _terminated;
+
+        /// признак, что циклограмма загружена без ошибок и можно ее выполнять
+        /// при завершении потока, нужно ли переходить на следующую команду
+        private bool _setNextCmd;
+
+        /// текущая позиция в файле циклограмм
+        private CycPosition _cPos;
+
+        /// <summary>
+        /// Основной конструктор
+        /// </summary>
         public CyclogramThread()
-	    {
+        {
             _state = CurState.csNone;
             _terminated = false;
 
-            _cycFile = new CyclogramFile();
-            _cycLoaded = false;
-            _cPos = new CycPosition(_cycFile);
+            CycFile = new CyclogramFile();
+            _cPos = new CycPosition(CycFile);
 
-	        _setNextCmd = false;
-	    }
+            _setNextCmd = false;
+        }
 
         /// <summary>
         /// Метод изменения текущего состояния потока циклограмм
         /// </summary>
         /// <param name="newState"></param>
-        private void changeState(CurState newState)
+        private void ChangeState(CurState newState)
         {
             if (_state != newState)
             {
                 _state = newState;
-                if (_state != CurState.csRunning)      // если поменяли состояние на отличное от "выполнение", поток останавливаем
+
+                // если поменяли состояние на отличное от "выполнение", поток останавливаем
+                if (_state != CurState.csRunning)      
                 {
                     _terminated = true;
                 }
+
                 if (ChangeStateEvent != null)
                 {
                     ChangeStateEvent(_state);
@@ -174,13 +183,17 @@ namespace EGSE.Threading {
         }
 
         /// <summary>
-        /// Вполняем текущую команду
+        /// Выполняем текущую команду
         /// </summary>
-        private void execCurCmdFunction()
+        private void ExecCurCmdFunction()
         {
-            if (_cPos.CurCmd == null) return;
+            if (_cPos.CurCmd == null)
+            {
+                return;
+            }
 
-            bool cmdResult = _cPos.CurCmd.ExecFunction(_cPos.CurCmd.Parameters);            
+            bool cmdResult = _cPos.CurCmd.ExecFunction(_cPos.CurCmd.Parameters);       
+     
             // если команда выполнилась с ошибкой, вызовем соответствующий делегат
             if ((!cmdResult) && (CommandExecErrorEvent != null))
             {
@@ -191,7 +204,8 @@ namespace EGSE.Threading {
         /// <summary>
         /// Поток выполнения циклограммы
         /// </summary>
-        private void Execute() {
+        private void Execute() 
+        {
             int delayMs;
 
             while (!_terminated)
@@ -205,9 +219,10 @@ namespace EGSE.Threading {
                         DelaySecondEvent(_cPos.CurCmd);
                     }
                 }
-                else // останавливаем поток
+                else 
                 {
-                    changeState(CurState.csLoaded);
+                    // останавливаем поток
+                    ChangeState(CurState.csLoaded);
                     if (_setNextCmd)
                     {
                         _cPos.GetNextCmd();
@@ -216,29 +231,35 @@ namespace EGSE.Threading {
                             NextCommandEvent(_cPos.CurCmd);
                         }
                     }
+
                     continue;
                 }
 
                 System.Threading.Thread.Sleep(delayMs);
                 
                 // уменьшаем время до выполнения команды
-                _cPos.CurCmd.DelayMs -= delayMs;     
+                _cPos.CurCmd.DelayMs -= delayMs;
 
-                if ((_cPos.CurCmd.DelayMs <= 0) && (!_terminated))       // пришло время выполнить команду и мы не остановлены извне
+                // пришло время выполнить команду и мы не остановлены извне
+                if ((_cPos.CurCmd.DelayMs <= 0) && (!_terminated))       
                 {
-                    execCurCmdFunction();
+                    ExecCurCmdFunction();
                     _cPos.CurCmd.RestoreDelay();
+
+                    // больше команд нет, останавливаем поток выполнения циклограммы
                     if (_cPos.GetNextCmd() == null)
                     {
-                        changeState(CurState.csLoaded);       // больше команд нет, останавливаем поток выполнения циклограммы
+                        ChangeState(CurState.csLoaded);       
                     }
+
                     if (NextCommandEvent != null)
                     {
                         NextCommandEvent(_cPos.CurCmd);
                     }
                 }
             }
-            //восстанавливаем предыдущее значение задержки, если принудительно остановили циклограмму (по кнопку Стоп)
+
+            // восстанавливаем предыдущее значение задержки, если принудительно остановили циклограмму (по кнопку Стоп)
             if (_cPos.CurCmd != null)
             {
                 _cPos.CurCmd.RestoreDelay();
@@ -246,7 +267,7 @@ namespace EGSE.Threading {
 
             if (FinishedEvent != null)
             {
-                FinishedEvent(_cycFile.FileName);
+                FinishedEvent(CycFile.FileName);
             }
         }
 
@@ -258,42 +279,27 @@ namespace EGSE.Threading {
         /// <param name="availableCommands">Список доступных команд</param>
         public void Load(string fName, CyclogramCommands availableCommands)
         {
-            _cycLoaded = false;
-            try {
-                _cycFile.TryLoad(fName, availableCommands);
-                if (_cycFile.WasError)
+            try 
+            {
+                CycFile.TryLoad(fName, availableCommands);
+                if (CycFile.WasError)
                 {
-                    changeState(CurState.csLoadedWithErrors);
+                    CyclogramParsingException exc = new CyclogramParsingException("Ошибки в циклограмме");
+                    throw exc;
                 }
                 else
                 {
-                    changeState(CurState.csLoaded);
-                    _cycLoaded = true;
-                    _cycFile.CalcAbsoluteTime();
-                    //setToFirstLine();
+                    ChangeState(CurState.csLoaded);
+                    CycFile.CalcAbsoluteTime();
                     _cPos.SetToLine(0, true);
                 }
             }
             catch
             {
-                changeState(CurState.csLoadedWithErrors);
+                ChangeState(CurState.csLoadedWithErrors);
                 throw; 
             }
         }
-
-        /// <summary>
-        /// Позиционируем циклограмму на первую строку
-        /// </summary>
-        /*
-    private void setToFirstLine()
-    {
-        curCmd = _cycFile.GetFirstCmd();
-        if (NextCommandEvent != null)
-        {
-            NextCommandEvent(curCmd);
-        }
-    }
-         */
 
         /// <summary>
         /// Проверяем, есть ли на этой строке команда (или это комментарий)
@@ -302,7 +308,7 @@ namespace EGSE.Threading {
         /// <returns>TRUE, если на строке команда</returns>
         public bool IsCommandOnLine(int lineNum)
         {
-            return (((uint)lineNum < (uint)_cycFile.commands.Count) && (_state == CurState.csLoaded) && (_cycFile.commands[lineNum].IsCommand));
+            return ((uint)lineNum < (uint)CycFile.commands.Count) && (_state == CurState.csLoaded) && CycFile.commands[lineNum].IsCommand;
         }
 
         /// <summary>
@@ -312,36 +318,21 @@ namespace EGSE.Threading {
         public void Start()
         {
             Start(0);
-            /*
-            if (_cycLoaded)
-            {
-//                setToFirstLine();
-                if (_cPos.SetToLine(0, true) != null)
-                {
-                    changeState(CurState.csRunning);
-                    _cycFile.CalcAbsoluteTime(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);     // рассчитаем абсолютные времена выполнения для команд циклограммы
-
-                    _setNextCmd = false;
-                    _thread = new Thread(Execute);
-                    _terminated = false;
-                    _thread.Start();
-                }
-            }
-             */
         }
 
         /// <summary>
         ///  Запускаем циклограмму с определенной строки
         /// </summary>
-        /// <param name="LineNum"></param>
+        /// <param name="LineNum">Номер строки, с которой нужно запускать выполнение циклограммы</param>
         public void Start(int lineNum)
         {
-            if (!_cycLoaded) return;
+            if ((_state != CurState.csLoaded) || (_cPos.SetToLine(lineNum, true) == null))
+            {
+                return;
+            }
 
-            if (_cPos.SetToLine(lineNum, true) == null) return;
-
-            changeState(CurState.csRunning);
-            _cycFile.CalcAbsoluteTime(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, lineNum);     // рассчитаем абсолютные времена выполнения для команд циклограммы
+            ChangeState(CurState.csRunning);
+            CycFile.CalcAbsoluteTime(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, lineNum);     // рассчитаем абсолютные времена выполнения для команд циклограммы
 
             _setNextCmd = false;
             _thread = new Thread(Execute);
@@ -349,52 +340,28 @@ namespace EGSE.Threading {
             _terminated = false;
             _thread.Start();
         }
-/*
-        private void setToLineNum(int lineNum)
-        {
-            curCmd = null;
-            foreach (CyclogramLine cl in _cycFile.commands.Where(l => (l.IsCommand) && (l.Line == lineNum)))
-            {
-                curCmd = cl;
-                _cycFile.SetCmdLine(curCmd);
-                if (NextCommandEvent != null)
-                {
-                    NextCommandEvent(curCmd);
-                }
-                return;
-            }
-        }
-        */
+
+        /// <summary>
+        /// Выполняем шаг циклограммы
+        /// </summary>
+        /// <param name="lineNum">Номер строки, которую нужно выполнить</param>
         public void Step(int lineNum)
         {
-            if (!_cycLoaded) return;
+            if ((_state != CurState.csLoaded) || (_cPos.SetToLine(lineNum, true) == null))
+            {
+                return;
+            }
 
-            if (_cPos.SetToLine(lineNum, true) == null) return;
-
-            execCurCmdFunction();
+            ExecCurCmdFunction();
             if (_cPos.GetNextCmd() == null)
             {
-                changeState(CurState.csLoaded);       // больше команд нет, останавливаем поток выполнения циклограммы                
+                ChangeState(CurState.csLoaded);       // больше команд нет, останавливаем поток выполнения циклограммы                
             }
+
             if (NextCommandEvent != null)
             {
                 NextCommandEvent(_cPos.CurCmd);
             }
-            /*
-            setToLineNum(lineNum);
-            if (curCmd == null) return;
-
-            execCurCmdFunction();
-            curCmd = _cycFile.GetNextCmd();
-            if (curCmd == null)
-            {
-                changeState(CurState.csLoaded);       // больше команд нет, останавливаем поток выполнения циклограммы
-            }
-            if (NextCommandEvent != null)
-            {
-                NextCommandEvent(curCmd);
-            }
-           */
         }
 
         /// <summary>
@@ -402,7 +369,7 @@ namespace EGSE.Threading {
         /// </summary>
         public void Stop()
         {
-            changeState(CurState.csLoaded);     // по изменению состояния, поток автоматически завершится
+            ChangeState(CurState.csLoaded);     // по изменению состояния, поток автоматически завершится
         }
 
         /// <summary>
@@ -411,8 +378,7 @@ namespace EGSE.Threading {
         public void StopAndSetNextCmd()
         {
             _setNextCmd = true;
-            changeState(CurState.csLoaded);
+            ChangeState(CurState.csLoaded);
         }
     }
-
 }
