@@ -13,7 +13,7 @@ namespace EGSE.Protocols
     using EGSE.Utilites;
 
     /// <summary>
-    /// класс декодера по протоколу 5E4D.
+    /// Класс декодера по протоколу 5E4D.
     /// </summary>
     public class ProtocolUSB5E4D : ProtocolUSBBase
     {
@@ -104,12 +104,12 @@ namespace EGSE.Protocols
         private int _curErrorCount = 0;
 
         /// <summary>
-        /// логер Encoder-а.
+        /// Логер Encoder-а.
         /// </summary>
         private TxtLogger _encLogStream;
 
         /// <summary>
-        /// логер Decoder-а.
+        /// Логер Decoder-а.
         /// </summary>
         private FileStream _decLogStream;
 
@@ -140,8 +140,8 @@ namespace EGSE.Protocols
         /// </summary>
         /// <param name="decLogStream">Ссылка на экземпляр логера Decoder-а.</param>
         /// <param name="encLogStream">Ссылка на экземпляр логера Encoder-а.</param>
-        /// <param name="decLogEnable">Включить логер Decoder-а</param>
-        /// <param name="encLogEnable">Включить логер Encoder-а</param>
+        /// <param name="decLogEnable">Включить логер Decoder-а.</param>
+        /// <param name="encLogEnable">Включить логер Encoder-а.</param>
         public ProtocolUSB5E4D(FileStream decLogStream, TxtLogger encLogStream, bool decLogEnable, bool encLogEnable)
             : this()
         {
@@ -249,10 +249,10 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Циклический декодер буфера данных
+        /// Циклический декодер буфера данных.
         /// </summary>
-        /// <param name="buf">буфер данных</param>
-        /// <param name="bufSize">размер данных(в байтах)</param>
+        /// <param name="buf">Буфер данных.</param>
+        /// <param name="bufSize">Размер данных(в байтах).</param>
         public override void Decode(byte[] buf, int bufSize)
         {
             _posCurByte = 0;
@@ -350,12 +350,12 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Кодируем буфер
+        /// Кодируем буфер.
         /// </summary>
-        /// <param name="addr">0..255 адресный байт</param>
-        /// <param name="buf">Буфер данных</param>
-        /// <param name="bufOut">Буфер сформированной посылки</param>
-        /// <returns>true, если кодирование успешно</returns>
+        /// <param name="addr">0..255 адресный байт.</param>
+        /// <param name="buf">Буфер данных.</param>
+        /// <param name="bufOut">Буфер сформированной посылки.</param>
+        /// <returns>True, если кодирование успешно.</returns>
         public override bool Encode(uint addr, byte[] buf, out byte[] bufOut)
         {
             // длина пакета данных = макс.длина(65535) - (длина заголовка(5e 4d addr nbh nbl crch) + crc)
@@ -376,7 +376,7 @@ namespace EGSE.Protocols
             }
             catch (OverflowException)
             {
-                OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения"); // где переполнение, лучше указать
+                OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения, превышен размер посылки"); 
                 return false;  
             }
 
@@ -405,10 +405,10 @@ namespace EGSE.Protocols
         /// <summary>
         /// Формирует событие: ошибка декодера.
         /// </summary>
-        /// <param name="buf">Буфер с ошибкой</param>
-        /// <param name="pos">Позиция ошибки в буфере</param>
-        /// <param name="len">Размер буфера</param>
-        /// <param name="msg">Описание ошибки</param>
+        /// <param name="buf">Буфер с ошибкой.</param>
+        /// <param name="pos">Позиция ошибки в буфере.</param>
+        /// <param name="len">Размер буфера.</param>
+        /// <param name="msg">Описание ошибки.</param>
         private void OnErrorFrame(byte[] buf, uint pos, int len, string msg)
         {
             _curErrorCount++;
