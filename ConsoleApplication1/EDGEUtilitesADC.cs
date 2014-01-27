@@ -141,8 +141,14 @@ namespace EGSE.Utilites.ADC
         public CalibrationValues(CValue[] cValues)
         {
             _listValues = new List<CValue>();
+
             foreach (CValue cv in cValues)
-                _listValues.Add(cv);
+            {
+                if (_listValues == null)
+                    _listValues.Add(cv);
+                else
+                    Sort(cv);
+            }
         }
 
         /// <summary>

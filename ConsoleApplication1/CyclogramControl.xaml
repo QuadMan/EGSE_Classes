@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="670" MinHeight="200" MinWidth="670" PreviewMouseLeftButtonDown="mouseLoggerEvent">
+             d:DesignHeight="300" d:DesignWidth="670" MinHeight="200" MinWidth="670">
+    <Grid PreviewMouseLeftButtonDown="mouseLoggerEvent">
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="39"/>
@@ -67,7 +68,7 @@
             <Label Content="Label" Margin="5,0,0,0"/>
         </StackPanel>-->
         <DockPanel Grid.Column="1" Margin="10,0" Grid.Row="0">
-            <Button x:Name="LoadBtn" Content="Загрузить" Width="70" Margin="5" Click="LoadBtn_Click"/>
+            <Button x:Name="LoadBtn" Content="Загрузить" Width="70" Margin="5" Click="LoadBtn_Click" />
             <Label x:Name="StatusLabel" Content="" Background="#FF9FC6DC" Margin="5" Padding="5,2,5,0" VerticalContentAlignment="Center"/>
         </DockPanel>
         <StackPanel Grid.Column="1" Margin="10,0" Grid.Row="2" Orientation="Horizontal">
@@ -91,5 +92,6 @@
             <Button Content="Стоп" Click="Button_Click_2" Margin="5,7" Width="73"/>
         </StackPanel>-->
 
+    </Grid>
     </Grid>
 </UserControl>

@@ -61,7 +61,6 @@
     <Compile Include="EGSEThreadingUSB.cs" />
     <Compile Include="EGSEUSBFTDI.cs" />
     <Compile Include="EGSEUtilites.cs" />
-    <Compile Include="EGSEUtilitesEvent.cs" />
     <Compile Include="EGSEUtilitesTextlog.cs" />
     <Compile Include="FTD2XX_NET.cs" />
     <Compile Include="Program.cs" />

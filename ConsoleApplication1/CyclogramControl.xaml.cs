@@ -1,4 +1,14 @@
-﻿using EGSE.Cyclogram;
+﻿/*
+ * 
+ * 
+ * 
+ * 
+ *  24.01.2014 - добавил событие StopEvent - которое вырабатывается только по команде Stop или нажатию кнопки Stop
+ *             - событие FinishedEvent вызывается только когда дошли до конца циклограммы
+ * 
+ */
+
+using EGSE.Cyclogram;
 using EGSE.Threading;
 using EGSE.Utilites;
 using System;
@@ -26,7 +36,7 @@ namespace EGSE.Cyclogram
         private CyclogramThread cThread;
         private string statusText;
 
-        public CyclogramCommands cycCommandsAvailable = new CyclogramCommands();
+        private CyclogramCommands _cycCommandsAvailable = new CyclogramCommands();
 
         public CyclogramControl()
         {
@@ -39,9 +49,20 @@ namespace EGSE.Cyclogram
             //
             setButtonsByState(CurState.csNone);
             //
-            cycCommandsAvailable.AddCommand("NOP", new CyclogramLine("NOP", NopTest, NopExec, String.Empty));
-            cycCommandsAvailable.AddCommand("STOP", new CyclogramLine("STOP", StopTest, StopExec, String.Empty));
+            _cycCommandsAvailable.AddCommand("NOP", new CyclogramLine("NOP", NopTest, NopExec, String.Empty));
+            _cycCommandsAvailable.AddCommand("STOP", new CyclogramLine("STOP", StopTest, StopExec, String.Empty));
             //cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, String.Empty));
+        }
+
+        /// <summary>
+        /// Функция добавляет список команд циклограммы к исходным командам
+        /// </summary>
+        /// <param name="cycCommands"></param>
+        public void AddCycCommands(CyclogramCommands cycCommands)
+        {
+            foreach (KeyValuePair<string, CyclogramLine> cycLine in cycCommands) {
+                _cycCommandsAvailable.AddCommand(cycLine.Key, cycLine.Value);
+            }
         }
 
         public bool IsTracingMode { get; set; }
@@ -172,16 +193,16 @@ namespace EGSE.Cyclogram
 
             if (dlg.ShowDialog() == true)
             {
-                try
-                {
+                //try
+                //{
                     DG.DataContext = null;
-                    cThread.Load(dlg.FileName, cycCommandsAvailable);
+                    cThread.Load(dlg.FileName, _cycCommandsAvailable);
                     DG.DataContext = cThread.CycFile.commands;
-                }
-                catch (CyclogramParsingException exc)
-                {
-                    MessageBox.Show(exc.Message);
-                }
+                //}
+                //catch (CyclogramParsingException exc)
+                //{
+                    //MessageBox.Show(exc.Message);
+                //}
             }
         }
 

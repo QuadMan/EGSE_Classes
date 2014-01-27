@@ -106,12 +106,12 @@ namespace EGSE.Protocols
         /// <summary>
         /// логер Encoder-а.
         /// </summary>
-        private TxtLogger _encLogStream;
+        private TxtLogger _encLogStream = null;
 
         /// <summary>
         /// логер Decoder-а.
         /// </summary>
-        private FileStream _decLogStream;
+        private FileStream _decLogStream = null;
 
         /// <summary>
         /// Логирование кодированного потока.
@@ -145,8 +145,6 @@ namespace EGSE.Protocols
         public ProtocolUSB5E4D(FileStream decLogStream, TxtLogger encLogStream, bool decLogEnable, bool encLogEnable)
             : this()
         {
-            _decLogStream = null;
-            _encLogStream = null;
             if ((decLogStream != null) && decLogStream.CanRead)
             {
                 _decLogStream = decLogStream;
@@ -272,7 +270,7 @@ namespace EGSE.Protocols
                             if (_finishFrame)
                             {
                                 _finishFrame = false;
-                                OnErrorFrame(buf, _posCurByte, bufSize, "После сообщения не встретился 0x5E");
+                                OnErrorFrame(buf, _posCurByte, bufSize, Resource.Get("eMissing5E"));
                             }  
                           
                             Reset();
@@ -286,7 +284,7 @@ namespace EGSE.Protocols
                     case DecoderState.s4D:
                         if (0x4D != _curByte)
                         {
-                            OnErrorFrame(buf, _posCurByte, bufSize, "После 0x5E отсутствует 0x4D");
+                            OnErrorFrame(buf, _posCurByte, bufSize, Resource.Get("eMissing4D"));
                             Reset();
                         }
                         else
@@ -311,7 +309,7 @@ namespace EGSE.Protocols
                         _state = DecoderState.sMSG;
                         if (_curCRC8 != _curByte)
                         {
-                            OnErrorFrame(buf, _posCurByte, bufSize, "CRC8 заголовка расчитан неверно");
+                            OnErrorFrame(buf, _posCurByte, bufSize, Resource.Get("eBadHeadCRC"));
                             Reset();
                         }
 
@@ -328,7 +326,7 @@ namespace EGSE.Protocols
                     case DecoderState.sCRC:
                         if (_curCRC8 != _curByte)
                         {
-                            OnErrorFrame(buf, _posCurByte, bufSize, "CRC8 кадра расчитан неверно");
+                            OnErrorFrame(buf, _posCurByte, bufSize, Resource.Get("eBadCRC"));
                         }
                         else
                         { 
@@ -362,24 +360,24 @@ namespace EGSE.Protocols
             if (buf.Length > MaxFrameLen - (FrameHeaderSize + 1))  
             {
                 bufOut = null;
-                OnErrorFrame(buf, 0, buf.Length, "Превышен максимальный размер кадра");
+                OnErrorFrame(buf, 0, buf.Length, Resource.Get("eMaxFrameSize"));
                 return false;
             }
 
             bufOut = new byte[buf.Length + FrameHeaderSize + 1];
             bufOut[0] = 0x5E;
-            bufOut[1] = 0x4D;             
+            bufOut[1] = 0x4D;               
             try
             {               
-               bufOut[2] = checked((byte)addr);
-               bufOut[3] = checked((byte)(buf.Length >> 8));
+                bufOut[2] = checked((byte)addr);               
             }
             catch (OverflowException)
             {
-                OnErrorFrame(buf, 0, buf.Length, "Ошибка переполнения"); // где переполнение, лучше указать
+                OnErrorFrame(buf, 0, buf.Length, Resource.Get("eBadAddr"));
                 return false;  
             }
 
+            bufOut[3] = unchecked((byte)(buf.Length >> 8));   
             bufOut[4] = unchecked((byte)buf.Length);
             bufOut[5] = 0;                
             for (byte i = 0; i < 5; i++)            
