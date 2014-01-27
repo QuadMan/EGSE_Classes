@@ -57,6 +57,63 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="..\..\ConsoleApplication1\EDGEUtilitesADC.cs">
+      <Link>EDGEUtilitesADC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSECyclogramCommands.cs">
+      <Link>EGSECyclogramCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSECyclogramFile.cs">
+      <Link>EGSECyclogramFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEDevice.cs">
+      <Link>EGSEDevice.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEProtocolUSB.cs">
+      <Link>EGSEProtocolUSB.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEProtocolUSB5E4D.cs">
+      <Link>EGSEProtocolUSB5E4D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEProtocolUSB5E4DNoHeadCrc.cs">
+      <Link>EGSEProtocolUSB5E4DNoHeadCrc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEProtocolUSB7C6E.cs">
+      <Link>EGSEProtocolUSB7C6E.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEThreadingCyclogram.cs">
+      <Link>EGSEThreadingCyclogram.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEThreadingProtocol.cs">
+      <Link>EGSEThreadingProtocol.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEThreadingUSB.cs">
+      <Link>EGSEThreadingUSB.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUSBFTDI.cs">
+      <Link>EGSEUSBFTDI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUtilites.cs">
+      <Link>EGSEUtilites.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUtilitesBigBufferManager.cs">
+      <Link>EGSEUtilitesBigBufferManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUtilitesControlValues.cs">
+      <Link>EGSEUtilitesControlValues.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUtilitesEvent.cs">
+      <Link>EGSEUtilitesEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUtilitesTextlog.cs">
+      <Link>EGSEUtilitesTextlog.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUtilitesTM.cs">
+      <Link>EGSEUtilitesTM.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ConsoleApplication1\FTD2XX_NET.cs">
+      <Link>FTD2XX_NET.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -80,6 +137,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="..\..\ConsoleApplication1\EGSEProtocolUSB.resx">
+      <Link>EGSEProtocolUSB.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
