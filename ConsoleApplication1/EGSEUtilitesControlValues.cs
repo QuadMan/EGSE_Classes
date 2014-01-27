@@ -15,10 +15,6 @@ namespace EGSE.Utilites
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Data.Odbc;
 
     /// <summary>
     /// Класс, позволяющий задавать и отслеживать изменения значений различных настроек и параметров
@@ -43,31 +39,31 @@ namespace EGSE.Utilites
     /// </summary>
     public class ControlValue
     {
-        // через сколько вызововк TimerTick проверять значения UsbValue и UiValue
+        /// <summary>
+        /// через сколько вызововк TimerTick проверять значения UsbValue и UiValue
+        /// </summary>
         private const int UPDATE_TIMEOUT_TICKS = 3;
 
         /// <summary>
         /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue
         /// </summary>
         /// <param name="value"></param>
-        public delegate void ControlValueEventHandler(UInt32 value);
+        public delegate void ControlValueEventHandler(uint value);
 
-        class CVProperty
+        /// <summary>
+        /// Класс свойства
+        /// </summary>
+        private class CVProperty
         {
-            /// <summary>
-            /// Индекс свойства, для обращения к нему в функциях SetCVProperties и GetCVProperties
-            /// </summary>
-//            public int Idx;
-
             /// <summary>
             /// Индекс (в битах) с которого начинается значение
             /// </summary>
-            public UInt16 BitIdx;
+            public ushort BitIdx;
 
             /// <summary>
             /// Длина (в битах) значения
             /// </summary>
-            public UInt16 BitLen;
+            public ushort BitLen;
 
             /// <summary>
             /// Делегат, вызваемый, когда необходимо записать значение в USB
@@ -87,28 +83,43 @@ namespace EGSE.Utilites
             /// <param name="_bitLen"></param>
             /// <param name="_setUsbEvent"></param>
             /// <param name="_changeEvent"></param>
-            public CVProperty(UInt16 _bitIdx, UInt16 _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
+            public CVProperty(ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
             {
-  //              Idx = _idx;
                 BitIdx = _bitIdx;
                 BitLen = _bitLen;
                 SetUsbEvent = _setUsbEvent;
                 ChangeEvent = _changeEvent;
             }
-        };
+        }
 
+        /// <summary>
         /// Список свойств у значения управления
-        //private List<CVProperty> cvpl = new List<CVProperty>();
+        /// </summary>
         private Dictionary<int, CVProperty> _cvDictionary = new Dictionary<int, CVProperty>();
-        // значение, которое получаем из USB
-        private Int32 _usbValue;
-        // значение, которое уставливается из интерфейса
-        private Int32 _uiValue;
-        // значение счетчика времени до проверки совпадения GetValue и SetValue
+
+        /// <summary>
+        /// значение, которое получаем из USB
+        /// </summary>
+        private int _usbValue;
+
+        /// <summary>
+        /// значение, которое уставливается из интерфейса
+        /// </summary>
+        private int _uiValue;
+
+        /// <summary>
+        /// значение счетчика времени до проверки совпадения GetValue и SetValue
+        /// </summary>
         private int _timerCnt;
-        // значение по-умолчанию, которое накладывается всегда на устанавливаемое значение
+
+        /// <summary>
+        /// значение по-умолчанию, которое накладывается всегда на устанавливаемое значение
+        /// </summary>
         private int _defaultValue;
-        // флаг говорящий о том, что не нужно записывать значения в USB, используется при первой инициализации
+
+        /// <summary>
+        /// флаг говорящий о том, что не нужно записывать значения в USB, используется при первой инициализации
+        /// </summary>
         private bool _refreshFlag;
 
         /// <summary>
@@ -118,7 +129,7 @@ namespace EGSE.Utilites
         public ControlValue(int defaultValue = 0)
         {
             _usbValue = 0;
-            _uiValue = 0;  // пока не устновили через UI
+            _uiValue = 0;
             _timerCnt = 0;
             _defaultValue = defaultValue;
         }
@@ -126,19 +137,20 @@ namespace EGSE.Utilites
         /// <summary>
         /// Добавляем свойство
         /// </summary>
-        /// <param name="_idx"></param>
-        /// <param name="_bitIdx"></param>
-        /// <param name="_bitLen"></param>
-        /// <param name="_setUsbEvent"></param>
-        /// <param name="_changeEvent"></param>
+        /// <param name="_idx">Индекс свойства, должно быть уникально</param>
+        /// <param name="_bitIdx">Индекс бита, с которого свойство начинается</param>
+        /// <param name="_bitLen">Длина в битах свойства</param>
+        /// <param name="_setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
+        /// <param name="_changeEvent">Функция, которая должна вызываться при изменении свойства</param>
         /// <returns></returns>
-        public bool AddProperty(int _idx, UInt16 _bitIdx, UInt16 _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
+        public bool AddProperty(int _idx, ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
         {
-            if (_cvDictionary.ContainsKey(_idx))
+            if (_cvDictionary.ContainsKey(_idx) || (_bitLen == 0))
             {
                 return false;
             }
-            _cvDictionary.Add(_idx,new CVProperty(_bitIdx, _bitLen, _setUsbEvent, _changeEvent));
+
+            _cvDictionary.Add(_idx, new CVProperty(_bitIdx, _bitLen, _setUsbEvent, _changeEvent));
             return true;
         }
 
@@ -152,8 +164,8 @@ namespace EGSE.Utilites
         {
             if (cv == null) return -1;
 
-            Int32 mask = 0;
-            for (UInt16 i = 0; i < cv.BitLen; i++)
+            int mask = 0;
+            for (ushort i = 0; i < cv.BitLen; i++)
             {
                 mask |= (1 << i);
             }
@@ -176,15 +188,19 @@ namespace EGSE.Utilites
 
             CVProperty cv = _cvDictionary[pIdx];
 
-            Int32 mask = 0;
-            for (UInt16 i = 0; i < cv.BitLen; i++)
+            int mask = 0;
+            for (ushort i = 0; i < cv.BitLen; i++)
             {
                 mask |= (1 << (cv.BitIdx + i));
             }
+
             pValue &= (mask >> cv.BitIdx);
             _uiValue &= ~mask;
             _uiValue |= pValue << cv.BitIdx;
-            if (_refreshFlag) return true;
+            if (_refreshFlag)
+            {
+                return true;
+            }
 
             if (autoSendValue)
             {
@@ -214,6 +230,7 @@ namespace EGSE.Utilites
             {
                 return _usbValue;
             }
+
             set
             {
                 _usbValue = value;
@@ -229,6 +246,7 @@ namespace EGSE.Utilites
             {
                 return _uiValue;
             }
+
             set
             {
                 _uiValue = value;
@@ -244,7 +262,7 @@ namespace EGSE.Utilites
         {
             if ((_timerCnt > 0) && (--_timerCnt == 0))          // пришло время для проверки Get и Set Value
             {
-                if ((_uiValue != _usbValue) | (_refreshFlag))
+                if ((_uiValue != _usbValue) || (_refreshFlag))
                 {
                     CheckPropertiesForChanging();
                 }
@@ -264,7 +282,7 @@ namespace EGSE.Utilites
             {
                 usbVal = GetCVProperty(pair.Value, _usbValue);
                 uiVal = GetCVProperty(pair.Value, _uiValue);
-                if ((usbVal != -1) && (uiVal != -1) && (usbVal != uiVal))
+                if (((usbVal != -1) && (uiVal != -1) && (usbVal != uiVal)) || _refreshFlag)
                 {
                     pair.Value.ChangeEvent((uint)usbVal);
                 }
@@ -273,5 +291,4 @@ namespace EGSE.Utilites
             _refreshFlag = false;
         }
     }
-
 }

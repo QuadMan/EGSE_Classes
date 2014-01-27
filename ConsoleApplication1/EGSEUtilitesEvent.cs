@@ -73,6 +73,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace EGSE.Utilites
 {
@@ -95,6 +96,17 @@ namespace EGSE.Utilites
 
                 string strRes = null;
 
+                if (reaEv.Source.GetType().Equals(typeof(RadioButton)))
+                {
+                    RadioButton elemSource = reaEv.Source as RadioButton;
+
+                    if (elemSource != null)
+                    {
+                        strRes += GetString(GetParentElements(elemSource.Parent));
+                        strRes += "Выбран вариант \"" + elemSource.Content + "\"";
+                    }
+
+                }
                 if (reaEv.Source.GetType().Equals(typeof(Button)))
                 {
                     Button elemSource = reaEv.Source as Button;
@@ -102,7 +114,7 @@ namespace EGSE.Utilites
                     if (elemSource != null)
                     {
                         strRes += GetString(GetParentElements(elemSource.Parent));
-                        strRes += "Нажата кнопка " + elemSource.Content;
+                        strRes += "Нажата кнопка \"" + elemSource.Content + "\"";
                     }
 
                 }
@@ -116,7 +128,7 @@ namespace EGSE.Utilites
                             strRes += "Снят флажок ";
                         else
                             strRes += "Активирован флажок ";
-                        strRes += elemSource.Content;
+                        strRes += "\"" + elemSource.Content + "\"";
 
 
                     }
@@ -128,9 +140,73 @@ namespace EGSE.Utilites
                     if (elemSource != null)
                     {
                         strRes += GetString(GetParentElements(elemSource.Parent));
-                        strRes += "Выбран элемент раскрывающегося списка " + elemSource.Content;
+                        strRes += "Выбран элемент \"" + elemSource.Content + "\"";
                     }
                 }
+                return strRes;
+            }
+            static public string ElementClicked(object element)
+            {
+
+                string strRes = null;
+
+                
+
+                if (element.GetType().Equals(typeof(Button)))
+                {
+                    Button elemSource = element as Button;
+
+                    if (elemSource != null)
+                    {
+                        strRes += GetString(GetParentElements(elemSource.Parent));
+                        strRes += "Нажата кнопка \"" + elemSource.Content + "\"";
+                    }
+
+                }
+                else if (element.GetType().Equals(typeof(CheckBox)))
+                {
+                    CheckBox elemSource = element as CheckBox;
+                    if (elemSource != null)
+                    {
+                        strRes += GetString(GetParentElements(elemSource.Parent));
+                        if ((bool)elemSource.IsChecked)
+                            strRes += "Снят флажок ";
+                        else
+                            strRes += "Активирован флажок ";
+                        strRes += "\"" + elemSource.Content + "\"";
+
+
+                    }
+                }
+                else if (element.GetType().Equals(typeof(ComboBoxItem)))
+                {
+                    ComboBoxItem elemSource = element as ComboBoxItem;
+
+                    if (elemSource != null)
+                    {
+                        strRes += GetString(GetParentElements(elemSource.Parent));
+                        strRes += "Выбран элемент \"" + elemSource.Content + "\"";
+                    }
+                }
+                else if (element.GetType().Equals(typeof(ComboBox)))
+                {
+                    ComboBox elemSource = element as ComboBox;
+
+                    if(elemSource != null)
+                    {
+                        if(elemSource.SelectedIndex != -1)
+                        {
+                            ComboBoxItem item = elemSource.Items[elemSource.SelectedIndex] as ComboBoxItem;
+                            if(item != null)
+                            {
+                                strRes += GetString(GetParentElements(elemSource.Parent));
+                                strRes += "Выбран элемент \"" + item.Content + "\"";
+                            }
+                        }
+                        
+                    }
+                }
+
                 return strRes;
             }
 
@@ -146,9 +222,11 @@ namespace EGSE.Utilites
                 if (stkstrElements == null)
                     return null;
                 if (stkstrElements.Count != 0)
-                    strRes = "В блоке " + stkstrElements.Pop();
+                    strRes = "Окно \"" + stkstrElements.Pop() + "\"";
+                if (stkstrElements.Count != 0)
+                    strRes += ", в блоке \"" + stkstrElements.Pop() + "\"";
                 while (stkstrElements.Count != 0)
-                    strRes += ", блока " + stkstrElements.Pop();
+                    strRes += ", блока \"" + stkstrElements.Pop() + "\"";
                 strRes += ": ";
                 return strRes;
             }
@@ -181,6 +259,15 @@ namespace EGSE.Utilites
                         {
                             objParentElemSource = LogicalTreeHelper.GetParent(elemSource);
                             stkstrRes.Push((string)elemSource.Header);
+                        }
+                    }
+                    else if(objParentElemSource.GetType().BaseType.Equals(typeof(Window)))
+                    {
+                        Window elemSource = objParentElemSource as Window;
+                        if (elemSource != null)
+                        {
+                            objParentElemSource = LogicalTreeHelper.GetParent(elemSource);
+                            stkstrRes.Push((string)elemSource.Title);
                         }
                     }
                     else
@@ -225,6 +312,12 @@ namespace EGSE.Utilites
                 else if (objElem.GetType().Equals(typeof(ComboBox)))
                 {
                     ComboBox elemIgnSource = objElem as ComboBox;
+                    if (elemIgnSource != null)
+                        return LogicalTreeHelper.GetParent(elemIgnSource);
+                }
+                else if(objElem.GetType().Equals(typeof(Cyclogram.CyclogramControl)))
+                {
+                    Cyclogram.CyclogramControl elemIgnSource = objElem as Cyclogram.CyclogramControl;
                     if (elemIgnSource != null)
                         return LogicalTreeHelper.GetParent(elemIgnSource);
                 }

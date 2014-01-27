@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EGSE.Utilites
+﻿namespace EGSE.Utilites
 {
+
     /// <summary>
     /// Класс менеджера для большого кольцевого буфера
     /// Представляет собой двумерный массив. Первый индекс которого является указателем на большой массив 
@@ -193,5 +188,4 @@ namespace EGSE.Utilites
             }
         }
     }
-
 }

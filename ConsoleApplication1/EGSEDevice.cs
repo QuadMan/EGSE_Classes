@@ -16,104 +16,124 @@
  *  0.1.1   (04.12.2013) - Изменил комментарии для проверки git
 **
 */
-
-using System;
-
-using EGSE.Threading;
-using EGSE.Protocols;
-using EGSE.USB;
-
 namespace EGSE
 {
+    using EGSE.Protocols;
+    using EGSE.Threading;
+    using EGSE.USB;
+    using System;
+    
     /// <summary>
     /// Общий класс устройства КИА
     /// При наследовании, необходимо в функции onDevStateChanged вызывать base.onDevStateChanged(state)
     /// </summary>
     public class Device
-    {      
-        private ProtocolThread _dThread;                         // поток декодирования данных из потока USB
-        private FTDIThread _fThread;                            // поток чтения данных из USB
-        private USBCfg _cfg;                                    // настройки устройства USB и потока чтения данных из USB
+    {
+        /// <summary>
+        /// Скорость приема данных
+        /// </summary>
+        public float Speed
+        {
+            get
+            {
+                return _fThread.SpeedBytesSec;
+            }
+        }
+
+        /// <summary>
+        /// Максимальный размер большого (глобального) буфера
+        /// </summary>
+        public uint GlobalBufferSize
+        {
+            get
+            {
+                uint res = _dThread.MaxBufferSize;
+                _dThread.MaxBufferSize = 0;
+                return res;
+            }
+        }
+
+        /// <summary>
+        /// поток декодирования данных из потока USB
+        /// </summary>
+        private ProtocolThread _dThread;
+
+        /// <summary>
+        /// поток чтения данных из USB
+        /// </summary>
+        private FTDIThread _fThread;
+
+        /// <summary>
+        /// настройки устройства USB и потока чтения данных из USB
+        /// </summary>
+        private USBCfg _cfg; 
+
+        /// <summary>
+        /// протокол, исполтьзуемый в USB
+        /// </summary>
         private ProtocolUSBBase _dec;
 
-         /// <summary>
+        /// <summary>
         /// Создает процессы по чтению данных из USB и декодированию этих данных
         /// Все, что нужно, для обеспечения связи по USB
         /// </summary>
-        /// <param name="Serial">Серийный номер USB устройства, с которого нужно получать данные</param>
+        /// <param name="serial">Серийный номер USB устройства, с которого нужно получать данные</param>
         /// <param name="dec">Класс декодера, который нужно использовать в приборе</param>
         /// <param name="cfg">Конфигурация драйвера USB (настройка параметров потока, буферов чтения и тд)</param>
-        public Device(string Serial, ProtocolUSBBase dec, USBCfg cfg)
+        public Device(string serial, ProtocolUSBBase dec, USBCfg cfg)
         {
             _dec = dec;
             _cfg = cfg;
-            _fThread = new FTDIThread(Serial, _cfg);
-            _fThread.onStateChanged = onDevStateChanged;
+            _fThread = new FTDIThread(serial, _cfg);
+            _fThread.StateChangeEvent = OnDevStateChanged;
 
             _dThread = new ProtocolThread(_dec, _fThread);
         }
 
+        /// <summary>
+        /// Запуск потока декодера данных
+        /// </summary>
         public void Start()
         {
             _fThread.Start();
         }
 
-        public float speed
-        {
-            get
-            {
-                return _fThread.speedBytesSec;
-            }
-        }
-
-        public uint globalBufSize
-        {
-            get
-            {
-                uint res = _dThread.maxCBufSize;
-                _dThread.maxCBufSize = 0;
-                return res;
-            }
-        }
-
-        public void finishAll()
+        /// <summary>
+        /// Завершаем все потоки
+        /// </summary>
+        public void FinishAll()
         {
             _fThread.Finish();
             _dThread.Finish();
         }
 
         /// <summary>
-        /// Деструктор устройства
-        /// </summary>
-        ~Device()
-        {
-            // TODO: нужно ли ждать Join от потоков?
-        }
-
-        /// <summary>
         /// Определение делегата обработки сообщения
         /// </summary>
-        /// <param name="msg"></param>
-        public delegate void onNewStateDelegate(bool state);
+        /// <param name="connected">Подключен блок или нет</param>
+        public delegate void ChangeStateEventHandler(bool connected);
+
         /// <summary>
         /// Делегат, вызываемый при распознавании очередного сообщения декодером
         /// </summary>
-        public onNewStateDelegate onNewState;
+        public ChangeStateEventHandler ChangeStateEvent;
 
         /// <summary>
         /// Функция вызывается когда меняется состояние подключения USB устройства
         /// Должна быть переопределена в потомке
         /// </summary>
-        /// <param name="state">Состояние USB устройства - открыто (true) или закрыто (false)</param>
-        virtual public void onDevStateChanged(bool state)
+        /// <param name="connected">Состояние USB устройства - открыто (true) или закрыто (false)</param>
+        virtual public void OnDevStateChanged(bool connected)
         {
-            if (_dThread != null)
+            if ((_dThread != null) && connected)
             {
-                _dThread.resetDecoder();
+                // при подключении к устройству, делаем сброс декодера в исходное состояние
+                _dThread.ResetDecoder();
             }
-            if (onNewState != null)
+
+            if (ChangeStateEvent != null)
             {
-                onNewState(state);
+                ChangeStateEvent(connected);
             }
         }
 
@@ -122,7 +142,7 @@ namespace EGSE
         /// </summary>
         /// <param name="addr">адрес, по которому нужно передать данные</param>
         /// <param name="data">сами данные</param>
-        /// <returns></returns>
+        /// <returns>Возвращает результат записи в очередь команд USB</returns>
         public bool SendCmd(uint addr, byte[] data)
         {
             byte[] dataOut;

@@ -15,52 +15,72 @@
 **  0.2.0   (27.11.2013) - Добавлен второй конструктор, в котором мы можем получать данных из Stream
 */
 
-using System;
-using System.Threading;
-using System.IO;
-using System.Diagnostics;
-
-using EGSE.Protocols;
-using EGSE.Threading;
-
 namespace EGSE.Threading
 {
+    using System.IO;
+    using System.Threading;
+    using EGSE.Protocols;
+
     /// <summary>
     /// Класс потока декодера, читающего из потока USBThread
     /// В классе на данный момент два конструктора, один - для подключения к USB,
     /// другой - для получения данных из Stream
     /// </summary>
-    class ProtocolThread
+    public class ProtocolThread
     {
-        // размер буфера, при достижении которого происходит считывание данных из источника
+        /// <summary>
+        /// размер буфера, при достижении которого происходит считывание данных из источника 
+        /// </summary>
         private const int READ_BUF_SIZE_IN_BYTES = 1024;
-        // декодер, использующийся для декодирования данных
+
+        /// <summary>
+        /// декодер, использующийся для декодирования данных 
+        /// </summary>
         private ProtocolUSBBase _dec;
-        // признак, что нужно перевести декодер в начальное состояние (например, при подключении/отключении устройства)
+
+        /// <summary>
+        /// признак, что нужно перевести декодер в начальное состояние (например, при подключении/отключении устройства)
+        /// </summary>
         private bool _resetDecoderFlag;
-        // поток входных данных из USB
+
+        /// <summary>
+        /// поток входных данных из USB 
+        /// </summary>
         private FTDIThread _fThread;
-        // поток входных данных
+
+        /// <summary>
+        /// поток входных данных, если читаем из файла
+        /// </summary>
         private Stream _fStream;
-        // максимальный размер буфера, который был доступен для чтения
-        private uint _maxCBufSize;
-        // сам поток, в котором будет происходить обработка
+
+        /// <summary>
+        /// максимальный размер буфера, который был доступен для чтения
+        /// </summary>
+        private uint _maxBufferSize;
+
+        /// <summary>
+        ///   сам поток, в котором будет происходить обработка
+        /// </summary>
         private Thread _thread;
-        // флаг остановки потока
+
+        /// <summary>
+        /// флаг остановки потока 
+        /// </summary>
         private volatile bool _terminateFlag;
 
         /// <summary>
         /// Максимальный размер кольцевого буфера 
         /// </summary>
-        public uint maxCBufSize
+        public uint MaxBufferSize
         {
-            set
-            {
-                _maxCBufSize = 0;
-            }
             get
             {
-                return _maxCBufSize;
+                return _maxBufferSize;
+            }
+
+            set
+            {
+                _maxBufferSize = 0;
             }
         }
 
@@ -73,7 +93,7 @@ namespace EGSE.Threading
         {
             _dec = dec;
             _resetDecoderFlag = false;
-            _maxCBufSize = 0;
+            _maxBufferSize = 0;
             _fThread = fThread;
             _fStream = null;
             _terminateFlag = false;
@@ -111,23 +131,28 @@ namespace EGSE.Threading
             uint bytesToRead = 0;
             while (!_terminateFlag)
             {
-                if (_resetDecoderFlag)                              // если нужно перевеси декодер в начальное состояние
+                // если нужно перевеси декодер в начальное состояние
+                if (_resetDecoderFlag)                              
                 {
                     _resetDecoderFlag = false;
                     _dec.Reset();
                 }
 
-                bytesToRead = (uint)_fThread.bigBuf.BytesAvailable;       // сколько байт можно считать из потока
-                if (bytesToRead >= READ_BUF_SIZE_IN_BYTES)          // будем читать большими порциями
+                // сколько байт можно считать из потока
+                bytesToRead = (uint)_fThread.BigBuf.BytesAvailable;
+                // будем читать большими порциями
+                if (bytesToRead >= READ_BUF_SIZE_IN_BYTES)          
                 {
-                    if (bytesToRead > _maxCBufSize)                 // для статистики рассчитаем максимальную заполненность буфера, которая была
+                    // для статистики рассчитаем максимальную заполненность буфера, которая была
+                    if (bytesToRead > _maxBufferSize)                 
                     {
-                        _maxCBufSize = bytesToRead;
+                        _maxBufferSize = bytesToRead;
                     }
-                    _dec.Decode(_fThread.bigBuf.ReadBuf, _fThread.bigBuf.ReadBufSize);        // декодируем буфер
-                    _fThread.bigBuf.MoveNextRead();
-                    //_fThread.bigBuf.bytesAvailable -= (int)bytesToRead;
+
+                    _dec.Decode(_fThread.BigBuf.ReadBuf, _fThread.BigBuf.ReadBufSize);
+                    _fThread.BigBuf.MoveNextRead();
                 }
+
                 System.Threading.Thread.Sleep(1);
             }
         }
@@ -162,6 +187,7 @@ namespace EGSE.Threading
                 {
                     _dec.Decode(tmpBuf, bytesReaded);
                 }
+
                 System.Threading.Thread.Sleep(1);
             }
 #if DEBUG_TIME
@@ -179,7 +205,7 @@ namespace EGSE.Threading
         /// <summary>
         /// Для безопасного перевода декодара в начальное состояние (например, когда USB подключилось/отключилось)
         /// </summary>
-        public void resetDecoder()
+        public void ResetDecoder()
         {
             _resetDecoderFlag = true;
         }

@@ -431,10 +431,14 @@ namespace EGSE.Cyclogram
 
     public class CycPosition
     {
+        public EGSE.Threading.StepEventHandler SetCmdEvent;
+
+        public bool IsLastCommand { get { return _lastCommand; } }
+
         private CyclogramFile _cFile;
         private int _curLine;
-        public EGSE.Threading.StepEventHandler SetCmdEvent;
         private CyclogramLine _curCmd;
+        private bool _lastCommand;
 
         public CyclogramLine CurCmd
         {
@@ -459,6 +463,7 @@ namespace EGSE.Cyclogram
             _curLine = 0;
             CurCmd = null;
             SetCmdEvent = null;
+            _lastCommand = false;
         }
 
         public CyclogramLine SetToLine(int lineNum, bool findFirst = false)
@@ -485,6 +490,8 @@ namespace EGSE.Cyclogram
 
         public CyclogramLine GetNextCmd()
         {
+            _lastCommand = false;
+
             for (int i = _curLine + 1; i < _cFile.commands.Count; i++)
             {
                 if (_cFile.commands[i].IsCommand)
@@ -493,6 +500,8 @@ namespace EGSE.Cyclogram
                     return CurCmd;
                 }
             }
+            
+            _lastCommand = true;
             return null;
         }
 

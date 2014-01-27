@@ -104,9 +104,14 @@ namespace EGSE.Threading
         }
 
         /// <summary>
-        /// Метод, вызываемый при окончании выполнения циклограммы
+        /// Метод, вызываемый при окончании выполнения циклограммы (когда доходим до конца циклограммы)
         /// </summary>
         public StartFinishEventHandler FinishedEvent;
+
+        /// <summary>
+        /// Метод, вызываемый при остановке циклограммы по команде STOP, или по кнопке стоп
+        /// </summary>
+        public StartFinishEventHandler StopEvent;
 
         /// <summary>
         /// Событие, вызываемое при старте циклограммы
@@ -265,7 +270,14 @@ namespace EGSE.Threading
                 _cPos.CurCmd.RestoreDelay();
             }
 
-            if (FinishedEvent != null)
+            // циклограмма остановлена
+            if (StopEvent != null)
+            {
+                StopEvent(CycFile.FileName);
+            }
+
+            // проверим, кончилась ли циклограмма
+            if ((_cPos.IsLastCommand) && (FinishedEvent != null))
             {
                 FinishedEvent(CycFile.FileName);
             }
@@ -297,7 +309,7 @@ namespace EGSE.Threading
             catch
             {
                 ChangeState(CurState.csLoadedWithErrors);
-                throw; 
+                //throw; 
             }
         }
 

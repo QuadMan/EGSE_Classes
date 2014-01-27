@@ -74,24 +74,13 @@ namespace EGSE.Utilites.ADC
     /// </summary>
     public class ADCException : ApplicationException
     {
-        public ADCException() 
-        { 
-        }
-        
-        public ADCException(string message) : base(message) 
-        { 
-        }
-
-        public ADCException(string message, Exception ex) : base(message) 
-        { 
-        }
-        
+        public ADCException() { }
+        public ADCException(string message) : base(message) { }
+        public ADCException(string message, Exception ex) : base(message) { }
         // Конструктор для обработки сериализации типа
         protected ADCException(System.Runtime.Serialization.SerializationInfo info,
             System.Runtime.Serialization.StreamingContext contex)
-            : base(info, contex) 
-        { 
-        }
+            : base(info, contex) { }
     }
 //*****************************************************************************
 //*****************************************************************************
@@ -103,12 +92,6 @@ namespace EGSE.Utilites.ADC
     {
         public float XVal;
         public float YVal;
-
-        /// <summary>
-        /// Конструктор значения
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         public CValue(float x, float y)
         {
             XVal = x;
@@ -123,7 +106,9 @@ namespace EGSE.Utilites.ADC
     /// </summary>
     public class CalibrationValues
     {
-        // Калибровочные данные
+        /// <summary>
+        /// Калибровочные данные
+        /// </summary>
         private List<CValue> _listValues;
 
         /// <summary>
@@ -144,10 +129,12 @@ namespace EGSE.Utilites.ADC
 
             foreach (CValue cv in cValues)
             {
-                if (_listValues == null)
-                    _listValues.Add(cv);
-                else
-                    Sort(cv);
+                if (_listValues.Contains(cv))
+                {
+                    ADCException exc = new ADCException("Ошибка: значение " + "(" + cv.XVal + "; " + cv.YVal+")" + " с полем х = " + cv.XVal + " уже существует!");
+                    throw exc;
+                }
+                _listValues.Add(cv);
             }
         }
 
@@ -159,6 +146,7 @@ namespace EGSE.Utilites.ADC
         /// <returns>Результат сравнения</returns>
         private static int CompareCalibrationValues(CValue cv_1, CValue cv_2)
         {
+            
             return cv_1.XVal.CompareTo(cv_2.XVal);
         }
 
@@ -167,15 +155,9 @@ namespace EGSE.Utilites.ADC
         /// новых калибровочных данных
         /// </summary>
         /// <param name="cValue">Новые калибровочные данные</param>
-        private void Sort(CValue cValue)
+
+        private void Sort()
         {
-            foreach (CValue cv in _listValues)
-                if (cv.XVal == cValue.XVal)
-                {
-                    ADCException exc = new ADCException("Ошибка: значение " + cValue.XVal + " с полем х = " + cValue.XVal + " уже существует!");
-                    throw exc;
-                }
-            _listValues.Add(cValue);
             _listValues.Sort(CompareCalibrationValues);
         }
 
@@ -188,7 +170,14 @@ namespace EGSE.Utilites.ADC
             if (_listValues == null)
                 _listValues.Add(cValue);
             else
-                Sort(cValue);
+            {
+                if (_listValues.Contains(cValue))
+                {
+                    ADCException exc = new ADCException("Ошибка: значение " + "(" + cValue.XVal + ", " + cValue.YVal + ")" + " с полем х = " + cValue.XVal + " уже существует!");
+                    throw exc;
+                }
+                _listValues.Add(cValue);
+            }
         }
 
         /// <summary>
@@ -205,6 +194,9 @@ namespace EGSE.Utilites.ADC
                 ADCException exc = new ADCException("Ошибка: мало калибровочных данных!");
                 throw exc;
             }
+
+            Sort();
+            
             if (xValue <= _listValues[0].XVal)
             {
                 if ((_listValues[1].XVal - _listValues[0].XVal) == 0)
@@ -226,7 +218,7 @@ namespace EGSE.Utilites.ADC
                     ADCException exc = new ADCException("Ошибка: деление на 0! Значения: " + _listValues[_listValues.Count - 1].XVal);
                     throw exc;
                 }
-                value = (_listValues[_listValues.Count - 1].YVal + (_listValues[_listValues.Count - 1].YVal - _listValues[_listValues.Count - 2].YVal) * (xValue - _listValues[_listValues.Count - 1].XVal)
+                value = (_listValues[_listValues.Count - 2].YVal + (_listValues[_listValues.Count - 1].YVal - _listValues[_listValues.Count - 2].YVal) * (xValue - _listValues[_listValues.Count - 2].XVal)
                         / (_listValues[_listValues.Count - 1].XVal - _listValues[_listValues.Count - 2].XVal)); 
                 if ((NegativeIsOk == false) && (value < 0)) {
                     value = 0;
