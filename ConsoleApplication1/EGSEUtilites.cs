@@ -50,6 +50,78 @@ namespace EGSE.Utilites
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Windows;
+    using System.Resources;
+
+    /// <summary>
+    /// Класс для работы со строковыми ресусрами.
+    /// (Если define DEBUG, ищет дубликаты в ресурсах)
+    /// </summary>
+    public static class Resource
+    {
+        /// <summary>
+        /// Формируется при первомм обращении к классу.
+        /// </summary>
+        private static ResourceManager[] _rm;
+
+        /// <summary>
+        /// Возвращает строку из ресурса, соответствующую заданому ключу.
+        /// </summary>
+        /// <param name="mark">Ключ строки</param>
+        /// <returns>Значение строки в ресурсах</returns>
+        public static string Get(string mark)
+        {
+            if (null == _rm)
+            {
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                _rm = new ResourceManager[assembly.GetManifestResourceNames().Length];
+                int i = 0;
+                foreach (string s in assembly.GetManifestResourceNames())
+                {
+                    _rm[i++] = new ResourceManager(s.Replace(@".resources", string.Empty), assembly);
+                }
+            }
+#if (DEBUG)
+            string firstFindStr = null;
+#endif
+            foreach (ResourceManager rm in _rm)
+            {
+                try
+                {
+                    string findStr = rm.GetString(mark);
+                    if ((null != findStr) && (findStr.Length > 0))
+                    {
+#if (DEBUG)
+                        if (null == firstFindStr)
+                        {
+                            firstFindStr = findStr;
+                        }
+                        else
+                        {
+                            throw new Exception(@"В ресурсах обнаружен дубликат, ключ: " + mark + @", значение 1: " + firstFindStr + @", значение 2: " + findStr);
+                        }
+#else
+                        return findStr;
+#endif
+                    }
+                }
+                catch (MissingManifestResourceException)
+                {
+                    continue;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+            }
+#if (DEBUG)
+            if (null != firstFindStr)
+            {
+                return firstFindStr;
+            }
+#endif
+            return @"Ресурс не найден";
+        }
+    }
 
     /// <summary>
     /// Класс конвертации различных величин
@@ -535,7 +607,7 @@ namespace EGSE.Utilites
                 IniFile _ini = new IniFile();
                 _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
                 _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
-                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
+                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
                 return true;
             }
             catch (Exception e)
@@ -583,7 +655,7 @@ namespace EGSE.Utilites
                 }
                 else
                 {
-                    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize)).Replace(";", ","), win.Title);
+                    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
                 }
 
                 if (_ini.IsKeyExists("WindowState", win.Title))
