@@ -124,8 +124,7 @@ namespace EGSE.Protocols
         private bool _writeDecLog = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProtocolUSB5E4D" /> class.
-        /// Инициализация нового экземпляра класса.
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB5E4D" />.
         /// </summary>
         public ProtocolUSB5E4D()
         {
@@ -135,8 +134,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProtocolUSB5E4D" /> class.
-        /// Инициализация нового экземпляра класса, с подключением логеров.
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB5E4D" />.
         /// </summary>
         /// <param name="decLogStream">Ссылка на экземпляр логера Decoder-а.</param>
         /// <param name="encLogStream">Ссылка на экземпляр логера Encoder-а.</param>
@@ -204,8 +202,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether enabled log encoder stream.
-        /// Включить лог Encoder-а.
+        /// Получает или задает значение, показывающее, записывать ли кодирующий буфер в файл.
         /// </summary>
         public bool WriteEncLog
         {
@@ -221,8 +218,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether enabled log decoder stream.
-        /// Включить лог Decoder-а.
+        /// Получает или задает значение, показывающее, записывать ли декодирующий буфер в файл.
         /// </summary>
         public bool WriteDecLog
         {
