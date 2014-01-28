@@ -89,7 +89,7 @@ namespace EGSE.Cyclogram
         /// </summary>
         public CyclogramFile()
         {
-            //!_curLine = 0;
+            // !_curLine = 0;
             _wasError = false;
             _availableCommands = null;
             _curCommand = new CyclogramLine();
@@ -265,7 +265,7 @@ namespace EGSE.Cyclogram
             // выполняем функцию тестирования параметров команды
             if (!_curCommand.RunTestFunction())
             {
-                CyclogramParsingException exc = new CyclogramParsingException();//"Ошибка при проверке команды " + _curCommand.CmdName);
+                CyclogramParsingException exc = new CyclogramParsingException(); // "Ошибка при проверке команды " + _curCommand.CmdName);
                 throw exc;
             }
         }
@@ -318,7 +318,7 @@ namespace EGSE.Cyclogram
                         _curCommand.Line = curLineNum;
                         commands.Add(_curCommand);
 
-                        //начинаем "собирать" новую команду
+                        // начинаем "собирать" новую команду
                         _curCommand = new CyclogramLine();
                     }
                     curLineNum++;

@@ -28,6 +28,7 @@ using System.Windows.Shapes;
 
 namespace EGSE.Cyclogram
 {
+
     /// <summary>
     /// Interaction logic for CyclogramControl.xaml
     /// </summary>
@@ -252,7 +253,7 @@ namespace EGSE.Cyclogram
             string logEvent = EventClickToString.ElementClicked(e);
             if (logEvent != null)
             {
-                kia_xan.LogsClass.Instance.Files[kia_xan.LogsClass.OperatorIdx].LogText = logEvent;
+              //  LogsClass.LogOperator.LogText = logEvent;
             }
         }
     }

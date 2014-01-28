@@ -223,7 +223,7 @@ namespace EGSE.Threading
                     if ((_ftdi.Open() == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (_ftdi.IsOpen))
                     {
                         // производим настройки устройства
-                        //!config _ftdi cfg
+                        // !config _ftdi cfg
                     }
                     else 
                     {

@@ -186,14 +186,14 @@ namespace EGSE.Protocols
                             _tmpMsg.DataLen = _msgLen;
                             break;
                         default :
-                            if (bufSize - i >= _msgLen)                //  в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
+                            if (bufSize - i >= _msgLen)                // в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
                             {
                                 Array.Copy(buf, i, _tmpMsg.Data, _bufI, _msgLen);
                                 OnProtocolMsg(_tmpMsg);
                                 _firstMsg = false;
                                 _iStep = -1;
                                 _bufI = 0;
-                                i += _msgLen - 1;//? _tmpMsg.len;
+                                i += _msgLen - 1; // ?_tmpMsg.len;
                             }
                             else                                    // копируем только часть, до конца буфера 
                             {
@@ -203,19 +203,7 @@ namespace EGSE.Protocols
                                 _msgLen -= _dt;
                                 i += _dt;
                             }
-                            
-                            // медленный вариант, для проверки
-                            //_tmpMsg.data[_bufI++] = _bt;
-                            //if (--_msgLen == 0)
-                            //{
-                            //    if (onMessage != null)
-                            //    {
-                            //        onMessage(_tmpMsg);
-                            //    }
-                            //    _iStep = -1;
-                            //    _bufI = 0;
-                            //}
-                            
+                           
                             break;
                     }
                     _iStep++;
@@ -240,7 +228,7 @@ namespace EGSE.Protocols
                 }
                 byte bufLen = (buf.Length == 256) ? (byte)0 : (byte)buf.Length;
 
-                bufOut = new byte[buf.Length+4];
+                bufOut = new byte[buf.Length + 4];
                 bufOut[0] = 0x7C;
                 bufOut[1] = 0x6E;
                 bufOut[2] = (byte)addr; 

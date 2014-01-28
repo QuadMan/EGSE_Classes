@@ -309,7 +309,7 @@ namespace EGSE.Threading
             catch
             {
                 ChangeState(CurState.csLoadedWithErrors);
-                //throw; 
+                // throw; 
             }
         }
 

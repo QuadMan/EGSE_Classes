@@ -575,7 +575,7 @@ namespace EGSE.Utilites
                 while (i < MAX_ITEMS_COUNT)
                 {
                     str = "Item" + i.ToString();
-                    if (_ini.IsKeyExists(str,section))
+                    if (_ini.IsKeyExists(str, section))
                     {
                         strList.Add(_ini.Read(str, section));
                     }
