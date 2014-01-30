@@ -2,103 +2,335 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:EGSE.Cyclogram"
-        Title="MainWindow" Height="480" Width="640" MinWidth="640" MinHeight="480">
+        Title="MainWindow" 
+        Width="1280" 
+        Height="720"  
+        MinWidth="640" 
+        MinHeight="480" FontFamily="Consolas" FontSize="13">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition/>
-        </Grid.ColumnDefinitions>        
-        <TabControl Grid.Row="1" Grid.Column="1">
-            <TabItem Header="Тест 1">
-                <Grid/>
-            </TabItem>
-            <TabItem Header="Тест 2">
-                <Grid/>
-            </TabItem>
-        </TabControl>
-        <Grid Grid.Row="0" Grid.Column="1" Width="200" HorizontalAlignment="Right">
+        </Grid.ColumnDefinitions>
+        <local:CyclogramControl Grid.Row="1" 
+                                Grid.Column="1" 
+                                x:Name="CycloGrid"/>
+        <Grid Grid.Row="0" 
+              Grid.Column="1" 
+              Width="200" 
+              HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Content="О программе" Margin="5" Grid.Column="0"/>
-            <Button Content="Выход" Margin="5" Grid.Column="1"/>
+            <Button Grid.Column="0"
+                    Content="О программе"
+                    Margin="5"/>
+            <Button Grid.Column="1" 
+                    Content="Выход"
+                    Margin="5"/>
         </Grid>           
-        <StackPanel Grid.Row="1" Grid.Column="0">
-            <Expander Margin="5" Header="Телеметрия" Padding="5" BorderBrush="LightBlue" BorderThickness="2" IsExpanded="True">
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="0">
+            <Expander Header="Телеметрия" 
+                      Margin="5" 
+                      BorderBrush="LightBlue" 
+                      BorderThickness="2" 
+                      IsExpanded="True">
                 <StackPanel>
-                    <GroupBox Header="Питание БУСК">
+                    <GroupBox Header="Питание БУСК" 
+                              BorderThickness="1" 
+                              BorderBrush="LightBlue">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="40"/>
+                                <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Label Margin="5" Content="БУСК ПК1 А" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" Background="Red"/>
-                            <Button Content="ВЫКЛ" Margin="7" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="БУСК ПК2 А" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" Background="Red"/>
-                            <Button Content="ВКЛ" Margin="7" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="БУСК ПК1 Б" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Background="Red"/>
-                            <Button Content="ВКЛ" Margin="7" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="БУСК ПК2 Б" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Background="Green"/>
-                            <Button Content="ВЫКЛ" Margin="7" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="0" 
+                                        Grid.Column="0">                                
+                                <Label Content="БУСК ПК1 А" 
+                                       VerticalContentAlignment="Center" 
+                                       Background="Red"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ" 
+                                        BorderBrush="LightBlue"                                         
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="0" 
+                                        Grid.Column="1">
+                                <Label Content="БУСК ПК2 А" 
+                                       VerticalContentAlignment="Center"
+                                       Background="Red"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВКЛ" 
+                                        BorderBrush="LightBlue"                                       
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1" 
+                                        Grid.Column="0">
+                                <Label Content="БУСК ПК1 Б" 
+                                       VerticalContentAlignment="Center" 
+                                       Background="Red"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВКЛ" 
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="1" 
+                                        Grid.Column="1">
+                                <Label Content="БУСК ПК2 Б"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Header="Питание БУНД">
+                    <GroupBox Header="Питание БУНД"
+                              BorderThickness="1" 
+                              BorderBrush="LightBlue">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="40"/>
+                                <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Label Margin="5" Content="БУНД ПК1 А" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" Background="Red"/>
-                            <Button Content="ВЫКЛ" Margin="7" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="БУНД ПК2 А" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" Background="Red"/>
-                            <Button Content="ВКЛ" Margin="7" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="БУНД ПК1 Б" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Background="Red"/>
-                            <Button Content="ВКЛ" Margin="7" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="БУНД ПК2 Б" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Background="Green"/>
-                            <Button Content="ВЫКЛ" Margin="7" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="0" 
+                                        Grid.Column="0">
+                                <Label Content="БУНД ПК1 А" 
+                                       VerticalContentAlignment="Center" 
+                                       Background="Red"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ" 
+                                        BorderBrush="LightBlue"                                         
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="0" 
+                                        Grid.Column="1">
+                                <Label Content="БУНД ПК2 А" 
+                                       VerticalContentAlignment="Center"
+                                       Background="Red"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВКЛ" 
+                                        BorderBrush="LightBlue"                                       
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1" 
+                                        Grid.Column="0">
+                                <Label Content="БУНД ПК1 Б" 
+                                       VerticalContentAlignment="Center" 
+                                       Background="Red"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВКЛ" 
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="1" 
+                                        Grid.Column="1">
+                                <Label Content="БУНД ПК2 Б"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Header="Питание НП">
+                    <GroupBox Header="Питание НП"
+                              BorderThickness="1" 
+                              BorderBrush="LightBlue">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="40"/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Label Margin="5" Content="УФЕС ОСН" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0" Background="Red"/>
-                            <Button Content="ВЫКЛ" Margin="7" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="УФЕС РЕЗ" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="1" Background="Red"/>
-                            <Button Content="ВКЛ" Margin="7" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="ВУФЕС ОСН" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Background="Red"/>
-                            <Button Content="ВКЛ" Margin="7" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="ВУФЕС РЕЗ" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1" Background="Green"/>
-                            <Button Content="ВЫКЛ" Margin="7" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="СДЩ ОСН" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" Background="Green"/>
-                            <Button Content="ВЫКЛ" Margin="7" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                            <Label Margin="5" Content="СДЩ РЕЗ" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" Background="Red"/>
-                            <Button Content="ВКЛ" Margin="7" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Width="32" BorderBrush="White" BorderThickness="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Focusable="False"/>
-                        </Grid>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="0" 
+                                        Grid.Column="0">
+                                <Label Content="УФЕС ОСН"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="0" 
+                                        Grid.Column="1">
+                                <Label Content="УФЕС РЕЗ"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="1" 
+                                        Grid.Column="0">
+                                <Label Content="ВУФЕС ОСН"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="1" 
+                                        Grid.Column="1">
+                                <Label Content="ВУФЕС РЕЗ"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="2" 
+                                        Grid.Column="0">
+                                <Label Content="СДЩ ОСН"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" 
+                                        Grid.Row="2" 
+                                        Grid.Column="1">
+                                <Label Content="СДЩ РЕЗ"
+                                       VerticalContentAlignment="Center" 
+                                       Background="Green"
+                                       Margin="2"
+                                       Padding="2"
+                                       BorderBrush="LightBlue"
+                                       BorderThickness="1"/>
+                                <Button Content="ВЫКЛ"
+                                        BorderBrush="LightBlue"                                        
+                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                                        Focusable="False"
+                                        Margin="2"
+                                        Padding="2"/>
+                            </StackPanel>
+                          </Grid>
                     </GroupBox>
                 </StackPanel>
             </Expander>
-            <Expander Margin="5" Header="Окна управления" Padding="5" BorderBrush="LightBlue" BorderThickness="2" IsExpanded="True">
+            <Expander  Header="Окна управления" 
+                       BorderBrush="LightBlue" 
+                       BorderThickness="2" 
+                       Margin="5" 
+                       IsExpanded="True">
                 <StackPanel>
                     <CheckBox Content="Управление КВВ" Margin="5"/>
                     <CheckBox Content="Имитаторы" Margin="5"/>
@@ -106,5 +338,23 @@
             </Expander>
         </StackPanel>
         <Label Margin="5" Content="КИА БУК не подключен" Padding="5" BorderBrush="LightBlue" BorderThickness="2" VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0"/>
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2" Height="auto">        
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="0">
+                <Label>Текст слева</Label>
+            </StatusBarItem>    
+            <StatusBarItem Grid.Column="1">
+                <Label>Текст справа</Label>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

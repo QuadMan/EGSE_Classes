@@ -6,19 +6,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="670" MinHeight="200" MinWidth="670">
     <Grid PreviewMouseLeftButtonDown="mouseLoggerEvent">
-    <Grid Margin="0,0,0,0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="39"/>
             <RowDefinition/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <DataGrid x:Name="DG" Margin="0" Grid.Row="1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionMode="Single" GridLinesVisibility="None" CanUserResizeRows="False" IsReadOnly="True" SelectionChanged="DG_SelectionChanged">
+        <DataGrid x:Name="DG" 
+                  Grid.Row="1" 
+                  BorderBrush="LightBlue"
+                  BorderThickness="2"
+                  ItemsSource="{Binding}" 
+                  AutoGenerateColumns="False" 
+                  SelectionMode="Single" GridLinesVisibility="None" CanUserResizeRows="False" IsReadOnly="True" SelectionChanged="DG_SelectionChanged">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="LightGreen" />
-                            <Setter Property="Foreground" Value="Blue" />
+                        <Trigger Property="IsSelected" 
+                                 Value="True">
+                            <Setter Property="Background" 
+                                    Value="LightGreen" />
+                            <Setter Property="Foreground" 
+                                    Value="Blue" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -67,9 +76,12 @@
             <Button Content="Загрузить" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Button_Click" Margin="5,7,5,0" Width="74"/>
             <Label Content="Label" Margin="5,0,0,0"/>
         </StackPanel>-->
-        <DockPanel Grid.Column="1" Margin="10,0" Grid.Row="0">
+        <DockPanel Grid.Column="1" Margin="0" Grid.Row="0">
             <Button x:Name="LoadBtn" Content="Загрузить" Width="70" Margin="5" Click="LoadBtn_Click" />
-            <Label x:Name="StatusLabel" Content="" Background="#FF9FC6DC" Margin="5" Padding="5,2,5,0" VerticalContentAlignment="Center"/>
+                <Label x:Name="StatusLabel" 
+                       Background="LightBlue"
+                       Margin="5" 
+                       VerticalContentAlignment="Center"/>
         </DockPanel>
         <StackPanel Grid.Column="1" Margin="10,0" Grid.Row="2" Orientation="Horizontal">
             <Button x:Name="StartBtn" Content="Старт" Width="68" Margin="5,7" Click="StartBtn_Click"/>
