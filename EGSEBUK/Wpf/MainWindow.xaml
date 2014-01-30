@@ -207,123 +207,114 @@
                             </StackPanel>
                         </Grid>
                     </GroupBox>
-                    <GroupBox Header="Питание НП"
-                              BorderThickness="1" 
-                              BorderBrush="LightBlue">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" 
-                                        Grid.Row="0" 
-                                        Grid.Column="0">
-                                <Label Content="УФЕС ОСН"
-                                       VerticalContentAlignment="Center" 
-                                       Background="Green"
-                                       Margin="2"
-                                       Padding="2"
-                                       BorderBrush="LightBlue"
-                                       BorderThickness="1"/>
-                                <Button Content="ВЫКЛ"
-                                        BorderBrush="LightBlue"                                        
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Focusable="False"
-                                        Margin="2"
-                                        Padding="2"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" 
-                                        Grid.Row="0" 
-                                        Grid.Column="1">
-                                <Label Content="УФЕС РЕЗ"
-                                       VerticalContentAlignment="Center" 
-                                       Background="Green"
-                                       Margin="2"
-                                       Padding="2"
-                                       BorderBrush="LightBlue"
-                                       BorderThickness="1"/>
-                                <Button Content="ВЫКЛ"
-                                        BorderBrush="LightBlue"                                        
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Focusable="False"
-                                        Margin="2"
-                                        Padding="2"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" 
-                                        Grid.Row="1" 
-                                        Grid.Column="0">
-                                <Label Content="ВУФЕС ОСН"
-                                       VerticalContentAlignment="Center" 
-                                       Background="Green"
-                                       Margin="2"
-                                       Padding="2"
-                                       BorderBrush="LightBlue"
-                                       BorderThickness="1"/>
-                                <Button Content="ВЫКЛ"
-                                        BorderBrush="LightBlue"                                        
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Focusable="False"
-                                        Margin="2"
-                                        Padding="2"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" 
-                                        Grid.Row="1" 
-                                        Grid.Column="1">
-                                <Label Content="ВУФЕС РЕЗ"
-                                       VerticalContentAlignment="Center" 
-                                       Background="Green"
-                                       Margin="2"
-                                       Padding="2"
-                                       BorderBrush="LightBlue"
-                                       BorderThickness="1"/>
-                                <Button Content="ВЫКЛ"
-                                        BorderBrush="LightBlue"                                        
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Focusable="False"
-                                        Margin="2"
-                                        Padding="2"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" 
-                                        Grid.Row="2" 
-                                        Grid.Column="0">
-                                <Label Content="СДЩ ОСН"
-                                       VerticalContentAlignment="Center" 
-                                       Background="Green"
-                                       Margin="2"
-                                       Padding="2"
-                                       BorderBrush="LightBlue"
-                                       BorderThickness="1"/>
-                                <Button Content="ВЫКЛ"
-                                        BorderBrush="LightBlue"                                        
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Focusable="False"
-                                        Margin="2"
-                                        Padding="2"/>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" 
-                                        Grid.Row="2" 
-                                        Grid.Column="1">
-                                <Label Content="СДЩ РЕЗ"
-                                       VerticalContentAlignment="Center" 
-                                       Background="Green"
-                                       Margin="2"
-                                       Padding="2"
-                                       BorderBrush="LightBlue"
-                                       BorderThickness="1"/>
-                                <Button Content="ВЫКЛ"
-                                        BorderBrush="LightBlue"                                        
-                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                        Focusable="False"
-                                        Margin="2"
-                                        Padding="2"/>
-                            </StackPanel>
-                          </Grid>
-                    </GroupBox>
+                    <Grid Background="LightBlue">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0"
+                               Grid.Row="0"
+                               Grid.RowSpan="2"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="НП"/>
+                        <Label Grid.Column="0"
+                               Grid.Row="2"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="УФЕС"/>
+                        <Label Grid.Column="0"
+                               Grid.Row="3"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="ВУФЕС"/>
+                        <Label Grid.Column="0"
+                               Grid.Row="4"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="СДЩ"/>
+                        <Label Grid.Column="1"                               
+                               Grid.Row="0"
+                               Grid.ColumnSpan="2"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="Питание"/>
+                        <Label Grid.Column="3"                               
+                               Grid.Row="0"
+                               Grid.ColumnSpan="2"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="Подсветка"/>
+                        <Label Grid.Column="5"                               
+                               Grid.Row="0"
+                               Grid.ColumnSpan="2"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="Затворы"/>
+                        <Label Grid.Column="1"                               
+                               Grid.Row="1"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="ОСН"/>
+                        <Label Grid.Column="2"                               
+                               Grid.Row="1"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="РЕЗ"/>
+                        <Label Grid.Column="3"                               
+                               Grid.Row="1"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="ОСН"/>
+                        <Label Grid.Column="4"                               
+                               Grid.Row="1"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="РЕЗ"/>
+                        <Label Grid.Column="5"                               
+                               Grid.Row="1"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="ОСН"/>
+                        <Label Grid.Column="6"                               
+                               Grid.Row="1"
+                               HorizontalContentAlignment="Center"
+                               VerticalContentAlignment="Center"
+                               Background="White"
+                               Margin="0,0,1,1"
+                               Content="РЕЗ"/>                        
+                    </Grid>
                 </StackPanel>
             </Expander>
             <Expander  Header="Окна управления" 
