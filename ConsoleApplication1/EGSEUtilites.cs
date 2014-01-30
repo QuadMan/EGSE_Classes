@@ -140,7 +140,7 @@ namespace EGSE.Utilites
                 return null;
             }
 
-            string[] hexValuesSplit = HexStr.Split(' ');
+            string[] hexValuesSplit = HexStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             byte[] outBuf = new byte[hexValuesSplit.Length];
             int i = 0;
             foreach (string hex in hexValuesSplit)
