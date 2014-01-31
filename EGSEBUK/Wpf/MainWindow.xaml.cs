@@ -20,9 +20,23 @@ namespace WpfEgseBuk
     /// </summary>
     public partial class MainWindow : Window
     {
+        private HSIWindow winHSI = new HSIWindow();
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
+        }
+
+        private void ControlHSI_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)ControlHSI.IsChecked)
+            {
+                winHSI.Show();
+            }
+            else
+            {
+                winHSI.Hide();
+            }
+
         }
     }
 }

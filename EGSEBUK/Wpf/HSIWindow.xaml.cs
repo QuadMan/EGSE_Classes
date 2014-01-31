@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Wpf
+namespace WpfEgseBuk
 {
     /// <summary>
     /// Interaction logic for HSIWindow.xaml

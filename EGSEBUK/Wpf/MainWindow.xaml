@@ -512,7 +512,15 @@
                        Margin="5" 
                        IsExpanded="True">
                 <StackPanel>
-                    <CheckBox Content="Управление КВВ" 
+                    <CheckBox x:Name="ControlHSI" 
+                              Content="Управление КВВ" 
+                              Margin="4" 
+                              Click="ControlHSI_Click"/>
+                    <CheckBox Content="Управление НП" 
+                              Margin="4"/>
+                    <CheckBox Content="Имитатор БУСК/БУНД" 
+                              Margin="4"/>
+                    <CheckBox Content="Имитаторы SpaceWire" 
                               Margin="4"/>
                 </StackPanel>
             </Expander>
