@@ -21,12 +21,26 @@ namespace WpfEgseBuk
     public partial class MainWindow : Window
     {
         private HSIWindow winHSI = new HSIWindow();
+        private SpaceWireWindow winSW = new SpaceWireWindow();
         public MainWindow()
         {
             InitializeComponent();            
         }
 
-        private void ControlHSI_Click(object sender, RoutedEventArgs e)
+        private void ControlSpaceWire_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((bool)ControlSpaceWire.IsChecked)
+            {
+                winSW.Show();
+            }
+            else
+            {
+                winSW.Hide();
+            }
+
+        }
+
+        private void ControlHSI_Checked(object sender, RoutedEventArgs e)
         {
             if ((bool)ControlHSI.IsChecked)
             {

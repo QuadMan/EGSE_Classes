@@ -62,7 +62,7 @@
                 <RadioButton Content="Резервная" 
 					GroupName="lineHalfSet1"
 					Margin="2"/>
-                <RadioButton Content="Основная + Резервная" 
+                <RadioButton Content="Осн + Рез" 
 					GroupName="lineHalfSet1"
 					Margin="2"/>
             </StackPanel>
@@ -76,7 +76,7 @@
                 <RadioButton Content="Резервная" 
 					GroupName="lineHalfSet2"
 					Margin="2"/>
-                <RadioButton Content="Основная + Резервная" 
+                <RadioButton Content="Осн + Рез" 
 					GroupName="lineHalfSet2"
 					Margin="2"/>
             </StackPanel>
@@ -223,10 +223,10 @@
                         Background="White"
                         Margin="1,0,1,1">
                 <RadioButton Content="Основная" 
-					GroupName="lineHalfSet2"
+					GroupName="lineHalfSet3"
 					Margin="2"/>
                 <RadioButton Content="Резервная" 
-					GroupName="lineHalfSet2"
+					GroupName="lineHalfSet3"
 					Margin="2"/>
             </StackPanel>
             <StackPanel Grid.Column="1"                               
@@ -234,10 +234,10 @@
                         Background="White"
                         Margin="0,0,1,1">
                 <RadioButton Content="Основная" 
-					GroupName="lineHalfSet2"
+					GroupName="lineHalfSet4"
 					Margin="2"/>
                 <RadioButton Content="Резервная" 
-					GroupName="lineHalfSet2"
+					GroupName="lineHalfSet4"
 					Margin="2"/>
             </StackPanel>
             <Label Grid.Row="1" 
