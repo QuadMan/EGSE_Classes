@@ -501,10 +501,13 @@
                               Content="Управление КВВ" 
                               Margin="4" 
                               Checked="ControlHSI_Checked"/>
-                    <CheckBox x:Name="ControlSD" Content="Управление НП" 
-                              Margin="4" Checked="ControlSD_Checked"/>
-                    <CheckBox Content="Имитатор БУСК/БУНД" 
-                              Margin="4"/>
+                    <CheckBox x:Name="ControlSD" 
+                              Content="Управление НП" 
+                              Margin="4" 
+                              Checked="ControlSD_Checked"/>
+                    <CheckBox x:Name="ControlSimRouter" 
+                              Content="Управление имитатором БМ-4" 
+                              Margin="4" Click="ControlSimRouter_Click"/>
                     <CheckBox x:Name="ControlSpaceWire" 
                               Content="Имитаторы SpaceWire" 
                               Margin="4" Checked="ControlSpaceWire_Checked"/>

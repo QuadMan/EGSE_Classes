@@ -42,27 +42,45 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>            
             <RadioButton Content="УВЕС"
-                         VerticalAlignment="Center"
-                         Margin="2"/>
+                         VerticalAlignment="Stretch"
+                         Margin="2"                         
+                         Style="{StaticResource {x:Static ToolBar.RadioButtonStyleKey}}"
+                         BorderBrush="LightBlue" 
+                         HorizontalAlignment="Stretch"
+                         Focusable="False"/>
             <RadioButton Grid.Column="1"
                          Content="ВУФЕС"
-                         VerticalAlignment="Center"
-                         Margin="2"/>
+                         VerticalAlignment="Stretch"
+                         Margin="2"
+                         Style="{StaticResource {x:Static ToolBar.RadioButtonStyleKey}}"
+                         BorderBrush="LightBlue"                          
+                         HorizontalAlignment="Stretch"
+                         Focusable="False"/>
             <RadioButton Grid.Column="2"
                          Content="СДЩ"
-                         VerticalAlignment="Center"
-                         Margin="2"/>
+                         VerticalAlignment="Stretch"
+                         Margin="2"
+                         Style="{StaticResource {x:Static ToolBar.RadioButtonStyleKey}}"
+                         BorderBrush="LightBlue" 
+                         HorizontalAlignment="Stretch"
+                         Focusable="False"/>
         </Grid>
         <Label  Grid.Column="1"
 			    Background="White"                           
 			    Margin="0,1,1,1"/>
         <StackPanel Grid.Column="1">
-            <RadioButton HorizontalAlignment="Center" 
+            <RadioButton HorizontalAlignment="Stretch" 
                          Content="ПК1"
-                         Margin="2"/>
-            <RadioButton HorizontalAlignment="Center"
+                         Margin="2"
+                         Style="{StaticResource {x:Static ToolBar.RadioButtonStyleKey}}"
+                         BorderBrush="LightBlue"
+                         Focusable="False"/>
+            <RadioButton HorizontalAlignment="Stretch"
                          Content="ПК2"
-                         Margin="2"/>
+                         Margin="2"
+                         Style="{StaticResource {x:Static ToolBar.RadioButtonStyleKey}}"
+                         BorderBrush="LightBlue"
+                         Focusable="False"/>
         </StackPanel>
         <Label Grid.Row="1" 
 			    Grid.ColumnSpan="2"

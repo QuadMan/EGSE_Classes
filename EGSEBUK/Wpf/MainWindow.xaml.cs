@@ -23,6 +23,7 @@ namespace WpfEgseBuk
         private HSIWindow winHSI = new HSIWindow();
         private SpaceWireWindow winSW = new SpaceWireWindow();
         private SDWindow winSD = new SDWindow();
+        private SimRouterWindow winSimRouter = new SimRouterWindow();
 
         public MainWindow()
         {
@@ -64,6 +65,19 @@ namespace WpfEgseBuk
             else
             {
                 winSD.Hide();
+            }
+
+        }
+
+        private void ControlSimRouter_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)ControlSimRouter.IsChecked)
+            {
+                winSimRouter.Show();
+            }
+            else
+            {
+                winSimRouter.Hide();
             }
 
         }

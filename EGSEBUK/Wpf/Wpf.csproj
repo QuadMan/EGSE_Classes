@@ -56,6 +56,9 @@
     <Compile Include="SDWindow.xaml.cs">
       <DependentUpon>SDWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SimRouterWindow.xaml.cs">
+      <DependentUpon>SimRouterWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SpaceWireWindow.xaml.cs">
       <DependentUpon>SpaceWireWindow.xaml</DependentUpon>
     </Compile>
@@ -151,6 +154,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SDWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SimRouterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
