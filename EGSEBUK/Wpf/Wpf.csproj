@@ -53,6 +53,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SDWindow.xaml.cs">
+      <DependentUpon>SDWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SpaceWireWindow.xaml.cs">
       <DependentUpon>SpaceWireWindow.xaml</DependentUpon>
     </Compile>
@@ -147,6 +150,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SDWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="SpaceWireWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

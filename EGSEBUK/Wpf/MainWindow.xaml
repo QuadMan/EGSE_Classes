@@ -501,8 +501,8 @@
                               Content="Управление КВВ" 
                               Margin="4" 
                               Checked="ControlHSI_Checked"/>
-                    <CheckBox Content="Управление НП" 
-                              Margin="4"/>
+                    <CheckBox x:Name="ControlSD" Content="Управление НП" 
+                              Margin="4" Checked="ControlSD_Checked"/>
                     <CheckBox Content="Имитатор БУСК/БУНД" 
                               Margin="4"/>
                     <CheckBox x:Name="ControlSpaceWire" 

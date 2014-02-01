@@ -22,6 +22,8 @@ namespace WpfEgseBuk
     {
         private HSIWindow winHSI = new HSIWindow();
         private SpaceWireWindow winSW = new SpaceWireWindow();
+        private SDWindow winSD = new SDWindow();
+
         public MainWindow()
         {
             InitializeComponent();            
@@ -49,6 +51,19 @@ namespace WpfEgseBuk
             else
             {
                 winHSI.Hide();
+            }
+
+        }
+
+        private void ControlSD_Checked(object sender, RoutedEventArgs e)
+        {
+            if ((bool)ControlSD.IsChecked)
+            {
+                winSD.Show();
+            }
+            else
+            {
+                winSD.Hide();
             }
 
         }
