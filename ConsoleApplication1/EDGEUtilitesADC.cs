@@ -59,11 +59,13 @@
 **  0.1.0	(10.12.2013) -	Начальная версия 
  *  0.2.0   (18.12.2013) - Доработал класс CalibrationValues и Channel, чтобы была настройка - считать-ли отрицательные значения правильными при рассчетах
  *                          (выявилась ошибка при расчете значения, превышающего калибровочные данные - видимо, прямая экстраполируется неправильно)
-**
+**  0.3.0   (29.01.2014) - Исправлена ошибка, когда при вызове метода GetValue, в цикле foreach считалось среднее значение в списке, при этом в другом потоке этот
+ *                        список менялся (добавлялось новое значение). Изменил на метод Sum()
 */
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EGSE.Utilites.ADC
 {
@@ -361,10 +363,13 @@ namespace EGSE.Utilites.ADC
                 throw exc; 
             }
             
+            /*
             foreach (float fval in _listDatas)
                 fMidle += fval;
+             */
+            fMidle = _listDatas.Sum() / _uiDataCnt;
 
-            fMidle /= _uiDataCnt;
+            //fMidle /= _uiDataCnt;
 
             if (_clbrtValues == null)
                 return fMidle;
