@@ -1,13 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUtilitesTM.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
 
 namespace EGSE.Utilites
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
     /// <summary>
-    /// Значение телеметрического параметра, изменения которого необходимо отслеживать (обычно для логгирования изменения состояния - контактные датчики, включени питания и т.д.)
+    /// Значение телеметрического параметра, изменения которого необходимо отслеживать 
+    /// (обычно для логгирования изменения состояния - контактные датчики, включени питания и т.д.)
     /// Пример использования:
     /// static void tFunc(int val)
     /// {
@@ -22,28 +30,7 @@ namespace EGSE.Utilites
     public class TMValue
     {
         /// <summary>
-        /// Описание делегата функции, которую нужно вызвать при изменении параметра
-        /// </summary>
-        /// <param name="val"></param>
-        public delegate void ChangeValueEventHandler(int val);
-
-        /// <summary>
-        /// Делагат на изменение параметра
-        /// </summary>
-        public ChangeValueEventHandler ChangeValueEvent;
-
-        /// <summary>
-        /// Значение параметра
-        /// </summary>
-        public int Value { get; set; }
-
-        /// <summary>
-        /// Нужно ли проверять параметр на изменение значения
-        /// </summary>
-        public bool MakeTest { get; set; }
-
-        /// <summary>
-        /// Конструктор по-умолчанию
+        /// Инициализирует новый экземпляр класса <see cref="TMValue" />.
         /// </summary>
         public TMValue()
         {
@@ -52,21 +39,42 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Создаем параметр сразу 
+        /// Инициализирует новый экземпляр класса <see cref="TMValue" />.
+        /// Параметр телеметрии.
         /// </summary>
-        /// <param name="val">Значение</param>
-        /// <param name="fun">Функция при изменении параметра, можно передать null</param>
+        /// <param name="val">Значение параметра</param>
+        /// <param name="func">Функция при изменении параметра, можно передать null</param>
         /// <param name="makeTest">Нужно ли сравнивать старое и новое значение параметра</param>
-        public TMValue(int val, ChangeValueEventHandler fun, bool makeTest)
+        public TMValue(int val, ChangeValueEventHandler func, bool makeTest)
         {
             Value = val;
-            ChangeValueEvent = fun;
+            ChangeValueEvent = func;
             MakeTest = makeTest;
         }
 
         /// <summary>
-        /// Присваивание значения
-        /// Если необходима проверка значения и определена функция проверки
+        /// Описание делегата функции, которую нужно вызвать при изменении параметра.
+        /// </summary>
+        /// <param name="val">Изменяемое значение параметра</param>
+        public delegate void ChangeValueEventHandler(int val);
+
+        /// <summary>
+        /// Получает или задает делагата на изменение параметра.
+        /// </summary>
+        public ChangeValueEventHandler ChangeValueEvent { get; set; }
+
+        /// <summary>
+        /// Получает или задает значение параметра.
+        /// </summary>
+        public int Value { get; set; }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, нужно ли проверять параметр на изменение значения.
+        /// </summary>
+        public bool MakeTest { get; set; }
+
+        /// <summary>
+        /// Присваивание значения, если необходима проверка значения и определена функция проверки.
         /// </summary>
         /// <param name="val">Новое значение</param>
         public void SetVal(int val)
