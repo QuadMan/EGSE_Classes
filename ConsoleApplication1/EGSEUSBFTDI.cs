@@ -1,61 +1,52 @@
-﻿/*** EDGE_USB_FTDI.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль обертка для драйвера FTDI
-**
-** Author: Семенов Александр
-** Project: КИА
-** Module: EDGE USB FTDI
-** Requires: 
-** Comments:
-**
-** History:
-**  0.1.0	(26.11.2013) -	Начальная версия
-**
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUSBFTDI.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
+
 namespace EGSE.USB
 {
     using System;
     using FTD2XXNET;
 
     /// <summary>
-    /// Настройка параметров USB устройства
+    /// Настройка параметров USB устройства.
     /// </summary>
     public struct USBCfg
     {
         /// <summary>
-        /// сколько поток чтения данных из USB может "спать"
+        /// Сколько поток чтения данных из USB может "спать".
         /// </summary>
         public int Sleep;
 
         /// <summary>
-        /// размер буфера чтения USB устройства
+        /// Размер буфера чтения USB устройства.
         /// </summary>
         public uint ReadBufferSize;
         
         /// <summary>
-        /// размер буфера записи USB устройства
+        /// Размер буфера записи USB устройства.
         /// </summary>
         public uint WriteBufferSize;
         
         /// <summary>
-        /// Величина таймаута чтения USB устройства
+        /// Величина таймаута чтения USB устройства.
         /// </summary>
         public uint ReadTimeOut;
         
         /// <summary>
-        /// Величина таймаута записи USB устройства
+        /// Величина таймаута записи USB устройства.
         /// </summary>
         public uint WriteTimeOut;
         
         /// <summary>
-        /// Значение latency
+        /// Значение latency.
         /// </summary>
         public uint Latency;
 
         /// <summary>
-        /// Конструктор конфигурации USB
+        /// Инициализирует новый экземпляр структуры <see cref="USBCfg" />.
         /// </summary>
         /// <param name="sleep">Сколько поток должен спать</param>
         public USBCfg(int sleep = 10)
@@ -70,43 +61,52 @@ namespace EGSE.USB
     }
 
     /// <summary>
-    /// Класс-обертка основных функций библиотеки FTD2XX
+    /// Класс-обертка основных функций библиотеки FTD2XX.
     /// </summary>
     public class USBFTDI
     {
         /// <summary>
-        /// Максимальный размер буфера FTDI
-        /// </summary>
-        private const uint MAX_FTDI_IN_BUF_IN_BYTES = 65 * 1024;
-
-        /// <summary>
-        /// Бзовый класс FTD2XX
+        /// Бзовый класс FTD2XX.
         /// </summary>
         private FTDICustom _ftdi;
 
         /// <summary>
-        /// Серийный номер
+        /// Уникальный номер.
         /// </summary>
         private string _serialNumber;
 
         /// <summary>
-        /// Конфигурация USB
+        /// Конфигурация USB.
         /// </summary>
         private USBCfg _cfg;
 
         /// <summary>
-        /// Используется для расчетамаксимального заполнения буфера USB FTDI
+        /// Используется для расчетамаксимального заполнения буфера USB FTDI.
         /// </summary>
         private int _maxBufferSize;
 
         /// <summary>
-        /// Открыто устройство или нет
+        /// Открыто устройство или нет.
         /// </summary>
         private bool _isOpen;
-        
+
         /// <summary>
-        /// Максимальное значение считанного буфера FTDI
-        /// Можно определить (косвенно) было ли переполнение буфера (если значение равно 65535)
+        /// Инициализирует новый экземпляр класса <see cref="USBFTDI" />.
+        /// </summary>
+        /// <param name="serial">Уникальный номер USB устройства</param>
+        /// <param name="cfg">Конфигурация USB</param>
+        public USBFTDI(string serial, USBCfg cfg)
+        {
+            _ftdi = new FTDICustom();
+            _serialNumber = serial;
+            _cfg = cfg;
+            _maxBufferSize = 0;
+            _isOpen = false;
+        }
+
+        /// <summary>
+        /// Получает или задает максимальное значение считанного буфера FTDI.
+        /// TIPS: Можно определить (косвенно) было ли переполнение буфера (если значение равно 65535).
         /// </summary>
         public int MaxBufferSize
         {
@@ -122,7 +122,7 @@ namespace EGSE.USB
         }
 
         /// <summary>
-        /// Открыто ли устройство
+        /// Получает значение, показывающее, инициализировано ли устройство.
         /// </summary>
         public bool IsOpen
         {
@@ -133,21 +133,7 @@ namespace EGSE.USB
         }
 
         /// <summary>
-        /// Конструктор
-        /// </summary>
-        /// <param name="serial">Серийный номер</param>
-        /// <param name="cfg">Конфигурация</param>
-        public USBFTDI(string serial, USBCfg cfg)
-        {
-            _ftdi = new FTDICustom();
-            _serialNumber = serial;
-            _cfg = cfg;
-            _maxBufferSize = 0;
-            _isOpen = false;
-        }
-
-        /// <summary>
-        /// Открываем устройство
+        /// Открываем устройство.
         /// </summary>
         /// <returns>Статус открытия устройства</returns>
         public FTDICustom.FT_STATUS Open()
@@ -164,7 +150,7 @@ namespace EGSE.USB
         }
 
         /// <summary>
-        /// Закрываем устройство
+        /// Закрываем устройство.
         /// </summary>
         /// <returns>Статус выполнения операции</returns>
         public FTDICustom.FT_STATUS Close()
@@ -176,7 +162,7 @@ namespace EGSE.USB
         }
 
         /// <summary>
-        /// получаем, сколько байт доступно в буфере FTDI
+        /// Получаем, сколько байт доступно в буфере FTDI.
         /// </summary>
         /// <param name="bytesAvailable">Сколько байт доступно</param>
         /// <returns>Статус выполнения операции</returns>
@@ -192,7 +178,7 @@ namespace EGSE.USB
         }
 
         /// <summary>
-        /// Чтение буфера данных из FTDI
+        /// Чтение буфера данных из FTDI.
         /// </summary>
         /// <param name="inBuf">куда читаем</param>
         /// <param name="bytesToRead">сколько хотим прочитать</param>
@@ -218,7 +204,7 @@ namespace EGSE.USB
         }
 
         /// <summary>
-        /// Читаем все, что есть в буфере FTDI
+        /// Читаем все, что есть в буфере FTDI.
         /// </summary>
         /// <param name="inBuf">куда читать</param>
         /// <param name="bytesReaded">сколько считали</param>
@@ -242,10 +228,10 @@ namespace EGSE.USB
         }
 
         /// <summary>
-        /// Записываем буфер данных в USB
+        /// Отправляем буфер данных в USB.
         /// </summary>
-        /// <param name="buf">Буфер</param>
-        /// <param name="bytesWritten">Сколько байт записалось</param>
+        /// <param name="buf">Буфер для отправки в USB</param>
+        /// <param name="bytesWritten">Удалось отправить в USB (кол-во байт)</param>
         /// <returns>Статус операции</returns>
         public FTDICustom.FT_STATUS WriteBuf(ref byte[] buf, out uint bytesWritten)
         {

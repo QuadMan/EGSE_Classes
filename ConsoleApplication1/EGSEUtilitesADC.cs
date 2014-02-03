@@ -446,11 +446,11 @@ namespace EGSE.Utilites.ADC
         /// <summary>
         /// Рассчитываем значение для указанного канала
         /// </summary>
-        /// <param name="chId">Уникальный ID канала</param>
+        /// <param name="chanelId">Уникальный ID канала</param>
         /// <returns></returns>
-        public float GetValue(uint chId) 
+        public float GetValue(uint chanelId) 
         {
-            return _listChannel[SearchChannel(chId)].GetValue();
+            return _listChannel[SearchChannel(chanelId)].GetValue();
         }
     }
 }

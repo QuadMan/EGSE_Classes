@@ -1,11 +1,11 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="EGSEDefaultsLoggers.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="EGSEDefaultLoggers.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Default
+namespace EGSE.Defaults
 {
     using System;
     using EGSE.Utilites;
@@ -40,17 +40,17 @@ namespace EGSE.Default
         /// <summary>
         /// Множество экземпляров лог-класса.
         /// </summary>
-        private TxtLoggers loggers;
+        private TxtLoggers _loggers;
 
         /// <summary>
         /// Предотвращает вызов конструктора по умолчанию для класса <see cref="LogsClass" />.
         /// </summary>
         private LogsClass()
         {
-            loggers = new TxtLoggers();
+            this._loggers = new TxtLoggers();
             foreach (string fileName in logsNames)
             {
-                loggers.AddFile(fileName);
+                this._loggers.AddFile(fileName);
             }
         }
 
@@ -61,7 +61,7 @@ namespace EGSE.Default
         {
             get
             {
-                return Instance.loggers[0];
+                return Instance._loggers[0];
             }            
         }
 
@@ -72,7 +72,7 @@ namespace EGSE.Default
         {
             get
             {
-                return Instance.loggers[1];
+                return Instance._loggers[1];
             }
         }
 
@@ -83,7 +83,7 @@ namespace EGSE.Default
         {
             get
             {
-                return Instance.loggers[2];
+                return Instance._loggers[2];
             }
         }
 
@@ -94,7 +94,7 @@ namespace EGSE.Default
         {
             get
             {
-                return Instance.loggers[3];
+                return Instance._loggers[3];
             }
         }
 
@@ -105,7 +105,7 @@ namespace EGSE.Default
         {
             get
             {
-                return Instance.loggers[4];
+                return Instance._loggers[4];
             }
         }
 

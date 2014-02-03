@@ -1,27 +1,11 @@
-/*** FTD2XX_NET.cs
-**
-** Copyright © 2009-2012 Future Technology Devices International Limited
-** (с) 2013  ИКИ РАН
- *
-** C# Source file for .NET wrapper of the Windows FTD2XX.dll API calls.
-** Main module
-**
-** Author: FTDI, Семенов Александр
-** Project: CDM Windows Driver Package
-** Module: FTD2XX_NET Managed Wrapper
-** Requires: 
-** Comments:
-**
-** History:
-**  1.0.0	-	Initial version
-**  1.0.12	-	Included support for the FT232H device.
-**  1.0.14	-	Included Support for the X-Series of devices.
- *  1.1.00  -   Убрал из модулей Windows.Forms - не нужно вызывать messagebox.show - мы будем в случае ошибки логгировать в текстовый файл, выставляя признак в объекте FTDI о том, что произошла ошибка
- *              Проверить все комментарии типа //! и /*! - закоментирована важная информация, в дальнейшем нужно будет ее учесть
- *              Оставил только основные функции работы с FTDI, всю работу с EEPROM убрал
- *  1.2.00 (27.11.2013) - перенес инициализацию делегатов в конструктор, чтобы их вызов не занимал лишнее время
-**
-*/
+//-----------------------------------------------------------------------
+// <copyright file="FTD2XX_NET.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) 2009-2012 Future Technology Devices International Limited.
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>FTDI, Семенов Александр</author>
+//-----------------------------------------------------------------------
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,29 +20,105 @@ namespace FTD2XXNET
 	/// </summary>
 	public class FTDICustom
 	{
-        tFT_OpenEx FT_OpenEx;
-        tFT_Close  FT_Close;
-        tFT_Read FT_Read;
-        tFT_Write FT_Write;
-        tFT_GetQueueStatus FT_GetQueueStatus;
-        tFT_GetStatus FT_GetStatus;
-        tFT_ResetDevice FT_ResetDevice;
-        tFT_ResetPort FT_ResetPort;
-        tFT_CyclePort FT_CyclePort;
-        tFT_Rescan FT_Rescan;
-        tFT_Reload FT_Reload;
-        tFT_Purge FT_Purge;
-        tFT_SetTimeouts FT_SetTimeouts;
-        tFT_GetDriverVersion FT_GetDriverVersion;
-        tFT_GetLibraryVersion FT_GetLibraryVersion;
-        tFT_SetBitMode FT_SetBitMode;
-        tFT_SetLatencyTimer FT_SetLatencyTimer;
-        tFT_GetLatencyTimer FT_GetLatencyTimer;
-        tFT_SetUSBParameters FT_SetUSBParameters;
+        /// <summary>
+        /// Идентификатор функции FT_OpenEx.
+        /// </summary>
+        public TFT_OpenEx FT_OpenEx { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_Close.
+        /// </summary>
+        public TFT_Close FT_Close { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_Read.
+        /// </summary>
+        public TFT_Read FT_Read { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_Write.
+        /// </summary>
+        public TFT_Write FT_Write { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_GetQueueStatus.
+        /// </summary>
+        public TFT_GetQueueStatus FT_GetQueueStatus { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_GetStatus.
+        /// </summary>
+        public TFT_GetStatus FT_GetStatus { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_ResetDevice.
+        /// </summary>
+        public TFT_ResetDevice FT_ResetDevice { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_ResetPort.
+        /// </summary>
+        public TFT_ResetPort FT_ResetPort { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_CyclePort.
+        /// </summary>
+        public TFT_CyclePort FT_CyclePort { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_Rescan.
+        /// </summary>
+        public TFT_Rescan FT_Rescan { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_Reload.
+        /// </summary>
+        public TFT_Reload FT_Reload { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_Purge.
+        /// </summary>
+        public TFT_Purge FT_Purge { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_SetTimeouts.
+        /// </summary>
+        public TFT_SetTimeouts FT_SetTimeouts { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_GetDriverVersion.
+        /// </summary>
+        public TFT_GetDriverVersion FT_GetDriverVersion { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_GetLibraryVersion.
+        /// </summary>
+        public TFT_GetLibraryVersion FT_GetLibraryVersion { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_SetBitMode.
+        /// </summary>
+        public TFT_SetBitMode FT_SetBitMode { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_SetLatencyTimer.
+        /// </summary>
+        public TFT_SetLatencyTimer FT_SetLatencyTimer { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_GetLatencyTimer.
+        /// </summary>
+        public TFT_GetLatencyTimer FT_GetLatencyTimer { get; set; }
+
+        /// <summary>
+        /// Идентификатор функции FT_SetUSBParameters.
+        /// </summary>
+        public TFT_SetUSBParameters FT_SetUSBParameters { get; set; }
 
         #region CONSTRUCTOR_DESTRUCTOR
-		// constructor
+
 		/// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="FTDICustom" />.
 		/// Constructor for the FTDI class.
 		/// </summary>
 		public FTDICustom()
@@ -85,7 +145,7 @@ namespace FTD2XXNET
                 pFT_OpenEx = GetProcAddress(hFTD2XXDLL, "FT_OpenEx");
                 if (pFT_OpenEx != IntPtr.Zero)
                 {
-                    FT_OpenEx = (tFT_OpenEx)Marshal.GetDelegateForFunctionPointer(pFT_OpenEx, typeof(tFT_OpenEx));
+                    FT_OpenEx = (TFT_OpenEx)Marshal.GetDelegateForFunctionPointer(pFT_OpenEx, typeof(TFT_OpenEx));
                 }
                 else
                 {
@@ -93,60 +153,60 @@ namespace FTD2XXNET
                 }
 
                 pFT_Close = GetProcAddress(hFTD2XXDLL, "FT_Close");
-                FT_Close = (tFT_Close)Marshal.GetDelegateForFunctionPointer(pFT_Close, typeof(tFT_Close));
+                FT_Close = (TFT_Close)Marshal.GetDelegateForFunctionPointer(pFT_Close, typeof(TFT_Close));
 
                 pFT_Read = GetProcAddress(hFTD2XXDLL, "FT_Read");
-                FT_Read = (tFT_Read)Marshal.GetDelegateForFunctionPointer(pFT_Read, typeof(tFT_Read));
+                FT_Read = (TFT_Read)Marshal.GetDelegateForFunctionPointer(pFT_Read, typeof(TFT_Read));
 
                 pFT_Write = GetProcAddress(hFTD2XXDLL, "FT_Write");
-                FT_Write = (tFT_Write)Marshal.GetDelegateForFunctionPointer(pFT_Write, typeof(tFT_Write));
+                FT_Write = (TFT_Write)Marshal.GetDelegateForFunctionPointer(pFT_Write, typeof(TFT_Write));
 
                 pFT_GetQueueStatus = GetProcAddress(hFTD2XXDLL, "FT_GetQueueStatus");
-                FT_GetQueueStatus = (tFT_GetQueueStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetQueueStatus, typeof(tFT_GetQueueStatus));
+                FT_GetQueueStatus = (TFT_GetQueueStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetQueueStatus, typeof(TFT_GetQueueStatus));
 
                 pFT_GetStatus = GetProcAddress(hFTD2XXDLL, "FT_GetStatus");
-                FT_GetStatus = (tFT_GetStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetStatus, typeof(tFT_GetStatus));
+                FT_GetStatus = (TFT_GetStatus)Marshal.GetDelegateForFunctionPointer(pFT_GetStatus, typeof(TFT_GetStatus));
 
                 pFT_ResetDevice = GetProcAddress(hFTD2XXDLL, "FT_ResetDevice");
-                FT_ResetDevice = (tFT_ResetDevice)Marshal.GetDelegateForFunctionPointer(pFT_ResetDevice, typeof(tFT_ResetDevice));
+                FT_ResetDevice = (TFT_ResetDevice)Marshal.GetDelegateForFunctionPointer(pFT_ResetDevice, typeof(TFT_ResetDevice));
 
                 pFT_ResetPort = GetProcAddress(hFTD2XXDLL, "FT_ResetPort");
-                FT_ResetPort = (tFT_ResetPort)Marshal.GetDelegateForFunctionPointer(pFT_ResetPort, typeof(tFT_ResetPort));
+                FT_ResetPort = (TFT_ResetPort)Marshal.GetDelegateForFunctionPointer(pFT_ResetPort, typeof(TFT_ResetPort));
 
                 pFT_CyclePort = GetProcAddress(hFTD2XXDLL, "FT_CyclePort");
-                FT_CyclePort = (tFT_CyclePort)Marshal.GetDelegateForFunctionPointer(pFT_CyclePort, typeof(tFT_CyclePort));
+                FT_CyclePort = (TFT_CyclePort)Marshal.GetDelegateForFunctionPointer(pFT_CyclePort, typeof(TFT_CyclePort));
 
                 pFT_Rescan = GetProcAddress(hFTD2XXDLL, "FT_Rescan");
-                FT_Rescan = (tFT_Rescan)Marshal.GetDelegateForFunctionPointer(pFT_Rescan, typeof(tFT_Rescan));
+                FT_Rescan = (TFT_Rescan)Marshal.GetDelegateForFunctionPointer(pFT_Rescan, typeof(TFT_Rescan));
 
                 pFT_Reload = GetProcAddress(hFTD2XXDLL, "FT_Reload");
-                FT_Reload = (tFT_Reload)Marshal.GetDelegateForFunctionPointer(pFT_Reload, typeof(tFT_Reload));
+                FT_Reload = (TFT_Reload)Marshal.GetDelegateForFunctionPointer(pFT_Reload, typeof(TFT_Reload));
 
                 pFT_Purge = GetProcAddress(hFTD2XXDLL, "FT_Purge");
-                FT_Purge = (tFT_Purge)Marshal.GetDelegateForFunctionPointer(pFT_Purge, typeof(tFT_Purge));
+                FT_Purge = (TFT_Purge)Marshal.GetDelegateForFunctionPointer(pFT_Purge, typeof(TFT_Purge));
 
                 pFT_SetTimeouts = GetProcAddress(hFTD2XXDLL, "FT_SetTimeouts");
-                FT_SetTimeouts = (tFT_SetTimeouts)Marshal.GetDelegateForFunctionPointer(pFT_SetTimeouts, typeof(tFT_SetTimeouts));
+                FT_SetTimeouts = (TFT_SetTimeouts)Marshal.GetDelegateForFunctionPointer(pFT_SetTimeouts, typeof(TFT_SetTimeouts));
 
                 pFT_GetDriverVersion = GetProcAddress(hFTD2XXDLL, "FT_GetDriverVersion");
-                FT_GetDriverVersion = (tFT_GetDriverVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetDriverVersion, typeof(tFT_GetDriverVersion));
+                FT_GetDriverVersion = (TFT_GetDriverVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetDriverVersion, typeof(TFT_GetDriverVersion));
 
                 pFT_GetLibraryVersion = GetProcAddress(hFTD2XXDLL, "FT_GetLibraryVersion");
-                FT_GetLibraryVersion = (tFT_GetLibraryVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetLibraryVersion, typeof(tFT_GetLibraryVersion));
+                FT_GetLibraryVersion = (TFT_GetLibraryVersion)Marshal.GetDelegateForFunctionPointer(pFT_GetLibraryVersion, typeof(TFT_GetLibraryVersion));
 
                 pFT_SetDeadmanTimeout = GetProcAddress(hFTD2XXDLL, "FT_SetDeadmanTimeout");
 
                 pFT_SetBitMode = GetProcAddress(hFTD2XXDLL, "FT_SetBitMode");
-                FT_SetBitMode = (tFT_SetBitMode)Marshal.GetDelegateForFunctionPointer(pFT_SetBitMode, typeof(tFT_SetBitMode));
+                FT_SetBitMode = (TFT_SetBitMode)Marshal.GetDelegateForFunctionPointer(pFT_SetBitMode, typeof(TFT_SetBitMode));
                 
                 pFT_SetLatencyTimer = GetProcAddress(hFTD2XXDLL, "FT_SetLatencyTimer");
-                FT_SetLatencyTimer = (tFT_SetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_SetLatencyTimer, typeof(tFT_SetLatencyTimer));
+                FT_SetLatencyTimer = (TFT_SetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_SetLatencyTimer, typeof(TFT_SetLatencyTimer));
 
                 pFT_GetLatencyTimer = GetProcAddress(hFTD2XXDLL, "FT_GetLatencyTimer");
-                FT_GetLatencyTimer = (tFT_GetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_GetLatencyTimer, typeof(tFT_GetLatencyTimer));
+                FT_GetLatencyTimer = (TFT_GetLatencyTimer)Marshal.GetDelegateForFunctionPointer(pFT_GetLatencyTimer, typeof(TFT_GetLatencyTimer));
 
                 pFT_SetUSBParameters = GetProcAddress(hFTD2XXDLL, "FT_SetUSBParameters");
-                FT_SetUSBParameters = (tFT_SetUSBParameters)Marshal.GetDelegateForFunctionPointer(pFT_SetUSBParameters, typeof(tFT_SetUSBParameters));
+                FT_SetUSBParameters = (TFT_SetUSBParameters)Marshal.GetDelegateForFunctionPointer(pFT_SetUSBParameters, typeof(TFT_SetUSBParameters));
             }
 			else
 			{
@@ -156,7 +216,7 @@ namespace FTD2XXNET
 		}
 
 		/// <summary>
-		/// Destructor for the FTDI class.
+        /// Уничтожает экземпляр класса <see cref="FTDICustom" />.
 		/// </summary>
 		~FTDICustom()
 		{
@@ -167,66 +227,83 @@ namespace FTD2XXNET
 		#endregion
 
 		#region LOAD_LIBRARIES
-		/// <summary>
-		/// Built-in Windows API functions to allow us to dynamically load our own DLL.
-		/// Will allow us to use old versions of the DLL that do not have all of these functions available.
-		/// </summary>
-		[DllImport("kernel32.dll")]
+        /// Built-in Windows API functions to allow us to dynamically load our own DLL.
+        /// Will allow us to use old versions of the DLL that do not have all of these functions available.
+        /// <summary>
+        /// Загружает динамическую библиотеку средствами WinAPI.
+        /// </summary>
+        /// <param name="dllToLoad">Имя библиотеки</param>
+        /// <returns>Состояние операции</returns>
+		[DllImport("kernel32.dll")]    
 		private static extern IntPtr LoadLibrary(string dllToLoad);
+
+        /// <summary>
+        /// Возвращает точку входа в заданную процедуру.
+        /// </summary>
+        /// <param name="handleModule">Handle загруженной dll-ки</param>
+        /// <param name="procedureName">Название операции</param>
+        /// <returns>Состояние операции</returns>
 		[DllImport("kernel32.dll")]
-		private static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-		[DllImport("kernel32.dll")]
-		private static extern bool FreeLibrary(IntPtr hModule);
+		private static extern IntPtr GetProcAddress(IntPtr handleModule, string procedureName);
+
+		/// <summary>
+		/// WinAPI выгрузить dll-ку.
+		/// </summary>
+		/// <param name="handleModule">Handle загруженной dll-ки</param>
+		/// <returns>Состояние операции</returns>
+        [DllImport("kernel32.dll")]       
+		private static extern bool FreeLibrary(IntPtr handleModule);
+
 		#endregion
 
 		#region DELEGATES
 		// Definitions for FTD2XX functions
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Open(UInt32 index, ref IntPtr ftHandle);
+		private delegate FT_STATUS TFT_Open(UInt32 index, ref IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_OpenEx(string devstring, UInt32 dwFlags, ref IntPtr ftHandle);
+		private delegate FT_STATUS TFT_OpenEx(string devstring, UInt32 dwFlags, ref IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Close(IntPtr ftHandle);
+		private delegate FT_STATUS TFT_Close(IntPtr ftHandle);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Read(IntPtr ftHandle, byte[] lpBuffer, Int32 dwBytesToRead, ref Int32 lpdwBytesReturned);
+		private delegate FT_STATUS TFT_Read(IntPtr ftHandle, byte[] lpBuffer, Int32 dwBytesToRead, ref Int32 lpdwBytesReturned);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Write(IntPtr ftHandle, byte[] lpBuffer, UInt32 dwBytesToWrite, ref UInt32 lpdwBytesWritten);
+		private delegate FT_STATUS TFT_Write(IntPtr ftHandle, byte[] lpBuffer, UInt32 dwBytesToWrite, ref UInt32 lpdwBytesWritten);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_GetQueueStatus(IntPtr ftHandle, ref Int32 lpdwAmountInRxQueue);
+		private delegate FT_STATUS TFT_GetQueueStatus(IntPtr ftHandle, ref Int32 lpdwAmountInRxQueue);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_GetStatus(IntPtr ftHandle, ref UInt32 lpdwAmountInRxQueue, ref UInt32 lpdwAmountInTxQueue, ref UInt32 lpdwEventStatus);
+		private delegate FT_STATUS TFT_GetStatus(IntPtr ftHandle, ref UInt32 lpdwAmountInRxQueue, ref UInt32 lpdwAmountInTxQueue, ref UInt32 lpdwEventStatus);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_ResetDevice(IntPtr ftHandle);
+		private delegate FT_STATUS TFT_ResetDevice(IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_ResetPort(IntPtr ftHandle);
+		private delegate FT_STATUS TFT_ResetPort(IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_CyclePort(IntPtr ftHandle);
+		private delegate FT_STATUS TFT_CyclePort(IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Rescan();
+		private delegate FT_STATUS TFT_Rescan();
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Reload(UInt16 wVID, UInt16 wPID);
+		private delegate FT_STATUS TFT_Reload(UInt16 wVID, UInt16 wPID);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_Purge(IntPtr ftHandle, UInt32 dwMask);
+		private delegate FT_STATUS TFT_Purge(IntPtr ftHandle, UInt32 dwMask);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_SetTimeouts(IntPtr ftHandle, UInt32 dwReadTimeout, UInt32 dwWriteTimeout);
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_GetDriverVersion(IntPtr ftHandle, ref UInt32 lpdwDriverVersion);
-		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_GetLibraryVersion(ref UInt32 lpdwLibraryVersion);
-		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_SetDeadmanTimeout(IntPtr ftHandle, UInt32 dwDeadmanTimeout);
+		private delegate FT_STATUS TFT_SetTimeouts(IntPtr ftHandle, UInt32 dwReadTimeout, UInt32 dwWriteTimeout);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private delegate FT_STATUS tFT_SetBitMode(IntPtr ftHandle, byte ucMask, byte ucMode);
+		private delegate FT_STATUS TFT_GetDriverVersion(IntPtr ftHandle, ref UInt32 lpdwDriverVersion);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_SetLatencyTimer(IntPtr ftHandle, byte ucLatency);
+		private delegate FT_STATUS TFT_GetLibraryVersion(ref UInt32 lpdwLibraryVersion);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_GetLatencyTimer(IntPtr ftHandle, ref byte ucLatency);
+		private delegate FT_STATUS TFT_SetDeadmanTimeout(IntPtr ftHandle, UInt32 dwDeadmanTimeout);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        private delegate FT_STATUS TFT_SetBitMode(IntPtr ftHandle, byte ucMask, byte ucMode);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS tFT_SetUSBParameters(IntPtr ftHandle, UInt32 dwInTransferSize, UInt32 dwOutTransferSize);
+		private delegate FT_STATUS TFT_SetLatencyTimer(IntPtr ftHandle, byte ucLatency);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+		private delegate FT_STATUS TFT_GetLatencyTimer(IntPtr ftHandle, ref byte ucLatency);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+		private delegate FT_STATUS TFT_SetUSBParameters(IntPtr ftHandle, UInt32 dwInTransferSize, UInt32 dwOutTransferSize);
 		#endregion
 
 		#region CONSTANT_VALUES
@@ -240,74 +317,92 @@ namespace FTD2XXNET
 			/// Status OK
 			/// </summary>
 			FT_OK = 0,
+
 			/// <summary>
 			/// The device handle is invalid
 			/// </summary>
 			FT_INVALID_HANDLE,
+
 			/// <summary>
 			/// Device not found
 			/// </summary>
 			FT_DEVICE_NOT_FOUND,
+
 			/// <summary>
 			/// Device is not open
 			/// </summary>
 			FT_DEVICE_NOT_OPENED,
+
 			/// <summary>
 			/// IO error
 			/// </summary>
 			FT_IO_ERROR,
+
 			/// <summary>
 			/// Insufficient resources
 			/// </summary>
 			FT_INSUFFICIENT_RESOURCES,
+
 			/// <summary>
 			/// A parameter was invalid
 			/// </summary>
 			FT_INVALID_PARAMETER,
+
 			/// <summary>
 			/// The requested baud rate is invalid
 			/// </summary>
 			FT_INVALID_BAUD_RATE,
+
 			/// <summary>
 			/// Device not opened for erase
 			/// </summary>
 			FT_DEVICE_NOT_OPENED_FOR_ERASE,
+
 			/// <summary>
 			/// Device not poened for write
 			/// </summary>
 			FT_DEVICE_NOT_OPENED_FOR_WRITE,
+
 			/// <summary>
 			/// Failed to write to device
 			/// </summary>
 			FT_FAILED_TO_WRITE_DEVICE,
+
 			/// <summary>
 			/// Failed to read the device EEPROM
 			/// </summary>
 			FT_EEPROM_READ_FAILED,
+
 			/// <summary>
 			/// Failed to write the device EEPROM
 			/// </summary>
 			FT_EEPROM_WRITE_FAILED,
+
 			/// <summary>
 			/// Failed to erase the device EEPROM
 			/// </summary>
 			FT_EEPROM_ERASE_FAILED,
+
 			/// <summary>
 			/// An EEPROM is not fitted to the device
 			/// </summary>
 			FT_EEPROM_NOT_PRESENT,
+
 			/// <summary>
 			/// Device EEPROM is blank
 			/// </summary>
 			FT_EEPROM_NOT_PROGRAMMED,
+
 			/// <summary>
 			/// Invalid arguments
 			/// </summary>
 			FT_INVALID_ARGS,
+
 			/// <summary>
 			/// An other error has occurred
 			/// </summary>
 			FT_OTHER_ERROR
+
 		};
 
 		// Constants for other error states internal to this class library
@@ -323,9 +418,9 @@ namespace FTD2XXNET
 		};
 
 		// Flags for FT_OpenEx
-		private const UInt32 FT_OPEN_BY_SERIAL_NUMBER	= 0x00000001;
-		private const UInt32 FT_OPEN_BY_DESCRIPTION		= 0x00000002;
-		private const UInt32 FT_OPEN_BY_LOCATION		= 0x00000004;
+		private const UInt32 FTOpenBySerialNumber = 0x00000001;
+		private const UInt32 FTOpenByDescription = 0x00000002;
+		private const UInt32 FTOpenByLocation = 0x00000004;
 
         // Flow Control
 		/// <summary>
@@ -336,19 +431,23 @@ namespace FTD2XXNET
 			/// <summary>
 			/// No flow control
 			/// </summary>
-			public const UInt16 FT_FLOW_NONE		= 0x0000;
+			public const UInt16 FTFlowNone = 0x0000;
+
 			/// <summary>
 			/// RTS/CTS flow control
 			/// </summary>
-			public const UInt16 FT_FLOW_RTS_CTS		= 0x0100;
+			public const UInt16 FTFlowRTSCTS = 0x0100;
+
 			/// <summary>
 			/// DTR/DSR flow control
 			/// </summary>
-			public const UInt16 FT_FLOW_DTR_DSR		= 0x0200;
+			public const UInt16 FTFlowDTRDSR = 0x0200;
+
 			/// <summary>
 			/// Xon/Xoff flow control
 			/// </summary>
-			public const UInt16 FT_FLOW_XON_XOFF	= 0x0400;
+			public const UInt16 FTFlowXOnXOff = 0x0400;
+
 		}
 
 		// Purge Rx and Tx buffers
@@ -360,11 +459,13 @@ namespace FTD2XXNET
 			/// <summary>
 			/// Purge Rx buffer
 			/// </summary>
-			public const byte FT_PURGE_RX = 0x01;
+			public const byte FTPurgeRX = 0x01;
+
 			/// <summary>
 			/// Purge Tx buffer
 			/// </summary>
-			public const byte FT_PURGE_TX = 0x02;
+			public const byte FTPurgeTX = 0x02;
+
 		}
 
         // Bit modes
@@ -376,35 +477,43 @@ namespace FTD2XXNET
 			/// <summary>
 			/// Reset bit mode
 			/// </summary>
-			public const byte FT_BIT_MODE_RESET			= 0x00;
+			public const byte FTBitModeReset = 0x00;
+
 			/// <summary>
 			/// Asynchronous bit-bang mode
 			/// </summary>
-			public const byte FT_BIT_MODE_ASYNC_BITBANG	= 0x01;
+			public const byte FTBitModeAsyncBitbang	= 0x01;
+
 			/// <summary>
 			/// MPSSE bit mode - only available on FT2232, FT2232H, FT4232H and FT232H
 			/// </summary>
-			public const byte FT_BIT_MODE_MPSSE			= 0x02;
+			public const byte FTBitModeMPSSE = 0x02;
+
 			/// <summary>
 			/// Synchronous bit-bang mode
 			/// </summary>
-			public const byte FT_BIT_MODE_SYNC_BITBANG	= 0x04;
+			public const byte FTBitModeSyncBitbang = 0x04;
+
 			/// <summary>
 			/// MCU host bus emulation mode - only available on FT2232, FT2232H, FT4232H and FT232H
 			/// </summary>
-			public const byte FT_BIT_MODE_MCU_HOST		= 0x08;
+			public const byte FTBitModeMCUHost = 0x08;
+
 			/// <summary>
 			/// Fast opto-isolated serial mode - only available on FT2232, FT2232H, FT4232H and FT232H
 			/// </summary>
-			public const byte FT_BIT_MODE_FAST_SERIAL	= 0x10;
+			public const byte FTBitModeFastSerial = 0x10;
+
 			/// <summary>
 			/// CBUS bit-bang mode - only available on FT232R and FT232H
 			/// </summary>
-			public const byte FT_BIT_MODE_CBUS_BITBANG	= 0x20;
+			public const byte FTBitModeCBUSBitbang = 0x20;
+
 			/// <summary>
 			/// Single channel synchronous 245 FIFO mode - only available on FT2232H channel A and FT232H
 			/// </summary>
-			public const byte FT_BIT_MODE_SYNC_FIFO		= 0x40;
+			public const byte FTBitModeSyncFIFO = 0x40;
+
 		}
 
         // Flag values for FT_GetDeviceInfoDetail and FT_GetDeviceInfo
@@ -416,11 +525,13 @@ namespace FTD2XXNET
 			/// <summary>
 			/// Indicates that the device is open
 			/// </summary>
-			public const UInt32 FT_FLAGS_OPENED		= 0x00000001;
+			public const UInt32 FTFlagsOpened = 0x00000001;
+
 			/// <summary>
 			/// Indicates that the device is enumerated as a hi-speed USB device
 			/// </summary>
-			public const UInt32 FT_FLAGS_HISPEED	= 0x00000002;
+			public const UInt32 FTFlagsHiSpeed = 0x00000002;
+
 		}
 
 		// Valid drive current values for FT2232H, FT4232H and FT232H devices
@@ -433,18 +544,22 @@ namespace FTD2XXNET
 			/// 4mA drive current
 			/// </summary>
 			public const byte FT_DRIVE_CURRENT_4MA	= 4;
+
 			/// <summary>
 			/// 8mA drive current
 			/// </summary>
 			public const byte FT_DRIVE_CURRENT_8MA	= 8;
+
 			/// <summary>
 			/// 12mA drive current
 			/// </summary>
 			public const byte FT_DRIVE_CURRENT_12MA	= 12;
+
 			/// <summary>
 			/// 16mA drive current
 			/// </summary>
 			public const byte FT_DRIVE_CURRENT_16MA	= 16;
+
 		}
 
 		// Device type identifiers for FT_GetDeviceInfoDetail and FT_GetDeviceInfo
@@ -457,42 +572,52 @@ namespace FTD2XXNET
 			/// FT232B or FT245B device
 			/// </summary>
 			FT_DEVICE_BM = 0,
+
 			/// <summary>
 			/// FT8U232AM or FT8U245AM device
 			/// </summary>
 			FT_DEVICE_AM,
+
 			/// <summary>
 			/// FT8U100AX device
 			/// </summary>
 			FT_DEVICE_100AX,
+
 			/// <summary>
 			/// Unknown device
 			/// </summary>
 			FT_DEVICE_UNKNOWN,
+
 			/// <summary>
 			/// FT2232 device
 			/// </summary>
 			FT_DEVICE_2232,
+
 			/// <summary>
 			/// FT232R or FT245R device
 			/// </summary>
 			FT_DEVICE_232R,
+
 			/// <summary>
 			/// FT2232H device
 			/// </summary>
 			FT_DEVICE_2232H,
+
 			/// <summary>
 			/// FT4232H device
 			/// </summary>
 			FT_DEVICE_4232H,
+
 			/// <summary>
 			/// FT232H device
 			/// </summary>
 			FT_DEVICE_232H,
+
 			/// <summary>
 			/// FT232X device
 			/// </summary>
 			FT_DEVICE_X_SERIES
+
 		};
 #endregion
 
@@ -521,32 +646,39 @@ namespace FTD2XXNET
 			/// <summary>
 			/// Indicates device state.  Can be any combination of the following: FT_FLAGS_OPENED, FT_FLAGS_HISPEED
 			/// </summary>
-			public UInt32 Flags;
+            public UInt32 Flags { get; set; }
+
 			/// <summary>
 			/// Indicates the device type.  Can be one of the following: FT_DEVICE_232R, FT_DEVICE_2232C, FT_DEVICE_BM, FT_DEVICE_AM, FT_DEVICE_100AX or FT_DEVICE_UNKNOWN
 			/// </summary>
-			public FT_DEVICE Type;
+            public FT_DEVICE Type { get; set; }
+
 			/// <summary>
 			/// The Vendor ID and Product ID of the device
 			/// </summary>
-			public UInt32 ID;
+            public UInt32 ID { get; set; }
+
 			/// <summary>
 			/// The physical location identifier of the device
 			/// </summary>
-			public UInt32 LocId;
+            public UInt32 LocId { get; set; }
+
 			/// <summary>
 			/// The device serial number
 			/// </summary>
-			public string SerialNumber;
+            public string SerialNumber { get; set; }
+
 			/// <summary>
 			/// The device description
 			/// </summary>
-			public string Description;
+            public string Description { get; set; }
+
 			/// <summary>
 			/// The device handle.  This value is not used externally and is provided for information only.
 			/// If the device is not open, this value is 0.
 			/// </summary>
-			public IntPtr ftHandle;
+            public IntPtr ftHandle { get; set; }
+
 		}
 		#endregion
 
@@ -558,25 +690,30 @@ namespace FTD2XXNET
 		public class FT_EXCEPTION : Exception
 		{
 			/// <summary>
-			/// 
+            /// Инициализирует новый экземпляр класса <see cref="FT_EXCEPTION" />.
 			/// </summary>
 			public FT_EXCEPTION() { }
+
 			/// <summary>
-			/// 
+            /// Инициализирует новый экземпляр класса <see cref="FT_EXCEPTION" />.
 			/// </summary>
-			/// <param name="message"></param>
-			public FT_EXCEPTION(string message) : base(message) { }
+            /// <param name="message">Сообщение об ошибке</param>
+			public FT_EXCEPTION(string message) 
+                : base(message) { }
+
 			/// <summary>
-			/// 
+            /// Инициализирует новый экземпляр класса <see cref="FT_EXCEPTION" />.
 			/// </summary>
-			/// <param name="message"></param>
-			/// <param name="inner"></param>
-			public FT_EXCEPTION(string message, Exception inner) : base(message, inner) { }
+            /// <param name="message">Сообщение об ошибке</param>
+			/// <param name="inner">Исходный контекст</param>
+			public FT_EXCEPTION(string message, Exception inner) 
+                : base(message, inner) { }
+
 			/// <summary>
-			/// 
+            /// Инициализирует новый экземпляр класса <see cref="FT_EXCEPTION" />.
 			/// </summary>
-			/// <param name="info"></param>
-			/// <param name="context"></param>
+			/// <param name="info">Сообщение об ошибке</param>
+			/// <param name="context">Текущее состояние USB</param>
 			protected FT_EXCEPTION(
 			System.Runtime.Serialization.SerializationInfo info,
 			System.Runtime.Serialization.StreamingContext context)
@@ -586,30 +723,115 @@ namespace FTD2XXNET
 
 		#region FUNCTION_IMPORTS_FTD2XX.DLL
 		// Handle to our DLL - used with GetProcAddress to load all of our functions
-		IntPtr hFTD2XXDLL = IntPtr.Zero;
+		private IntPtr hFTD2XXDLL = IntPtr.Zero;
+
 		// Declare pointers to each of the functions we are going to use in FT2DXX.DLL
 		// These are assigned in our constructor and freed in our destructor.
-		IntPtr pFT_Open = IntPtr.Zero;
-		IntPtr pFT_OpenEx = IntPtr.Zero;
-		IntPtr pFT_Close = IntPtr.Zero;
-		IntPtr pFT_Read = IntPtr.Zero;
-		IntPtr pFT_Write = IntPtr.Zero;
-		IntPtr pFT_GetQueueStatus = IntPtr.Zero;
-		IntPtr pFT_GetStatus = IntPtr.Zero;
-		IntPtr pFT_ResetDevice = IntPtr.Zero;
-		IntPtr pFT_ResetPort = IntPtr.Zero;
-		IntPtr pFT_CyclePort = IntPtr.Zero;
-		IntPtr pFT_Rescan = IntPtr.Zero;
-		IntPtr pFT_Reload = IntPtr.Zero;
-		IntPtr pFT_Purge = IntPtr.Zero;
-		IntPtr pFT_SetTimeouts = IntPtr.Zero;
-		IntPtr pFT_GetDriverVersion = IntPtr.Zero;
-		IntPtr pFT_GetLibraryVersion = IntPtr.Zero;
-		IntPtr pFT_SetDeadmanTimeout = IntPtr.Zero;
-        IntPtr pFT_SetBitMode = IntPtr.Zero;
-		IntPtr pFT_SetLatencyTimer = IntPtr.Zero;
-		IntPtr pFT_GetLatencyTimer = IntPtr.Zero;
-		IntPtr pFT_SetUSBParameters = IntPtr.Zero;
+		/// <summary>
+        /// Точка входа для функции FT_Open.
+		/// </summary>
+        private IntPtr pFT_Open = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_OpenEx.
+        /// </summary>
+        private IntPtr pFT_OpenEx = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_Close.
+        /// </summary>
+        private IntPtr pFT_Close = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_Read.
+        /// </summary>
+        private IntPtr pFT_Read = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_Write.
+        /// </summary>
+        private IntPtr pFT_Write = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_GetQueueStatus.
+        /// </summary>
+        private IntPtr pFT_GetQueueStatus = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_GetStatus.
+        /// </summary>
+        private IntPtr pFT_GetStatus = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_ResetDevice.
+        /// </summary>
+        private IntPtr pFT_ResetDevice = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_ResetPort.
+        /// </summary>
+        private IntPtr pFT_ResetPort = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_CyclePort.
+        /// </summary>
+        private IntPtr pFT_CyclePort = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_Rescan.
+        /// </summary>
+        private IntPtr pFT_Rescan = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_Reload.
+        /// </summary>
+        private IntPtr pFT_Reload = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_Purge.
+        /// </summary>
+        private IntPtr pFT_Purge = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_SetTimeouts.
+        /// </summary>
+        private IntPtr pFT_SetTimeouts = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_GetDriverVersion.
+        /// </summary>
+        private IntPtr pFT_GetDriverVersion = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_GetLibraryVersion.
+        /// </summary>
+        private IntPtr pFT_GetLibraryVersion = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_SetDeadmanTimeout.
+        /// </summary>
+        private IntPtr pFT_SetDeadmanTimeout = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_SetBitMode.
+        /// </summary>
+        private IntPtr pFT_SetBitMode = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_SetLatencyTimer.
+        /// </summary>
+        private IntPtr pFT_SetLatencyTimer = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_GetLatencyTimer.
+        /// </summary>
+        private IntPtr pFT_GetLatencyTimer = IntPtr.Zero;
+
+        /// <summary>
+        /// Точка входа для функции FT_SetUSBParameters.
+        /// </summary>
+        private IntPtr pFT_SetUSBParameters = IntPtr.Zero;
+
 		#endregion
 
 		#region METHOD_DEFINITIONS
@@ -633,7 +855,7 @@ namespace FTD2XXNET
 				return ftStatus;
 
 			// Call FT_OpenEx
-			ftStatus = FT_OpenEx(serialnumber, FT_OPEN_BY_SERIAL_NUMBER, ref ftHandle);
+			ftStatus = FT_OpenEx(serialnumber, FTOpenBySerialNumber, ref ftHandle);
 
 			// Appears that the handle value can be non-NULL on a fail, so set it explicitly
 			if (ftStatus != FT_STATUS.FT_OK)
@@ -641,11 +863,10 @@ namespace FTD2XXNET
 
             if (ftHandle != IntPtr.Zero)
 			{
-                FT_SetBitMode(ftHandle, 0, FT_BIT_MODES.FT_BIT_MODE_SYNC_FIFO);         // для поддержки USB 2.0
+                FT_SetBitMode(ftHandle, 0, FT_BIT_MODES.FTBitModeSyncFIFO);         // для поддержки USB 2.0
 			}
 			return ftStatus;
 		}
-
 
 		//**************************************************************************
 		// Close
@@ -674,7 +895,6 @@ namespace FTD2XXNET
 			return ftStatus;
 		}
 
-
 		//**************************************************************************
 		// Read
 		//**************************************************************************
@@ -692,8 +912,10 @@ namespace FTD2XXNET
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
 
 			// If the DLL hasn't been loaded, just return here
-			if (hFTD2XXDLL == IntPtr.Zero)
-				return ftStatus;
+            if (hFTD2XXDLL == IntPtr.Zero)
+            {
+                return ftStatus;
+            }
 
 			// If the buffer is not big enough to receive the amount of data requested, adjust the number of bytes to read
 			if (dataBuffer.Length < numBytesToRead)
@@ -751,8 +973,10 @@ namespace FTD2XXNET
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
 
 			// If the DLL hasn't been loaded, just return here
-			if (hFTD2XXDLL == IntPtr.Zero)
-				return ftStatus;
+            if (hFTD2XXDLL == IntPtr.Zero)
+            {
+                return ftStatus;
+            }
 
 			if (ftHandle != IntPtr.Zero)
 			{
@@ -1026,7 +1250,6 @@ namespace FTD2XXNET
 			return ftStatus;
 		}
 
-
 		//**************************************************************************
 		// GetRxBytesAvailable
 		//**************************************************************************
@@ -1109,7 +1332,6 @@ namespace FTD2XXNET
 			return ftStatus;
 		}
 
-
 		//**************************************************************************
 		// GetDriverVersion
 		//**************************************************************************
@@ -1174,13 +1396,15 @@ namespace FTD2XXNET
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
 
 			// If the DLL hasn't been loaded, just return here
-			if (hFTD2XXDLL == IntPtr.Zero)
-				return ftStatus;
+            if (hFTD2XXDLL == IntPtr.Zero)
+            { 
+                return ftStatus; 
+            }
 
 			// Check for our required function pointers being set up
 			if (pFT_SetDeadmanTimeout != IntPtr.Zero)
 			{
-				tFT_SetDeadmanTimeout FT_SetDeadmanTimeout = (tFT_SetDeadmanTimeout)Marshal.GetDelegateForFunctionPointer(pFT_SetDeadmanTimeout, typeof(tFT_SetDeadmanTimeout));
+				TFT_SetDeadmanTimeout FT_SetDeadmanTimeout = (TFT_SetDeadmanTimeout)Marshal.GetDelegateForFunctionPointer(pFT_SetDeadmanTimeout, typeof(TFT_SetDeadmanTimeout));
 
 				if (ftHandle != IntPtr.Zero)
 				{
@@ -1215,8 +1439,10 @@ namespace FTD2XXNET
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
 
 			// If the DLL hasn't been loaded, just return here
-			if (hFTD2XXDLL == IntPtr.Zero)
-				return ftStatus;
+            if (hFTD2XXDLL == IntPtr.Zero)
+            {
+                return ftStatus;
+            }
 
 			if (ftHandle != IntPtr.Zero)
 			{
@@ -1242,6 +1468,7 @@ namespace FTD2XXNET
 		// GetLatency
 		//**************************************************************************
 		// Intellisense comments
+
 		/// <summary>
 		/// Gets the value of the latency timer.  Default value is 16ms.
 		/// </summary>
@@ -1253,14 +1480,17 @@ namespace FTD2XXNET
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
 
 			// If the DLL hasn't been loaded, just return here
-			if (hFTD2XXDLL == IntPtr.Zero)
-				return ftStatus;
+            if (hFTD2XXDLL == IntPtr.Zero)
+            {
+                return ftStatus;
+            }
 
 			if (ftHandle != IntPtr.Zero)
 			{
 				// Call FT_GetLatencyTimer
 				ftStatus = FT_GetLatencyTimer(ftHandle, ref Latency);
 			}
+
 			return ftStatus;
 		}
 
@@ -1268,21 +1498,26 @@ namespace FTD2XXNET
 		// SetUSBTransferSizes
 		//**************************************************************************
 		// Intellisense comments
+
 		/// <summary>
 		/// Sets the USB IN and OUT transfer sizes.
 		/// </summary>
 		/// <returns>FT_STATUS value from FT_SetUSBParameters in FTD2XX.DLL</returns>
 		/// <param name="InTransferSize">The USB IN transfer size in bytes.</param>
 		public FT_STATUS InTransferSize(UInt32 InTransferSize)
+
 		// Only support IN transfer sizes at the moment
+
 		//public UInt32 InTransferSize(UInt32 InTransferSize, UInt32 OutTransferSize)
 		{
 			// Initialise ftStatus to something other than FT_OK
 			FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
 
 			// If the DLL hasn't been loaded, just return here
-			if (hFTD2XXDLL == IntPtr.Zero)
-				return ftStatus;
+            if (hFTD2XXDLL == IntPtr.Zero)
+            {
+                return ftStatus;
+            }
 
 			UInt32 OutTransferSize = InTransferSize;
 
@@ -1291,6 +1526,7 @@ namespace FTD2XXNET
 				// Call FT_SetUSBParameters
 				ftStatus = FT_SetUSBParameters(ftHandle, InTransferSize, OutTransferSize);
 			}
+
 			return ftStatus;
 		}
 
@@ -1301,8 +1537,9 @@ namespace FTD2XXNET
 		// IsOpen
 		//**************************************************************************
 		// Intellisense comments
+
 		/// <summary>
-		/// Gets the open status of the device.
+        /// Получает значение, показывающее, статус инициализации USB.
 		/// </summary>
 		public bool IsOpen
 		{
@@ -1321,9 +1558,12 @@ namespace FTD2XXNET
 		//**************************************************************************
 		// ErrorHandler
 		//**************************************************************************
-		/// <summary>
-		/// Method to check ftStatus and ftErrorCondition values for error conditions and throw exceptions accordingly.
-		/// </summary>
+
+	    /// <summary>
+        /// Method to check ftStatus and ftErrorCondition values for error conditions and throw exceptions accordingly.
+	    /// </summary>
+	    /// <param name="ftStatus">Current status</param>
+	    /// <param name="ftErrorCondition">Error contaiment</param>
 		private void ErrorHandler(FT_STATUS ftStatus, FT_ERROR ftErrorCondition)
 		{
 			if (ftStatus != FT_STATUS.FT_OK)
@@ -1335,74 +1575,92 @@ namespace FTD2XXNET
 						{
 							throw new FT_EXCEPTION("FTDI device not found.");
 						}
+
 					case FT_STATUS.FT_DEVICE_NOT_OPENED:
 						{
 							throw new FT_EXCEPTION("FTDI device not opened.");
 						}
+
 					case FT_STATUS.FT_DEVICE_NOT_OPENED_FOR_ERASE:
 						{
 							throw new FT_EXCEPTION("FTDI device not opened for erase.");
 						}
+
 					case FT_STATUS.FT_DEVICE_NOT_OPENED_FOR_WRITE:
 						{
 							throw new FT_EXCEPTION("FTDI device not opened for write.");
 						}
+
 					case FT_STATUS.FT_EEPROM_ERASE_FAILED:
 						{
 							throw new FT_EXCEPTION("Failed to erase FTDI device EEPROM.");
 						}
+
 					case FT_STATUS.FT_EEPROM_NOT_PRESENT:
 						{
 							throw new FT_EXCEPTION("No EEPROM fitted to FTDI device.");
 						}
+
 					case FT_STATUS.FT_EEPROM_NOT_PROGRAMMED:
 						{
 							throw new FT_EXCEPTION("FTDI device EEPROM not programmed.");
 						}
+
 					case FT_STATUS.FT_EEPROM_READ_FAILED:
 						{
 							throw new FT_EXCEPTION("Failed to read FTDI device EEPROM.");
 						}
+
 					case FT_STATUS.FT_EEPROM_WRITE_FAILED:
 						{
 							throw new FT_EXCEPTION("Failed to write FTDI device EEPROM.");
 						}
+
 					case FT_STATUS.FT_FAILED_TO_WRITE_DEVICE:
 						{
 							throw new FT_EXCEPTION("Failed to write to FTDI device.");
 						}
+
 					case FT_STATUS.FT_INSUFFICIENT_RESOURCES:
 						{
 							throw new FT_EXCEPTION("Insufficient resources.");
 						}
+
 					case FT_STATUS.FT_INVALID_ARGS:
 						{
 							throw new FT_EXCEPTION("Invalid arguments for FTD2XX function call.");
 						}
+
 					case FT_STATUS.FT_INVALID_BAUD_RATE:
 						{
 							throw new FT_EXCEPTION("Invalid Baud rate for FTDI device.");
 						}
+
 					case FT_STATUS.FT_INVALID_HANDLE:
 						{
 							throw new FT_EXCEPTION("Invalid handle for FTDI device.");
 						}
+
 					case FT_STATUS.FT_INVALID_PARAMETER:
 						{
 							throw new FT_EXCEPTION("Invalid parameter for FTD2XX function call.");
 						}
+
 					case FT_STATUS.FT_IO_ERROR:
 						{
 							throw new FT_EXCEPTION("FTDI device IO error.");
 						}
+
 					case FT_STATUS.FT_OTHER_ERROR:
 						{
 							throw new FT_EXCEPTION("An unexpected error has occurred when trying to communicate with the FTDI device.");
 						}
+
 					default:
 						break;
 				}
 			}
+
 			if (ftErrorCondition != FT_ERROR.FT_NO_ERROR)
 			{
 				// Check for other error conditions not handled by FTD2XX DLL
@@ -1412,10 +1670,12 @@ namespace FTD2XXNET
 						{
 							throw new FT_EXCEPTION("The current device type does not match the EEPROM structure.");
 						}
+
 					case FT_ERROR.FT_INVALID_BITMODE:
 						{
 							throw new FT_EXCEPTION("The requested bit mode is not valid for the current device.");
 						}
+
 					case FT_ERROR.FT_BUFFER_SIZE:
 						{
 							throw new FT_EXCEPTION("The supplied buffer is not big enough.");
@@ -1424,7 +1684,6 @@ namespace FTD2XXNET
 					default:
 						break;
 				}
-
 			}
 
 			return;

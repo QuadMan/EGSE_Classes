@@ -19,13 +19,13 @@
         private const uint FTDI_BUF_SIZE = 70000;
 
         /// <summary>
-        /// Представление большого кольцевого буфера
+        /// Получает или задает представление большого кольцевого буфера.
         /// AData[positionIdx][dataIdx]
         /// </summary>
         public byte[][] AData { get; set; }
 
         /// <summary>
-        /// Здесь хранятся длины всех массивов, так как длина второго массива задана константой
+        /// Здесь хранятся длины всех массивов, так как длина второго массива задана константой.
         /// </summary>
         private int[] _aLen;
 
@@ -104,7 +104,7 @@
                 _curRPos = (_curRPos + 1) % _bufSize;
                 _count--;
                 _bytesInBuffer -= _aLen[_lastRPos];
-#if DEBUG_TEXT
+#if (DEBUG && CONSOLE)
                 System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}, RPos = {2}", _count, _bytesInBuffer,_curRPos);
 #endif
             }
@@ -124,7 +124,7 @@
                 _count++;
                 _aLen[_lastWPos] = bufSize;
                 _bytesInBuffer += bufSize;
-#if DEBUG_TEXT
+#if (DEBUG && CONSOLE)
                 System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}, WPos = {2}", _count, _bytesInBuffer, _curWPos);
 #endif
             }

@@ -5,7 +5,7 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Default
+namespace EGSE.Defaults
 {
     using System;
     using System.Collections.Generic;
@@ -22,6 +22,8 @@ namespace EGSE.Default
     using System.Windows.Navigation;
     using System.Windows.Shapes;
     using EGSE.Cyclogram.Command;
+    using EGSE.Devices;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -126,7 +128,7 @@ namespace EGSE.Default
         /// </summary>
         private void initModules()
         {
-            CycloGrid.AddCycCommands(_bukCycCommands.CycCommandsAvailable);
+            CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
             //hsiWin.Init(_EGSE);
 
             DataContext = this;

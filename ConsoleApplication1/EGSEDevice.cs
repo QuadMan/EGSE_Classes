@@ -75,7 +75,6 @@ namespace EGSE
 
         /// <summary>
         /// Создает процессы по чтению данных из USB и декодированию этих данных
-        /// Все, что нужно, для обеспечения связи по USB
         /// </summary>
         /// <param name="serial">Серийный номер USB устройства, с которого нужно получать данные</param>
         /// <param name="dec">Класс декодера, который нужно использовать в приборе</param>
@@ -86,7 +85,6 @@ namespace EGSE
             _cfg = cfg;
             _fThread = new FTDIThread(serial, _cfg);
             _fThread.StateChangeEvent = OnDevStateChanged;
-
             _dThread = new ProtocolThread(_dec, _fThread);
         }
 
@@ -146,7 +144,6 @@ namespace EGSE
         public bool SendCmd(uint addr, byte[] data)
         {
             byte[] dataOut;
-
             _dec.Encode(addr, data, out dataOut);
             bool res = _fThread.WriteBuf(dataOut);
             return res;
