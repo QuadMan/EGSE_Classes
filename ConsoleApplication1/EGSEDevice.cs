@@ -18,11 +18,11 @@
 */
 namespace EGSE
 {
+    using System;
     using EGSE.Protocols;
     using EGSE.Threading;
     using EGSE.USB;
-    using System;
-    
+        
     /// <summary>
     /// Общий класс устройства КИА
     /// При наследовании, необходимо в функции onDevStateChanged вызывать base.onDevStateChanged(state)

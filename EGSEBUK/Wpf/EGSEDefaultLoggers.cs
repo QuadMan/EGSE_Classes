@@ -1,11 +1,11 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="EGSEDefaultLoggers.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="EGSEDefaultsLoggers.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Default.Loggers
+namespace EGSE.Default
 {
     using System;
     using EGSE.Utilites;
@@ -47,10 +47,10 @@ namespace EGSE.Default.Loggers
         /// </summary>
         private LogsClass()
         {
-            Instance.loggers = new TxtLoggers();
+            loggers = new TxtLoggers();
             foreach (string fileName in logsNames)
             {
-                Instance.loggers.AddFile(fileName);
+                loggers.AddFile(fileName);
             }
         }
 

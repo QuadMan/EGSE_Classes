@@ -53,6 +53,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EGSEConstantsBUK.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSEConstantsBUK.resx</DependentUpon>
+    </Compile>
+    <Compile Include="EGSEDefaultMainWindow.cs" />
     <Compile Include="SDWindow.xaml.cs">
       <DependentUpon>SDWindow.xaml</DependentUpon>
     </Compile>
@@ -62,6 +68,10 @@
     <Compile Include="SpaceWireWindow.xaml.cs">
       <DependentUpon>SpaceWireWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EGSEDeviceBUK.cs" />
+    <Compile Include="EGSEConstantsBUK.cs" />
+    <Compile Include="EGSETmBUK.cs" />
+    <Compile Include="EGSECyclogramCommandBUK.cs" />
     <Page Include="..\..\ConsoleApplication1\EGSECyclogramControl.xaml">
       <Link>EGSECyclogramControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -182,6 +192,11 @@
     </Compile>
     <EmbeddedResource Include="..\..\ConsoleApplication1\EGSEProtocolUSB.resx">
       <Link>EGSEProtocolUSB.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EGSEConstantsBUK.resx">
+      <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSEConstantsBUK.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="EGSEDefaultLoggers.resx">
       <DependentUpon>EGSEDefaultLoggers.cs</DependentUpon>
