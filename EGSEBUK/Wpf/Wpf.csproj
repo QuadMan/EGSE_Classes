@@ -62,8 +62,8 @@
     <Compile Include="SpaceWireWindow.xaml.cs">
       <DependentUpon>SpaceWireWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="..\..\ConsoleApplication1\CyclogramControl.xaml">
-      <Link>CyclogramControl.xaml</Link>
+    <Page Include="..\..\ConsoleApplication1\EGSECyclogramControl.xaml">
+      <Link>EGSECyclogramControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -75,12 +75,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\..\ConsoleApplication1\CyclogramControl.xaml.cs">
-      <Link>CyclogramControl.xaml.cs</Link>
-      <DependentUpon>CyclogramControl.xaml</DependentUpon>
+    <Compile Include="..\..\ConsoleApplication1\EGSECyclogramControl.xaml.cs">
+      <Link>EGSECyclogramControl.xaml.cs</Link>
+      <DependentUpon>EGSECyclogramControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="..\..\ConsoleApplication1\EDGEUtilitesADC.cs">
-      <Link>EDGEUtilitesADC.cs</Link>
+    <Compile Include="..\..\ConsoleApplication1\EGSEUtilitesADC.cs">
+      <Link>EGSEUtilitesADC.cs</Link>
     </Compile>
     <Compile Include="..\..\ConsoleApplication1\EGSECyclogramCommands.cs">
       <Link>EGSECyclogramCommands.cs</Link>

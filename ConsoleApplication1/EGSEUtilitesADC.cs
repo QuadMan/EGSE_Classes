@@ -369,7 +369,7 @@ namespace EGSE.Utilites.ADC
              */
             fMidle = _listDatas.Sum() / _uiDataCnt;
 
-            //fMidle /= _uiDataCnt;
+            // fMidle /= _uiDataCnt;
 
             if (_clbrtValues == null)
                 return fMidle;

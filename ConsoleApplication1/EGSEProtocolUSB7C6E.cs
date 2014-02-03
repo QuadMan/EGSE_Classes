@@ -152,7 +152,7 @@ namespace EGSE.Protocols
                 { 
                     _bt = buf[i];
                     switch (_iStep) {
-                        case 0 : if (_bt != 0x7C) {
+                        case 0: if (_bt != 0x7C) {
                                 if (!_firstMsg)                      // если после предыдущего сообщения сразу не встречается 0x7C - считаем ошибкой
                                 {
                                     _firstMsg = true;
@@ -165,7 +165,7 @@ namespace EGSE.Protocols
                                 _iStep = -1;
                             }
                             break;
-                        case 1 : if (_bt != 0x6E) {
+                        case 1: if (_bt != 0x6E) {
                                 _iStep = 0;
                                 _errorsCount++;
                                 if (_errorsCount < MAX_ERRORS_COUNT)
@@ -175,9 +175,9 @@ namespace EGSE.Protocols
                                 _iStep = -1;
                             }
                             break;
-                        case 2 : _tmpMsg.Addr = _bt;
+                        case 2: _tmpMsg.Addr = _bt;
                             break;
-                        case 3 : if (_bt == 0) {
+                        case 3: if (_bt == 0) {
                                 _msgLen = (int)DECODER_MAX_DATA_LEN;
                             }
                             else {
@@ -185,7 +185,7 @@ namespace EGSE.Protocols
                             }
                             _tmpMsg.DataLen = _msgLen;
                             break;
-                        default :
+                        default:
                             if (bufSize - i >= _msgLen)                // в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
                             {
                                 Array.Copy(buf, i, _tmpMsg.Data, _bufI, _msgLen);

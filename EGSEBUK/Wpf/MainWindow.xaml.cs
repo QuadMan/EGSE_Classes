@@ -20,16 +20,16 @@ namespace WpfEgseBuk
     /// </summary>
     public partial class MainWindow : Window
     {
-        private HSIWindow winHSI = new HSIWindow();
+        /*private HSIWindow winHSI = new HSIWindow();
         private SpaceWireWindow winSW = new SpaceWireWindow();
         private SDWindow winSD = new SDWindow();
-        private SimRouterWindow winSimRouter = new SimRouterWindow();
+        private SimRouterWindow winSimRouter = new SimRouterWindow();*/
 
         public MainWindow()
         {
             InitializeComponent();            
         }
-
+        /*
         private void ControlSpaceWire_Checked(object sender, RoutedEventArgs e)
         {
             if ((bool)ControlSpaceWire.IsChecked)
@@ -80,6 +80,6 @@ namespace WpfEgseBuk
                 winSimRouter.Hide();
             }
 
-        }
+        }*/
     }
 }
