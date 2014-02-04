@@ -41,11 +41,11 @@ namespace EGSE.WPF
             InitializeComponent();
             base.Title = BUKConst.ShowCaption;
 
-            _initControlValues();
+            InitControlValues();
             loadWindows();
-            initModules();
+            InitModules();
 
-            loadAppSettings();
+            LoadAppSettings();
 
             _dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             _dispatcherTimer.Tick += new EventHandler(timerWork);
@@ -117,7 +117,7 @@ namespace EGSE.WPF
         {
             // сохраняем все настройки приложения
             saveAllWindows();
-            saveAppSettings();
+            SaveAppSettings();
             // закрываем окна и устройства
             closeAll();
             // закрываем лог-файлы
@@ -208,7 +208,10 @@ namespace EGSE.WPF
         public event PropertyChangedEventHandler PropertyChanged;
         private void FirePropertyChangedEvent(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
     }
 }

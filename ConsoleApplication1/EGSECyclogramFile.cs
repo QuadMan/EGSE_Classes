@@ -64,7 +64,7 @@ namespace EGSE.Cyclogram
         public ObservableCollection<CyclogramLine> commands;
 
         /// <summary>
-        /// Была ли ошибка при парсинге файла
+        /// Получает значение, показывающее, была ли ошибка при парсинге файла.
         /// </summary>
         public bool WasError
         {
@@ -316,13 +316,13 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Расчитывает абсолютное время для всех команд циклограммы в формате ЧЧ:ММ:СС.МСС
-        /// Может рассчитать относительно заданного времени
+        /// Расчитывает абсолютное время для всех команд циклограммы в формате ЧЧ:ММ:СС.МСС.
+        /// Может рассчитать относительно заданного времени.
         /// </summary>
-        /// <param name="hr">час</param>
-        /// <param name="min">минута</param>
-        /// <param name="sec">секунда</param>
-        /// <param name="fromLineNum">с какой строки рассчитывать время, если запускаем циклограмму не с первой строки</param>
+        /// <param name="hr">Час(для относительного рассчета)</param>
+        /// <param name="min">Минута(для относительного рассчета)</param>
+        /// <param name="sec">Секунда(для относительного расчета)</param>
+        /// <param name="fromLineNum">С какой строки рассчитывать время, если запускаем циклограмму не с первой строки</param>
         public void CalcAbsoluteTime(int hr = 0, int min = 0, int sec = 0, int fromLineNum = 0)
         {
             DateTime dt = new DateTime(1, 1, 1, hr, min, sec, 0);

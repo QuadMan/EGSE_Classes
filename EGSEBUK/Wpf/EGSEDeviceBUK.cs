@@ -455,7 +455,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Метод обрабатывающий сообщения от декодера USB
         /// </summary>
-        /// <param name="msg">Сообщение</param>
+        /// <param name="msg">Сообщение для обработки</param>
         private void onMessageFunc(MsgBase msg)
         {
             ProtocolMsgEventArgs msg1 = msg as ProtocolMsgEventArgs;

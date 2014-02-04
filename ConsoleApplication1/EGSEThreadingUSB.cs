@@ -21,96 +21,69 @@ namespace EGSE.Threading
     public class FTDIThread
     {
         /// <summary>
-        /// минимальный размер буфера данных в FTDI, при котором считываем данные
+        /// Минимальный размер буфера данных в FTDI, при котором считываем данные.
         /// </summary>
-        private const uint FTDI_MIN_BUF_SIZE = 1 * 1024;
+        private const uint FTDIMinBufferSize = 1 * 1024;
 
         /// <summary>
-        /// Размер кольцевого буфера входящих данных из USB (см. класс AManager) 
+        /// Размер кольцевого буфера входящих данных из USB (см. класс AManager).
         /// </summary>
-        private const uint FTDI_THREAD_BUF_SIZE_BYTES_DEFAULT = 100;
+        private const uint FTDIThreadBufferSize = 100;
 
         /// <summary>
-        /// время на закрытие потока
+        /// Время на закрытие потока.
         /// </summary>
-        private const int TIMEOUT_TO_CLOSING_THREAD = 1000;
+        private const int TimeoutToClosingThread = 1000;
 
         /// <summary>
-        /// на сколько мс засыпаем, когда устройство не подключено 
+        /// На сколько мс засыпаем, когда устройство не подключено.
         /// </summary>
-        private const int FTDI_DEFAULT_SLEEP_WHEN_NOT_CONNECTED = 1000;
+        private const int FTDISleepWhenNotConnected = 1000;
 
         /// <summary>
-        /// Максимальный размер очереди команд в USB
+        /// Максимальный размер очереди команд в USB.
         /// </summary>
-        private const int FTDI_MAX_CMD_QUEUE_SIZE = 5;
+        private const int FTDIMaxCMDQueueSize = 5;
 
         /// <summary>
-        /// Очередь команд в USB
+        /// Очередь команд в USB.
         /// </summary>
         private Queue<byte[]> _cmdQueue;
 
         /// <summary>
-        /// поток чтения/записи в USB 
+        /// Поток чтения/записи в USB.
         /// </summary>
         private Thread _thread;
 
         /// <summary>
-        /// доступ к функциям контроллера FTDI 
+        /// Доступ к функциям контроллера FTDI.
         /// </summary>
         private USBFTDI _ftdi;
 
         /// <summary>
-        /// конфигурация устройства 
+        /// Конфигурация устройства.
         /// </summary>
         private USBCfg _cfg;
-
-        /// <summary>
-        /// кольцевой буфер входящих данных 
-        /// </summary>
-        public BigBufferManager BigBuf;
         
         /// <summary>
-        /// скорость получения данных по USB
+        /// Скорость получения данных по USB.
         /// </summary>
         private float _speed;
 
         /// <summary>
-        /// Для рассчета скорости, последнее значение тиков процессора
+        /// Для рассчета скорости, последнее значение тиков процессора.
         /// </summary>
         private int _lastTickCount;
 
         /// <summary>
-        /// Для рассчета скорости, сколько было прочитано данных за секунду
+        /// Для рассчета скорости, сколько было прочитано данных за секунду.
         /// </summary>
         private ulong _dataReaded;
 
         /// <summary>
-        /// Флаг остановки процесса получения данных
+        /// Флаг остановки процесса получения данных.
         /// </summary>
         private volatile bool _terminateFlag;
-
-        /// <summary>
-        /// делегат, вызываемый при смене состояния подключения устройства 
-        /// </summary>
-        /// <param name="state">Новое состояние - true - подключен, false - отключен</param>
-        public delegate void StateChangedHandleEvent(bool state);
-
-        /// <summary>
-        /// событие на изменение состояния подключения
-        /// </summary>
-        public StateChangedHandleEvent StateChangeEvent;
-        
-        /// <summary>
-        /// Значение скорости приема данных из USB
-        /// </summary>
-        public float SpeedBytesSec
-        {
-            get
-            {
-                return _speed;
-            }
-        }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="FTDIThread" />.
@@ -119,7 +92,7 @@ namespace EGSE.Threading
         /// <param name="serial">Серийный номер устройства</param>
         /// <param name="cfg">Параметры USB устройства</param>
         /// <param name="bufSize">Размер кольцевого буфера</param>
-        public FTDIThread(string serial, USBCfg cfg, uint bufSize = FTDI_THREAD_BUF_SIZE_BYTES_DEFAULT)
+        public FTDIThread(string serial, USBCfg cfg, uint bufSize = FTDIThreadBufferSize)
         {
             _speed = 0;
             _lastTickCount = 0;
@@ -128,12 +101,39 @@ namespace EGSE.Threading
 
             _cmdQueue = new Queue<byte[]>();
 
-            _cfg    = cfg;
-            BigBuf  = new BigBufferManager(bufSize);
-            _ftdi   = new USBFTDI(serial, _cfg);
+            _cfg = cfg;
+            BigBuf = new BigBufferManager(bufSize);
+            _ftdi = new USBFTDI(serial, _cfg);
 
             _thread = new Thread(Execution);
             _thread.IsBackground = true;
+        }
+
+        /// <summary>
+        /// Делегат, вызываемый при смене состояния подключения устройства.
+        /// </summary>
+        /// <param name="state">Новое состояние - true - подключен, false - отключен</param>
+        public delegate void StateChangedHandleEvent(bool state);
+
+        /// <summary>
+        /// Получает или задает кольцевой буфер входящих данных.
+        /// </summary>
+        public BigBufferManager BigBuf { get; set; }
+
+        /// <summary>
+        /// Получает или задает событие на изменение состояния подключения.
+        /// </summary>
+        public StateChangedHandleEvent StateChangeEvent { get; set; }
+        
+        /// <summary>
+        /// Получает значение скорости приема данных из USB.
+        /// </summary>
+        public float SpeedBytesSec
+        {
+            get
+            {
+                return _speed;
+            }
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace EGSE.Threading
         /// <returns>если в очереди есть место, возвращает TRUE</returns>
         public bool WriteBuf(byte[] data)
         {
-            if ((_ftdi.IsOpen) && (_cmdQueue.Count < FTDI_MAX_CMD_QUEUE_SIZE))
+            if (_ftdi.IsOpen && (_cmdQueue.Count < FTDIMaxCMDQueueSize))
             {
                 _cmdQueue.Enqueue(data);
                 return true;
@@ -169,12 +169,13 @@ namespace EGSE.Threading
         public void Finish()
         {
             _terminateFlag = true;
-            _thread.Join(TIMEOUT_TO_CLOSING_THREAD);
+            _thread.Join(TimeoutToClosingThread);
         }
 
         /// <summary>
-        /// Функция вычисляет скорость чтения данных по USB через замеры секундных интервалов и объема полученных за это время данных
+        /// Процедура вычисляет скорость чтения данных по USB через замеры секундных интервалов и объема полученных за это время данных.
         /// </summary>
+        /// <param name="bytesReaded">Количество принятых данных после последнего вызова процедуры</param>
         private void CalcSpeed(int bytesReaded)
         {
             int tickDelta = Environment.TickCount - _lastTickCount;
@@ -211,14 +212,14 @@ namespace EGSE.Threading
                         _cmdQueue.Clear();
                     }
                     
-                    if ((_ftdi.Open() == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (_ftdi.IsOpen))
+                    if ((_ftdi.Open() == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && _ftdi.IsOpen)
                     {
                         // производим настройки устройства
                         // !config _ftdi cfg
                     }
                     else 
                     {
-                        System.Threading.Thread.Sleep(FTDI_DEFAULT_SLEEP_WHEN_NOT_CONNECTED);    // пока устройство не подключено, поспим
+                        System.Threading.Thread.Sleep(FTDISleepWhenNotConnected);    // пока устройство не подключено, поспим
                     }
                 }
                 else 
@@ -236,7 +237,7 @@ namespace EGSE.Threading
                     }
 
                     // данные в буфере USB накопилось достаточно, читаем их в буфер
-                    if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDI_MIN_BUF_SIZE))
+                    if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDIMinBufferSize))
                     {
                         _ftdi.ReadBuf(BigBuf.WriteBuf, bytesAvailable, ref bytesReaded);
                         if (bytesReaded > 0)

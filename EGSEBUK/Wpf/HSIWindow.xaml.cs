@@ -26,6 +26,9 @@ namespace EGSE.WPF
     /// </summary>
     public partial class HSIWindow : Window
     {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="HSIWindow" />.
+        /// </summary>
         public HSIWindow()
         {
             InitializeComponent();

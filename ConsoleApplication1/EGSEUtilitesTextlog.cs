@@ -9,15 +9,15 @@
 // TODO указать в конструкторе путь, где создавать структуру директорий в формате ГГММ/ДД/
 // TODO при создании лог-файла необходимо перед расширением добавлять следующий текст "_HHMMSS"
 // TODO при закрытии лог-файла проверяем, если размер его равен 0, то стираем файл
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-
 namespace EGSE.Utilites
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.IO;
+
     /// <summary>
     /// Класс единичного текстлога
     /// </summary>
@@ -53,7 +53,7 @@ namespace EGSE.Utilites
         /// Имя файла
         /// Объект StreamWriter, работающий с log-файлом
         /// </summary>
-        private string _fName;
+        private string _fileName;
 
         /// <summary>
         /// Разрешена/запрещена запись в log-файл
@@ -78,14 +78,14 @@ namespace EGSE.Utilites
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="TxtLogger" />.
         /// </summary>
-        /// <param name="fName">Имя лог-файла</param>
-        public TxtLogger(string fName)
+        /// <param name="fileName">Имя лог-файла</param>
+        public TxtLogger(string fileName)
         {
             _enableTextWrite = true;
             _enableTimeWrite = true;
             _logtime = new DateTime();
-            _fName = MakeLoggerDir() + "\\" + GetLoggerFileName(fName);
-            _sw = new StreamWriter(_fName, true);
+            _fileName = MakeLoggerDir() + "\\" + GetLoggerFileName(fileName);
+            _sw = new StreamWriter(_fileName, true);
         }
 
         /*public double LogTime
@@ -123,8 +123,8 @@ namespace EGSE.Utilites
             }
         }
         /// <summary>
-        /// Метод, управляющий разрешением/запретом записи текста в log-файл
-        /// По умолчанию: разрешена
+        /// Получает или задает значение, показывающее, можно ли производить запись текста в log-файл.
+        /// По умолчанию: разрешена.
         /// </summary>
         public bool LogEnable
         {
@@ -132,14 +132,16 @@ namespace EGSE.Utilites
             {
                 return _enableTextWrite;
             }
+
             set
             {
                 _enableTextWrite = value; 
             }
         }
+
         /// <summary>
-        /// Свойство, указывающее разрешена/запрещена запись времени в файл
-        /// По умолчанию: разрешена
+        /// Получает или задает значение, показывающее, разрешена ли запись времени в log-файл.
+        /// По умолчанию: разрешена.
         /// </summary>
         public bool LogTimeEnable
         {
@@ -222,8 +224,8 @@ namespace EGSE.Utilites
         /// <summary>
         /// txtLoggers   -  Коллекция единичных логгеров
         /// </summary>
-        List<TxtLogger>txtLoggers;
- 
+        private List<TxtLogger> txtLoggers;
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="TxtLoggers" />.
         /// </summary>
@@ -241,7 +243,7 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Метод, разрешающий/запрещающий запись во все log-файлы
+        /// Задает значение, показывающее, разрешена ли запись во все log-файлы.
         /// </summary>
         public bool GlobalEnable
         {

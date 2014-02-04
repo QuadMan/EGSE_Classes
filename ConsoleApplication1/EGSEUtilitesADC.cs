@@ -85,12 +85,11 @@ namespace EGSE.Utilites.ADC
         /// <summary>
         /// Внутренний метод определяющий способ сортировки для метода Sort()
         /// </summary>
-        /// <param name="cv_1">Объект CalibrationValue</param>
-        /// <param name="cv_2">Объект CalibrationValue</param>
+        /// <param name="cv_1">Первый объект CalibrationValue для сравнения</param>
+        /// <param name="cv_2">Второй объект CalibrationValue для сравнения</param>
         /// <returns>Результат сравнения</returns>
         private static int CompareCalibrationValues(CValue cv_1, CValue cv_2)
-        {
-            
+        {            
             return cv_1.XVal.CompareTo(cv_2.XVal);
         }
 
@@ -408,7 +407,7 @@ namespace EGSE.Utilites.ADC
         /// Добавляем очередное изменение в канал
         /// </summary>
         /// <param name="chId">Уникальный ID канала</param>
-        /// <param name="Data">Данные</param>
+        /// <param name="newData">Данные для изменения</param>
         public void AddData(uint chId, float newData)
         {
             _listChannel[SearchChannel(chId)].AddData(newData);

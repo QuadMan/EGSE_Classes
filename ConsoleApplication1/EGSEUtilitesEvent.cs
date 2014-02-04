@@ -1,70 +1,10 @@
-﻿/*** EGSEUtilitesEvent.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль информации нажатого элемента в приложении Windows
-**
-** Author: Мурзин Святослав
-** Project: КИА
-** Module: EDGE UTILITES 
-** Requires: 
-** Comments: Обязательно вставлять проверку на null в обработчике сообщений: 
- *           if (EventClickToString.ElementClicked(dpcEv) == null)
-                return;
- *           В XAML коде используется событие PreviewMouseLeftButtonDown
- *
- * ПРИМЕР:
- * 
- * С# ------------------------------------------------------
- * 
- * public partial class MainWindow : Window
-    {
- 
- *      //НОМЕР СООБЩЕНИЯ 
-        private int iEventCount;
- 
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUtilitesEvent.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Мурзин Святослав</author>
+//-----------------------------------------------------------------------
 
- *      //ОБРАБОТКА СООБЩЕНИЙ 
-        private void _f_SomeEvent(object objSender, MouseEventArgs dpcEv)
-        {
-        
- *          //ЕСЛИ ВОЗВРАЩЕНА НУЛЕВАЯ СТРОКА, ЗНАЧИТ ЭЛЕМЕНТ НЕ СООТВЕТСТВУЕТ
- *          //ЗАДАННОМУ НАБОРУ
-            if (EventClickToString.ElementClicked(dpcEv) == null)
-                return;
- 
- *          //НОМЕР СООБЩЕНИЯ УВЕЛИЧИВАЕМ НА 1
-            iEventCount++;
-          
- *          //СОЗДАЕМ СТРОКУ С ИНФОРМАЦИЕЙ О НАЖАТОМ ЭЛЕМЕНТЕ
-            string szTextOfEvent = "#" + iEventCount.ToString() + ":\r\n" +
-                "Событие: " + EventClickToString.ElementClicked(dpcEv);
- 
- *          //ВЫДАЕМ ИНФОРМАЦИЮ, К ПРИМЕРУ В ПРИВЯЗАННЫЙ LISTBOX 
-            elemListBox.Items.Add(szTextOfEvent);
-        }
- * 
- * XAML ----------------------------------------------------
- * 
-   <Window x:Class="WPF_UTILITIES.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="800" Width="900" Background="LightGray">
-        <Grid Margin="3" ShowGridLines="false" PreviewMouseLeftButtonDown ="_f_SomeEvent" >
-            . . .
-        </Grid>
-    </Window>
-**
- *
- * 
-** History:
-**  0.1.0	(13.12.2013) -	Начальная версия 	
-**
-*/
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,11 +15,57 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 
+/*
+Обязательно вставлять проверку на null в обработчике сообщений: 
+if (EventClickToString.ElementClicked(dpcEv) == null)
+  return;
+В XAML коде используется событие PreviewMouseLeftButtonDown
+
+ПРИМЕР:
+public partial class MainWindow : Window
+    {
+ 
+       //НОМЕР СООБЩЕНИЯ 
+        private int iEventCount;
+ 
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+       //ОБРАБОТКА СООБЩЕНИЙ 
+        private void _f_SomeEvent(object objSender, MouseEventArgs dpcEv)
+        {
+        
+           //ЕСЛИ ВОЗВРАЩЕНА НУЛЕВАЯ СТРОКА, ЗНАЧИТ ЭЛЕМЕНТ НЕ СООТВЕТСТВУЕТ
+           //ЗАДАННОМУ НАБОРУ
+            if (EventClickToString.ElementClicked(dpcEv) == null)
+                return;
+ 
+           //НОМЕР СООБЩЕНИЯ УВЕЛИЧИВАЕМ НА 1
+            iEventCount++;
+          
+           //СОЗДАЕМ СТРОКУ С ИНФОРМАЦИЕЙ О НАЖАТОМ ЭЛЕМЕНТЕ
+            string szTextOfEvent = "#" + iEventCount.ToString() + ":\r\n" +
+                "Событие: " + EventClickToString.ElementClicked(dpcEv);
+ 
+           //ВЫДАЕМ ИНФОРМАЦИЮ, К ПРИМЕРУ В ПРИВЯЗАННЫЙ LISTBOX 
+            elemListBox.Items.Add(szTextOfEvent);
+        }
+  
+  XAML ----------------------------------------------------
+  
+   <Window x:Class="WPF_UTILITIES.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="800" Width="900" Background="LightGray">
+        <Grid Margin="3" ShowGridLines="false" PreviewMouseLeftButtonDown ="_f_SomeEvent" >
+            . . .
+        </Grid>
+    </Window>
+*/
 namespace EGSE.Utilites
 {
-//*****************************************************************************
-//*****************************************************************************
-
     /// <summary>
     /// Класс генерации информации нажатия клавиши мыши на элементе
     /// </summary>
@@ -192,12 +178,12 @@ namespace EGSE.Utilites
                 {
                     ComboBox elemSource = element as ComboBox;
 
-                    if(elemSource != null)
+                    if (elemSource != null)
                     {
-                        if(elemSource.SelectedIndex != -1)
+                        if (elemSource.SelectedIndex != -1)
                         {
                             ComboBoxItem item = elemSource.Items[elemSource.SelectedIndex] as ComboBoxItem;
-                            if(item != null)
+                            if (item != null)
                             {
                                 strRes += GetString(GetParentElements(elemSource.Parent));
                                 strRes += "Выбран элемент \"" + item.Content + "\"";
@@ -261,7 +247,7 @@ namespace EGSE.Utilites
                             stkstrRes.Push((string)elemSource.Header);
                         }
                     }
-                    else if(objParentElemSource.GetType().BaseType.Equals(typeof(Window)))
+                    else if (objParentElemSource.GetType().BaseType.Equals(typeof(Window)))
                     {
                         Window elemSource = objParentElemSource as Window;
                         if (elemSource != null)
@@ -315,7 +301,7 @@ namespace EGSE.Utilites
                     if (elemIgnSource != null)
                         return LogicalTreeHelper.GetParent(elemIgnSource);
                 }
-                else if(objElem.GetType().Equals(typeof(Cyclogram.CyclogramControl)))
+                else if (objElem.GetType().Equals(typeof(Cyclogram.CyclogramControl)))
                 {
                     Cyclogram.CyclogramControl elemIgnSource = objElem as Cyclogram.CyclogramControl;
                     if (elemIgnSource != null)

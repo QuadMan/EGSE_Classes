@@ -33,6 +33,11 @@ namespace EGSE.Cyclogram
     public class CyclogramLine : INotifyPropertyChanged
     {
         /// <summary>
+        /// Идентификатор неизвестной команды.
+        /// </summary>
+        public const int CYCUnknownCommandID = -1;
+
+        /// <summary>
         /// Изначальное значение задержки выполнения команды используется для восстановления значения после отсчета времени при выполненении циклограммы 
         /// </summary>
         private int _delayOriginal;
@@ -62,76 +67,95 @@ namespace EGSE.Cyclogram
         /// </summary>
         private string _command;
 
-        // ***************************************************************************************************************
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramLine" />.
+        /// </summary>
+        /// <param name="name">Название команды</param>
+        /// <param name="testFunc">Функция тестирования</param>
+        /// <param name="execFunc">Функция выполнения</param>
+        /// <param name="color">Цвет команды</param>
+        public CyclogramLine(string name, TestFunctionEventhandler testFunc, ExecFunctionEventHandler execFunc, string color)
+        {
+            Reset();
+            CmdName = name;
+            TestFunction = testFunc;
+            ExecFunction = execFunc;
+            Color = color;
+        }
 
         /// <summary>
-        /// Событие вызывается для обеспечения INotifyEvent - и вывода команд в таблицу
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramLine" />.
+        /// </summary>
+        public CyclogramLine()
+        {
+            Reset();
+        }
+
+        /// <summary>
+        /// Событие вызывается для обеспечения INotifyEvent - и вывода команд в таблицу.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Идентификатор неизвестной команды
+        /// Получает или задает функцию тестирования команды.
         /// </summary>
-        public const int CYC_UNKNOWN_COMMAND_ID = -1;
+        public TestFunctionEventhandler TestFunction { get; set; }
 
         /// <summary>
-        /// Функция тестирования команды
+        /// Получает или задает функцию выполнения команды.
         /// </summary>
-        public TestFunctionEventhandler TestFunction;
+        public ExecFunctionEventHandler ExecFunction { get; set; }
 
         /// <summary>
-        /// Функция выполнения команды
-        /// </summary>
-        public ExecFunctionEventHandler ExecFunction;
-
-        /// <summary>
-        /// Является ли эта строка командой
+        /// Получает или задает значение, показывающее, является ли эта строка командой.
         /// </summary>
         public bool IsCommand { get; set; }
 
         /// <summary>
-        /// Название команды
+        /// Получает или задает название команды.
         /// </summary>
         public string CmdName { get; set; }
 
         /// <summary>
-        /// Цвет, которым выводить команду (может быть не нужен)?
+        /// Получает или задает цвет, которым выводить команду.
         /// </summary>
         public string Color { get; set; }
 
         /// <summary>
-        /// Идентификатор команды
+        /// Получает или задает идентификатор команды.
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// Полный путь к циклограмме
+        /// Получает или задает полный путь к циклограмме.
         /// </summary>
         public string CycFullFileName { get; set; }
 
         /// <summary>
-        /// Индекс циклограммы в массиве циклограмм (для поддержки работы с несколькими циклограммами, сейчас не используется)
+        /// Получает или задает индекс циклограммы в массиве циклограмм. 
+        /// (для поддержки работы с несколькими циклограммами, сейчас не используется).
         /// </summary>
         public uint CycIdx { get; set; }
 
         /// <summary>
-        /// Параметры команды
+        /// Получает или задает параметры команды.
         /// </summary>
         public string[] Parameters { get; set; }
 
         /// <summary>
-        /// Комментарии для команды. В эту строку собираются комментарии, которые занимают всю строку и располагаются выше данной команды.
-        /// Для разделения комментариев по строкам используется символ /t
+        /// Получает или задает комментарии для команды. 
+        /// В эту строку собираются комментарии, которые занимают всю строку и располагаются выше данной команды.
+        /// Для разделения комментариев по строкам используется символ /t.
         /// </summary>
         public string Comments { get; set; } 
 
         /// <summary>
-        /// Список ошибок, которые обнаружены парсером для этой команды
+        /// Получает или задает список ошибок, которые обнаружены парсером для этой команды.
         /// </summary>
         public string ErrorInCommand { get; set; }
 
         /// <summary>
-        /// Признак была ли ошибка для этой команды при парсинге
+        /// Получает значение, показывающее, была ли ошибка для этой команды при парсинге.
         /// </summary>
         public bool WasError
         {
@@ -142,7 +166,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Строка, на которой находится команда
+        /// Получает или задает строку, на которой находится команда.
         /// </summary>
         public int Line 
         { 
@@ -159,7 +183,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// абсолютное время (ЧЧ:ММ:СС.МСМС) выполнения команды
+        /// Получает или задает абсолютное время (ЧЧ:ММ:СС.МСМС) выполнения команды.
         /// </summary>
         public string AbsoluteTime 
         { 
@@ -183,8 +207,8 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// задержка в мс перед выполнением команды
-        /// при обновлении, также меняет DelayStr
+        /// Получает или задает задержку в мс перед выполнением команды.
+        /// при обновлении, также меняет DelayStr.
         /// </summary>
         public int DelayMs 
         { 
@@ -207,7 +231,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Устанавливает оригинальную задержку выпонения команд
+        /// Задает оригинальную задержку выпонения команд.
         /// </summary>
         public int DelayOriginal
         {
@@ -218,7 +242,7 @@ namespace EGSE.Cyclogram
         }
         
         /// <summary>
-        /// Предствление задержки в виде строки (в секундах)
+        /// Получает предствление задержки в виде строки (в секундах).
         /// </summary>
         public string DelayStr 
         { 
@@ -229,7 +253,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// строка команды (которая после времени) вместе с комментариями
+        /// Получает или задает строку команды (которая после времени) вместе с комментариями.
         /// </summary>
         public string Str 
         { 
@@ -244,18 +268,6 @@ namespace EGSE.Cyclogram
                 FirePropertyChangedEvent("Str"); 
             } 
         }
-        
-        /// <summary>
-        /// Вызываем INotifyChanged
-        /// </summary>
-        /// <param name="propertyName">Название свойства</param>
-        private void FirePropertyChangedEvent(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
 
         /// <summary>
         /// Восстановление значения задержки в исходное значение, так как в циклограмме идет обратный отсчет по этому полю
@@ -263,30 +275,6 @@ namespace EGSE.Cyclogram
         public void RestoreDelay()
         {
             DelayMs = _delayOriginal;
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="CyclogramLine" />.
-        /// </summary>
-        public CyclogramLine()
-        {
-            Reset();
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="CyclogramLine" />.
-        /// </summary>
-        /// <param name="name">Название команды</param>
-        /// <param name="testFunc">Функция тестирования</param>
-        /// <param name="execFunc">Функция выполнения</param>
-        /// <param name="color">Цвет команды</param>
-        public CyclogramLine(string name, TestFunctionEventhandler testFunc, ExecFunctionEventHandler execFunc, string color)
-        {
-            Reset();
-            CmdName = name;
-            TestFunction = testFunc;
-            ExecFunction = execFunc;
-            Color = color;
         }
 
         /// <summary>
@@ -306,7 +294,7 @@ namespace EGSE.Cyclogram
             TestFunction = null;
             ExecFunction = null;
             Color = string.Empty;
-            Id = CYC_UNKNOWN_COMMAND_ID;
+            Id = CYCUnknownCommandID;
             CycFullFileName = string.Empty;
             CycIdx = 0;
             Parameters = null;
@@ -335,6 +323,18 @@ namespace EGSE.Cyclogram
 
             return true;
         }
+
+        /// <summary>
+        /// Вызываем INotifyChanged
+        /// </summary>
+        /// <param name="propertyName">Название свойства</param>
+        private void FirePropertyChangedEvent(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 
     /// <summary>
@@ -358,11 +358,10 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Функция добавляет команду в список
-        /// Ключ должен быть уникален
+        /// Функция добавляет команду в список.
         /// </summary>
-        /// <param name="cmdKey">Ключ</param>
-        /// <param name="cmd">Команда</param>
+        /// <param name="cmdKey">Уникальный идентификатор команды(повторения не допускаются)</param>
+        /// <param name="cmd">Команда для данного идентификатора</param>
         /// <returns>Если ключ уникален, команда добавляется и возвращается TRUE, в противном случае, команда
         /// не добавляется и функция возвращает FALSE</returns>
         public bool AddCommand(string cmdKey, CyclogramLine cmd)

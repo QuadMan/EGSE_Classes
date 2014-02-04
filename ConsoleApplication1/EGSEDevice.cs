@@ -20,52 +20,28 @@ namespace EGSE
     public class Device
     {
         /// <summary>
-        /// Скорость приема данных
+        /// Поток декодирования данных из потока USB.
         /// </summary>
-        public float Speed
-        {
-            get
-            {
-                return _fThread.SpeedBytesSec;
-            }
-        }
+        private ProtocolThread _decodeThread;
 
         /// <summary>
-        /// Максимальный размер большого (глобального) буфера
+        /// Поток чтения данных из USB.
         /// </summary>
-        public uint GlobalBufferSize
-        {
-            get
-            {
-                uint res = _dThread.MaxBufferSize;
-                _dThread.MaxBufferSize = 0;
-                return res;
-            }
-        }
+        private FTDIThread _readThread;
 
         /// <summary>
-        /// поток декодирования данных из потока USB
+        /// Настройки устройства USB и потока чтения данных из USB.
         /// </summary>
-        private ProtocolThread _dThread;
+        private USBCfg _cfg;
 
         /// <summary>
-        /// поток чтения данных из USB
-        /// </summary>
-        private FTDIThread _fThread;
-
-        /// <summary>
-        /// настройки устройства USB и потока чтения данных из USB
-        /// </summary>
-        private USBCfg _cfg; 
-
-        /// <summary>
-        /// протокол, исполтьзуемый в USB
+        /// Протокол, исполтьзуемый в USB.
         /// </summary>
         private ProtocolUSBBase _dec;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Device" />.
-        /// Создает процессы по чтению данных из USB и декодированию этих данных
+        /// Создает процессы по чтению данных из USB и декодированию этих данных.
         /// </summary>
         /// <param name="serial">Серийный номер USB устройства, с которого нужно получать данные</param>
         /// <param name="dec">Класс декодера, который нужно использовать в приборе</param>
@@ -74,50 +50,74 @@ namespace EGSE
         {
             _dec = dec;
             _cfg = cfg;
-            _fThread = new FTDIThread(serial, _cfg);
-            _fThread.StateChangeEvent = OnDevStateChanged;
-            _dThread = new ProtocolThread(_dec, _fThread);
+            _readThread = new FTDIThread(serial, _cfg);
+            _readThread.StateChangeEvent = OnDevStateChanged;
+            _decodeThread = new ProtocolThread(_dec, _readThread);
         }
 
         /// <summary>
-        /// Запуск потока декодера данных
-        /// </summary>
-        public void Start()
-        {
-            _fThread.Start();
-        }
-
-        /// <summary>
-        /// Завершаем все потоки
-        /// </summary>
-        public void FinishAll()
-        {
-            _fThread.Finish();
-            _dThread.Finish();
-        }
-
-        /// <summary>
-        /// Определение делегата обработки сообщения
+        /// Определение делегата обработки сообщения.
         /// </summary>
         /// <param name="connected">Подключен блок или нет</param>
         public delegate void ChangeStateEventHandler(bool connected);
 
         /// <summary>
-        /// Делегат, вызываемый при распознавании очередного сообщения декодером
+        /// Получает или задает делегат, вызываемый при распознавании очередного сообщения декодером.
         /// </summary>
-        public ChangeStateEventHandler ChangeStateEvent;
+        public ChangeStateEventHandler ChangeStateEvent { get; set; }
 
         /// <summary>
-        /// Функция вызывается когда меняется состояние подключения USB устройства
-        /// Должна быть переопределена в потомке
+        /// Получает скорость приема данных.
+        /// </summary>
+        public float Speed
+        {
+            get
+            {
+                return _readThread.SpeedBytesSec;
+            }
+        }
+
+        /// <summary>
+        /// Получает максимальный размер большого (глобального) буфера.
+        /// </summary>
+        public uint GlobalBufferSize
+        {
+            get
+            {
+                uint res = _decodeThread.MaxBufferSize;
+                _decodeThread.MaxBufferSize = 0;
+                return res;
+            }
+        }
+
+        /// <summary>
+        /// Запуск потока декодера данных.
+        /// </summary>
+        public void Start()
+        {
+            _readThread.Start();
+        }
+
+        /// <summary>
+        /// Завершаем все потоки.
+        /// </summary>
+        public void FinishAll()
+        {
+            _readThread.Finish();
+            _decodeThread.Finish();
+        }
+
+        /// <summary>
+        /// Функция вызывается когда меняется состояние подключения USB устройства.
+        /// Должна быть переопределена в потомке.
         /// </summary>
         /// <param name="connected">Состояние USB устройства - открыто (true) или закрыто (false)</param>
-        virtual public void OnDevStateChanged(bool connected)
+        public virtual void OnDevStateChanged(bool connected)
         {
-            if ((_dThread != null) && connected)
+            if ((_decodeThread != null) && connected)
             {
                 // при подключении к устройству, делаем сброс декодера в исходное состояние
-                _dThread.ResetDecoder();
+                _decodeThread.ResetDecoder();
             }
 
             if (ChangeStateEvent != null)
@@ -127,16 +127,16 @@ namespace EGSE
         }
 
         /// <summary>
-        /// Функция выдает команду в USB
+        /// Функция выдает команду в USB.
         /// </summary>
         /// <param name="addr">адрес, по которому нужно передать данные</param>
-        /// <param name="data">сами данные</param>
+        /// <param name="data">данные для передачи</param>
         /// <returns>Возвращает результат записи в очередь команд USB</returns>
         public bool SendCmd(uint addr, byte[] data)
         {
             byte[] dataOut;
             _dec.Encode(addr, data, out dataOut);
-            bool res = _fThread.WriteBuf(dataOut);
+            bool res = _readThread.WriteBuf(dataOut);
             return res;
         }
     }

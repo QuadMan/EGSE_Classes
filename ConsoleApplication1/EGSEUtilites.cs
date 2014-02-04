@@ -227,9 +227,9 @@ namespace EGSE.Utilites
         /// <summary>
         /// Преобразуем массив байт в структуру
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Необходимя структура</typeparam>
+        /// <param name="bytes">Байты для преобразования</param>
+        /// <returns>Полученная структура</returns>
         public static T Make<T>(byte[] bytes) where T : struct
         {
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
@@ -238,8 +238,6 @@ namespace EGSE.Utilites
             return stuff;
         }
     }
-
-
 
     /// <summary>
     /// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время
@@ -463,7 +461,7 @@ namespace EGSE.Utilites
         /// Загружаем параметр из файла
         /// </summary>
         /// <param name="param">Название параметра</param>
-        /// <param name="section">Секция</param>
+        /// <param name="section">Секция параметра</param>
         /// <returns>Строка-значение параметра, null - если параметр не найден</returns>
         public static string Load(string param, string section = "MAIN")
         {

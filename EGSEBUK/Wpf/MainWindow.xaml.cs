@@ -47,7 +47,7 @@ namespace EGSE.WPF
         /// <summary>
         /// Инициализация параметров управления
         /// </summary>
-        private void _initControlValues()
+        private void InitControlValues()
         {
             _bukCycCommands.BUK = _intfEGSE;
         }
@@ -99,7 +99,7 @@ namespace EGSE.WPF
         /// Сохраняем специфические настройки приложения
         /// В данном случае - видимость панели телеметрии
         /// </summary>
-        private void saveAppSettings()
+        private void SaveAppSettings()
         {
            // AppSettings.Save("PowerLabel", Convert.ToString(TMGrid.Visibility));
            // AppSettings.SaveList(hsiWin.UksSendedList, "UksItems");
@@ -108,7 +108,7 @@ namespace EGSE.WPF
         /// <summary>
         /// Загружаем специфичные настройки приложения при загрузке
         /// </summary>
-        private void loadAppSettings()
+        private void LoadAppSettings()
         {
             // если окно открыто, соответствующий чекбокс должен быть выбран
            /* if (hsiWin.Visibility == System.Windows.Visibility.Visible)
@@ -140,7 +140,7 @@ namespace EGSE.WPF
         /// <summary>
         /// Метод инициализируеющий дополнительные модули (если это необходимо)
         /// </summary>
-        private void initModules()
+        private void InitModules()
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
 

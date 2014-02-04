@@ -132,6 +132,7 @@ namespace EGSE.Threading
 
                 // сколько байт можно считать из потока
                 bytesToRead = (uint)_fThread.BigBuf.BytesAvailable;
+
                 // будем читать большими порциями
                 if (bytesToRead >= READ_BUF_SIZE_IN_BYTES)          
                 {

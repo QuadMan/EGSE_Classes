@@ -146,11 +146,11 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Получаем значение свойства из величины value
+        /// Получаем значение свойства из величины value.
         /// </summary>
         /// <param name="cv">Описание свойства</param>
         /// <param name="value">Значение величины, для которого нужно взять свойство</param>
-        /// <returns></returns>
+        /// <returns>Величина value свойства</returns>
         private int GetCVProperty(CVProperty cv, int value)
         {
             if (cv == null) return -1;
@@ -248,7 +248,6 @@ namespace EGSE.Utilites
         /// <summary>
         /// Один тик таймера (вызывается из внешнего прерывания и может быть любым, хоть 1 секунда, хоть 500 мс)
         /// </summary>
-        /// <returns>Функция возвращает результат проверки Set и Get значений, если время истекло, или vsCounting, если счет продолжается</returns>
         public void TimerTick()
         {
             if ((_timerCnt > 0) && (--_timerCnt == 0))          // пришло время для проверки Get и Set Value

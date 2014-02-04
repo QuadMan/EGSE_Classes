@@ -25,17 +25,29 @@ using System.Windows.Shapes;
 
 namespace EGSE.Cyclogram
 {
-
     /// <summary>
     /// Interaction logic for CyclogramControl.xaml
     /// </summary>
     public partial class CyclogramControl : UserControl
     {
+        /// <summary>
+        /// Нить работы циклограммы.
+        /// </summary>
         private CyclogramThread cThread;
+
+        /// <summary>
+        /// Текущий статус выполнения циклограммы.
+        /// </summary>
         private string statusText;
 
+        /// <summary>
+        /// Список доступных команд циклограммы.
+        /// </summary>
         private CyclogramCommands _cycCommandsAvailable = new CyclogramCommands();
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramControl" />.
+        /// </summary>
         public CyclogramControl()
         {
             InitializeComponent();
@@ -55,7 +67,7 @@ namespace EGSE.Cyclogram
         /// <summary>
         /// Функция добавляет список команд циклограммы к исходным командам
         /// </summary>
-        /// <param name="cycCommands"></param>
+        /// <param name="cycCommands">Список команд</param>
         public void AddCycCommands(CyclogramCommands cycCommands)
         {
             foreach (KeyValuePair<string, CyclogramLine> cycLine in cycCommands) {

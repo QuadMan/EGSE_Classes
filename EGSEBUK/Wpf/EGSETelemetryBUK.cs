@@ -27,6 +27,14 @@ namespace EGSE.Telemetry
         private bool _isPowerOn;
 
         /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="TelemetryBUK" />.
+        /// </summary>
+        public TelemetryBUK()
+        {
+            _isPowerOn = false;
+        }
+
+        /// <summary>
         /// Получает значение, показывающее, подано ли питание устройству.
         /// </summary>
         public bool IsPowerOn
@@ -35,14 +43,6 @@ namespace EGSE.Telemetry
             {
                 return _isPowerOn;
             }
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="TelemetryBUK" />.
-        /// </summary>
-        public TelemetryBUK()
-        {
-            _isPowerOn = false;
         }
 
         /// <summary>
