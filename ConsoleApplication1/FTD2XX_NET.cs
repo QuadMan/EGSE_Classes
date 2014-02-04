@@ -259,51 +259,51 @@ namespace FTD2XXNET
 		#region DELEGATES
 		// Definitions for FTD2XX functions
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_Open(UInt32 index, ref IntPtr ftHandle);
+		public delegate FT_STATUS TFT_Open(UInt32 index, ref IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_OpenEx(string devstring, UInt32 dwFlags, ref IntPtr ftHandle);
+        public delegate FT_STATUS TFT_OpenEx(string devstring, UInt32 dwFlags, ref IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_Close(IntPtr ftHandle);
+        public delegate FT_STATUS TFT_Close(IntPtr ftHandle);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_Read(IntPtr ftHandle, byte[] lpBuffer, Int32 dwBytesToRead, ref Int32 lpdwBytesReturned);
+        public delegate FT_STATUS TFT_Read(IntPtr ftHandle, byte[] lpBuffer, Int32 dwBytesToRead, ref Int32 lpdwBytesReturned);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_Write(IntPtr ftHandle, byte[] lpBuffer, UInt32 dwBytesToWrite, ref UInt32 lpdwBytesWritten);
+        public delegate FT_STATUS TFT_Write(IntPtr ftHandle, byte[] lpBuffer, UInt32 dwBytesToWrite, ref UInt32 lpdwBytesWritten);
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_GetQueueStatus(IntPtr ftHandle, ref Int32 lpdwAmountInRxQueue);
+        public delegate FT_STATUS TFT_GetQueueStatus(IntPtr ftHandle, ref Int32 lpdwAmountInRxQueue);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_GetStatus(IntPtr ftHandle, ref UInt32 lpdwAmountInRxQueue, ref UInt32 lpdwAmountInTxQueue, ref UInt32 lpdwEventStatus);
+        public delegate FT_STATUS TFT_GetStatus(IntPtr ftHandle, ref UInt32 lpdwAmountInRxQueue, ref UInt32 lpdwAmountInTxQueue, ref UInt32 lpdwEventStatus);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_ResetDevice(IntPtr ftHandle);
+        public delegate FT_STATUS TFT_ResetDevice(IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_ResetPort(IntPtr ftHandle);
+        public delegate FT_STATUS TFT_ResetPort(IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_CyclePort(IntPtr ftHandle);
+        public delegate FT_STATUS TFT_CyclePort(IntPtr ftHandle);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_Rescan();
+        public delegate FT_STATUS TFT_Rescan();
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_Reload(UInt16 wVID, UInt16 wPID);
+        public delegate FT_STATUS TFT_Reload(UInt16 wVID, UInt16 wPID);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_Purge(IntPtr ftHandle, UInt32 dwMask);
+        public delegate FT_STATUS TFT_Purge(IntPtr ftHandle, UInt32 dwMask);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_SetTimeouts(IntPtr ftHandle, UInt32 dwReadTimeout, UInt32 dwWriteTimeout);
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_GetDriverVersion(IntPtr ftHandle, ref UInt32 lpdwDriverVersion);
-		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_GetLibraryVersion(ref UInt32 lpdwLibraryVersion);
-		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_SetDeadmanTimeout(IntPtr ftHandle, UInt32 dwDeadmanTimeout);
+        public delegate FT_STATUS TFT_SetTimeouts(IntPtr ftHandle, UInt32 dwReadTimeout, UInt32 dwWriteTimeout);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        private delegate FT_STATUS TFT_SetBitMode(IntPtr ftHandle, byte ucMask, byte ucMode);
+        public delegate FT_STATUS TFT_GetDriverVersion(IntPtr ftHandle, ref UInt32 lpdwDriverVersion);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_SetLatencyTimer(IntPtr ftHandle, byte ucLatency);
+        public delegate FT_STATUS TFT_GetLibraryVersion(ref UInt32 lpdwLibraryVersion);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_GetLatencyTimer(IntPtr ftHandle, ref byte ucLatency);
+        public delegate FT_STATUS TFT_SetDeadmanTimeout(IntPtr ftHandle, UInt32 dwDeadmanTimeout);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate FT_STATUS TFT_SetBitMode(IntPtr ftHandle, byte ucMask, byte ucMode);
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		private delegate FT_STATUS TFT_SetUSBParameters(IntPtr ftHandle, UInt32 dwInTransferSize, UInt32 dwOutTransferSize);
+        public delegate FT_STATUS TFT_SetLatencyTimer(IntPtr ftHandle, byte ucLatency);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate FT_STATUS TFT_GetLatencyTimer(IntPtr ftHandle, ref byte ucLatency);
+		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        public delegate FT_STATUS TFT_SetUSBParameters(IntPtr ftHandle, UInt32 dwInTransferSize, UInt32 dwOutTransferSize);
 		#endregion
 
 		#region CONSTANT_VALUES

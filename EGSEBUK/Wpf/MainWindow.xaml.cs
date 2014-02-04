@@ -35,12 +35,14 @@ namespace EGSE.Defaults
         private SimRouterWindow winSimRouter = new SimRouterWindow();*/
         private CyclogramCommandBUK _bukCycCommands = new CyclogramCommandBUK();
 
+        /// <summary>
+        /// Интерфейс работы с устройством устройства.
+        /// </summary>
         private IBUK _EGSE = new IBUK();
 
         private void initControlValues()
         {
             _bukCycCommands.BUK = _EGSE;
-            //_bukCycCommands.HsiWin = hsiWin;
         }
 
         private void OnTimerWork()
@@ -91,6 +93,7 @@ namespace EGSE.Defaults
            // AppSettings.Save("PowerLabel", Convert.ToString(TMGrid.Visibility));
             //AppSettings.SaveList(hsiWin.UksSendedList, "UksItems");
         }
+
         /// <summary>
         /// Загружаем специфичные настройки приложения при загрузке
         /// </summary>
