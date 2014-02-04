@@ -1,23 +1,14 @@
-﻿/*** EDGEUtilitesTextlog.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль логирования для КИА
-**
-** Author: Мурзин Святослав
-** Project: КИА
-** Module: EDGE UTILITES TEXTLOG
-** Requires: 
-** Comments: TODO: в ~TxtLog() разобраться с некорректным закрытием файла!
- *                       пока после выполнения всех записей в log-файл необходимо вызвать метод FlushAll()
-** TODO: указать в конструкторе путь, где создавать структуру директорий в формате ГГММ/ДД/
- * при создании лог-файла необходимо перед расширением добавлять следующий текст "_HHMMSS"
- * TODO: при закрытии лог-файла проверяем, если размер его равен 0, то стираем файл
- * 
-** History:
-**  0.1.0	(05.12.2013) -	Начальная версия
-**
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUtilitesTextlog.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Мурзин Святослав</author>
+//-----------------------------------------------------------------------
+
+// TODO в ~TxtLog() разобраться с некорректным закрытием файла! пока после выполнения всех записей в log-файл необходимо вызвать метод FlushAll()
+// TODO указать в конструкторе путь, где создавать структуру директорий в формате ГГММ/ДД/
+// TODO при создании лог-файла необходимо перед расширением добавлять следующий текст "_HHMMSS"
+// TODO при закрытии лог-файла проверяем, если размер его равен 0, то стираем файл
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -85,9 +76,9 @@ namespace EGSE.Utilites
         private DateTime _logtime;
         
         /// <summary>
-        /// Конструктор, принимает имя файла
+        /// Инициализирует новый экземпляр класса <see cref="TxtLogger" />.
         /// </summary>
-        /// <param name="fName"></param>
+        /// <param name="fName">Имя лог-файла</param>
         public TxtLogger(string fName)
         {
             _enableTextWrite = true;
@@ -234,7 +225,7 @@ namespace EGSE.Utilites
         List<TxtLogger>txtLoggers;
  
         /// <summary>
-        /// Конструктор по-умолчанию
+        /// Инициализирует новый экземпляр класса <see cref="TxtLoggers" />.
         /// </summary>
         public TxtLoggers()
         {

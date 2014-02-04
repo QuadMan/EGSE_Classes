@@ -1,67 +1,9 @@
-﻿/*** EDGEUtilitesADC.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль логирования для КИА
-**
-** Author: Мурзин Святослав
-** Project: КИА
-** Module: EDGE UTILITES 
-** Requires: 
-** Comments:
- *
- * ПРИМЕР:
- * 
- * С# ------------------------------------------------------
- * 
- * static void Main(string[] args)
-        {
-            CalibrationValue[] cv = new CalibrationValue[4];
-            CalibrationValues clValues;
-            ADC adc = new ADC();
-            
- *          //ИНИЦИАЛИЗАЦИЯ СТРУКТУРЫ КАЛИБРОВОЧНЫХ ЗНАЧЕНИЙ
-            cv[0].XVal = 10;
-            cv[0].YVal = 20;
-
-            cv[1].XVal = 11;
-            cv[1].YVal = 21;
-
-            cv[2].XVal = 14;
-            cv[2].YVal = 24;
-
-            cv[3].XVal = 16;
-            cv[3].YVal = 26;
-            
-            clValues = new CalibrationValues(cv);
-            
- *          //ИНИЦИАЛИЗАЦИЯ КЛАССА ADC
-            adc.AddChannel(123, clValues, 1);
-            adc.AddChannel(456, clValues, 3);
-
-
-            adc.AddData(123, 6);
-            adc.AddData(123, 6);
-            adc.AddData(123, 12);
-
-            adc.AddData(456, 6);
-            adc.AddData(456, 6);
-            adc.AddData(456, 12);
- 
- *          //ВЫВОД ЗНАЧЕНИЙ КАНАЛОВ
-            Console.WriteLine("Result: {0} {1}", adc.GetValue(123), adc.GetValue(456));
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
-        }
-**
-** History:
-**  0.1.0	(10.12.2013) -	Начальная версия 
- *  0.2.0   (18.12.2013) - Доработал класс CalibrationValues и Channel, чтобы была настройка - считать-ли отрицательные значения правильными при рассчетах
- *                          (выявилась ошибка при расчете значения, превышающего калибровочные данные - видимо, прямая экстраполируется неправильно)
-**  0.3.0   (29.01.2014) - Исправлена ошибка, когда при вызове метода GetValue, в цикле foreach считалось среднее значение в списке, при этом в другом потоке этот
- *                        список менялся (добавлялось новое значение). Изменил на метод Sum()
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUtilitesADC.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Мурзин Святослав</author>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
@@ -114,7 +56,7 @@ namespace EGSE.Utilites.ADC
         private List<CValue> _listValues;
 
         /// <summary>
-        /// Конструктор по умолчанию
+        /// Инициализирует новый экземпляр класса <see cref="CalibrationValues" />.
         /// </summary>
         public CalibrationValues()
         {
@@ -122,7 +64,7 @@ namespace EGSE.Utilites.ADC
         }
 
         /// <summary>
-        /// Конструктор
+        /// Инициализирует новый экземпляр класса <see cref="CalibrationValues" />.
         /// </summary>
         /// <param name="cValues">Массив калибровочных данных</param>
         public CalibrationValues(CValue[] cValues)
@@ -295,7 +237,7 @@ namespace EGSE.Utilites.ADC
         public bool NegativeValuesIsCorrect;
 
         /// <summary>
-        /// Конструктор для класса Channel
+        /// Инициализирует новый экземпляр класса <see cref="Channel" />.
         /// </summary>
         /// <param name="id">Новый ID канала
         /// Должен быть уникальным, иначе выробатывается исключение</param>
@@ -383,6 +325,35 @@ namespace EGSE.Utilites.ADC
     /// Класс, поддерживающий получение, преобразование данных АЦП
     /// Обладает возможностью высчитывания среднего значения
     /// Для вывода результата могут использоваться калибровочные данные
+    /// static void Main(string[] args)
+    ///    {
+    ///        CalibrationValue[] cv = new CalibrationValue[4];
+    ///        CalibrationValues clValues;
+    ///        ADC adc = new ADC();
+    ///       //ИНИЦИАЛИЗАЦИЯ СТРУКТУРЫ КАЛИБРОВОЧНЫХ ЗНАЧЕНИЙ
+    ///        cv[0].XVal = 10;
+    ///        cv[0].YVal = 20;
+    ///        cv[1].XVal = 11;
+    ///        cv[1].YVal = 21;
+    ///        cv[2].XVal = 14;
+    ///        cv[2].YVal = 24;
+    ///        cv[3].XVal = 16;
+    ///        cv[3].YVal = 26;
+    ///        clValues = new CalibrationValues(cv);
+    ///       //ИНИЦИАЛИЗАЦИЯ КЛАССА ADC
+    ///        adc.AddChannel(123, clValues, 1);
+    ///        adc.AddChannel(456, clValues, 3);
+    ///        adc.AddData(123, 6);
+    ///        adc.AddData(123, 6);
+    ///        adc.AddData(123, 12);
+    ///        adc.AddData(456, 6);
+    ///        adc.AddData(456, 6);
+    ///        adc.AddData(456, 12);
+    ///          //ВЫВОД ЗНАЧЕНИЙ КАНАЛОВ
+    ///       Console.WriteLine("Result: {0} {1}", adc.GetValue(123), adc.GetValue(456));
+    ///     Console.WriteLine("Press any key to exit.");
+    ///        Console.ReadKey();
+    ///    }
     /// </summary>
     public class ADC
     {
@@ -392,7 +363,7 @@ namespace EGSE.Utilites.ADC
         private List<Channel> _listChannel;
         
         /// <summary>
-        /// Конструктор по умолчанию
+        /// Инициализирует новый экземпляр класса <see cref="ADC" />.
         /// </summary>
         public ADC()
         {

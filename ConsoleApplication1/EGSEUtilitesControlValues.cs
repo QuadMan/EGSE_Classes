@@ -1,15 +1,9 @@
-﻿/*** EDGEUtilitesControlValues.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Класс поддержки синхронизации значений USB и UI
-**
-** Author: Семенов Александр
-** Project: КИА
-** Module: EDGE UTILITES Control Values
-** Requires: 
-** Comments:
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUtilitesControlValues.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
 
 namespace EGSE.Utilites
 {
@@ -25,17 +19,14 @@ namespace EGSE.Utilites
     /// срабатывает событие, определенное для данного свойства).
     /// По-умолчанию, свойство сверяется с данными из USB после установки свойства из пользовательского интерфейса, через 2 отсчета TimeTick.
     /// Если значения различаются (установленные через пользовательский интерфейс и USB), в качестве основного устанавливается значение, полученное из USB.
-    /// 
     /// Так как в одном байте обычно записано несколько свойств, для ControlValue доступен метод AddProperty, который позволяет
     /// указывать побитно, какие биты отвечают за какое свойство.
     /// К примеру, 
     /// ControlValue.AddProperty(0, 4, 1, SetFunction, delegate(UInt32 value) { KvvImitatorReady = (value == 1); });
     /// Этим методом мы говорим, что создаем свойство с индексом 0, начинающееся с 4-го бита, длиной в 1 бит. При установке этого свойства вызывается функция SetFunction,
     /// Если значения UsbValue и UiValue не совпали при проверке, вызывается делегат (или функция), описанная в последнем параметре.
-    /// 
     /// При получении значения из Usb, необходимо взвать метод ControlValue.UsbValue = value;
     /// При установке значения из UI: ControlValue.SetProperty(0,1) - устанавливаем свойство с индексом 0 значением, равным 1.
-    /// 
     /// </summary>
     public class ControlValue
     {
@@ -76,13 +67,13 @@ namespace EGSE.Utilites
             public ControlValueEventHandler ChangeEvent;
 
             /// <summary>
-            /// Конструктор свойства
+            /// Инициализирует новый экземпляр класса <see cref="CVProperty" />.
             /// </summary>
-            /// <param name="_idx"></param>
-            /// <param name="_bitIdx"></param>
-            /// <param name="_bitLen"></param>
-            /// <param name="_setUsbEvent"></param>
-            /// <param name="_changeEvent"></param>
+            /// <param name="_idx">Индекс свойства</param>
+            /// <param name="_bitIdx">Позиция первого бита</param>
+            /// <param name="_bitLen">Длина свойства(в битах)</param>
+            /// <param name="_setUsbEvent">Делегат вызывается принеобходимости ищменить свойство</param>
+            /// <param name="_changeEvent">Если через 2 TickTime значения от USB не совпадают, вызывается этот делегат</param>
             public CVProperty(ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
             {
                 BitIdx = _bitIdx;
@@ -123,7 +114,7 @@ namespace EGSE.Utilites
         private bool _refreshFlag;
 
         /// <summary>
-        /// Конструктор по-умолчанию
+        /// Инициализирует новый экземпляр класса <see cref="ControlValue" />.
         /// </summary>
         /// <param name="defaultValue">Можем задать значение по-умолчанию, если нужно, чтобы определенные биты всегда были установлены</param>
         public ControlValue(int defaultValue = 0)

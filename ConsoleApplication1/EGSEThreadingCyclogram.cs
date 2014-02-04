@@ -1,19 +1,10 @@
-﻿/*** EDGEThreadingCyclogram.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль поддержки потока циклограмм
-**
-** Author: Семенов Александр
-** Project: КИА
-** Module: EDGEThreadingCyclogram
-** Requires: 
-** Comments:
- *
-** History:
-**  0.1.0	(06.12.2013) -	Начальная версия
-**
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEThreadingCyclogram.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
+
 namespace EGSE.Threading 
 {
     using EGSE.Cyclogram;
@@ -151,7 +142,7 @@ namespace EGSE.Threading
         private CycPosition _cPos;
 
         /// <summary>
-        /// Основной конструктор
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramThread" />.
         /// </summary>
         public CyclogramThread()
         {

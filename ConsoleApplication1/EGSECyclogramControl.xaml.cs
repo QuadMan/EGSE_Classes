@@ -1,12 +1,9 @@
-﻿/*
- * 
- * 
- * 
- * 
- *  24.01.2014 - добавил событие StopEvent - которое вырабатывается только по команде Stop или нажатию кнопки Stop
- *             - событие FinishedEvent вызывается только когда дошли до конца циклограммы
- * 
- */
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSECyclogramControl.xaml.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
 
 using EGSE.Cyclogram;
 using EGSE.Threading;

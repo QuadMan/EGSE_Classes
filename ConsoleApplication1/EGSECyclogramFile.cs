@@ -1,19 +1,9 @@
-﻿/*** EDGECyclogramFile.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль поддержки файла циклограмм
-**
-** Author: Семенов Александр
-** Project: КИА
-** Module: EDGECyclogramFile
-** Requires: 
-** Comments:
- *
-** History:
-**  0.1.0	(06.12.2013) -	Начальная версия
-**
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSECyclogramFile.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
 
 using System;
 using System.Linq;
@@ -85,7 +75,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Конструктор
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramFile" />.
         /// </summary>
         public CyclogramFile()
         {
@@ -121,7 +111,6 @@ namespace EGSE.Cyclogram
         /// 0; 0.230; 33.675.
         /// Миллисекунды должны быть от 0 до 999.
         /// Значение секунд не должно быть больше 65535
-        /// 
         /// TODO: избавиться от дубликата проверки секунд
         /// </summary>
         /// <param name="timeStr">распознанное время из команды</param>

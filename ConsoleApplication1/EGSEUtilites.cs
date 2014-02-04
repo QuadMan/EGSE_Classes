@@ -1,46 +1,12 @@
-﻿/*** EDGE_Utilites.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль дополнительных утилит для КИА
-**
-** Author: Семенов Александр, Мурзин Святослав
-** Project: КИА
-** Module: EDGE UTILITES
-** Requires: 
-** Comments:
- * ==================================================
- * StopWatch для высокоточного замера времени
-** ==================================================
- *Работа с битовыми полями в структуре:
- *[StructLayout(LayoutKind.Sequential)]
-  public struct Rgb16 {
-        private readonly UInt16 raw;
-        public byte R{get{return (byte)((raw>>0)&0x1F);}}
-        public byte G{get{return (byte)((raw>>5)&0x3F);}}
-        public byte B{get{return (byte)((raw>>11)&0x1F);}}
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUtilites.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр, Мурзин Святослав</author>
+//-----------------------------------------------------------------------
 
-        public Rgb16(byte r, byte g, byte b)
-        {
-          Contract.Requires(r<0x20);
-          Contract.Requires(g<0x40);
-          Contract.Requires(b<0x20);
-          raw=r|g<<5|b<<11;
-        }
-    }
-** History:
-**  0.1.0	(26.11.2013) -	Начальная версия
- *  0.2.0   (01.12.2013) - Ввел новые классы TMValue, EgseTime, ADC
- *                       - комментарии, рефакторинг
- *                       TODO: в bigBufferManager ввести признак переполнения буфера!
- *  0.2.1   (06.12.2013) - в класс EgseTime добавлена возможность кодировки времени
- *                        коррекция декодера времени
- *  0.2.2   (10.12.2013) - добавил функцию конвертации HEX-строки в массив байт
-**
- *
- * TODO: в классе BigBuff попробовать уйти от lock(this) в сторону InterlockedIncrement
-*/
-
+// TODO в bigBufferManager ввести признак переполнения буфера!
+// TODO в классе BigBuff попробовать уйти от lock(this) в сторону InterlockedIncrement
 namespace EGSE.Utilites
 {
     using System;
@@ -289,32 +255,32 @@ namespace EGSE.Utilites
         public byte[] Data { get; set; }
 
         /// <summary>
-        /// День
+        /// Параметр: День
         /// </summary>
         public uint Day { get; private set; }
 
         /// <summary>
-        /// Час
+        /// Параметр: Час
         /// </summary>
         public uint Hour { get; private set; }
 
         /// <summary>
-        /// Минута
+        /// Параметр: Минута
         /// </summary>
         public uint Min { get; private set; }
 
         /// <summary>
-        /// Секунда
+        /// Параметр: Секунда
         /// </summary>
         public uint Sec { get; private set; }
 
         /// <summary>
-        /// Миллисекунда
+        /// Параметр: Миллисекунда
         /// </summary>
         public uint Msec { get; private set; }
 
         /// <summary>
-        /// Микросекунда
+        /// Параметр: Микросекунда
         /// </summary>
         public uint Mcsec { get; private set; }
 
@@ -322,7 +288,7 @@ namespace EGSE.Utilites
         private StringBuilder sb;
 
         /// <summary>
-        /// Конструктор по-умолчанию
+        /// Инициализирует новый экземпляр класса <see cref="EgseTime" />.
         /// </summary>
         public EgseTime()
         {
@@ -400,6 +366,7 @@ namespace EGSE.Utilites
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
         /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="IniFile" />.
         /// Конструктор конкретного ini-файла.
         /// </summary>
         /// <param name="iniPath">Полный путь к ini-файлу</param>

@@ -1,4 +1,11 @@
-﻿namespace EGSE.Utilites
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEUtilitesBigBufferManager.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
+
+namespace EGSE.Utilites
 {
 
     /// <summary>
@@ -70,7 +77,7 @@
         private int _bytesInBuffer;
 
         /// <summary>
-        /// Конструктор большого буфера
+        /// Инициализирует новый экземпляр класса <see cref="BigBufferManager" />.
         /// </summary>
         /// <param name="bufSize">Размер буфера</param>
         public BigBufferManager(uint bufSize = DEFAULT_BUF_SIZE)

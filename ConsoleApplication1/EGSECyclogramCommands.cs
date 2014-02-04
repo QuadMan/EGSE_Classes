@@ -1,19 +1,9 @@
-﻿/*** EDGECyclogramCommands.cs
-**
-** (с) 2013 ИКИ РАН
- *
- * Модуль поддержки команд циклограммы
-**
-** Author: Семенов Александр
-** Project: КИА
-** Module: EDGECyclogramCommands
-** Requires: 
-** Comments:
- *
-** History:
-**  0.1.0	(06.12.2013) -	Начальная версия
-**
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSECyclogramCommands.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
 
 namespace EGSE.Cyclogram
 {
@@ -276,7 +266,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Конструктор по-умолчанию
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramLine" />.
         /// </summary>
         public CyclogramLine()
         {
@@ -284,7 +274,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Основной конструктор
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramLine" />.
         /// </summary>
         /// <param name="name">Название команды</param>
         /// <param name="testFunc">Функция тестирования</param>
@@ -360,7 +350,7 @@ namespace EGSE.Cyclogram
         private int _totalCommandsCount;
 
         /// <summary>
-        /// Конструктор по
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramCommands" />.
         /// </summary>
         public CyclogramCommands() : base()
         {

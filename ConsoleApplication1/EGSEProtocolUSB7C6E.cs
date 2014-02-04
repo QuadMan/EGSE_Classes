@@ -1,29 +1,11 @@
-﻿/*** EDGE_Decoders_USB_7C6E.cs
-**
-** (с) 2013 ИКИ РАН
- *
-** Класс декодера типа 7C 6E ADDR SIZE DATA
-** ADDR - байт
-** SIZE - байт (0 - 256 байт, 1..255)
-** DATA - байтовый поток данных
- *
-** При работе декодера ведется учет следующих ошибок:
-**    1) после очередного распознанного сообщения, 0x7C не встретился
-**    2) после 0x7C не встретился 0x6C
-**
-** Author: Семенов Александр
-** Project: КИА
-** Module: EDGE Decoders USB 7C6E
-** Requires: 
-** Comments:
- * - нужно написать юнит-тест для декодера
-**
-** History:
-**  0.1.0	(29.11.2013) - Начальная версия
- *  0.2.0   (29.11.2013) - 
-**
-*/
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEProtocolUSB7C6E.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Семенов Александр</author>
+//-----------------------------------------------------------------------
 
+// TODO нужно написать юнит-тест для декодера
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -65,7 +47,7 @@ namespace EGSE.Protocols
             public bool writeDecLog = false;
             
             /// <summary>
-            /// Создаем декодер
+            /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB7C6E" />.
             /// </summary>
             public ProtocolUSB7C6E()
             {
@@ -75,7 +57,8 @@ namespace EGSE.Protocols
             }
 
             /// <summary>
-            /// Конструктор, позволяющий писать бинарный лог данных из USB
+            /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB7C6E" />.
+            /// Конструктор, позволяющий писать бинарный лог данных из USB.
             /// </summary>
             /// <param name="fStream">Поток файла, куда пишем</param>
             /// <param name="writeBinLog">Флаг - писать сразу или нет</param>

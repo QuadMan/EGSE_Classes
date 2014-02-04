@@ -70,7 +70,7 @@ namespace EGSE.Protocols
         private uint _addr;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProtocolMsgEventArgs" /> class.
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolMsgEventArgs" />.
         /// Конструктор события: декодером обнаружено сообщение.
         /// </summary>
         /// <param name="maxDataLen">Размер буфера</param>
@@ -114,7 +114,7 @@ namespace EGSE.Protocols
         private string _msg;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProtocolErrorEventArgs" /> class.
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolErrorEventArgs" />.
         /// Конструктор события: ошибка в кодере
         /// </summary>
         /// <param name="maxDataLen">Размер буфера</param>

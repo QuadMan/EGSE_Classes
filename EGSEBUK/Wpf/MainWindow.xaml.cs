@@ -5,7 +5,7 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Defaults
+namespace EGSE.WPF
 {
     using System;
     using System.Collections.Generic;
@@ -33,23 +33,33 @@ namespace EGSE.Defaults
         private SpaceWireWindow winSW = new SpaceWireWindow();
         private SDWindow winSD = new SDWindow();
         private SimRouterWindow winSimRouter = new SimRouterWindow();*/
+
+        /// <summary>
+        /// Экземпляр для работы с командами циклограммы.
+        /// </summary>
         private CyclogramCommandBUK _bukCycCommands = new CyclogramCommandBUK();
 
         /// <summary>
         /// Интерфейс работы с устройством устройства.
         /// </summary>
-        private IBUK _EGSE = new IBUK();
+        private IBUK _intfEGSE = new IBUK();
 
-        private void initControlValues()
+        /// <summary>
+        /// Инициализация параметров управления
+        /// </summary>
+        private void _initControlValues()
         {
-            _bukCycCommands.BUK = _EGSE;
+            _bukCycCommands.BUK = _intfEGSE;
         }
 
+        /// <summary>
+        /// Для синхронизации параметров управления.
+        /// </summary>
         private void OnTimerWork()
         {
-            _EGSE.TickAllControlsValues();
-            // выведем значения АЦП
-            /*if (_EGSE.Tm.IsPowerOn)
+            _intfEGSE.TickAllControlsValues();
+            /* выведем значения АЦП
+            if (_EGSE.Tm.IsPowerOn)
             {
                 try
                 {
@@ -84,6 +94,7 @@ namespace EGSE.Defaults
 
             updateTM();*/
         }
+
         /// <summary>
         /// Сохраняем специфические настройки приложения
         /// В данном случае - видимость панели телеметрии
@@ -91,7 +102,7 @@ namespace EGSE.Defaults
         private void saveAppSettings()
         {
            // AppSettings.Save("PowerLabel", Convert.ToString(TMGrid.Visibility));
-            //AppSettings.SaveList(hsiWin.UksSendedList, "UksItems");
+           // AppSettings.SaveList(hsiWin.UksSendedList, "UksItems");
         }
 
         /// <summary>
@@ -132,8 +143,8 @@ namespace EGSE.Defaults
         private void initModules()
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
-            //hsiWin.Init(_EGSE);
 
+            // hsiWin.Init(_EGSE);
             DataContext = this;
         }
 
