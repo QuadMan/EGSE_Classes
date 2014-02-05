@@ -19,15 +19,17 @@ namespace EGSE.Utilites.ADC
     public class ADCException : ApplicationException
     {
         public ADCException() { }
-        public ADCException(string message) : base(message) { }
-        public ADCException(string message, Exception ex) : base(message) { }
+
+        public ADCException(string message) 
+            : base(message) { }
+
+        public ADCException(string message, Exception ex) 
+            : base(message) { }
+
         // Конструктор для обработки сериализации типа
-        protected ADCException(System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext contex)
+        protected ADCException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext contex)
             : base(info, contex) { }
     }
-// *****************************************************************************
-// *****************************************************************************
 
     /// <summary>
     /// Структура калибровочных значений
@@ -36,14 +38,13 @@ namespace EGSE.Utilites.ADC
     {
         public float XVal;
         public float YVal;
+
         public CValue(float x, float y)
         {
             XVal = x;
             YVal = y;
         }
     }
-// *****************************************************************************
-// *****************************************************************************
 
     /// <summary>
     /// Класс рассчета значений по калибровочным данным
@@ -94,11 +95,8 @@ namespace EGSE.Utilites.ADC
         }
 
         /// <summary>
-        /// Внутренний метод проводящий сортировку при добавлении 
-        /// новых калибровочных данных
+        /// Внутренний метод проводящий сортировку при добавлении новых калибровочных данных.
         /// </summary>
-        /// <param name="cValue">Новые калибровочные данные</param>
-
         private void Sort()
         {
             _listValues.Sort(CompareCalibrationValues);
@@ -124,10 +122,13 @@ namespace EGSE.Utilites.ADC
         }
 
         /// <summary>
-        /// Метод получения калибровочного значения по калибровочным данным
+        /// Метод получения калибровочного значения по калибровочным данным.
         /// </summary>
         /// <param name="xValue">Входящее калибровочное значение</param>
-        /// <returns>Калибровочное значение YVal</returns>
+        /// <param name="NegativeIsOk">if set to <c>true</c> [negative is ok].</param>
+        /// <returns>
+        /// Калибровочное значение YVal
+        /// </returns>
         public float Get(float xValue, bool NegativeIsOk)
         {
             float value = 0;
@@ -188,8 +189,6 @@ namespace EGSE.Utilites.ADC
             return 0;
         }
     }
-// *****************************************************************************
-// *****************************************************************************
 
     /// <summary>
     /// Класс канала для данных АЦП
@@ -317,8 +316,6 @@ namespace EGSE.Utilites.ADC
             return _clbrtValues.Get(fMidle, NegativeValuesIsCorrect); 
         }
     }
-// *****************************************************************************
-// *****************************************************************************
 
     /// <summary>
     /// Класс, поддерживающий получение, преобразование данных АЦП
@@ -414,10 +411,10 @@ namespace EGSE.Utilites.ADC
         }
 
         /// <summary>
-        /// Рассчитываем значение для указанного канала
+        /// Рассчитываем значение для указанного канала.
         /// </summary>
         /// <param name="chanelId">Уникальный ID канала</param>
-        /// <returns></returns>
+        /// <returns>Возвращает значение</returns>
         public float GetValue(uint chanelId) 
         {
             return _listChannel[SearchChannel(chanelId)].GetValue();

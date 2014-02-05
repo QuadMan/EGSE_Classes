@@ -16,24 +16,31 @@ using EGSE.Utilites;
 namespace EGSE.Protocols 
 {
     /// <summary>
+    /// Класс USB-протокола формата: 7C6E...
     /// </summary>
         public class ProtocolUSB7C6E : ProtocolUSBBase
         {
             // максимальное количество ошибок декдера, при котором мы перестаем вызывать делегата
             private const uint MAX_ERRORS_COUNT = 100;
+
             // максимальный размер данных в одной посылке, который доступен по протоколу
             private const uint DECODER_MAX_DATA_LEN = 256;
 
             // текущее состояние декодера
             private int _iStep = 0;
+
             // текущий байт при декодировании посылки
             private byte _bt = 0;
+
             // сколько ошибок протокола зафиксировал декодер
             private uint _errorsCount = 0;
+
             // сообщение, которое мы собираем и при окончании, пересылаем дальше в делегат
             private ProtocolMsgEventArgs _tmpMsg;
+
             // сообщение об ошибке в протоколе
             private ProtocolErrorEventArgs _tmpErrMsg;
+
             // внутренние переменные
             private int _dt = 0;
             private int _bufI = 0;
@@ -42,6 +49,7 @@ namespace EGSE.Protocols
 
             private TxtLogger _fEncStream;
             private FileStream _fDecStream;
+
             // писать бинарный лог данных USB (при вызове соответствующего конструктора)
             public bool writeEncLog = false;
             public bool writeDecLog = false;
@@ -58,11 +66,12 @@ namespace EGSE.Protocols
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB7C6E" />.
-            /// Конструктор, позволяющий писать бинарный лог данных из USB.
             /// </summary>
-            /// <param name="fStream">Поток файла, куда пишем</param>
-            /// <param name="writeBinLog">Флаг - писать сразу или нет</param>
-            public ProtocolUSB7C6E(FileStream fDecStream, TxtLogger fEncStream, bool wDecLog, bool wEncLog) : this()
+            /// <param name="fDecStream">Поток файла, куда пишем decoder</param>
+            /// <param name="fEncStream">Текслогер для encoder-а</param>
+            /// <param name="decLog">if set to <c>true</c> [decoder log].</param>
+            /// <param name="encLog">if set to <c>true</c> [encoder log].</param>
+            public ProtocolUSB7C6E(FileStream fDecStream, TxtLogger fEncStream, bool decLog, bool encLog) : this()
             {
                 _fDecStream = null;
                 _fEncStream = null;
@@ -72,16 +81,16 @@ namespace EGSE.Protocols
                 if ((fDecStream != null) && (fDecStream.CanRead))
                 {
                     _fDecStream = fDecStream;
-                    writeDecLog = wDecLog;
+                    writeDecLog = decLog;
                 }
-                //
+
                 _fEncStream = fEncStream;
                 
-                writeEncLog = wEncLog;
+                writeEncLog = encLog;
             }
 
             /// <summary>
-            /// Количество ошибок декодера
+            /// Получает количество ошибок декодера.
             /// </summary>
             public uint errorsCount
             {
@@ -121,19 +130,20 @@ namespace EGSE.Protocols
             /// <summary>
             /// Декодируем весь буфер
             /// </summary>
-            /// <param name="buf">входной буфер сообщения</param>
-            override public void Decode(byte[] buf, int bufSize)
+            /// <param name="buffer">The buffer.</param>
+            /// <param name="bufferSize">Size of the buffer.</param>
+            override public void Decode(byte[] buffer, int bufferSize)
             {
                 int i = 0;
-                //
+
                 if (writeDecLog && (_fDecStream != null))
                 {
-                    _fDecStream.Write(buf, 0, bufSize);
+                    _fDecStream.Write(buffer, 0, bufferSize);
                 }
-                //
-                while (i < bufSize)
+
+                while (i < bufferSize)
                 { 
-                    _bt = buf[i];
+                    _bt = buffer[i];
                     switch (_iStep) {
                         case 0: if (_bt != 0x7C) {
                                 if (!_firstMsg)                      // если после предыдущего сообщения сразу не встречается 0x7C - считаем ошибкой
@@ -142,7 +152,7 @@ namespace EGSE.Protocols
                                     _errorsCount++;
                                     if (_errorsCount < MAX_ERRORS_COUNT)
                                     {
-                                        makeErrorMsg(buf, i, bufSize);     // сформируем сообщение об ошибке и передадим его делегату
+                                        makeErrorMsg(buffer, i, bufferSize);     // сформируем сообщение об ошибке и передадим его делегату
                                     }
                                 }
                                 _iStep = -1;
@@ -153,7 +163,7 @@ namespace EGSE.Protocols
                                 _errorsCount++;
                                 if (_errorsCount < MAX_ERRORS_COUNT)
                                 {
-                                    makeErrorMsg(buf, i, bufSize);         // сформируем сообщение об ошибке и передадим его делегату
+                                    makeErrorMsg(buffer, i, bufferSize);         // сформируем сообщение об ошибке и передадим его делегату
                                 }
                                 _iStep = -1;
                             }
@@ -169,9 +179,9 @@ namespace EGSE.Protocols
                             _tmpMsg.DataLen = _msgLen;
                             break;
                         default:
-                            if (bufSize - i >= _msgLen)                // в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
+                            if (bufferSize - i >= _msgLen)                // в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
                             {
-                                Array.Copy(buf, i, _tmpMsg.Data, _bufI, _msgLen);
+                                Array.Copy(buffer, i, _tmpMsg.Data, _bufI, _msgLen);
                                 OnProtocolMsg(_tmpMsg);
                                 _firstMsg = false;
                                 _iStep = -1;
@@ -180,8 +190,8 @@ namespace EGSE.Protocols
                             }
                             else                                    // копируем только часть, до конца буфера 
                             {
-                                _dt = bufSize - i;
-                                Array.Copy(buf, i, _tmpMsg.Data, _bufI, _dt);
+                                _dt = bufferSize - i;
+                                Array.Copy(buffer, i, _tmpMsg.Data, _bufI, _dt);
                                 _bufI += _dt;
                                 _msgLen -= _dt;
                                 i += _dt;
@@ -202,6 +212,7 @@ namespace EGSE.Protocols
             /// <param name="addr">адрес, по которому нужно передать данные</param>
             /// <param name="buf">данные (максимум 256 байт)</param>
             /// <param name="bufOut">выходной буфер</param>
+            /// <returns>True - если выполнено успешно</returns>
             override public bool Encode(uint addr, byte[] buf, out byte[] bufOut)
             {
                 bufOut = null; 

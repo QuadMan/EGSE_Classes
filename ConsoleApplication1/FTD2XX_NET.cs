@@ -1150,7 +1150,8 @@ namespace FTD2XXNET
         {
             // Initialise ftStatus to something other than FT_OK
             FT_STATUS ftStatus = FT_STATUS.FT_OTHER_ERROR;
-            //!FT_ERROR ftErrorCondition = FT_ERROR.FT_NO_ERROR;
+
+            // !FT_ERROR ftErrorCondition = FT_ERROR.FT_NO_ERROR;
 
             // If the DLL hasn't been loaded, just return here
             if (handleFTD2XXDLL == IntPtr.Zero)
@@ -1251,6 +1252,7 @@ namespace FTD2XXNET
                         }
                     }
                     */
+
                     // Requested bit mode is supported
                     // Note FT_BIT_MODES.FT_BIT_MODE_RESET falls through to here - no bits set so cannot check for AND
                     // Call FT_SetBitMode
@@ -1425,7 +1427,7 @@ namespace FTD2XXNET
             {
                 if (entryFTSetDeadmanTimeout == IntPtr.Zero)
                 {
-                    //!MessageBox.Show("Failed to load function FT_SetDeadmanTimeout.");
+                    // !MessageBox.Show("Failed to load function FT_SetDeadmanTimeout.");
                 }
             }
             return status;
@@ -1519,7 +1521,7 @@ namespace FTD2XXNET
 
         // Only support IN transfer sizes at the moment
 
-        //public UInt32 InTransferSize(UInt32 InTransferSize, UInt32 OutTransferSize)
+        // public UInt32 InTransferSize(UInt32 InTransferSize, UInt32 OutTransferSize)
         {
             // Initialise ftStatus to something other than FT_OK
             FT_STATUS status = FT_STATUS.FT_OTHER_ERROR;

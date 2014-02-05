@@ -5,7 +5,7 @@
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.WPF
+namespace EGSE.Defaults
 {
     using System;
     using System.Collections;
@@ -24,10 +24,9 @@ namespace EGSE.WPF
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
     using System.Windows.Shapes;
+    using EGSE.Constants;
     using EGSE.Utilites;
     using EGSE.Utilites.ADC;
-    using EGSE.Constants;
-    using EGSE.Defaults;
 
     /// <summary>
     /// Класс, содержащий "неизменяемые" методы и поля-свойства основного окна.
@@ -36,29 +35,31 @@ namespace EGSE.WPF
     {
         private System.Windows.Threading.DispatcherTimer _dispatcherTimer;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="MainWindow" />.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
-            base.Title = BUKConst.ShowCaption;
+            Title = BUKConst.ShowCaption;
 
             InitControlValues();
-            loadWindows();
+            LoadWindows();
             InitModules();
 
             LoadAppSettings();
 
             _dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            _dispatcherTimer.Tick += new EventHandler(timerWork);
+            _dispatcherTimer.Tick += new EventHandler(TimerWork);
             _dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             _dispatcherTimer.Start();
             _intfEGSE.Device.Start();
-
         }
 
         /// <summary>
         /// Загружаем параметры окон из конфигурационного файла
         /// </summary>
-        private void loadWindows()
+        private void LoadWindows()
         {
             foreach (Window w in Application.Current.Windows)
             {
@@ -69,7 +70,7 @@ namespace EGSE.WPF
         /// <summary>
         /// Сохраняем параметры окно в конфигурационном файле
         /// </summary>
-        private void saveAllWindows()
+        private void SaveAllWindows()
         {
             foreach (Window w in Application.Current.Windows)
             {
@@ -78,17 +79,18 @@ namespace EGSE.WPF
         }
 
         /// <summary>
-        /// Обработка таймера 1 раз в секунду
+        /// Обработка таймера 1 раз в секунду.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void timerWork(object sender, EventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void TimerWork(object sender, EventArgs e)
         {
             OnTimerWork();
-            // проверяем элементы управления - изменились ли они
-            //testControlValuesOnTimeTick();
-            // индикация подключения, скорости
-            //TimeLabel.Content = _EGSE.ETime.ToString();
+
+            //// проверяем элементы управления - изменились ли они
+            ////testControlValuesOnTimeTick();
+            //// индикация подключения, скорости
+            ////TimeLabel.Content = _EGSE.ETime.ToString();
             
             /*if (_EGSE.Connected)
             {
@@ -105,35 +107,36 @@ namespace EGSE.WPF
                 //hsiWin.Cle
             }*/
              
-            //SpeedLabel.Content = Converter.SpeedToStr(_EGSE.Device.Speed) + " [" + _EGSE.Device.GlobalBufferSize.ToString() + "]";
+            // SpeedLabel.Content = Converter.SpeedToStr(_EGSE.Device.Speed) + " [" + _EGSE.Device.GlobalBufferSize.ToString() + "]";
         }
 
         /// <summary>
-        /// Вызывается при закрытии приложения
+        /// Вызывается при закрытии приложения.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.ComponentModel.CancelEventArgs"/> instance containing the event data.</param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // сохраняем все настройки приложения
-            saveAllWindows();
+            SaveAllWindows();
             SaveAppSettings();
+
             // закрываем окна и устройства
-            closeAll();
+            CloseAll();
+
             // закрываем лог-файлы
             LogsClass.LogMain.LogText = "Программа завершена";
 
             Application.Current.Shutdown();
         }
 
-
         /// <summary>
         /// Закрываем все окна, кроме основного, так как оно само закрывается
         /// И отключаемся от устройства
         /// </summary>
-        private void closeAll()
+        private void CloseAll()
         {
-            //Window mainWin = Window.GetWindow(this);
+            //// Window mainWin = Window.GetWindow(this);
             
             foreach (Window w in Application.Current.Windows)
             {
@@ -147,30 +150,30 @@ namespace EGSE.WPF
         }
 
         /// <summary>
-        /// При нажатии на кнопку "Выйти"
+        /// Handles the Click event of the CloseButton control.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
         /// <summary>
-        /// Кнопка "О программе"
+        /// Handles the Click event of the AboutButton control.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
         }
 
         /// <summary>
-        /// Для отлова нажатия на кнопки-чекбоксы и т.д.
+        /// Mouses the logger event.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void mouseLoggerEvent(object sender, MouseButtonEventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        private void MouseLoggerEvent(object sender, MouseButtonEventArgs e)
         {
             string logEvent = EventClickToString.ElementClicked(e);
             if (logEvent != null)
@@ -180,15 +183,14 @@ namespace EGSE.WPF
         }
 
         /// <summary>
-        /// При активации окна проверяем, чтобы дочерние окна были видимы, если установлены чекбоксы соответствущие 
+        /// Handles the Activated event of the Window control.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void Window_Activated(object sender, EventArgs e)
         {
-            //checkWindowsActivation();
+            // checkWindowsActivation();
         }
-
     }
 
     public class TestC : INotifyPropertyChanged
@@ -197,7 +199,11 @@ namespace EGSE.WPF
 
         public bool IsWinOpened
         {
-            get { return _isWinOpened; }
+            get 
+            { 
+                return _isWinOpened; 
+            }
+
             set
             {
                 _isWinOpened = value;
@@ -206,6 +212,7 @@ namespace EGSE.WPF
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void FirePropertyChangedEvent(string propertyName)
         {
             if (PropertyChanged != null)

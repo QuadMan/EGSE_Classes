@@ -118,10 +118,12 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Строка шестнадцатеричных чисел в массив байт
+        /// Строка шестнадцатеричных чисел в массив байт.
         /// </summary>
-        /// <param name="HexStr">Массив HEX чисел (в виде строк)</param>
-        /// <returns>Массив байт или null, если массив hexValues пуст</returns>
+        /// <param name="hexValues">Массив HEX чисел (в виде строк)</param>
+        /// <returns>
+        /// Массив байт или null, если массив hexValues пуст
+        /// </returns>
         public static byte[] HexStrToByteArray(string[] hexValues)
         {
             if ((hexValues == null) || (hexValues.Length == 0))
@@ -210,20 +212,20 @@ namespace EGSE.Utilites
     }
 
     /// <summary>
-    /// Статический класс позволяет накладывать байтовый поток на структуру
-    /// Пример: объявляем структуру
-    ///         [StructLayout(LayoutKind.Sequential,Pack = 1)]
-    ///         struct testS
-    ///         {
-    ///                 byte header;
-    ///                 int size;
-    ///                 byte flag;
-    ///         }
-    ///         и вызываем функцию 
-    ///         testS ts = ByteArrayToStructure.make<testS>(byteBuf);
+    /// Статический класс позволяет накладывать байтовый поток на структуру.
     /// </summary>
     public static class ByteArrayToStructure
     {
+        /// Пример: объявляем структуру
+        ///         [StructLayout(LayoutKind.Sequential,Pack = 1)]
+        ///         struct testS
+        ///         {
+        ///                 byte header;
+        ///                 int size;
+        ///                 byte flag;
+        ///         }
+        ///         и вызываем функцию 
+        ///         testS ts = ByteArrayToStructure.make<testS>(byteBuf);
         /// <summary>
         /// Преобразуем массив байт в структуру
         /// </summary>
@@ -248,37 +250,37 @@ namespace EGSE.Utilites
         private const int DEFAULT_TIME_SIZE_BYTES = 6;
 
         /// <summary>
-        /// Данные времени (6 байт)
+        /// Получает или задает данные времени (6 байт).
         /// </summary>
         public byte[] Data { get; set; }
 
         /// <summary>
-        /// Параметр: День
+        /// Получает параметр: День.
         /// </summary>
         public uint Day { get; private set; }
 
         /// <summary>
-        /// Параметр: Час
+        /// Получает параметр: Час.
         /// </summary>
         public uint Hour { get; private set; }
 
         /// <summary>
-        /// Параметр: Минута
+        /// Получает параметр: Минута.
         /// </summary>
         public uint Min { get; private set; }
 
         /// <summary>
-        /// Параметр: Секунда
+        /// Получает параметр: Секунда.
         /// </summary>
         public uint Sec { get; private set; }
 
         /// <summary>
-        /// Параметр: Миллисекунда
+        /// Получает параметр: Миллисекунда.
         /// </summary>
         public uint Msec { get; private set; }
 
         /// <summary>
-        /// Параметр: Микросекунда
+        /// Получает параметр: Микросекунда.
         /// </summary>
         public uint Mcsec { get; private set; }
 
@@ -437,12 +439,12 @@ namespace EGSE.Utilites
         private const int MAX_ITEMS_COUNT = 100;
 
         /// <summary>
-        /// Записываем параметр param в секцию section, значением value
+        /// Записываем параметр param в секцию section, значением value.
         /// </summary>
         /// <param name="param">Параметр приложения</param>
         /// <param name="value">Значение параметра</param>
         /// <param name="section">секция, по-умолчанию, MAIN</param>
-        /// <returns></returns>
+        /// <returns>True - если все хорошо</returns>
         public static bool Save(string param, string value, string section = "MAIN")
         {
             try
@@ -484,11 +486,11 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Метод сохраняет в INI файл список
+        /// Метод сохраняет в INI файл список.
         /// </summary>
         /// <param name="strList">Список для сохранения</param>
         /// <param name="section">Секция, в которую пишем</param>
-        /// <returns></returns>
+        /// <returns>True - если сохранено</returns>
         public static bool SaveList(List<string> strList, string section)
         {
             if ((strList == null) || (strList.Count == 0)) {
@@ -518,12 +520,12 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Загружаем элементы из секции в список
-        /// Отбираем элементы ItemN, где N должен быть от 0 до MAX_ITEMS_COUNT-1
+        /// Загружаем элементы из секции в список.
+        /// Отбираем элементы ItemN, где N должен быть от 0 до MAX_ITEMS_COUNT-1.
         /// </summary>
         /// <param name="strList">Список, в который загружаем элементы</param>
         /// <param name="section">Секция, из которой загружаем элементы списка</param>
-        /// <returns></returns>
+        /// <returns>True - если выполнено успешно</returns>
         public static bool LoadList(List<string> strList, string section)
         {
             if (strList == null)

@@ -9,9 +9,9 @@ namespace EGSE.Devices
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Windows;
     using System.ComponentModel;
@@ -33,7 +33,6 @@ namespace EGSE.Devices
         private const int TIME_DATA_ADDR = 0x02;
         private const int TIME_SET_ADDR = 0x03;
         private const int TIME_OBT_ADDR = 0x12;
-        //
         private const int POWER_SET_ADDR = 0x05;
         private const int HSI_BUNI_CTRL_ADDR = 0x06;
         private const int HSI_XSAN_CTRL_ADDR = 0x09;
@@ -41,6 +40,11 @@ namespace EGSE.Devices
 
         private byte[] buf;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="DeviceBUK" />.
+        /// </summary>
+        /// <param name="Serial">Уникальный идентификатор USB</param>
+        /// <param name="dec">The decoder.</param>
         public DeviceBUK(string Serial, ProtocolUSBBase dec)
             : base(Serial, dec, new USBCfg(10))
         {
@@ -59,15 +63,23 @@ namespace EGSE.Devices
             base.SendCmd(HSI_XSAN_CTRL_ADDR, buf);
         }*/
 
+        /// <summary>
+        /// Commands the send uks.
+        /// </summary>
+        /// <param name="UKSBuf">данные (УКС) для передачи в USB</param>
         public void CmdSendUKS(byte[] UKSBuf)
         {
-            base.SendCmd(HSI_UKS_ADDR, UKSBuf);
+            SendCmd(HSI_UKS_ADDR, UKSBuf);
         }
 
-        public void CmdPowerOnOff(UInt32 turnOn)
+        /// <summary>
+        /// Commands the power on off.
+        /// </summary>
+        /// <param name="turnOn">The turn on.</param>
+        public void CmdPowerOnOff(int turnOn)
         {
             turnOn &= 1;
-            base.SendCmd(POWER_SET_ADDR, new byte[1] { (byte)turnOn });
+            SendCmd(POWER_SET_ADDR, new byte[1] { (byte)turnOn });
         }
 
         /// <summary>
@@ -87,10 +99,10 @@ namespace EGSE.Devices
 
             buf = new byte[1] { 1 };
 
-            base.SendCmd(TIME_RESET_ADDR, buf);
-            base.SendCmd(TIME_DATA_ADDR, time.Data);
-            base.SendCmd(TIME_OBT_ADDR, OBTData);
-            base.SendCmd(TIME_SET_ADDR, buf);
+            SendCmd(TIME_RESET_ADDR, buf);
+            SendCmd(TIME_DATA_ADDR, time.Data);
+            SendCmd(TIME_OBT_ADDR, OBTData);
+            SendCmd(TIME_SET_ADDR, buf);
         }
     }
 
@@ -111,6 +123,7 @@ namespace EGSE.Devices
 
         // куда записываем данные с XSAN
         private FileStream _xsanDataLogStream;
+
         // с какого канала записываются данные (основного или резервного)
         private uint _xsanChannelForWriting;
 
@@ -121,7 +134,11 @@ namespace EGSE.Devices
 
         public bool Connected
         {
-            get { return _connected; }
+            get 
+            { 
+                return _connected; 
+            }
+
             private set
             {
                 _connected = value;
@@ -242,7 +259,11 @@ namespace EGSE.Devices
 
         public bool WriteXsanDataToFile
         {
-            get { return _writeXsanDataToFile; }
+            get 
+            { 
+                return _writeXsanDataToFile; 
+            }
+
             set
             {
                 _writeXsanDataToFile = value;
@@ -315,7 +336,7 @@ namespace EGSE.Devices
             _writeXsanDataToFile = false;
 
             Tm = new TelemetryBUK();
-            //
+
             /*ControlValuesList[BUKConst.XSAN_CTRL_IDX].AddProperty(BUKConst.PROPERTY_XSAN_READY_IDX, 4, 1, Device.CmdHSIXSANControl, delegate(UInt32 value)
             {
                 XsanImitatorReady = (value == 1);
@@ -389,9 +410,9 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Метод вызывается, когда прибор подсоединяется или отсоединяется.
+        ///  Метод вызывается, когда прибор подсоединяется или отсоединяется.
         /// </summary>
-        /// <param name="state">Текущее состояние прибора TRUE - подключен, FALSE - отключен</param>
+        /// <param name="isConnected">if set to <c>true</c> [is connected].</param>
         void onChangeConnection(bool isConnected)
         {
             Connected = isConnected;
@@ -493,10 +514,11 @@ namespace EGSE.Devices
         private void onErrorFunc(ProtocolErrorEventArgs msg)
         {
             string bufferStr = Converter.ByteArrayToHexStr(msg.Data);
-            LogsClass.LogErrors.LogText =  msg.Msg + " (" + bufferStr + ", на позиции: " + msg.ErrorPos.ToString() + ")";
+            LogsClass.LogErrors.LogText = msg.Msg + " (" + bufferStr + ", на позиции: " + msg.ErrorPos.ToString() + ")";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void FirePropertyChangedEvent(string propertyName)
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

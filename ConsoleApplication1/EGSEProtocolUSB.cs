@@ -26,8 +26,7 @@ namespace EGSE.Protocols
         private int _dataLen;
 
         /// <summary>
-        /// Gets or sets data message.
-        /// Считать или записать данные сообщения.
+        /// Получает или задает данные сообщения.
         /// </summary>
         public byte[] Data
         {
@@ -43,7 +42,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Gets or sets длину сообщения.
+        /// Получает или задает длину сообщения.
         /// </summary>
         public int DataLen
         {
@@ -82,7 +81,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Gets or sets адрес, по которому пришло сообщение.
+        /// Получает или задает адрес, по которому пришло сообщение.
         /// </summary>
         public uint Addr
         {
@@ -126,7 +125,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Gets or sets позиция ошибки в буфере
+        /// Получает или задает позицию ошибки в буфере.
         /// </summary>
         public uint ErrorPos
         {
@@ -142,7 +141,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Gets or sets признак ошибки
+        /// Получает или задает признак ошибки.
         /// </summary>
         public string Msg
         {

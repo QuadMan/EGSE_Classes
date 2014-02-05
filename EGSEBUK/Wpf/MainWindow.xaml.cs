@@ -5,7 +5,7 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.WPF
+namespace EGSE.Defaults
 {
     using System;
     using System.Collections.Generic;

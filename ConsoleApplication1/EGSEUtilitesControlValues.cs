@@ -15,13 +15,13 @@ namespace EGSE.Utilites
     /// Например, есть регистр, содержащий параметры интерфейса (включен/выключен, скорость, и т.д.), необходимо синхронизировать настройки, сделанные пользователем
     /// и полученные по USB
     /// Для этого есть два свойства: UsbValue и UiValue (приватное), которые устанавливаются соответственно при получении данных с USB и из пользовательского интерфейса.
-    /// Далее, раз в секунду необходимо вызывать метод ControlValue.TimeTick(), который проверяет, в случае необходимости значения этий свойств (если свойства не совпадают, 
+    /// Далее, раз в секунду необходимо вызывать метод ControlValue.TimeTick(), который проверяет, в случае необходимости значения этий свойств (если свойства не совпадают,
     /// срабатывает событие, определенное для данного свойства).
     /// По-умолчанию, свойство сверяется с данными из USB после установки свойства из пользовательского интерфейса, через 2 отсчета TimeTick.
     /// Если значения различаются (установленные через пользовательский интерфейс и USB), в качестве основного устанавливается значение, полученное из USB.
     /// Так как в одном байте обычно записано несколько свойств, для ControlValue доступен метод AddProperty, который позволяет
     /// указывать побитно, какие биты отвечают за какое свойство.
-    /// К примеру, 
+    /// К примеру,
     /// ControlValue.AddProperty(0, 4, 1, SetFunction, delegate(UInt32 value) { KvvImitatorReady = (value == 1); });
     /// Этим методом мы говорим, что создаем свойство с индексом 0, начинающееся с 4-го бита, длиной в 1 бит. При установке этого свойства вызывается функция SetFunction,
     /// Если значения UsbValue и UiValue не совпали при проверке, вызывается делегат (или функция), описанная в последнем параметре.
@@ -36,11 +36,11 @@ namespace EGSE.Utilites
         private const int UPDATE_TIMEOUT_TICKS = 3;
 
         /// <summary>
-        /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue
+        /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue.
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">TODO описание</param>
         public delegate void ControlValueEventHandler(uint value);
-
+        
         /// <summary>
         /// Класс свойства
         /// </summary>
@@ -69,7 +69,6 @@ namespace EGSE.Utilites
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="CVProperty" />.
             /// </summary>
-            /// <param name="_idx">Индекс свойства</param>
             /// <param name="_bitIdx">Позиция первого бита</param>
             /// <param name="_bitLen">Длина свойства(в битах)</param>
             /// <param name="_setUsbEvent">Делегат вызывается принеобходимости ищменить свойство</param>
@@ -126,14 +125,14 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Добавляем свойство
+        /// Добавляем свойство.
         /// </summary>
         /// <param name="_idx">Индекс свойства, должно быть уникально</param>
         /// <param name="_bitIdx">Индекс бита, с которого свойство начинается</param>
         /// <param name="_bitLen">Длина в битах свойства</param>
         /// <param name="_setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
         /// <param name="_changeEvent">Функция, которая должна вызываться при изменении свойства</param>
-        /// <returns></returns>
+        /// <returns>True - если выполнено успешно</returns>
         public bool AddProperty(int _idx, ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
         {
             if (_cvDictionary.ContainsKey(_idx) || (_bitLen == 0))
@@ -167,17 +166,19 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Задаем значение свойства для величины pValue
+        /// Задаем значение свойства для величины pValue.
         /// </summary>
-        /// <param name="cv">Описание свойства</param>
+        /// <param name="propertyIdx">Index of the property.</param>
         /// <param name="pValue">Значение величины, к которому нужно применть установку свойства</param>
         /// <param name="autoSendValue">Автоматически отправлять значение (вызовом делегата SetUsbEvent)</param>
-        /// <returns></returns>
-        public bool SetProperty(int pIdx, int pValue, bool autoSendValue = true)
+        /// <returns>
+        /// True - если выполнено успешно
+        /// </returns>
+        public bool SetProperty(int propertyIdx, int pValue, bool autoSendValue = true)
         {
-            if (!_cvDictionary.ContainsKey(pIdx)) return false;
+            if (!_cvDictionary.ContainsKey(propertyIdx)) return false;
 
-            CVProperty cv = _cvDictionary[pIdx];
+            CVProperty cv = _cvDictionary[propertyIdx];
 
             int mask = 0;
             for (ushort i = 0; i < cv.BitLen; i++)
@@ -213,7 +214,7 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Значение, полученное из USB
+        /// Получает или задает значение, полученное из USB.
         /// </summary>
         public int UsbValue
         {
@@ -229,7 +230,7 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Значение, установленное из интерфейса
+        /// Получает или задает значение, установленное из интерфейса пользователем.
         /// </summary>
         public int UIValue
         {

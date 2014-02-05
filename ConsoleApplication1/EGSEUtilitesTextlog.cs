@@ -21,33 +21,33 @@ namespace EGSE.Utilites
     /// <summary>
     /// Класс единичного текстлога
     /// </summary>
-    public class TxtLogger //: IDisposable
+    public class TxtLogger // : IDisposable
     {
-        //private bool disposed = false;
+        //// private bool disposed = false;
 
-        //public void Dispose()
-        //{
-        //    Cleanup(true);
-        //    GC.SuppressFinalize(this);
-        //}
+        //// public void Dispose()
+        //// {
+        ////    Cleanup(true);
+        ////    GC.SuppressFinalize(this);
+        //// }
 
-        //private void Cleanup(bool disposing)
-        //{
-        //    if (!this.disposed)
-        //    {
-        //        if (disposing)
-        //        {
-        //            _sw.Flush();
+        ////private void Cleanup(bool disposing)
+        //// {
+        ////    if (!this.disposed)
+        ////    {
+        ////        if (disposing)
+        ////        {
+        ////            _sw.Flush();
 
-        //        }
-        //    }
-        //    disposed = true;
-        //}
+        //// }
+        ////    }
+        ////    disposed = true;
+        //// }
 
-        //~TxtLogger()
-        //{
-        //    Cleanup(false);
-        //}
+        //// ~TxtLogger()
+        //// {
+        ////    Cleanup(false);
+        //// }
 
         /// <summary>
         /// Имя файла
@@ -96,9 +96,10 @@ namespace EGSE.Utilites
         }*/
 
         /// <summary>
-        /// Метод, реализующий запись текста и времени в log-файл
-        /// Запись осуществляется только если _enableTextWrite == true
-        /// Запись времени осуществляется только если значение _enableTimeWrite == true
+        /// Получает или задает метод, реализующий запись текста и времени в log-файл.
+        /// Примечание: 
+        /// Запись осуществляется только если _enableTextWrite == true.
+        /// Запись времени осуществляется только если значение _enableTimeWrite == true.
         /// </summary>
         public string LogText
         {
@@ -106,6 +107,7 @@ namespace EGSE.Utilites
             {
                 return null;
             }
+
             set
             {
                 if (_enableTextWrite)
@@ -116,12 +118,14 @@ namespace EGSE.Utilites
                         _sw.Write("{0:d2}:{1:d2}:{2:d2}:{3:d3} ", _logtime.Hour, _logtime.Minute, _logtime.Second, _logtime.Millisecond);
                     }
                     _sw.WriteLine(value);
+
                     // введена для отладки USB, может быть вдальнейшем ввести параметр лога
                     _sw.Flush();
                 }
                     
             }
         }
+
         /// <summary>
         /// Получает или задает значение, показывающее, можно ли производить запись текста в log-файл.
         /// По умолчанию: разрешена.
@@ -149,6 +153,7 @@ namespace EGSE.Utilites
             {
                 return _enableTimeWrite;
             }
+
             set 
             {
                 _enableTimeWrite = value;
@@ -168,7 +173,7 @@ namespace EGSE.Utilites
 
             _logtime = DateTime.Now;
 
-            strName = strFileName.Split(new Char[] { '.' });
+            strName = strFileName.Split(new char[] { '.' });
             strRes += strName[0];
             for (int i = 1; i < strName.GetLength(0) - 1; i++)
                 strRes += "." + strName[i];
@@ -177,6 +182,7 @@ namespace EGSE.Utilites
 
             return strRes;
         }
+
         /// <summary>
         /// Метод создает директорию в папке с исполнительным кодом программы
         /// </summary>
@@ -216,6 +222,7 @@ namespace EGSE.Utilites
             _sw.Flush();
         }
     }
+
     /// <summary>
     /// Класс множества текстлогов
     /// </summary>
@@ -235,8 +242,9 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Метод, создающий новый log-файл
+        /// Метод, создающий новый log-файл.
         /// </summary>
+        /// <param name="filename">The filename.</param>
         public void AddFile(string filename)
         {
             txtLoggers.Add(new TxtLogger(filename));
@@ -265,8 +273,10 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Индексатор для текстлога
+        /// Индексатор для текстлога.
         /// </summary>
+        /// <param name="i">Индекс текстлога</param>
+        /// <returns>Экземпляр текстлога</returns>
         public TxtLogger this[int i]
         {
             get
@@ -277,7 +287,7 @@ namespace EGSE.Utilites
 
         ~TxtLoggers()
         {
-            //foreach (TxtLogger tl in txtLoggers)
+            // foreach (TxtLogger tl in txtLoggers)
             //    tl.Dispose(); 
         }
     }

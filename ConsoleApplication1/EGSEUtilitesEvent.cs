@@ -131,6 +131,7 @@ namespace EGSE.Utilites
                 }
                 return strRes;
             }
+
             static public string ElementClicked(object element)
             {
 

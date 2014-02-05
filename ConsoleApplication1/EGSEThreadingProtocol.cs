@@ -59,7 +59,7 @@ namespace EGSE.Threading
         private volatile bool _terminateFlag;
 
         /// <summary>
-        /// Максимальный размер кольцевого буфера 
+        /// Получает или задает максимальный размер кольцевого буфера.
         /// </summary>
         public uint MaxBufferSize
         {

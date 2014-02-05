@@ -53,6 +53,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="..\..\ConsoleApplication1\EGSEProtocolUSB.Designer.cs">
+      <Link>EGSEProtocolUSB.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSEProtocolUSB.resx</DependentUpon>
+    </Compile>
     <Compile Include="EGSEConstantsBUK.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -177,9 +183,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -191,7 +194,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <EmbeddedResource Include="..\..\ConsoleApplication1\EGSEProtocolUSB.resx">
-      <Link>EGSEProtocolUSB.resx</Link>
+      <DependentUpon>EGSEProtocolUSB.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSEProtocolUSB.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="EGSEConstantsBUK.resx">
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
