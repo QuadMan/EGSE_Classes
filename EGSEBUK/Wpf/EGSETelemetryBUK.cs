@@ -22,82 +22,46 @@ namespace EGSE.Telemetry
     public class TelemetryBUK
     {
         /// <summary>
-        /// Gets a value indicating whether [busk power a1].
+        /// Получает значение, показывающее, есть ли питание у [ПК1 БУСК].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [busk power a1]; otherwise, <c>false</c>.
+        ///   <c>true</c>  если питание [ПК1 БУСК] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUSKPowerA1 { get; private set; }
+        public bool BUSKPower1 { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether [busk power b1].
+        /// Получает значение, показывающее, есть ли питание у [ПК2 БУСК].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [busk power b1]; otherwise, <c>false</c>.
+        ///   <c>true</c> если питание [ПК2 БУСК] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUSKPowerB1 { get; private set; }
+        public bool BUSKPower2 { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether [busk power a2].
+        /// Получает значение, показывающее, есть ли питание у [ПК1 БУНД].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [busk power a2]; otherwise, <c>false</c>.
+        ///   <c>true</c> если питание [ПК1 БУНД] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUSKPowerA2 { get; private set; }
+        public bool BUNDPower1 { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether [busk power b2].
+        /// Получает значение, показывающее, есть ли питание у [ПК2 БУНД].
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [busk power b2]; otherwise, <c>false</c>.
+        ///   <c>true</c> если питание [ПК2 БУНД] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUSKPowerB2 { get; private set; }
-
-        /// <summary>
-        /// Gets a value indicating whether [bund power a1].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [bund power a1]; otherwise, <c>false</c>.
-        /// </value>
-        public bool BUNDPowerA1 { get; private set; }
-
-        /// <summary>
-        /// Gets a value indicating whether [bund power b1].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [bund power b1]; otherwise, <c>false</c>.
-        /// </value>
-        public bool BUNDPowerB1 { get; private set; }
-
-        /// <summary>
-        /// Gets a value indicating whether [bund power a2].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [bund power a2]; otherwise, <c>false</c>.
-        /// </value>
-        public bool BUNDPowerA2 { get; private set; }
-
-        /// <summary>
-        /// Gets a value indicating whether [bund power b2].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [bund power b2]; otherwise, <c>false</c>.
-        /// </value>
-        public bool BUNDPowerB2 { get; private set; }
+        public bool BUNDPower2 { get; private set; }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="TelemetryBUK" />.
         /// </summary>
         public TelemetryBUK()
         {
-            BUSKPowerA1 = false;
-            BUSKPowerA2 = false;
-            BUSKPowerB1 = false;
-            BUSKPowerB2 = false;
-            BUNDPowerA1 = false;
-            BUNDPowerA2 = false;
-            BUNDPowerB1 = false;
-            BUNDPowerB2 = false;
+            BUSKPower1 = false;
+            BUSKPower2 = false;
+            BUNDPower1 = false;
+            BUNDPower2 = false;
         }
 
         /// <summary>
@@ -106,7 +70,10 @@ namespace EGSE.Telemetry
         /// <param name="buf">Буфер с данными</param>
         public void Update(byte[] buf)
         {
-            BUSKPowerA1 = (buf[6] & 1) == 1;
+            BUSKPower1 = (buf[3] & 0x80) == 0x80;
+            BUSKPower2 = (buf[3] & 0x40) == 0x40;
+            BUNDPower1 = (buf[3] & 0x20) == 0x20;
+            BUNDPower2 = (buf[3] & 0x10) == 0x10;
         }
     }
 }

@@ -73,19 +73,37 @@ namespace EGSE.Cyclogram
         /// </summary>
         public const int MaxSecondsValue = 65535;
 
-        // текущая команда
+        /// <summary>
+        /// Текущая команда.
+        /// </summary>
         private CyclogramLine _curCommand;
 
-        // Список доступных команд циклограммы
+        /// <summary>
+        /// Список доступных команд циклограммы.
+        /// </summary>
         private CyclogramCommands _availableCommands;
 
-        // Была ли ошибка при парсинге файла
+        /// <summary>
+        /// Была ли ошибка при парсинге файла.
+        /// </summary>
         private bool _wasError;
 
         /// <summary>
         /// Получает или задает имя файла циклограмм.
         /// </summary>
         public string FileName { get; set; }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramFile" />.
+        /// </summary>
+        public CyclogramFile()
+        {
+            // !_curLine = 0;
+            _wasError = false;
+            _availableCommands = null;
+            _curCommand = new CyclogramLine();
+            Commands = new ObservableCollection<CyclogramLine>();
+        }
 
         /// <summary>
         /// Получает или задает список команд, создаваемый из файла циклограмм.
@@ -104,19 +122,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="CyclogramFile" />.
-        /// </summary>
-        public CyclogramFile()
-        {
-            // !_curLine = 0;
-            _wasError = false;
-            _availableCommands = null;
-            _curCommand = new CyclogramLine();
-            Commands = new ObservableCollection<CyclogramLine>();
-        }
-
-        /// <summary>
-        /// Функция из строки вырезает комментарии и возвращает строку без комментариев по ссылке и сам комментарий в возвращаемом значении
+        /// Функция из строки вырезает комментарии и возвращает строку без комментариев по ссылке и сам комментарий в возвращаемом значении.
         /// </summary>
         /// <param name="cycStr">Исходная строка, из которой исключаются комментарии</param>
         /// <returns>Cтрока комментариев (если их нет, возвращет String.Empty)</returns>
@@ -467,10 +473,25 @@ namespace EGSE.Cyclogram
         }
     }
 
+    /// <summary>
+    /// Отвечает за представление позиции команды в файле.
+    /// </summary>
     public class CycPosition
     {
+        /// <summary>
+        /// Получает или задает обработчик команды для очередного шага циклограммы.
+        /// </summary>
+        /// <value>
+        /// Обработчик команды для очередного шага циклограммы.
+        /// </value>
         public EGSE.Threading.StepEventHandler SetCmdEvent { get; set; }
 
+        /// <summary>
+        /// Получает значение, показывающее, является ли текущая команда последней.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [is last command]; otherwise, <c>false</c>.
+        /// </value>
         public bool IsLastCommand 
         { 
             get 
@@ -479,11 +500,32 @@ namespace EGSE.Cyclogram
             } 
         }
 
+        /// <summary>
+        /// Экземпляр класса, отвечающий за представления файла циклограммы.
+        /// </summary>
         private CyclogramFile _cycloFile;
+
+        /// <summary>
+        /// Текущая строка по-счету в файле циклограммы.
+        /// </summary>
         private int _curLine;
+
+        /// <summary>
+        /// Экземпляр класса, отвечающий за представление текущей команды циклограммы.
+        /// </summary>
         private CyclogramLine _curCmd;
+
+        /// <summary>
+        /// Является ли текущая команда последней в файле циклограмм.
+        /// </summary>
         private bool _lastCommand;
 
+        /// <summary>
+        /// Получает текущую команду циклограммы.
+        /// </summary>
+        /// <value>
+        /// The current command.
+        /// </value>
         public CyclogramLine CurCmd
         {
             get 
@@ -505,6 +547,10 @@ namespace EGSE.Cyclogram
             }
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="CycPosition" />.
+        /// </summary>
+        /// <param name="cycloFile">Экземпляр класса, представляющий файл циклограммы</param>
         public CycPosition(CyclogramFile cycloFile)
         {
             _cycloFile = cycloFile;
@@ -514,6 +560,12 @@ namespace EGSE.Cyclogram
             _lastCommand = false;
         }
 
+        /// <summary>
+        /// Sets to line.
+        /// </summary>
+        /// <param name="lineNum">The line number.</param>
+        /// <param name="findFirst">if set to <c>true</c> [find first].</param>
+        /// <returns>Экземпляр класса, отвечающий за представление строки циклограммы</returns>
         public CyclogramLine SetToLine(int lineNum, bool findFirst = false)
         {
             _curCmd = null;

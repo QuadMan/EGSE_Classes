@@ -24,52 +24,27 @@ namespace EGSE.Constants
         /// <summary>
         /// The property busk power a1
         /// </summary>
-        public const int PropertyBUSKPowerA1 = 10;
-
-        /// <summary>
-        /// The property busk power b1
-        /// </summary>
-        public const int PropertyBUSKPowerB1 = 11;
+        public const int PropertyBUSKPower1 = 0;
 
         /// <summary>
         /// The property busk power a2
         /// </summary>
-        public const int PropertyBUSKPowerA2 = 12;
-
-        /// <summary>
-        /// The property busk power b2
-        /// </summary>
-        public const int PropertyBUSKPowerB2 = 13;
+        public const int PropertyBUSKPower2 = 1;
 
         /// <summary>
         /// The property bund power a1
         /// </summary>
-        public const int PropertyBUNDPowerA1 = 14;
-
-        /// <summary>
-        /// The property bund power b1
-        /// </summary>
-        public const int PropertyBUNDPowerB1 = 15;
+        public const int PropertyBUNDPower1 = 2;
 
         /// <summary>
         /// The property bund power a2
         /// </summary>
-        public const int PropertyBUNDPowerA2 = 16;
-
-        /// <summary>
-        /// The property bund power b2
-        /// </summary>
-        public const int PropertyBUNDPowerB2 = 17;
-
-        /// <summary>
-        /// Индекс объекта управления XSAN в массиве ControlValuesList
-        /// </summary>
-        public const int BUKCTRL = 0;
+        public const int PropertyBUNDPower2 = 3;
 
         /// <summary>
         /// Индекс объекта управления POWER в массиве ControlValuesList
         /// </summary>
-        public const int PowerCTRL = 2;
+        public const int PowerControl = 0;
 
         /// <summary>
         /// Заголовок главного окна.

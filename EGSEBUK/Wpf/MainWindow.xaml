@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:EGSE.Cyclogram"
+        xmlns:local1="clr-namespace:EGSE.Devices"
         Title="КИА БУК" 
         Width="1280"
         Height="720"
@@ -70,7 +71,8 @@
                                 BorderThickness="0" 
                                 HorizontalAlignment="Stretch" 
                                 VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1" Click="BUSKPower1_Click"/>
+                                Margin="0,0,1,1" Click="BUSKPower1_Click">
+                        </Button>
                         <Button x:Name="BUSKPower2" Grid.Column="3"
                                 Grid.Row="2"  
                                 Grid.RowSpan="2"
@@ -141,7 +143,7 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                Content="А" 
-                                  IsChecked="True"/>
+                                  IsChecked="{Binding IsBUSKLineA, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
                                Grid.Row="3"
                                HorizontalContentAlignment="Center"
@@ -153,7 +155,7 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                Content="Б"
-                                  IsChecked="True"/>
+                                  IsChecked="{Binding IsBUSKLineB, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
                                Grid.Row="4"
                                HorizontalContentAlignment="Center"
@@ -165,7 +167,7 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                Content="А" 
-                                  IsChecked="True"/>
+                                  IsChecked="{Binding IsBUNDLineA, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
                                Grid.Row="5"
                                HorizontalContentAlignment="Center"
@@ -177,7 +179,7 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
                                Content="Б"
-                                  IsChecked="True"/>
+                                  IsChecked="{Binding IsBUNDLineB, Mode=TwoWay}"/>
                         <Label Grid.Column="2"
                                Grid.Row="0"
                                Grid.ColumnSpan="2"
@@ -512,9 +514,9 @@
                 </StackPanel>
             </Expander>
         </StackPanel>
-        <Label Margin="4" 
-               Content="КИА БУК не подключен" 
+        <Label x:Name="ConnectionLabel" Margin="4" 
                Padding="4" 
+               Background="Red"
                BorderBrush="LightBlue" 
                BorderThickness="2" 
                VerticalContentAlignment="Center" 

@@ -77,7 +77,7 @@ namespace EGSE.Cyclogram.Command
         /// <param name="cmdParams">Передаваемые параметры</param>
         /// <param name="errString">Сообщение об ошибке (в случае таковой)</param>
         /// <returns>False - если произошла ошибка</returns>
-        public bool XsanControlTest(string[] cmdParams, out string errString)
+        public bool BUKControlTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -129,7 +129,7 @@ namespace EGSE.Cyclogram.Command
         /// </summary>
         /// <param name="cmdParams">Передаваемые параметры</param>
         /// <returns>False - если ошибка</returns>
-        public bool BUKControlExec(string[] cmdParams)
+       /* public bool BUKControlExec(string[] cmdParams)
         {
             switch (cmdParams.Length)
             {
@@ -255,18 +255,18 @@ namespace EGSE.Cyclogram.Command
             return true;
         }
 
-        /// <summary>
-        /// Выполнить УКС.
-        /// </summary>
-        /// <param name="cmdParams">Команда УКС</param>
-        /// <returns>True - всегда!!!</returns>
-        public bool UksExec(string[] cmdParams)
-        {
-            byte[] uksData = EGSE.Utilites.Converter.HexStrToByteArray(cmdParams);
-            BUK.Device.CmdSendUKS(uksData);
+        /////// <summary>
+        /////// Выполнить УКС.
+        /////// </summary>
+        /////// <param name="cmdParams">Команда УКС</param>
+        /////// <returns>True - всегда!!!</returns>
+        ////public bool UksExec(string[] cmdParams)
+        ////{
+        ////    byte[] uksData = EGSE.Utilites.Converter.HexStrToByteArray(cmdParams);
+        ////    BUK.Device.CmdSendUKS(uksData);
 
-            return true;
-        }
+        ////    return true;
+        ////}
         
         /// <summary>
         /// Команда POWER - выдача питания устройства
@@ -294,7 +294,7 @@ namespace EGSE.Cyclogram.Command
         public bool PowerExec(string[] cmdParams)
         {
             int val = Convert.ToInt32(cmdParams[0] == "ON");
-            return BUK.ControlValuesList[BUKConst.PowerCTRL].SetProperty(BUKConst.PowerCTRL, val);
+            return BUK.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PowerControl, val);
         }
     }
 }

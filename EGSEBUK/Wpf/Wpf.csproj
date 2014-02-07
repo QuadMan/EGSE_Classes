@@ -65,6 +65,16 @@
       <DependentUpon>EGSEConstantsBUK.resx</DependentUpon>
     </Compile>
     <Compile Include="EGSEDefaultMainWindow.cs" />
+    <Compile Include="EGSEDefaultMainWindow.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSEDefaultMainWindow.resx</DependentUpon>
+    </Compile>
+    <Compile Include="EGSEDeviceBUK.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSEDeviceBUK.resx</DependentUpon>
+    </Compile>
     <Compile Include="SDWindow.xaml.cs">
       <DependentUpon>SDWindow.xaml</DependentUpon>
     </Compile>
@@ -207,6 +217,16 @@
       <DependentUpon>EGSEDefaultLoggers.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EGSEDefaultLoggers.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EGSEDefaultMainWindow.resx">
+      <DependentUpon>EGSEDefaultMainWindow.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSEDefaultMainWindow.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EGSEDeviceBUK.resx">
+      <DependentUpon>EGSEDeviceBUK.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSEDeviceBUK.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

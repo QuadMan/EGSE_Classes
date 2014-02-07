@@ -33,7 +33,7 @@ namespace EGSE.Utilites
         /// <summary>
         /// через сколько вызововк TimerTick проверять значения UsbValue и UiValue
         /// </summary>
-        private const int UPDATE_TIMEOUT_TICKS = 3;
+        private const int updateTimeoutTicks = 3;
 
         /// <summary>
         /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue.
@@ -196,7 +196,7 @@ namespace EGSE.Utilites
 
             if (autoSendValue)
             {
-                _timerCnt = UPDATE_TIMEOUT_TICKS;
+                _timerCnt = updateTimeoutTicks;
                 cv.SetUsbEvent((uint)_uiValue);
             }
 
@@ -209,7 +209,7 @@ namespace EGSE.Utilites
         /// </summary>
         public void RefreshGetValue()
         {
-            _timerCnt = UPDATE_TIMEOUT_TICKS;
+            _timerCnt = updateTimeoutTicks;
             _refreshFlag = true;
         }
 
@@ -242,7 +242,7 @@ namespace EGSE.Utilites
             set
             {
                 _uiValue = value;
-                _timerCnt = UPDATE_TIMEOUT_TICKS;       // проверим значение из USB через некоторое время
+                _timerCnt = updateTimeoutTicks;       // проверим значение из USB через некоторое время
             }
         }
 

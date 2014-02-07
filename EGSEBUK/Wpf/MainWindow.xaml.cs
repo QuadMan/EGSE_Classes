@@ -90,9 +90,57 @@ namespace EGSE.Defaults
             {
                 U27VLabel.Content = "---";
                 IXSANLabel.Content = "---";
+            }*/
+
+            updateTM();
+        }
+
+        private void updateTM()
+        {
+            // Индикация питания
+            if (_intfEGSE.Tele.BUSKPower1)
+            {
+                BUSKPower1.Content = "ВКЛ";
+                BUSKPower1.Background = Brushes.LightGreen;
+            }
+            else
+            {
+                BUSKPower1.Content = "ВЫКЛ";
+                BUSKPower1.Background = Brushes.Red;
             }
 
-            updateTM();*/
+            if (_intfEGSE.Tele.BUSKPower2)
+            {
+                BUSKPower2.Content = "ВКЛ";
+                BUSKPower2.Background = Brushes.LightGreen;
+            }
+            else
+            {
+                BUSKPower2.Content = "ВЫКЛ";
+                BUSKPower2.Background = Brushes.Red;
+            }
+
+            if (_intfEGSE.Tele.BUNDPower1)
+            {
+                BUNDPower1.Content = "ВКЛ";
+                BUNDPower1.Background = Brushes.LightGreen;
+            }
+            else
+            {
+                BUNDPower1.Content = "ВЫКЛ";
+                BUNDPower1.Background = Brushes.Red;
+            }
+
+            if (_intfEGSE.Tele.BUNDPower2)
+            {
+                BUNDPower2.Content = "ВКЛ";
+                BUNDPower2.Background = Brushes.LightGreen;
+            }
+            else
+            {
+                BUNDPower2.Content = "ВЫКЛ";
+                BUNDPower2.Background = Brushes.Red;
+            }
         }
 
         /// <summary>
@@ -145,39 +193,28 @@ namespace EGSE.Defaults
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
 
             // hsiWin.Init(_EGSE);
-            DataContext = this;
+
+            DataContext = _intfEGSE;
         }
 
         private void BUSKPower1_Click(object sender, RoutedEventArgs e)
         {
-            if ((bool)BUSKLineA.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUSKPowerA1].SetProperty(BUKConst.PropertyBUSKPowerA1, Convert.ToInt32(!_intfEGSE.Tele.BUSKPowerA1));
-            if ((bool)BUSKLineB.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUSKPowerB1].SetProperty(BUKConst.PropertyBUSKPowerB1, Convert.ToInt32(!_intfEGSE.Tele.BUSKPowerB1));
+            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUSKPower1, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower1));
         }
 
         private void BUSKPower2_Click(object sender, RoutedEventArgs e)
         {
-            if ((bool)BUSKLineA.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUSKPowerA2].SetProperty(BUKConst.PropertyBUSKPowerA2, Convert.ToInt32(!_intfEGSE.Tele.BUSKPowerA2));
-            if ((bool)BUSKLineB.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUSKPowerB2].SetProperty(BUKConst.PropertyBUSKPowerB2, Convert.ToInt32(!_intfEGSE.Tele.BUSKPowerB2));
+            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUSKPower2, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower2));
         }
 
         private void BUNDPower1_Click(object sender, RoutedEventArgs e)
         {
-            if ((bool)BUNDLineA.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUNDPowerA1].SetProperty(BUKConst.PropertyBUNDPowerA1, Convert.ToInt32(!_intfEGSE.Tele.BUNDPowerA1));
-            if ((bool)BUNDLineB.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUNDPowerB1].SetProperty(BUKConst.PropertyBUNDPowerB1, Convert.ToInt32(!_intfEGSE.Tele.BUNDPowerB1));
+            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUNDPower1, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower1));
         }
 
         private void BUNDPower2_Click(object sender, RoutedEventArgs e)
         {
-            if ((bool)BUNDLineA.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUNDPowerA2].SetProperty(BUKConst.PropertyBUNDPowerA2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPowerA2));
-            if ((bool)BUNDLineB.IsChecked)
-                _intfEGSE.ControlValuesList[BUKConst.PropertyBUNDPowerB2].SetProperty(BUKConst.PropertyBUNDPowerB2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPowerB2));
+            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUNDPower2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower2));
         }
 
         /*

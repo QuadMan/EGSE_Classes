@@ -87,25 +87,25 @@ namespace EGSE.Defaults
         {
             OnTimerWork();
 
-            //// проверяем элементы управления - изменились ли они
-            ////testControlValuesOnTimeTick();
+            // проверяем элементы управления - изменились ли они
+            //testControlValuesOnTimeTick();
             //// индикация подключения, скорости
             ////TimeLabel.Content = _EGSE.ETime.ToString();
             
-            /*if (_EGSE.Connected)
+            if (_intfEGSE.Connected)
             {
                 ConnectionLabel.Background = Brushes.LightGreen;
-                ConnectionLabel.Content = BUKConst.DeviceName + " подключен";
+                ConnectionLabel.Content = BUKConst.DeviceName + Resource.Get("stConnected");
             }
             else
             {
                 ConnectionLabel.Background = Brushes.Red;
-                ConnectionLabel.Content = BUKConst.DeviceName + " отключен";
+                ConnectionLabel.Content = BUKConst.DeviceName + Resource.Get("stDisconnected"); ;
 
                 // инициализируем все экранные формы на значения по-умолчанию при отключении от устройства
-                DefaultScreenInit();
-                //hsiWin.Cle
-            }*/
+                //DefaultScreenInit();
+                //hsiWin.Clear
+            }
              
             // SpeedLabel.Content = Converter.SpeedToStr(_EGSE.Device.Speed) + " [" + _EGSE.Device.GlobalBufferSize.ToString() + "]";
         }
@@ -193,32 +193,32 @@ namespace EGSE.Defaults
         }
     }
 
-    public class TestC : INotifyPropertyChanged
-    {
-        private bool _isWinOpened;
+    ////public class TestC : INotifyPropertyChanged
+    ////{
+    ////    private bool _isWinOpened;
 
-        public bool IsWinOpened
-        {
-            get 
-            { 
-                return _isWinOpened; 
-            }
+    ////    public bool IsWinOpened
+    ////    {
+    ////        get 
+    ////        { 
+    ////            return _isWinOpened; 
+    ////        }
 
-            set
-            {
-                _isWinOpened = value;
-                FirePropertyChangedEvent("IsWinOpened");
-            }
-        }
+    ////        set
+    ////        {
+    ////            _isWinOpened = value;
+    ////            FirePropertyChangedEvent("IsWinOpened");
+    ////        }
+    ////    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    ////    public event PropertyChangedEventHandler PropertyChanged;
 
-        private void FirePropertyChangedEvent(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
+    ////    private void FirePropertyChangedEvent(string propertyName)
+    ////    {
+    ////        if (PropertyChanged != null)
+    ////        {
+    ////            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+    ////        }
+    ////    }
+    ////}
 }

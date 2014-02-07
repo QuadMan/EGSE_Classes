@@ -29,25 +29,38 @@ namespace EGSE.Devices
     /// </summary>
     public class DeviceBUK : Device
     {
-        private const int TIME_RESET_ADDR = 0x01;
-        private const int TIME_DATA_ADDR = 0x02;
-        private const int TIME_SET_ADDR = 0x03;
+        private readonly IBUK _intfBUK;
+        /// <summary>
+        /// Адресный байт "Сброс адреса записи времени"
+        /// </summary>
+        private const int _timeResetAddr = 0x01;
+
+        /// <summary>
+        /// Адресный байт "Запись данных времени"
+        /// </summary>
+        private const int _timeDataAddr = 0x02;
+
+        /// <summary>
+        /// Адресный байт "Бит установки времени"
+        /// </summary>
+        private const int _timeSetAddr = 0x03;
+
         private const int TIME_OBT_ADDR = 0x12;
-        private const int POWER_SET_ADDR = 0x05;
-        private const int HSI_BUNI_CTRL_ADDR = 0x06;
-        private const int HSI_XSAN_CTRL_ADDR = 0x09;
-        private const int HSI_UKS_ADDR = 0x08;
+        private const int _powerHiAddr = 0x41;
+        private const int _powerLoAddr = 0x40;
+        private const int _powerSetAddr = 0x42;
 
         private byte[] buf;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="DeviceBUK" />.
         /// </summary>
-        /// <param name="Serial">Уникальный идентификатор USB</param>
+        /// <param name="serial">Уникальный идентификатор USB</param>
         /// <param name="dec">The decoder.</param>
-        public DeviceBUK(string Serial, ProtocolUSBBase dec)
-            : base(Serial, dec, new USBCfg(10))
+        public DeviceBUK(string serial, ProtocolUSBBase dec, IBUK intfBUK)
+            : base(serial, dec, new USBCfg(10))
         {
+            _intfBUK = intfBUK;
         }
 
         /*public void CmdHSIBUNIControl(UInt32 HSIImitControl)
@@ -63,46 +76,158 @@ namespace EGSE.Devices
             base.SendCmd(HSI_XSAN_CTRL_ADDR, buf);
         }*/
 
+        /////// <summary>
+        /////// Commands the send uks.
+        /////// </summary>
+        /////// <param name="UKSBuf">данные (УКС) для передачи в USB</param>
+        ////public void CmdSendUKS(byte[] UKSBuf)
+        ////{
+        ////    SendCmd(HSI_UKS_ADDR, UKSBuf);
+        ////}
+
         /// <summary>
-        /// Commands the send uks.
+        /// Отправляет команду включить питание ПК1 БУСК.
         /// </summary>
-        /// <param name="UKSBuf">данные (УКС) для передачи в USB</param>
-        public void CmdSendUKS(byte[] UKSBuf)
+        /// <param name="buskPower1">Передаваемый параметр</param>
+        public void CmdBUSKPower1(uint buskPower1)
         {
-            SendCmd(HSI_UKS_ADDR, UKSBuf);
+            byte buf = 0;
+            if (_intfBUK.IsBUSKLineA)
+            {
+                if (0 == buskPower1)
+                {
+                    buf |= 1 << 2;
+                }
+                else
+                {
+                    buf |= 1 << 0;
+                }
+            }
+            if (_intfBUK.IsBUSKLineB)
+            {
+                if (0 == buskPower1)
+                {
+                    buf |= 1 << 3;
+                }
+                else
+                {
+                    buf |= 1 << 1;
+                }
+            }
+            SendToUSB(_powerLoAddr, new byte[1] { buf });
+            SendToUSB(_powerSetAddr, new byte[1] { 1 });
         }
 
         /// <summary>
-        /// Commands the power on off.
+        /// Отправляет команду включить питание ПК2 БУСК.
         /// </summary>
-        /// <param name="turnOn">The turn on.</param>
-        public void CmdPowerOnOff(int turnOn)
+        /// <param name="buskPower2">Передаваемый параметр</param>
+        public void CmdBUSKPower2(uint buskPower2)
         {
-            turnOn &= 1;
-            SendCmd(POWER_SET_ADDR, new byte[1] { (byte)turnOn });
+            byte buf = 0;
+            if (_intfBUK.IsBUSKLineA)
+            {
+                if (0 == buskPower2)
+                {
+                    buf |= 1 << 6;
+                }
+                else
+                {
+                    buf |= 1 << 4;
+                }
+            }
+            if (_intfBUK.IsBUSKLineB)
+            {
+                if (0 == buskPower2)
+                {
+                    buf |= 1 << 7;
+                }
+                else
+                {
+                    buf |= 1 << 5;
+                }
+            }
+            SendToUSB(_powerLoAddr, new byte[1] { buf });
+            SendToUSB(_powerSetAddr, new byte[1] { 1 });
         }
 
         /// <summary>
-        /// Стандарная команда установки времени
+        /// Отправляет команду включить питание ПК1 БУНД.
         /// </summary>
-        public void CmdSendTime()
+        /// <param name="bundPower1">Передаваемый параметр</param>
+        public void CmdBUNDPower1(uint bundPower1)
         {
-            EgseTime time = new EgseTime();
+            byte buf = 0;
+            if (_intfBUK.IsBUNDLineA)
+            {
+                if (0 == bundPower1)
+                {
+                    buf |= 1 << 1;
+                }
+                else
+                {
+                    buf |= 1 << 5;
+                }
+            }
+            if (_intfBUK.IsBUNDLineB)
+            {
+                if (0 == bundPower1)
+                {
+                    buf |= 1 << 3;
+                }
+                else
+                {
+                    buf |= 1 << 7;
+                }
+            }
+            SendToUSB(_powerHiAddr, new byte[1] { buf });
+            SendToUSB(_powerSetAddr, new byte[1] { 1 });
+        }
+
+        /// <summary>
+        /// Отправляет команду включить питание ПК2 БУНД.
+        /// </summary>
+        /// <param name="bundPower2">Передаваемый параметр</param>
+        public void CmdBUNDPower2(uint bundPower2)
+        {
+            byte buf = 0;
+            if (_intfBUK.IsBUNDLineA)
+            {
+                if (0 == bundPower2)
+                {
+                    buf |= 1 << 0;
+                }
+                else
+                {
+                    buf |= 1 << 4;
+                }
+            }
+            if (_intfBUK.IsBUNDLineB)
+            {
+                if (0 == bundPower2)
+                {
+                    buf |= 1 << 2;
+                }
+                else
+                {
+                    buf |= 1 << 6;
+                }
+            }
+            SendToUSB(_powerHiAddr, new byte[1] { buf });
+            SendToUSB(_powerSetAddr, new byte[1] { 1 });
+        }
+
+        /// <summary>
+        /// Команда установки времени.
+        /// </summary>
+        public void CmdSetDeviceTime()
+        {
+            EGSETime time = new EGSETime();
             time.Encode();
-
-            byte[] obtData = new byte[5];
-            obtData[0] = 0;
-            obtData[1] = 0;
-            obtData[2] = 0;
-            obtData[3] = 0;
-            obtData[4] = 10;
-
             buf = new byte[1] { 1 };
-
-            SendCmd(TIME_RESET_ADDR, buf);
-            SendCmd(TIME_DATA_ADDR, time.Data);
-            SendCmd(TIME_OBT_ADDR, obtData);
-            SendCmd(TIME_SET_ADDR, buf);
+            SendToUSB(_timeResetAddr, buf);
+            SendToUSB(_timeDataAddr, time.Data);
+            SendToUSB(_timeSetAddr, buf);
         }
     }
 
@@ -111,27 +236,73 @@ namespace EGSE.Devices
     /// </summary>
     public class IBUK : INotifyPropertyChanged
     {
-        private const int TIME_ADDR_GET = 0x04;
-        private const int TM_DATA_GET = 5;
+        private const int timeDataAddr = 0x01;
+        private const int teleDataAddr = 0x15;
 
-        private ProtocolUSB5E4D _decoder;
+        private ProtocolUSB7C6E _decoder;
 
         // приватные поля для свойств, управляющих интерфейсом
         private bool _connected;
 
-        private bool _writeXsanDataToFile;
-
-        // куда записываем данные с XSAN
-        private FileStream _xsanDataLogStream;
-
-        // с какого канала записываются данные (основного или резервного)
-        private uint _xsanChannelForWriting;
+        /// <summary>
+        /// Питание первого полукомплекта БУСК.
+        /// </summary>
+        private bool _buskPower1;
 
         /// <summary>
-        /// Доступ к USB устройству
+        /// Питание второго полукомплекта БУСК.
+        /// </summary>
+        private bool _buskPower2;
+
+        /// <summary>
+        /// Питание первого полукомплекта БУНД.
+        /// </summary>
+        private bool _bundPower1;
+
+        /// <summary>
+        /// Питание второго полукомплекта БУНД.
+        /// </summary>
+        private bool _bundPower2;
+
+        /// <summary>
+        /// Передавать релейные команды БУСК по линии A.
+        /// </summary>
+        private bool _isBUSKLineA;
+
+        /// <summary>
+        /// Передавать релейные команды БУСК по линии B.
+        /// </summary>
+        private bool _isBUSKLineB;
+
+        /// <summary>
+        /// Передавать релейные команды БУНД по линии A.
+        /// </summary>
+        private bool _isBUNDLineA;
+
+        /// <summary>
+        /// Передавать релейные команды БУНД по линии B.
+        /// </summary>
+        private bool _isBUNDLineB;
+
+        // private bool _writeBUKDataToFile;
+
+        // куда записываем данные с XSAN
+        private FileStream _bukDataLogStream;
+
+        // с какого канала записываются данные (основного или резервного)
+        private uint _bukChannelForWriting;
+
+        /// <summary>
+        /// Доступ к USB устройству.
         /// </summary>
         public DeviceBUK Device;
 
+        /// <summary>
+        /// Получает значение, показывающее, [подключено] ли устройство.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [подключено]; иначе, <c>false</c>.
+        /// </value>
         public bool Connected
         {
             get 
@@ -145,6 +316,167 @@ namespace EGSE.Devices
                 FirePropertyChangedEvent("Connected");
             } 
         }
+
+        /// <summary>
+        /// Получает значение, показывающее, есть ли питание первого полукомплекта БУСК.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [busk power1]; otherwise, <c>false</c>.
+        /// </value>
+        public bool BUSKPower1
+        {
+            get
+            {
+                return _buskPower1;
+            }
+
+            private set
+            {
+                _buskPower1 = value;
+                FirePropertyChangedEvent("BUSKPower1");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, есть ли питание второго полукомплекта БУСК.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [busk power2]; otherwise, <c>false</c>.
+        /// </value>
+        public bool BUSKPower2
+        {
+            get
+            {
+                return _buskPower2;
+            }
+
+            private set
+            {
+                _buskPower2 = value;
+                FirePropertyChangedEvent("BUSKPower2");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, есть ли питание первого полукомплекта БУНД.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [bund power1]; otherwise, <c>false</c>.
+        /// </value>
+        public bool BUNDPower1
+        {
+            get
+            {
+                return _bundPower1;
+            }
+
+            private set
+            {
+                _bundPower1 = value;
+                FirePropertyChangedEvent("BUSKPower1");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, есть ли питание второго полукомплекта БУНД.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [bund power2]; otherwise, <c>false</c>.
+        /// </value>
+        public bool BUNDPower2
+        {
+            get
+            {
+                return _bundPower2;
+            }
+
+            private set
+            {
+                _bundPower2 = value;
+                FirePropertyChangedEvent("BUNDPower2");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, нужно ли передавать релейную команду БУСК по линии A.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [is busk line a]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBUSKLineA
+        {
+            get 
+            { 
+                return _isBUSKLineA;
+            }
+
+            private set 
+            {
+                _isBUSKLineA = value;
+                FirePropertyChangedEvent("IsBUSKLineA");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, нужно ли передавать релейную команду БУСК по линии B.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [is busk line b]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBUSKLineB
+        {
+            get
+            {
+                return _isBUSKLineB;
+            }
+
+            private set
+            {
+                _isBUSKLineB = value;
+                FirePropertyChangedEvent("IsBUSKLineB");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, нужно ли передавать релейную команду БУНД по линии A.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [is bund line a]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBUNDLineA
+        {
+            get
+            {
+                return _isBUNDLineA;
+            }
+
+            private set
+            {
+                _isBUNDLineA = value;
+                FirePropertyChangedEvent("IsBUNDLineA");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, нужно ли передавать релейную команду БУНД по линии B.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [is bund line b]; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsBUNDLineB
+        {
+            get
+            {
+                return _isBUNDLineB;
+            }
+
+            private set
+            {
+                _isBUNDLineB = value;
+                FirePropertyChangedEvent("IsBUNDLineB");
+            }
+        }
+        
 
         /*public int BuniImitatorCmdChannel
         {
@@ -257,20 +589,20 @@ namespace EGSE.Devices
             }
         }*/
 
-        public bool WriteXsanDataToFile
-        {
-            get 
-            { 
-                return _writeXsanDataToFile; 
-            }
+        ////public bool WriteBUKDataToFile
+        ////{
+        ////    get 
+        ////    { 
+        ////        return _writeBUKDataToFile; 
+        ////    }
 
-            set
-            {
-                _writeXsanDataToFile = value;
-                WriteXsanData(value);
-                FirePropertyChangedEvent("WriteXsanDataToFile");
-            }
-        }
+        ////    set
+        ////    {
+        ////        _writeBUKDataToFile = value;
+        ////        WriteBUKData(value);
+        ////        FirePropertyChangedEvent("WriteBUKDataToFile");
+        ////    }
+        ////}
 
         /*public long XsanFileSize
         {
@@ -285,22 +617,22 @@ namespace EGSE.Devices
             //private set { _xsanDataFileSize = value; }
         }*/
 
-        public string BUKFileName
-        {
-            get 
-            {
-                if (_xsanDataLogStream != null)
-                {
-                    return _xsanDataLogStream.Name;
-                }
-                else return string.Empty;
-            }
-        }
+        ////public string BUKFileName
+        ////{
+        ////    get 
+        ////    {
+        ////        if (_bukDataLogStream != null)
+        ////        {
+        ////            return _bukDataLogStream.Name;
+        ////        }
+        ////        else return string.Empty;
+        ////    }
+        ////}
 
         /// <summary>
         /// Время, пришедшее от КИА
         /// </summary>       
-        public EgseTime ETime;
+        public EGSETime ETime;
 
         /// <summary>
         /// Модуль декодера телеметрии
@@ -318,74 +650,43 @@ namespace EGSE.Devices
         public IBUK()
         {
             Connected = false;
-            ControlValuesList.Add(new ControlValue()); // XSAN_CTRL_IDX
-            ControlValuesList.Add(new ControlValue()); // BUNI_CTRL_IDX
-            ControlValuesList.Add(new ControlValue()); // POWER_CTRL_IDX
+            ControlValuesList.Add(new ControlValue()); // PowerControl = 0
 
-            _decoder = new ProtocolUSB5E4D(null, LogsClass.LogUSB, false, true);
-            _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(onMessageFunc);
-            _decoder.GotProtocolError += new ProtocolUSBBase.ProtocolErrorEventHandler(onErrorFunc);
+            _decoder = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
+            _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
+            _decoder.GotProtocolError += new ProtocolUSBBase.ProtocolErrorEventHandler(OnErrorFunc);
 
-            ETime = new EgseTime();
+            ETime = new EGSETime();
 
-            Device = new DeviceBUK(BUKConst.DeviceSerial, _decoder);
+            Device = new DeviceBUK(BUKConst.DeviceSerial, _decoder, this);
             Device.ChangeStateEvent = OnChangeConnection;
             
-            _xsanDataLogStream = null;
-            _xsanChannelForWriting = 0;
-            _writeXsanDataToFile = false;
+            _bukDataLogStream = null;
+            _bukChannelForWriting = 0;
+            ////_writeBUKDataToFile = false;
 
             Tele = new TelemetryBUK();
 
-            /*ControlValuesList[BUKConst.XSAN_CTRL_IDX].AddProperty(BUKConst.PROPERTY_XSAN_READY_IDX, 4, 1, Device.CmdHSIXSANControl, delegate(UInt32 value)
+            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUSKPower1, 7, 1, Device.CmdBUSKPower1, delegate(uint value) 
             {
-                XsanImitatorReady = (value == 1);
+                BUSKPower1 = (value == 1);
             });
-            ControlValuesList[BUKConst.XSAN_CTRL_IDX].AddProperty(BUKConst.PROPERTY_XSAN_BUSY_IDX, 5, 1, Device.CmdHSIXSANControl, delegate(UInt32 value)
+            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUSKPower2, 6, 1, Device.CmdBUSKPower2, delegate(uint value) 
             {
-                XsanImitatorBusyOn = (value == 1);
+                BUSKPower2 = (value == 1);
             });
-            ControlValuesList[BUKConst.XSAN_CTRL_IDX].AddProperty(BUKConst.PROPERTY_XSAN_ME_IDX, 6, 1, Device.CmdHSIXSANControl, delegate(UInt32 value)
+            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUNDPower1, 4, 1, Device.CmdBUNDPower1, delegate(uint value) 
             {
-                XsanImitatorMeOn = (value == 1);
+                BUNDPower1 = (value == 1);
             });
-            ControlValuesList[BUKConst.XSAN_CTRL_IDX].AddProperty(BUKConst.PROPERTY_XSAN_CMD_CH_IDX, 0, 2, Device.CmdHSIXSANControl, delegate(UInt32 value)
+            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUNDPower2, 5, 1, Device.CmdBUNDPower2, delegate(uint value) 
             {
-                XsanImitatorCmdChannel = (int)value;
-
+                BUNDPower2 = (value == 1);
             });
-            ControlValuesList[BUKConst.XSAN_CTRL_IDX].AddProperty(BUKConst.PROPERTY_XSAN_DAT_CH_IDX, 2, 2, Device.CmdHSIXSANControl, delegate(UInt32 value)
-            {
-                XsanImitatorDatChannel = (int)value;
-
-            });
-            //
-            ControlValuesList[BUKConst.BUNI_CTRL_IDX].AddProperty(BUKConst.PROPERTY_BUNI_ON_IDX, 0, 1, Device.CmdHSIBUNIControl, delegate(UInt32 value)
-            {
-                BuniImitatorOn = (value == 1);
-            });
-            ControlValuesList[BUKConst.BUNI_CTRL_IDX].AddProperty(BUKConst.PROPERTY_BUNI_CMD_CH_IDX, 1, 1, Device.CmdHSIBUNIControl, delegate(UInt32 value)
-            {
-                BuniImitatorCmdChannel = (int)value;
-            });
-            ControlValuesList[BUKConst.BUNI_CTRL_IDX].AddProperty(BUKConst.PROPERTY_BUNI_DAT_CH_IDX, 2, 2, Device.CmdHSIBUNIControl, delegate(UInt32 value)
-            {
-                BuniImitatorDatChannel = (int)value;
-            });
-            ControlValuesList[BUKConst.BUNI_CTRL_IDX].AddProperty(BUKConst.PROPERTY_BUNI_HZ_IDX, 4, 1, Device.CmdHSIBUNIControl, delegate(UInt32 value)
-            {
-                BuniImitatorTimeStampOn = (value == 1);
-            });
-            ControlValuesList[BUKConst.BUNI_CTRL_IDX].AddProperty(BUKConst.PROPERTY_BUNI_KBV_IDX, 5, 1, Device.CmdHSIBUNIControl, delegate(UInt32 value)
-            {
-                BuniImitatorObtOn = (value == 1);
-            });
-            //
-            ControlValuesList[BUKConst.POWER_CTRL_IDX].AddProperty(BUKConst.PROPERTY_POWER_IDX, 0, 1, Device.CmdPowerOnOff, delegate(UInt32 value) { });*/
         }
 
         /// <summary>
-        /// Для каждого элемента управления тикаем временем
+        /// Для каждого элемента управления тикаем временем.
         /// </summary>
         public void TickAllControlsValues()
         {
@@ -402,7 +703,7 @@ namespace EGSE.Devices
         /// </summary>
         private void refreshAllControlsValues()
         {
-            Debug.Assert(ControlValuesList != null, "ControlValuesList не должны быть равны null!");
+            Debug.Assert(ControlValuesList != null, Resource.Get(@"eNotAssigned"));
             foreach (ControlValue cv in ControlValuesList)
             {
                 cv.RefreshGetValue();
@@ -412,41 +713,41 @@ namespace EGSE.Devices
         /// <summary>
         /// Метод вызывается, когда прибор подсоединяется или отсоединяется.
         /// </summary>
-        /// <param name="isConnected">if set to <c>true</c> [is connected].</param>
+        /// <param name="isConnected">Если установлено <c>true</c> [прибор подключен].</param>
         public void OnChangeConnection(bool isConnected)
         {
             Connected = isConnected;
             if (Connected)
             {
-                Device.CmdSendTime();
+                Device.CmdSetDeviceTime();
                 refreshAllControlsValues();
-                LogsClass.LogMain.LogText = "КИА БУК подключен";
+                LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
             else
             {
-                LogsClass.LogMain.LogText = "КИА БУК отключен";
+                LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stDisconnected");
             }
         }
 
         /// <summary>
-        /// Указываем какой файл использовать для записи данных от прибора XSAN и по какому каналу
+        /// Указываем какой файл использовать для записи данных от прибора XSAN и по какому каналу.
         /// </summary>
         /// <param name="fStream">Поток для записи данных</param>
         /// <param name="channel">По какому каналу</param>
-        public void SetFileAndChannelForLogXSANData(FileStream fStream, uint channel)
+        public void SetFileAndChannelForLogBUKData(FileStream fStream, uint channel)
         {
-            _xsanDataLogStream = fStream;
-            _xsanChannelForWriting = channel;
+            _bukDataLogStream = fStream;
+            _bukChannelForWriting = channel;
         }
 
-        public void WriteXsanData(bool StartWrite)
+        public void WriteBUKData(bool StartWrite)
         {
             if (StartWrite)
             {
                 string dataLogDir = Directory.GetCurrentDirectory().ToString() + "\\DATA\\";
                 Directory.CreateDirectory(dataLogDir);
-                string fileName = dataLogDir + "xsan_" + DateTime.Now.ToString("yyMMdd_HHmmss") + ".dat";
-                _xsanDataLogStream = new FileStream(fileName, System.IO.FileMode.Create);
+                string fileName = dataLogDir + "buk_" + DateTime.Now.ToString("yyMMdd_HHmmss") + ".dat";
+                _bukDataLogStream = new FileStream(fileName, System.IO.FileMode.Create);
 
                 // выбираем, по какому каналу записываем данные (по комбобоксу выбора приема данных)
                /* switch (_buniImitatorDatChannel)
@@ -465,10 +766,10 @@ namespace EGSE.Devices
             }
             else
             {
-                if (_xsanDataLogStream != null)
+                if (_bukDataLogStream != null)
                 {
-                    _xsanDataLogStream.Close();
-                    _xsanDataLogStream = null;
+                    _bukDataLogStream.Close();
+                    _bukDataLogStream = null;
                 }
             }
         }
@@ -477,19 +778,18 @@ namespace EGSE.Devices
         /// Метод обрабатывающий сообщения от декодера USB
         /// </summary>
         /// <param name="msg">Сообщение для обработки</param>
-        private void onMessageFunc(MsgBase msg)
+        private void OnMessageFunc(ProtocolMsgEventArgs msg)
         {
-            ProtocolMsgEventArgs msg1 = msg as ProtocolMsgEventArgs;
-            if (msg1 != null)
+            if (msg != null)
             {
-                switch (msg1.Addr)
+                switch (msg.Addr)
                 {
-                    case TIME_ADDR_GET:
-                        Array.Copy(msg1.Data, 0, ETime.Data, 0, 6);
+                    case timeDataAddr:
+                        Array.Copy(msg.Data, 0, ETime.Data, 0, 6);
                         break;
-                    case TM_DATA_GET:
-                        Tele.Update(msg1.Data);
-                        ControlValuesList[BUKConst.PowerCTRL].UsbValue = msg1.Data[6];
+                    case teleDataAddr:
+                        Tele.Update(msg.Data);
+                        ControlValuesList[BUKConst.PowerControl].UsbValue = msg.Data[3];
                         break;
                     /*case HSI_XSAN_DATA_GET:
                         HSIInt.XSANStat.Update(msg1.Data, msg1.DataLen);
@@ -511,7 +811,7 @@ namespace EGSE.Devices
         /// Обработчик ошибок протокола декодера USB.
         /// </summary>
         /// <param name="msg">Сообщение об ошибке</param>
-        private void onErrorFunc(ProtocolErrorEventArgs msg)
+        private void OnErrorFunc(ProtocolErrorEventArgs msg)
         {
             string bufferStr = Converter.ByteArrayToHexStr(msg.Data);
             LogsClass.LogErrors.LogText = msg.Msg + " (" + bufferStr + ", на позиции: " + msg.ErrorPos.ToString() + ")";

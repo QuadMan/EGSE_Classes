@@ -22,14 +22,14 @@ namespace Wpf {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class EGSEConstantsBUK {
+    internal class EGSEDefaultMainWindow {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal EGSEConstantsBUK() {
+        internal EGSEDefaultMainWindow() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Wpf {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.EGSEConstantsBUK", typeof(EGSEConstantsBUK).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.EGSEDefaultMainWindow", typeof(EGSEDefaultMainWindow).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,20 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to БИ КИА БУК .
+        ///   Looks up a localized string similar to подключен.
         /// </summary>
-        internal static string stDeviceName {
+        internal static string stConnected {
             get {
-                return ResourceManager.GetString("stDeviceName", resourceCulture);
+                return ResourceManager.GetString("stConnected", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to KIABUK.
+        ///   Looks up a localized string similar to отключен.
         /// </summary>
-        internal static string stDeviceSerial {
+        internal static string stDisconnected {
             get {
-                return ResourceManager.GetString("stDeviceSerial", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to КИА БУК .
-        /// </summary>
-        internal static string stShowCaption {
-            get {
-                return ResourceManager.GetString("stShowCaption", resourceCulture);
+                return ResourceManager.GetString("stDisconnected", resourceCulture);
             }
         }
     }

@@ -225,7 +225,7 @@ namespace EGSE.Utilites
         ///                 byte flag;
         ///         }
         ///         и вызываем функцию 
-        ///         testS ts = ByteArrayToStructure.make<testS>(byteBuf);
+        ///         testS ts = ByteArrayToStructure.make\testS/(byteBuf);
         /// <summary>
         /// Преобразуем массив байт в структуру
         /// </summary>
@@ -242,10 +242,10 @@ namespace EGSE.Utilites
     }
 
     /// <summary>
-    /// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время
-    /// Необходимо заполнить поле данных времени data (6 байт)
+    /// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время.
+    /// Необходимо заполнить поле данных времени data (6 байт).
     /// </summary>
-    public class EgseTime
+    public class EGSETime
     {
         private const int DEFAULT_TIME_SIZE_BYTES = 6;
 
@@ -288,9 +288,9 @@ namespace EGSE.Utilites
         private StringBuilder sb;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="EgseTime" />.
+        /// Инициализирует новый экземпляр класса <see cref="EGSETime" />.
         /// </summary>
-        public EgseTime()
+        public EGSETime()
         {
             Data = new byte[DEFAULT_TIME_SIZE_BYTES];
             Day = 0;
@@ -316,7 +316,7 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Кодируем ТЕКУШЕЕ время в буфер
+        /// Кодируем текущее время в буфер.
         /// </summary>
         public void Encode()
         {

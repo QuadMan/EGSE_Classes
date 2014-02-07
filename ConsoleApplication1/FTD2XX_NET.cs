@@ -409,12 +409,27 @@ namespace FTD2XXNET
         /// <summary>
         /// Error states not supported by FTD2XX DLL.
         /// </summary>
-        private enum FT_ERROR
+        private enum _error
         {
-            FT_NO_ERROR = 0,
-            FT_INCORRECT_DEVICE,
-            FT_INVALID_BITMODE,
-            FT_BUFFER_SIZE
+            /// <summary>
+            /// The ft no error
+            /// </summary>
+            FTNoError = 0,
+
+            /// <summary>
+            /// The ft incorrect device
+            /// </summary>
+            FTIncorrectDevice,
+
+            /// <summary>
+            /// The ft invalid bit mode
+            /// </summary>
+            FTInvalidBitMode,
+
+            /// <summary>
+            /// The ft buffer size
+            /// </summary>
+            FTBufferSize
         }
 
         // Flags for FT_OpenEx
@@ -1581,7 +1596,7 @@ namespace FTD2XXNET
         /// </summary>
         /// <param name="status">Current status</param>
         /// <param name="errorCondition">Error contaiment</param>
-        private void ErrorHandler(FT_STATUS status, FT_ERROR errorCondition)
+        private void ErrorHandler(FT_STATUS status, _error errorCondition)
         {
             if (status != FT_STATUS.FT_OK)
             {
@@ -1678,22 +1693,22 @@ namespace FTD2XXNET
                 }
             }
 
-            if (errorCondition != FT_ERROR.FT_NO_ERROR)
+            if (errorCondition != _error.FTNoError)
             {
                 // Check for other error conditions not handled by FTD2XX DLL
                 switch (errorCondition)
                 {
-                    case FT_ERROR.FT_INCORRECT_DEVICE:
+                    case _error.FTIncorrectDevice:
                         {
                             throw new FT_EXCEPTION("The current device type does not match the EEPROM structure.");
                         }
 
-                    case FT_ERROR.FT_INVALID_BITMODE:
+                    case _error.FTInvalidBitMode:
                         {
                             throw new FT_EXCEPTION("The requested bit mode is not valid for the current device.");
                         }
 
-                    case FT_ERROR.FT_BUFFER_SIZE:
+                    case _error.FTBufferSize:
                         {
                             throw new FT_EXCEPTION("The supplied buffer is not big enough.");
                         }

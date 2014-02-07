@@ -14,8 +14,9 @@ namespace EGSE
     using EGSE.USB;
         
     /// <summary>
-    /// Общий класс устройства КИА
-    /// При наследовании, необходимо в функции onDevStateChanged вызывать base.onDevStateChanged(state)
+    /// Общий класс устройства КИА.
+    /// Примичание:
+    /// При наследовании, необходимо в функции OnDevStateChanged вызывать base.OnDevStateChanged(state).
     /// </summary>
     public class Device
     {
@@ -109,6 +110,7 @@ namespace EGSE
 
         /// <summary>
         /// Функция вызывается когда меняется состояние подключения USB устройства.
+        /// Примечание:
         /// Должна быть переопределена в потомке.
         /// </summary>
         /// <param name="connected">Состояние USB устройства - открыто (true) или закрыто (false)</param>
@@ -129,10 +131,10 @@ namespace EGSE
         /// <summary>
         /// Функция выдает команду в USB.
         /// </summary>
-        /// <param name="addr">адрес, по которому нужно передать данные</param>
-        /// <param name="data">данные для передачи</param>
+        /// <param name="addr">Адрес, по которому нужно передать данные</param>
+        /// <param name="data">Данные для передачи</param>
         /// <returns>Возвращает результат записи в очередь команд USB</returns>
-        public bool SendCmd(uint addr, byte[] data)
+        public bool SendToUSB(uint addr, byte[] data)
         {
             byte[] dataOut;
             _dec.Encode(addr, data, out dataOut);
