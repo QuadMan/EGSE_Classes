@@ -60,7 +60,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="2"
+                        <Button x:Name="BUSKPower1" Grid.Column="2"
                                 Grid.Row="2" 
                                 Grid.RowSpan="2"
                                 Content="ВЫКЛ"
@@ -70,8 +70,8 @@
                                 BorderThickness="0" 
                                 HorizontalAlignment="Stretch" 
                                 VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
-                        <Button Grid.Column="3"
+                                Margin="0,0,1,1" Click="BUSKPower1_Click"/>
+                        <Button x:Name="BUSKPower2" Grid.Column="3"
                                 Grid.Row="2"  
                                 Grid.RowSpan="2"
                                 Content="ВЫКЛ"
@@ -81,8 +81,8 @@
                                 BorderThickness="0" 
                                 HorizontalAlignment="Stretch" 
                                 VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>                        
-                        <Button Grid.Column="2"
+                                Margin="0,0,1,1" Click="BUSKPower2_Click"/>                        
+                        <Button x:Name="BUNDPower1" Grid.Column="2"
                                 Grid.Row="4"  
                                 Grid.RowSpan="2"
                                 Content="ВЫКЛ"
@@ -92,8 +92,8 @@
                                 BorderThickness="0" 
                                 HorizontalAlignment="Stretch" 
                                 VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
-                        <Button Grid.Column="3"
+                                Margin="0,0,1,1" Click="BUNDPower1_Click"/>
+                        <Button x:Name="BUNDPower2" Grid.Column="3"
                                 Grid.Row="4" 
                                 Grid.RowSpan="2"
                                 Content="ВЫКЛ"
@@ -103,7 +103,7 @@
                                 BorderThickness="0" 
                                 HorizontalAlignment="Stretch" 
                                 VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>                        
+                                Margin="0,0,1,1" Click="BUNDPower2_Click"/>                        
                         
                         <Label Grid.Column="0"
                                Grid.Row="0"
@@ -136,7 +136,7 @@
                                VerticalContentAlignment="Center"
                                Background="White"
                                Margin="0,0,1,1"/>
-                        <CheckBox Grid.Column="1"
+                        <CheckBox x:Name="BUSKLineA" Grid.Column="1"
                                Grid.Row="2"   
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
@@ -148,7 +148,7 @@
                                VerticalContentAlignment="Center"
                                Background="White"
                                Margin="0,0,1,1"/>
-                        <CheckBox Grid.Column="1"
+                        <CheckBox x:Name="BUSKLineB" Grid.Column="1"
                                Grid.Row="3"   
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
@@ -160,7 +160,7 @@
                                VerticalContentAlignment="Center"
                                Background="White"
                                Margin="0,0,1,1"/>
-                        <CheckBox Grid.Column="1"
+                        <CheckBox x:Name="BUNDLineA" Grid.Column="1"
                                Grid.Row="4"   
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"
@@ -172,7 +172,7 @@
                                VerticalContentAlignment="Center"
                                Background="White"
                                Margin="0,0,1,1"/>
-                        <CheckBox Grid.Column="1"
+                        <CheckBox x:Name="BUNDLineB" Grid.Column="1"
                                Grid.Row="5"   
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Center"

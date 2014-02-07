@@ -22,9 +22,44 @@ namespace EGSE.Constants
     public static class BUKConst
     {
         /// <summary>
-        /// Индекс свойств в ControlValues.
+        /// The property busk power a1
         /// </summary>
-        public const int PropertyPower = 10;
+        public const int PropertyBUSKPowerA1 = 10;
+
+        /// <summary>
+        /// The property busk power b1
+        /// </summary>
+        public const int PropertyBUSKPowerB1 = 11;
+
+        /// <summary>
+        /// The property busk power a2
+        /// </summary>
+        public const int PropertyBUSKPowerA2 = 12;
+
+        /// <summary>
+        /// The property busk power b2
+        /// </summary>
+        public const int PropertyBUSKPowerB2 = 13;
+
+        /// <summary>
+        /// The property bund power a1
+        /// </summary>
+        public const int PropertyBUNDPowerA1 = 14;
+
+        /// <summary>
+        /// The property bund power b1
+        /// </summary>
+        public const int PropertyBUNDPowerB1 = 15;
+
+        /// <summary>
+        /// The property bund power a2
+        /// </summary>
+        public const int PropertyBUNDPowerA2 = 16;
+
+        /// <summary>
+        /// The property bund power b2
+        /// </summary>
+        public const int PropertyBUNDPowerB2 = 17;
 
         /// <summary>
         /// Индекс объекта управления XSAN в массиве ControlValuesList

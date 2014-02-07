@@ -90,18 +90,18 @@ namespace EGSE.Devices
             EgseTime time = new EgseTime();
             time.Encode();
 
-            byte[] OBTData = new byte[5];
-            OBTData[0] = 0;
-            OBTData[1] = 0;
-            OBTData[2] = 0;
-            OBTData[3] = 0;
-            OBTData[4] = 10;
+            byte[] obtData = new byte[5];
+            obtData[0] = 0;
+            obtData[1] = 0;
+            obtData[2] = 0;
+            obtData[3] = 0;
+            obtData[4] = 10;
 
             buf = new byte[1] { 1 };
 
             SendCmd(TIME_RESET_ADDR, buf);
             SendCmd(TIME_DATA_ADDR, time.Data);
-            SendCmd(TIME_OBT_ADDR, OBTData);
+            SendCmd(TIME_OBT_ADDR, obtData);
             SendCmd(TIME_SET_ADDR, buf);
         }
     }
@@ -305,10 +305,10 @@ namespace EGSE.Devices
         /// <summary>
         /// Модуль декодера телеметрии
         /// </summary>
-        public TelemetryBUK Tm;
+        public TelemetryBUK Tele;
 
         /// <summary>
-        /// cписок управляющих элементов
+        /// Список управляющих элементов
         /// </summary>
         public List<ControlValue> ControlValuesList = new List<ControlValue>();
 
@@ -329,13 +329,13 @@ namespace EGSE.Devices
             ETime = new EgseTime();
 
             Device = new DeviceBUK(BUKConst.DeviceSerial, _decoder);
-            Device.ChangeStateEvent = onChangeConnection;
+            Device.ChangeStateEvent = OnChangeConnection;
             
             _xsanDataLogStream = null;
             _xsanChannelForWriting = 0;
             _writeXsanDataToFile = false;
 
-            Tm = new TelemetryBUK();
+            Tele = new TelemetryBUK();
 
             /*ControlValuesList[BUKConst.XSAN_CTRL_IDX].AddProperty(BUKConst.PROPERTY_XSAN_READY_IDX, 4, 1, Device.CmdHSIXSANControl, delegate(UInt32 value)
             {
@@ -410,10 +410,10 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        ///  Метод вызывается, когда прибор подсоединяется или отсоединяется.
+        /// Метод вызывается, когда прибор подсоединяется или отсоединяется.
         /// </summary>
         /// <param name="isConnected">if set to <c>true</c> [is connected].</param>
-        void onChangeConnection(bool isConnected)
+        public void OnChangeConnection(bool isConnected)
         {
             Connected = isConnected;
             if (Connected)
@@ -488,7 +488,7 @@ namespace EGSE.Devices
                         Array.Copy(msg1.Data, 0, ETime.Data, 0, 6);
                         break;
                     case TM_DATA_GET:
-                        Tm.Update(msg1.Data);
+                        Tele.Update(msg1.Data);
                         ControlValuesList[BUKConst.PowerCTRL].UsbValue = msg1.Data[6];
                         break;
                     /*case HSI_XSAN_DATA_GET:
@@ -521,7 +521,11 @@ namespace EGSE.Devices
 
         private void FirePropertyChangedEvent(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+
         }
     }
 }

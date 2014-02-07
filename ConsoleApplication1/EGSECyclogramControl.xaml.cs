@@ -63,6 +63,11 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
+        /// Получает или задает значение, показывающее, включен ли режим отладки.
+        /// </summary>
+        public bool IsTracingMode { get; set; }
+
+        /// <summary>
         /// Функция добавляет список команд циклограммы к исходным командам
         /// </summary>
         /// <param name="cycCommands">Список команд</param>
@@ -73,11 +78,6 @@ namespace EGSE.Cyclogram
                 _cycCommandsAvailable.AddCommand(cycLine.Key, cycLine.Value);
             }
         }
-
-        /// <summary>
-        /// Получает или задает значение, показывающее, включен ли режим отладки.
-        /// </summary>
-        public bool IsTracingMode { get; set; }
 
         /// <summary>
         /// TODO описание
@@ -123,13 +123,24 @@ namespace EGSE.Cyclogram
         {
             return true;
         }
-        
+
+        /// <summary>
+        /// Loops the test.
+        /// </summary>
+        /// <param name="setParams">The set parameters.</param>
+        /// <param name="errstring">The errstring.</param>
+        /// <returns>True всегда</returns>
         public bool LoopTest(string[] setParams, out string errstring)
         {
             errstring = string.Empty;
             return true;
         }
 
+        /// <summary>
+        /// Loops the execute.
+        /// </summary>
+        /// <param name="setParams">The set parameters.</param>
+        /// <returns>True всегда</returns>
         public bool LoopExec(string[] setParams)
         {
             return true;
@@ -144,6 +155,10 @@ namespace EGSE.Cyclogram
             MessageBox.Show("Циклограмма завершена!");
         }
 
+        /// <summary>
+        /// Sets the state of the buttons by.
+        /// </summary>
+        /// <param name="cycloState">State of the cyclo.</param>
         private void SetButtonsByState(CurState cycloState)
         {
             switch (cycloState)
@@ -175,6 +190,10 @@ namespace EGSE.Cyclogram
             }
         }
 
+        /// <summary>
+        /// Called when [cyc state change].
+        /// </summary>
+        /// <param name="cycloState">State of the cyclo.</param>
         private void OnCycStateChange(CurState cycloState)
         {
             DG.Dispatcher.Invoke(new Action(delegate
@@ -183,6 +202,11 @@ namespace EGSE.Cyclogram
             }));
         }
 
+        /// <summary>
+        /// Handles the Click event of the StartBtn control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void StartBtn_Click(object sender, RoutedEventArgs e)
         {
             CyclogramLine curCycLine = (CyclogramLine)DG.SelectedItem;
@@ -195,11 +219,21 @@ namespace EGSE.Cyclogram
             _cycloThread.Start(curCycLine.Line);
         }
 
+        /// <summary>
+        /// Handles the Click event of the StopBtn control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void StopBtn_Click(object sender, RoutedEventArgs e)
         {
             _cycloThread.Stop();
         }
 
+        /// <summary>
+        /// Handles the Click event of the StepBtn control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void StepBtn_Click(object sender, RoutedEventArgs e)
         {
             CyclogramLine curCycLine = (CyclogramLine)DG.SelectedItem;
@@ -212,6 +246,10 @@ namespace EGSE.Cyclogram
             _cycloThread.Step(curCycLine.Line);
         }
 
+        /// <summary>
+        /// Called when [new command].
+        /// </summary>
+        /// <param name="cycCommand">The cyc command.</param>
         private void OnNewCmd(CyclogramLine cycCommand)
         {
             if (cycCommand == null)
@@ -229,6 +267,11 @@ namespace EGSE.Cyclogram
             }));
         }
 
+        /// <summary>
+        /// Handles the Click event of the LoadBtn control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void LoadBtn_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -251,6 +294,11 @@ namespace EGSE.Cyclogram
             }
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the DG control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void DG_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (_cycloThread.State)
