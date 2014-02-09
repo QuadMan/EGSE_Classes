@@ -17,7 +17,7 @@ namespace EGSE.Telemetry
     using EGSE.Utilites.ADC;
 
     /// <summary>
-    /// Телеметрия устройства.
+    /// Телеметрия прибора КИА.
     /// </summary>
     public class TelemetryBUK
     {
@@ -67,13 +67,13 @@ namespace EGSE.Telemetry
         /// <summary>
         /// Обрабатываем данные телеметрии.
         /// </summary>
-        /// <param name="buf">Буфер с данными</param>
+        /// <param name="buf">Буфер с данными.</param>
         public void Update(byte[] buf)
         {
-            BUSKPower1 = (buf[3] & 0x80) == 0x80;
-            BUSKPower2 = (buf[3] & 0x40) == 0x40;
-            BUNDPower1 = (buf[3] & 0x20) == 0x20;
-            BUNDPower2 = (buf[3] & 0x10) == 0x10;
+            BUSKPower1 = 0x80 == (buf[3] & 0x80);
+            BUSKPower2 = 0x40 == (buf[3] & 0x40);
+            BUNDPower1 = 0x20 == (buf[3] & 0x20);
+            BUNDPower2 = 0x10 == (buf[3] & 0x10);
         }
     }
 }

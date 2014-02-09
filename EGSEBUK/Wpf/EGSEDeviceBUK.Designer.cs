@@ -68,5 +68,23 @@ namespace Wpf {
                 return ResourceManager.GetString("eNotAssigned", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to buk.
+        /// </summary>
+        internal static string stDevLogName {
+            get {
+                return ResourceManager.GetString("stDevLogName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({0}, на позиции: {0}).
+        /// </summary>
+        internal static string stOnErrorUSBMsg {
+            get {
+                return ResourceManager.GetString("stOnErrorUSBMsg", resourceCulture);
+            }
+        }
     }
 }

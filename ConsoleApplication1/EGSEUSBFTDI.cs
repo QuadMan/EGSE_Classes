@@ -11,12 +11,12 @@ namespace EGSE.USB
     using FTD2XXNET;
 
     /// <summary>
-    /// Настройка параметров USB устройства.
+    /// Настройка параметров USB.
     /// </summary>
     public struct USBCfg
     {
         /// <summary>
-        /// Сколько поток чтения данных из USB может "спать".
+        /// Сколько поток чтения данных из USB может "спать" (в мс).
         /// </summary>
         public int Sleep;
 
@@ -48,7 +48,7 @@ namespace EGSE.USB
         /// <summary>
         /// Инициализирует новый экземпляр структуры <see cref="USBCfg" />.
         /// </summary>
-        /// <param name="sleep">Сколько поток должен спать</param>
+        /// <param name="sleep">Сколько поток должен "спать".</param>
         public USBCfg(int sleep = 10)
         {
             Sleep = sleep;

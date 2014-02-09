@@ -17,32 +17,32 @@ namespace EGSE.Constants
     using EGSE.Utilites;
 
     /// <summary>
-    /// Основные значения константы устройства.
+    /// Основные значения констант прибора.
     /// </summary>
     public static class BUKConst
     {
         /// <summary>
-        /// The property busk power a1
+        /// Индекс свойства [Питание ПК1 БУСК].
         /// </summary>
         public const int PropertyBUSKPower1 = 0;
 
         /// <summary>
-        /// The property busk power a2
+        /// Индекс свойства [Питание ПК2 БУСК].
         /// </summary>
         public const int PropertyBUSKPower2 = 1;
 
         /// <summary>
-        /// The property bund power a1
+        /// Индекс свойства [Питание ПК1 БУНД].
         /// </summary>
         public const int PropertyBUNDPower1 = 2;
 
         /// <summary>
-        /// The property bund power a2
+        /// Индекс свойства [Питание ПК2 БУНД].
         /// </summary>
         public const int PropertyBUNDPower2 = 3;
 
         /// <summary>
-        /// Индекс объекта управления POWER в массиве ControlValuesList
+        /// Индекс объекта управления POWER в массиве ControlValuesList.
         /// </summary>
         public const int PowerControl = 0;
 

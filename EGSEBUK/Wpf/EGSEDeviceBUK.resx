@@ -120,4 +120,10 @@
   <data name="eNotAssigned" xml:space="preserve">
     <value>ControlValuesList не должны быть равны null!</value>
   </data>
+  <data name="stDevLogName" xml:space="preserve">
+    <value>buk</value>
+  </data>
+  <data name="stOnErrorUSBMsg" xml:space="preserve">
+    <value>{0} ({0}, на позиции: {0})</value>
+  </data>
 </root>
