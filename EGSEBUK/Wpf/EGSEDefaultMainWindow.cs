@@ -33,6 +33,9 @@ namespace EGSE.Defaults
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Таймер обновления UI.
+        /// </summary>
         private System.Windows.Threading.DispatcherTimer _dispatcherTimer;
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace EGSE.Defaults
             OnTimerWork();
 
             // проверяем элементы управления - изменились ли они
-            //testControlValuesOnTimeTick();
+            // testControlValuesOnTimeTick();
             //// индикация подключения, скорости
             ////TimeLabel.Content = _EGSE.ETime.ToString();
             
@@ -100,11 +103,11 @@ namespace EGSE.Defaults
             else
             {
                 ConnectionLabel.Background = Brushes.Red;
-                ConnectionLabel.Content = BUKConst.DeviceName + Resource.Get("stDisconnected"); ;
+                ConnectionLabel.Content = BUKConst.DeviceName + Resource.Get("stDisconnected");
 
                 // инициализируем все экранные формы на значения по-умолчанию при отключении от устройства
-                //DefaultScreenInit();
-                //hsiWin.Clear
+                // DefaultScreenInit();
+                // hsiWin.Clear
             }
              
             // SpeedLabel.Content = Converter.SpeedToStr(_EGSE.Device.Speed) + " [" + _EGSE.Device.GlobalBufferSize.ToString() + "]";

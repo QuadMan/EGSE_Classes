@@ -13,10 +13,239 @@ namespace EGSE.Utilites
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
+    using System.Resources;
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Windows;
-    using System.Resources;
+
+    /// <summary>
+    /// Класс сохранения настроек приложения в Ini файл.
+    /// Сохраняет и отдельные свойства и настройки окон: позицию, размеры, состояние(развернуто/свернуто) окна, видимость.
+    /// </summary>
+    public static class AppSettings
+    {
+        /// <summary>
+        /// Максимальное количество элементов в ini-файле.
+        /// </summary>
+        private const int MaxItemsCount = 100;
+
+        /// <summary>
+        /// Записываем параметр param в секцию section, значением value.
+        /// </summary>
+        /// <param name="param">Параметр приложения.</param>
+        /// <param name="value">Значение параметра.</param>
+        /// <param name="section">Секция, по-умолчанию, MAIN.</param>
+        /// <returns>True - если все хорошо.</returns>
+        public static bool Save(string param, string value, string section = "MAIN")
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                _ini.Write(param, value, section);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Загружаем параметр из файла
+        /// </summary>
+        /// <param name="param">Название параметра</param>
+        /// <param name="section">Секция параметра</param>
+        /// <returns>Строка-значение параметра, null - если параметр не найден</returns>
+        public static string Load(string param, string section = "MAIN")
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                if (_ini.IsKeyExists(param, section))
+                {
+                    return _ini.Read(param, section);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Метод сохраняет в INI файл список.
+        /// </summary>
+        /// <param name="strList">Список для сохранения</param>
+        /// <param name="section">Секция, в которую пишем</param>
+        /// <returns>True - если сохранено</returns>
+        public static bool SaveList(List<string> strList, string section)
+        {
+            if ((strList == null) || (strList.Count == 0))
+            {
+                return false;
+            }
+
+            try
+            {
+                IniFile _ini = new IniFile();
+                int i = 0;
+                foreach (string s in strList)
+                {
+                    _ini.Write("Item" + i.ToString(), s, section);
+                    if (i++ == MaxItemsCount)
+                    {
+                        break;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Загружаем элементы из секции в список.
+        /// Отбираем элементы ItemN, где N должен быть от 0 до MAX_ITEMS_COUNT-1.
+        /// </summary>
+        /// <param name="strList">Список, в который загружаем элементы.</param>
+        /// <param name="section">Секция, из которой загружаем элементы списка.</param>
+        /// <returns>True - если выполнено успешно.</returns>
+        public static bool LoadList(List<string> strList, string section)
+        {
+            if (strList == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                IniFile _ini = new IniFile();
+                int i = 0;
+                string str = string.Empty;
+                strList.Clear();
+                while (i < MaxItemsCount)
+                {
+                    str = "Item" + i.ToString();
+                    if (_ini.IsKeyExists(str, section))
+                    {
+                        strList.Add(_ini.Read(str, section));
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                    i++;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Сохраняем параметры окна
+        /// </summary>
+        /// <param name="win">Экземпляр окна</param>
+        /// <returns>true, если функция выполнена успешно</returns>
+        public static bool SaveWindow(Window win)
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
+                _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
+                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Загружаем сохраненные параметры окна
+        /// </summary>
+        /// <param name="win">Экземпляр окна</param>
+        /// <returns>true, если функция выполнена успешно</returns>
+        public static bool LoadWindow(Window win)
+        {
+            try
+            {
+                IniFile _ini = new IniFile();
+                if (_ini.IsKeyExists("Bounds", win.Title))
+                {
+                    System.ComponentModel.TypeConverter _conv =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
+                    Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
+
+                    // сделал проверки на NaN и 0, так как для окон, которые не открывались значения (Left,Top,RenderSize) не рассчитываются системой, нужно придумать другой способ сохранения
+                    if (_rect.Left != double.NaN)
+                    {
+                        win.Left = _rect.Left;
+                    }
+
+                    if (_rect.Top != double.NaN)
+                    {
+                        win.Top = _rect.Top;
+                    }
+
+                    if (_rect.Size.Height != 0)
+                    {
+                        win.Height = _rect.Size.Height;
+                    }
+
+                    if (_rect.Size.Width != 0)
+                    {
+                        win.Width = _rect.Size.Width;
+                    }
+                }
+                else
+                {
+                    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
+                }
+
+                if (_ini.IsKeyExists("WindowState", win.Title))
+                {
+                    System.ComponentModel.TypeConverter _conv2 =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
+                    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
+                }
+                else
+                {
+                    _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
+                }
+
+                if (_ini.IsKeyExists("Visibility", win.Title))
+                {
+                    System.ComponentModel.TypeConverter _conv3 =
+                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Visibility));
+                    win.Visibility = (Visibility)_conv3.ConvertFromString(_ini.Read("Visibility", win.Title));
+                }
+                else
+                {
+                    _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+    }
 
     /// <summary>
     /// Класс для работы со строковыми ресусрами.
@@ -97,16 +326,16 @@ namespace EGSE.Utilites
         /// <summary>
         /// Строка шестнадцатеричных чисел в массив байт
         /// </summary>
-        /// <param name="HexStr">Строка HEX чисел, разделенных пробелами</param>
+        /// <param name="hexStr">Строка HEX чисел, разделенных пробелами</param>
         /// <returns>Массив байт или null, если HexStr пустая </returns>
-        public static byte[] HexStrToByteArray(string HexStr)
+        public static byte[] HexStrToByteArray(string hexStr)
         {
-            if (HexStr == string.Empty)
+            if (hexStr == string.Empty)
             {
                 return null;
             }
 
-            string[] hexValuesSplit = HexStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] hexValuesSplit = hexStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             byte[] outBuf = new byte[hexValuesSplit.Length];
             int i = 0;
             foreach (string hex in hexValuesSplit)
@@ -247,7 +476,30 @@ namespace EGSE.Utilites
     /// </summary>
     public class EGSETime
     {
-        private const int DEFAULT_TIME_SIZE_BYTES = 6;
+        /// <summary>
+        /// Размер кадра "Время" устройства (в байтах).
+        /// </summary>
+        private const int DefaultTimeSize = 6;
+
+        /// <summary>
+        /// Строка со временем.
+        /// </summary>
+        private StringBuilder sb;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="EGSETime" />.
+        /// </summary>
+        public EGSETime()
+        {
+            Data = new byte[DefaultTimeSize];
+            Day = 0;
+            Hour = 0;
+            Min = 0;
+            Sec = 0;
+            Msec = 0;
+            Mcsec = 0;
+            sb = new StringBuilder();
+        }
 
         /// <summary>
         /// Получает или задает данные времени (6 байт).
@@ -284,24 +536,6 @@ namespace EGSE.Utilites
         /// </summary>
         public uint Mcsec { get; private set; }
 
-        // строка со временем
-        private StringBuilder sb;
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="EGSETime" />.
-        /// </summary>
-        public EGSETime()
-        {
-            Data = new byte[DEFAULT_TIME_SIZE_BYTES];
-            Day = 0;
-            Hour = 0;
-            Min = 0;
-            Sec = 0;
-            Msec = 0;
-            Mcsec = 0;
-            sb = new StringBuilder();
-        }
-
         /// <summary>
         /// Декодируем время из буфера в поля
         /// </summary>
@@ -333,10 +567,10 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Преобразуем время в строку
+        /// Преобразуем время в строку.
         /// </summary>
-        /// <returns>строку в виде DD:HH:MM:SS:MSS:MCS</returns>
-        new public string ToString()
+        /// <returns>Cтроку в виде DD:HH:MM:SS:MSS:MCS</returns>
+        public new string ToString()
         {
             Decode();
             sb.Clear();
@@ -352,24 +586,20 @@ namespace EGSE.Utilites
     public class IniFile
     {
         /// <summary>
-        /// Путь к ini-файлу
+        /// Путь к ini-файлу.
         /// </summary>
         private string _path;
 
         /// <summary>
-        /// Имя exe-файла (Название группы параметра по-умолчанию) 
+        /// Имя exe-файла (Название группы параметра по-умолчанию).
         /// </summary>
         private string _exe = Assembly.GetExecutingAssembly().GetName().Name;
-        [DllImport("kernel32")]
-        private static extern long WritePrivateProfileString(string section, string key, string value, string filePath);
-        [DllImport("kernel32")]
-        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="IniFile" />.
         /// Конструктор конкретного ini-файла.
         /// </summary>
-        /// <param name="iniPath">Полный путь к ini-файлу</param>
+        /// <param name="iniPath">Полный путь к ini-файлу.</param>
         public IniFile(string iniPath = null)
         {
             _path = new FileInfo(iniPath ?? _exe + ".ini").FullName.ToString();
@@ -428,231 +658,10 @@ namespace EGSE.Utilites
         {
             return Read(key, section).Length > 0;
         }
-    }
 
-    /// <summary>
-    /// Класс сохранения настроек приложения в Ini файл
-    /// Сохраняет и отдельные свойства и настройки окон: позицию, размеры, состояние(развернуто/свернуто) окна, видимость
-    /// </summary>
-    public static class AppSettings
-    {
-        private const int MAX_ITEMS_COUNT = 100;
-
-        /// <summary>
-        /// Записываем параметр param в секцию section, значением value.
-        /// </summary>
-        /// <param name="param">Параметр приложения</param>
-        /// <param name="value">Значение параметра</param>
-        /// <param name="section">секция, по-умолчанию, MAIN</param>
-        /// <returns>True - если все хорошо</returns>
-        public static bool Save(string param, string value, string section = "MAIN")
-        {
-            try
-            {
-                IniFile _ini = new IniFile();
-                _ini.Write(param, value, section);
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        /// <summary>
-        /// Загружаем параметр из файла
-        /// </summary>
-        /// <param name="param">Название параметра</param>
-        /// <param name="section">Секция параметра</param>
-        /// <returns>Строка-значение параметра, null - если параметр не найден</returns>
-        public static string Load(string param, string section = "MAIN")
-        {
-            try
-            {
-                IniFile _ini = new IniFile();
-                if (_ini.IsKeyExists(param, section))
-                {
-                    return _ini.Read(param, section);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        /// <summary>
-        /// Метод сохраняет в INI файл список.
-        /// </summary>
-        /// <param name="strList">Список для сохранения</param>
-        /// <param name="section">Секция, в которую пишем</param>
-        /// <returns>True - если сохранено</returns>
-        public static bool SaveList(List<string> strList, string section)
-        {
-            if ((strList == null) || (strList.Count == 0)) {
-                return false;
-            }
-
-            try
-            {
-                IniFile _ini = new IniFile();
-                int i = 0;
-                foreach (string s in strList)
-                {
-                    _ini.Write("Item" + i.ToString(), s, section);
-                    if (i++ == MAX_ITEMS_COUNT)
-                    {
-                        break;
-                    }
-                }
-                
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
-        }
-
-        /// <summary>
-        /// Загружаем элементы из секции в список.
-        /// Отбираем элементы ItemN, где N должен быть от 0 до MAX_ITEMS_COUNT-1.
-        /// </summary>
-        /// <param name="strList">Список, в который загружаем элементы</param>
-        /// <param name="section">Секция, из которой загружаем элементы списка</param>
-        /// <returns>True - если выполнено успешно</returns>
-        public static bool LoadList(List<string> strList, string section)
-        {
-            if (strList == null)
-            {
-                return false;
-            }
-
-            try
-            {
-                IniFile _ini = new IniFile();
-                int i = 0;
-                string str = string.Empty;
-                strList.Clear();
-                while (i < MAX_ITEMS_COUNT)
-                {
-                    str = "Item" + i.ToString();
-                    if (_ini.IsKeyExists(str, section))
-                    {
-                        strList.Add(_ini.Read(str, section));
-                    }
-                    else
-                    {
-                        break;
-                    }
-
-                    i++;
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Сохраняем параметры окна
-        /// </summary>
-        /// <param name="win">Экземпляр окна</param>
-        /// <returns>true, если функция выполнена успешно</returns>
-        public static bool SaveWindow(Window win)
-        {
-            try
-            {
-                IniFile _ini = new IniFile();
-                _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
-                _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
-                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
-
-        /// <summary>
-        /// Загружаем сохраненные параметры окна
-        /// </summary>
-        /// <param name="win">Экземпляр окна</param>
-        /// <returns>true, если функция выполнена успешно</returns>
-        public static bool LoadWindow(Window win)
-        {
-            try
-            {
-                IniFile _ini = new IniFile();
-                if (_ini.IsKeyExists("Bounds", win.Title))
-                {
-                    System.ComponentModel.TypeConverter _conv =
-                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
-                    Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
-
-                    // сделал проверки на NaN и 0, так как для окон, которые не открывались значения (Left,Top,RenderSize) не рассчитываются системой, нужно придумать другой способ сохранения
-                    if (_rect.Left != double.NaN)
-                    {
-                        win.Left = _rect.Left;
-                    }
-
-                    if (_rect.Top != double.NaN)
-                    {
-                        win.Top = _rect.Top;
-                    }
-
-                    if (_rect.Size.Height != 0)
-                    {
-                        win.Height = _rect.Size.Height;
-                    }
-
-                    if (_rect.Size.Width != 0)
-                    {
-                        win.Width = _rect.Size.Width;
-                    }
-                }
-                else
-                {
-                    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
-                }
-
-                if (_ini.IsKeyExists("WindowState", win.Title))
-                {
-                    System.ComponentModel.TypeConverter _conv2 =
-                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
-                    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
-                }
-                else
-                {
-                    _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
-                }
-
-                if (_ini.IsKeyExists("Visibility", win.Title))
-                {
-                    System.ComponentModel.TypeConverter _conv3 =
-                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Visibility));
-                    win.Visibility = (Visibility)_conv3.ConvertFromString(_ini.Read("Visibility", win.Title));
-                }
-                else
-                {
-                    _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+        [DllImport("kernel32")]
+        private static extern long WritePrivateProfileString(string section, string key, string value, string filePath);
+        [DllImport("kernel32")]
+        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
     }
 }

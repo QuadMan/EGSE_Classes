@@ -7,7 +7,6 @@
 
 namespace EGSE.Utilites
 {
-
     /// <summary>
     /// Класс менеджера для большого кольцевого буфера
     /// Представляет собой двумерный массив. Первый индекс которого является указателем на большой массив 
@@ -16,63 +15,59 @@ namespace EGSE.Utilites
     public class BigBufferManager
     {
         /// <summary>
-        /// Размер буфера по-умолчанию
+        /// Размер буфера по-умолчанию.
         /// </summary>
-        private const uint DEFAULT_BUF_SIZE = 100;
+        private const uint DefaultBufferSize = 100;
 
         /// <summary>
-        /// Размер единичных массивов (ограничен драйвером FTDI, который не передает больше 65 КБ за раз)
+        /// Размер единичных массивов (ограничен драйвером FTDI, который не передает больше 65 КБ за раз).
         /// </summary>
-        private const uint FTDI_BUF_SIZE = 70000;
-
-        /// <summary>
-        /// Получает или задает представление большого кольцевого буфера.
-        /// AData[positionIdx][dataIdx]
-        /// </summary>
-        public byte[][] AData { get; set; }
+        private const uint FTDIBufferSize = 70000;
 
         /// <summary>
         /// Здесь хранятся длины всех массивов, так как длина второго массива задана константой.
         /// </summary>
-        private int[] _aLen;
+        private int[] _arrayLen;
 
         /// <summary>
-        /// Текущая позиция чтения
+        /// Текущая позиция байта для чтения.
         /// </summary>
         private uint _curRPos;
 
         /// <summary>
-        /// Текущая позиция записи
+        /// Текущая позиция байта для записи.
         /// </summary>
         private uint _curWPos;
 
         /// <summary>
-        /// Количество элементов в кольцевом буфере
+        /// Количество элементов в кольцевом буфере.
         /// </summary>
         private int _count;
 
         /// <summary>
-        /// Размер кольцевого буфера (в количестве массивов по 70 КБ)
+        /// Размер кольцевого буфера.
+        /// Примечание:
+        /// В количестве массивов по 70 КБ.
         /// </summary>
         private uint _bufSize;
 
         /// <summary>
-        /// Последняя позиция чтения
+        /// Последняя позиция байта для чтения.
         /// </summary>
         private uint _lastRPos;
 
         /// <summary>
-        /// Последняя позиция записи
+        /// Последняя позиция байта для записи.
         /// </summary>
         private uint _lastWPos;
 
         /// <summary>
-        /// Объект для защиты функций moveNextRead и moveNextWrite
+        /// Объект для защиты функций moveNextRead и moveNextWrite.
         /// </summary>
         private object thisLock = new object();
 
         /// <summary>
-        /// Размер буфера в байтах, счиается при вызове функций moveNextRead и moveNextWrite
+        /// Размер буфера в байтах, счиается при вызове функций moveNextRead и moveNextWrite.
         /// </summary>
         private int _bytesInBuffer;
 
@@ -80,15 +75,15 @@ namespace EGSE.Utilites
         /// Инициализирует новый экземпляр класса <see cref="BigBufferManager" />.
         /// </summary>
         /// <param name="bufSize">Размер буфера</param>
-        public BigBufferManager(uint bufSize = DEFAULT_BUF_SIZE)
+        public BigBufferManager(uint bufSize = DefaultBufferSize)
         {
             _bufSize = bufSize;
             AData = new byte[_bufSize][];
-            _aLen = new int[_bufSize];
+            _arrayLen = new int[_bufSize];
             for (uint i = 0; i < _bufSize; i++)
             {
-                AData[i] = new byte[FTDI_BUF_SIZE];
-                _aLen[i] = 0;
+                AData[i] = new byte[FTDIBufferSize];
+                _arrayLen[i] = 0;
             }
 
             _lastRPos = 0;
@@ -100,42 +95,10 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Перемещает указатель чтения
-        /// Обеспечивает защиту от одновременного изменения _count и _bytesInBuffer
-        /// Изменяет _bytesInBuffer
+        /// Получает или задает представление большого кольцевого буфера.
+        /// AData[positionIdx][dataIdx]
         /// </summary>
-        public void MoveNextRead()
-        {
-            lock (this)
-            {
-                _curRPos = (_curRPos + 1) % _bufSize;
-                _count--;
-                _bytesInBuffer -= _aLen[_lastRPos];
-#if (DEBUG && CONSOLE)
-                System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}, RPos = {2}", _count, _bytesInBuffer,_curRPos);
-#endif
-            }
-        }
-
-        /// <summary>
-        /// Перемещает указатель записи
-        /// Обеспечивает защиту от одновременного изменения _count и _bytesInBuffer
-        /// Изменяет _bytesInBuffer и записывает длину буфера в ALen
-        /// </summary>
-        /// <param name="bufSize">Сколько было записано в текущий буфер</param>
-        public void MoveNextWrite(int bufSize)
-        {
-            lock (this)
-            {
-                _curWPos = (_curWPos + 1) % _bufSize;
-                _count++;
-                _aLen[_lastWPos] = bufSize;
-                _bytesInBuffer += bufSize;
-#if (DEBUG && CONSOLE)
-                System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}, WPos = {2}", _count, _bytesInBuffer, _curWPos);
-#endif
-            }
-        }
+        public byte[][] AData { get; set; }
 
         /// <summary>
         /// Получает количество байт в буфере.
@@ -155,7 +118,7 @@ namespace EGSE.Utilites
         {
             get
             {
-                return _aLen[_lastRPos];
+                return _arrayLen[_lastRPos];
             }
         }
 
@@ -194,6 +157,45 @@ namespace EGSE.Utilites
 
                 _lastWPos = _curWPos;
                 return AData[_lastWPos];
+            }
+        }
+
+        /// <summary>
+        /// Перемещает указатель чтения
+        /// Обеспечивает защиту от одновременного изменения _count и _bytesInBuffer
+        /// Изменяет _bytesInBuffer
+        /// </summary>
+        public void MoveNextRead()
+        {
+            lock (this)
+            {
+                _curRPos = (_curRPos + 1) % _bufSize;
+                _count--;
+                _bytesInBuffer -= _arrayLen[_lastRPos];
+#if (DEBUG && CONSOLE)
+                System.Console.WriteLine("readBuf, count = {0}, bytesAvailable = {1}, RPos = {2}", _count, _bytesInBuffer,_curRPos);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Перемещает указатель записи.
+        /// Примечание:
+        /// Обеспечивает защиту от одновременного изменения _count и _bytesInBuffer.
+        /// Изменяет _bytesInBuffer и записывает длину буфера в ALen.
+        /// </summary>
+        /// <param name="bufSize">Сколько было записано в текущий буфер.</param>
+        public void MoveNextWrite(int bufSize)
+        {
+            lock (this)
+            {
+                _curWPos = (_curWPos + 1) % _bufSize;
+                _count++;
+                _arrayLen[_lastWPos] = bufSize;
+                _bytesInBuffer += bufSize;
+#if (DEBUG && CONSOLE)
+                System.Console.WriteLine("writeBuf, count = {0}, bytesAvailable = {1}, WPos = {2}", _count, _bytesInBuffer, _curWPos);
+#endif
             }
         }
     }

@@ -5,16 +5,6 @@
 // <author>Мурзин Святослав</author>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Controls;
-using System.Collections.ObjectModel;
-
 /*
 Обязательно вставлять проверку на null в обработчике сообщений: 
 if (EventClickToString.ElementClicked(dpcEv) == null)
@@ -66,20 +56,28 @@ public partial class MainWindow : Window
 */
 namespace EGSE.Utilites
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+
     /// <summary>
-    /// Класс генерации информации нажатия клавиши мыши на элементе
+    /// Класс генерации информации нажатия клавиши мыши на элементе.
     /// </summary>
-    static public class EventClickToString
+    public static class EventClickToString
         {
-
             /// <summary>
-            /// Метод генерации информации
+            /// Метод генерации информации.
             /// </summary>
-            /// <param name="reaEv">MouseEventArgs от оброботчика сообщений</param>
-            /// <returns>Строку с информацией</returns>
-            static public string ElementClicked(MouseEventArgs reaEv)
+            /// <param name="reaEv">MouseEventArgs от оброботчика сообщений.</param>
+            /// <returns>Строку с информацией.</returns>
+            public static string ElementClicked(MouseEventArgs reaEv)
             {
-
                 string strRes = null;
 
                 if (reaEv.Source.GetType().Equals(typeof(RadioButton)))
@@ -91,8 +89,8 @@ namespace EGSE.Utilites
                         strRes += GetString(GetParentElements(elemSource.Parent));
                         strRes += "Выбран вариант \"" + elemSource.Content + "\"";
                     }
-
                 }
+
                 if (reaEv.Source.GetType().Equals(typeof(Button)))
                 {
                     Button elemSource = reaEv.Source as Button;
@@ -102,7 +100,6 @@ namespace EGSE.Utilites
                         strRes += GetString(GetParentElements(elemSource.Parent));
                         strRes += "Нажата кнопка \"" + elemSource.Content + "\"";
                     }
-
                 }
                 else if (reaEv.Source.GetType().Equals(typeof(CheckBox)))
                 {
@@ -111,12 +108,15 @@ namespace EGSE.Utilites
                     {
                         strRes += GetString(GetParentElements(elemSource.Parent));
                         if ((bool)elemSource.IsChecked)
+                        {
                             strRes += "Снят флажок ";
+                        }
                         else
+                        {
                             strRes += "Активирован флажок ";
+                        }
+
                         strRes += "\"" + elemSource.Content + "\"";
-
-
                     }
                 }
                 else if (reaEv.Source.GetType().Equals(typeof(ComboBoxItem)))
@@ -129,15 +129,18 @@ namespace EGSE.Utilites
                         strRes += "Выбран элемент \"" + elemSource.Content + "\"";
                     }
                 }
+
                 return strRes;
             }
 
-            static public string ElementClicked(object element)
+            /// <summary>
+            /// Elements the clicked.
+            /// </summary>
+            /// <param name="element">The element.</param>
+            /// <returns>TODO описание</returns>
+            public static string ElementClicked(object element)
             {
-
                 string strRes = null;
-
-                
 
                 if (element.GetType().Equals(typeof(Button)))
                 {
@@ -148,7 +151,6 @@ namespace EGSE.Utilites
                         strRes += GetString(GetParentElements(elemSource.Parent));
                         strRes += "Нажата кнопка \"" + elemSource.Content + "\"";
                     }
-
                 }
                 else if (element.GetType().Equals(typeof(CheckBox)))
                 {
@@ -157,12 +159,15 @@ namespace EGSE.Utilites
                     {
                         strRes += GetString(GetParentElements(elemSource.Parent));
                         if ((bool)elemSource.IsChecked)
+                        {
                             strRes += "Снят флажок ";
+                        }
                         else
+                        {
                             strRes += "Активирован флажок ";
+                        }
+
                         strRes += "\"" + elemSource.Content + "\"";
-
-
                     }
                 }
                 else if (element.GetType().Equals(typeof(ComboBoxItem)))
@@ -190,7 +195,6 @@ namespace EGSE.Utilites
                                 strRes += "Выбран элемент \"" + item.Content + "\"";
                             }
                         }
-                        
                     }
                 }
 
@@ -198,32 +202,44 @@ namespace EGSE.Utilites
             }
 
             /// <summary>
-            /// Внутренний метод формирует одну строку из стэка элементов
+            /// Внутренний метод формирует одну строку из стэка элементов.
             /// </summary>
-            /// <param name="stkstrElements">стэк элементов</param>
-            /// <returns>Строка с именами родительских элементов</returns>
-            static private string GetString(Stack<string> stkstrElements)
+            /// <param name="stkstrElements">Cтэк элементов.</param>
+            /// <returns>Строка с именами родительских элементов.</returns>
+            private static string GetString(Stack<string> stkstrElements)
             {
                 string strRes = null;
 
                 if (stkstrElements == null)
+                {
                     return null;
+                }
+
                 if (stkstrElements.Count != 0)
+                {
                     strRes = "Окно \"" + stkstrElements.Pop() + "\"";
+                }
+
                 if (stkstrElements.Count != 0)
+                {
                     strRes += ", в блоке \"" + stkstrElements.Pop() + "\"";
+                }
+
                 while (stkstrElements.Count != 0)
+                {
                     strRes += ", блока \"" + stkstrElements.Pop() + "\"";
+                }
+
                 strRes += ": ";
                 return strRes;
             }
 
             /// <summary>
-            /// Внутренний метод создает стэк имен родительских элементов
+            /// Внутренний метод создает стэк имен родительских элементов.
             /// </summary>
-            /// <param name="objParent">Родительский элемент</param>
-            /// <returns>Стэк имен родительских элементов</returns>
-            static private Stack<string> GetParentElements(object objParent)
+            /// <param name="objParent">Родительский элемент.</param>
+            /// <returns>Стэк имен родительских элементов.</returns>
+            private static Stack<string> GetParentElements(object objParent)
             {
                 Stack<string> stkstrRes = new Stack<string>();
                 object objParentElemSource = objParent;
@@ -258,56 +274,70 @@ namespace EGSE.Utilites
                         }
                     }
                     else
+                    {
                         objParentElemSource = IgnoreParentElement(objParentElemSource);
+                    }
                 }
+
                 return stkstrRes;
             }
 
             /// <summary>
-            /// Метод возвращает родительский объект, если текущий объект 
-            /// удовлетворяет набору элементов, которые необходимо игнорировать
+            /// Метод возвращает родительский объект, если текущий объект удовлетворяет набору элементов, которые необходимо игнорировать.
             /// </summary>
-            /// <param name="objElem">Объект, который нужно проверить на игнорирование</param>
-            /// <returns>Родительский объект или null,если удовлетворяет набору элементов, 
-            /// которые необходимо игнорировать</returns>
-            static private object IgnoreParentElement(object objElem)
+            /// <param name="objElem">Объект, который нужно проверить на игнорирование.</param>
+            /// <returns>Родительский объект или null,если удовлетворяет набору элементов, которые необходимо игнорировать.</returns>
+            private static object IgnoreParentElement(object objElem)
             {
                 if (objElem.GetType().Equals(typeof(StackPanel)))
                 {
                     StackPanel elemIgnSource = objElem as StackPanel;
                     if (elemIgnSource != null)
+                    {
                         return LogicalTreeHelper.GetParent(elemIgnSource);
+                    }
                 }
                 else if (objElem.GetType().Equals(typeof(DockPanel)))
                 {
                     DockPanel elemIgnSource = objElem as DockPanel;
                     if (elemIgnSource != null)
+                    {
                         return LogicalTreeHelper.GetParent(elemIgnSource);
+                    }
                 }
                 else if (objElem.GetType().Equals(typeof(WrapPanel)))
                 {
                     WrapPanel elemIgnSource = objElem as WrapPanel;
                     if (elemIgnSource != null)
+                    {
                         return LogicalTreeHelper.GetParent(elemIgnSource);
+                    }
                 }
                 else if (objElem.GetType().Equals(typeof(Grid)))
                 {
                     Grid elemIgnSource = objElem as Grid;
                     if (elemIgnSource != null)
+                    {
                         return LogicalTreeHelper.GetParent(elemIgnSource);
+                    }
                 }
                 else if (objElem.GetType().Equals(typeof(ComboBox)))
                 {
                     ComboBox elemIgnSource = objElem as ComboBox;
                     if (elemIgnSource != null)
+                    {
                         return LogicalTreeHelper.GetParent(elemIgnSource);
+                    }
                 }
                 else if (objElem.GetType().Equals(typeof(Cyclogram.CyclogramControl)))
                 {
                     Cyclogram.CyclogramControl elemIgnSource = objElem as Cyclogram.CyclogramControl;
                     if (elemIgnSource != null)
+                    {
                         return LogicalTreeHelper.GetParent(elemIgnSource);
+                    }
                 }
+
                 return null;
             }
         }

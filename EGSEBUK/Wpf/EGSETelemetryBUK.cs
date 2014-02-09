@@ -22,6 +22,17 @@ namespace EGSE.Telemetry
     public class TelemetryBUK
     {
         /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="TelemetryBUK" />.
+        /// </summary>
+        public TelemetryBUK()
+        {
+            BUSKPower1 = false;
+            BUSKPower2 = false;
+            BUNDPower1 = false;
+            BUNDPower2 = false;
+        }
+
+        /// <summary>
         /// Получает значение, показывающее, есть ли питание у [ПК1 БУСК].
         /// </summary>
         /// <value>
@@ -52,17 +63,6 @@ namespace EGSE.Telemetry
         ///   <c>true</c> если питание [ПК2 БУНД] есть; иначе, <c>false</c>.
         /// </value>
         public bool BUNDPower2 { get; private set; }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="TelemetryBUK" />.
-        /// </summary>
-        public TelemetryBUK()
-        {
-            BUSKPower1 = false;
-            BUSKPower2 = false;
-            BUNDPower1 = false;
-            BUNDPower2 = false;
-        }
 
         /// <summary>
         /// Обрабатываем данные телеметрии.

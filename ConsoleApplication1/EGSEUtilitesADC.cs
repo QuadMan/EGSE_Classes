@@ -5,44 +5,79 @@
 // <author>Мурзин Святослав</author>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace EGSE.Utilites.ADC
 {
-// *****************************************************************************
-// *****************************************************************************
-    /// <summary>
-    /// Специальное исключение для классов
-    /// </summary>
-    public class ADCException : ApplicationException
-    {
-        public ADCException() { }
-
-        public ADCException(string message) 
-            : base(message) { }
-
-        public ADCException(string message, Exception ex) 
-            : base(message) { }
-
-        // Конструктор для обработки сериализации типа
-        protected ADCException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext contex)
-            : base(info, contex) { }
-    }
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Структура калибровочных значений
     /// </summary>
     public struct CValue
     {
+        /// <summary>
+        /// The x value
+        /// </summary>
         public float XVal;
+
+        /// <summary>
+        /// The y value
+        /// </summary>
         public float YVal;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр структуры <see cref="CValue" />.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="y">The y.</param>
         public CValue(float x, float y)
         {
             XVal = x;
             YVal = y;
+        }
+    }
+
+    /// <summary>
+    /// Специальное исключение для классов.
+    /// </summary>
+    public class ADCException : ApplicationException
+    {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ADCException" />.
+        /// </summary>
+        public ADCException() 
+        { 
+        }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ADCException" />.
+        /// </summary>
+        /// <param name="message">A message that describes the error.</param>
+        public ADCException(string message) 
+            : base(message) 
+        { 
+        }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ADCException" />.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="ex">Внутреннее исключение.</param>
+        public ADCException(string message, Exception ex) 
+            : base(message) 
+        { 
+        }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ADCException" />.
+        /// Конструктор для обработки сериализации типа.
+        /// </summary>
+        /// <param name="info">The information.</param>
+        /// <param name="contex">The contex.</param>
+        protected ADCException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext contex)
+            : base(info, contex) 
+        { 
         }
     }
 
@@ -67,69 +102,54 @@ namespace EGSE.Utilites.ADC
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="CalibrationValues" />.
         /// </summary>
-        /// <param name="cValues">Массив калибровочных данных</param>
-        public CalibrationValues(CValue[] cValues)
+        /// <param name="values">Массив калибровочных данных.</param>
+        public CalibrationValues(CValue[] values)
         {
             _listValues = new List<CValue>();
 
-            foreach (CValue cv in cValues)
+            foreach (CValue cv in values)
             {
                 if (_listValues.Contains(cv))
                 {
                     ADCException exc = new ADCException("Ошибка: значение " + "(" + cv.XVal + "; " + cv.YVal + ")" + " с полем х = " + cv.XVal + " уже существует!");
                     throw exc;
                 }
+
                 _listValues.Add(cv);
             }
         }
 
         /// <summary>
-        /// Внутренний метод определяющий способ сортировки для метода Sort()
+        /// Метод добавляет новые калибровочные данные.
         /// </summary>
-        /// <param name="cv_1">Первый объект CalibrationValue для сравнения</param>
-        /// <param name="cv_2">Второй объект CalibrationValue для сравнения</param>
-        /// <returns>Результат сравнения</returns>
-        private static int CompareCalibrationValues(CValue cv_1, CValue cv_2)
-        {            
-            return cv_1.XVal.CompareTo(cv_2.XVal);
-        }
-
-        /// <summary>
-        /// Внутренний метод проводящий сортировку при добавлении новых калибровочных данных.
-        /// </summary>
-        private void Sort()
-        {
-            _listValues.Sort(CompareCalibrationValues);
-        }
-
-        /// <summary>
-        /// Метод добавляет новые калибровочные данные
-        /// </summary>
-        /// <param name="cValue">Калибровочные данные</param>
-        public void Add(CValue cValue)
+        /// <param name="value">Калибровочные данные.</param>
+        public void Add(CValue value)
         {
             if (_listValues == null)
-                _listValues.Add(cValue);
+            {
+                _listValues.Add(value);
+            }
             else
             {
-                if (_listValues.Contains(cValue))
+                if (_listValues.Contains(value))
                 {
-                    ADCException exc = new ADCException("Ошибка: значение " + "(" + cValue.XVal + ", " + cValue.YVal + ")" + " с полем х = " + cValue.XVal + " уже существует!");
+                    ADCException exc = new ADCException("Ошибка: значение " + "(" + value.XVal + ", " + value.YVal + ")" + " с полем х = " + value.XVal + " уже существует!");
                     throw exc;
                 }
-                _listValues.Add(cValue);
+
+                _listValues.Add(value);
             }
         }
 
         /// <summary>
         /// Метод получения калибровочного значения по калибровочным данным.
         /// </summary>
-        /// <param name="xValue">Входящее калибровочное значение</param>
-        /// <param name="NegativeIsOk">if set to <c>true</c> [negative is ok].</param>
+        /// <param name="valueX">Входящее калибровочное значение</param>
+        /// <param name="negativeIsOk">if set to <c>true</c> [negative is ok].</param>
         /// <returns>
         /// Калибровочное значение YVal
         /// </returns>
-        public float Get(float xValue, bool NegativeIsOk)
+        public float Get(float valueX, bool negativeIsOk)
         {
             float value = 0;
 
@@ -141,52 +161,83 @@ namespace EGSE.Utilites.ADC
 
             Sort();
             
-            if (xValue <= _listValues[0].XVal)
+            if (valueX <= _listValues[0].XVal)
             {
                 if ((_listValues[1].XVal - _listValues[0].XVal) == 0)
                 {
                     ADCException exc = new ADCException("Ошибка: деление на 0! Значения: " + _listValues[1].XVal);
                     throw exc;
                 }
-                value = (_listValues[0].YVal - (_listValues[1].YVal - _listValues[0].YVal) * (_listValues[0].XVal - xValue)
-                        / (_listValues[1].XVal - _listValues[0].XVal));
-                if ((NegativeIsOk == false) && (value < 0)) {
+
+                value = _listValues[0].YVal - (((_listValues[1].YVal - _listValues[0].YVal) * (_listValues[0].XVal - valueX)) / (_listValues[1].XVal - _listValues[0].XVal));
+                if ((negativeIsOk == false) && (value < 0)) 
+                {
                     value = 0;
                 }
+
                 return value;
             }
-            else if (xValue >= _listValues[_listValues.Count - 1].XVal)
+            else if (valueX >= _listValues[_listValues.Count - 1].XVal)
             {
                 if ((_listValues[_listValues.Count - 1].XVal - _listValues[_listValues.Count - 2].XVal) == 0)
                 {
                     ADCException exc = new ADCException("Ошибка: деление на 0! Значения: " + _listValues[_listValues.Count - 1].XVal);
                     throw exc;
                 }
-                value = (_listValues[_listValues.Count - 2].YVal + (_listValues[_listValues.Count - 1].YVal - _listValues[_listValues.Count - 2].YVal) * (xValue - _listValues[_listValues.Count - 2].XVal)
-                        / (_listValues[_listValues.Count - 1].XVal - _listValues[_listValues.Count - 2].XVal)); 
-                if ((NegativeIsOk == false) && (value < 0)) {
+
+                value = _listValues[_listValues.Count - 2].YVal + (((_listValues[_listValues.Count - 1].YVal - _listValues[_listValues.Count - 2].YVal) * (valueX - _listValues[_listValues.Count - 2].XVal))
+                        / (_listValues[_listValues.Count - 1].XVal - _listValues[_listValues.Count - 2].XVal));
+                if ((negativeIsOk == false) && (value < 0))
+                {
                     value = 0;
                 }
+
                 return value;
             }
             else
+            {
                 for (int i = 0; i < _listValues.Count; i++)
-                    if (xValue <= _listValues[i].XVal)
+                {
+                    if (valueX <= _listValues[i].XVal)
                     {
                         if ((_listValues[i].XVal - _listValues[i - 1].XVal) == 0)
                         {
                             ADCException exc = new ADCException("Ошибка: деление на 0! Значения: " + _listValues[i].XVal);
                             throw exc;
                         }
-                        value = (_listValues[i - 1].YVal + (_listValues[i].YVal - _listValues[i - 1].YVal) * (xValue - _listValues[i - 1].XVal)
-                                / (_listValues[i].XVal - _listValues[i - 1].XVal)); 
-                        if ((NegativeIsOk == false) && (value < 0)) {
+
+                        value = _listValues[i - 1].YVal + (((_listValues[i].YVal - _listValues[i - 1].YVal) * (valueX - _listValues[i - 1].XVal))
+                                / (_listValues[i].XVal - _listValues[i - 1].XVal));
+                        if ((negativeIsOk == false) && (value < 0))
+                        {
                             value = 0;
                         }
+
                         return value;
                     }
+                }
+            }
                         
             return 0;
+        }
+
+        /// <summary>
+        /// Внутренний метод определяющий способ сортировки для метода Sort()
+        /// </summary>
+        /// <param name="cv_1">Первый объект CalibrationValue для сравнения</param>
+        /// <param name="cv_2">Второй объект CalibrationValue для сравнения</param>
+        /// <returns>Результат сравнения</returns>
+        private static int CompareCalibrationValues(CValue cv_1, CValue cv_2)
+        {
+            return cv_1.XVal.CompareTo(cv_2.XVal);
+        }
+
+        /// <summary>
+        /// Внутренний метод проводящий сортировку при добавлении новых калибровочных данных.
+        /// </summary>
+        private void Sort()
+        {
+            _listValues.Sort(CompareCalibrationValues);
         }
     }
 
@@ -195,12 +246,12 @@ namespace EGSE.Utilites.ADC
     /// Обладает возможностью высчитывания среднего значения
     /// Для вывода результата могут использоваться калибровочные данные
     /// </summary>
-    class Channel
+    public class Channel
     {
         /// <summary>
-        /// Максимальный уровен усреднения значения
+        /// Максимальный уровен усреднения значения.
         /// </summary>
-        const uint MAX_AVERAGE_LEVEL = 10;
+        private const uint MaxAverageLevel = 10;
 
         /// <summary>
         /// Уникальный ID канала
@@ -214,9 +265,9 @@ namespace EGSE.Utilites.ADC
         private uint _uiDataCnt;
 
         /// <summary>
-        /// Текущая позиция в _listDatas для записи новых данных АЦП
+        /// Текущая позиция в _listDatas для записи новых данных АЦП.
         /// </summary>
-        private byte _btCurPoint;
+        private byte _currentPoint;
 
         /// <summary>
         /// List данных АЦП
@@ -229,38 +280,43 @@ namespace EGSE.Utilites.ADC
         private CalibrationValues _clbrtValues;
 
         /// <summary>
-        /// Отрицательные значение некорректны для данного канала, если при расчетах будут получатся
-        /// значения меньше 0, выдаем 0
-        /// </summary>
-        public bool NegativeValuesIsCorrect;
-
-        /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Channel" />.
         /// </summary>
-        /// <param name="id">Новый ID канала
-        /// Должен быть уникальным, иначе выробатывается исключение</param>
-        /// <param name="calibration">Набор калибровочные данных для канала
-        /// Если калибровочных данных нет, передаем null</param>
-        /// <param name="averageLevel">Уровен усреднения значения - от 0 (не усредняем) до 10 (максимально по 10 значениям)</param>
+        /// <param name="id">Новый ID канала, должен быть уникальным, иначе выробатывается исключение.</param>
+        /// <param name="calibration">Набор калибровочные данных для канала, если калибровочных данных нет, передаем null.</param>
+        /// <param name="averageLevel">Уровен усреднения значения - от 0 (не усредняем) до 10 (максимально по 10 значениям).</param>
         public Channel(uint id, CalibrationValues calibration, uint averageLevel)
         {
             _uiId = id;
 
-            if (averageLevel > MAX_AVERAGE_LEVEL)
+            if (averageLevel > MaxAverageLevel)
             {
-                ADCException exc = new ADCException("Ошибка: заданный уровень усреднения " + averageLevel + " не должен превышать " + MAX_AVERAGE_LEVEL);
+                ADCException exc = new ADCException("Ошибка: заданный уровень усреднения " + averageLevel + " не должен превышать " + MaxAverageLevel);
                 throw exc; 
             }
+
             if (averageLevel == 0)
+            {
                 averageLevel = 1;
+            }
                 
             _listDatas = new List<float>();
             for (int i = 0; i < averageLevel; i++)
+            {
                 _listDatas.Add(0);
+            }
+
             _clbrtValues = calibration;
 
             NegativeValuesIsCorrect = false;
         }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, допустимы ли отрицательных значений.
+        /// Примечание:
+        /// Отрицательные значение некорректны для данного канала, если при расчетах будут получатся значения меньше 0, выдаем 0.
+        /// </summary>
+        public bool NegativeValuesIsCorrect { get; set; }
 
         /// <summary>
         /// Метод определяет является ли передаваемый ID уникальным
@@ -269,35 +325,41 @@ namespace EGSE.Utilites.ADC
         /// <returns>true, если ID не уникальный, иначе - false</returns>
         public bool IsThisId(uint id)
         {
-            return (_uiId == id);
+            return _uiId == id;
         }
 
         /// <summary>
-        /// Метод добавляет новые данные в канал
-        /// Если канал уже заполнен, то данные переписывают данные канал
+        /// Метод добавляет новые данные в канал.
+        /// Примечание:
+        /// Если канал уже заполнен, то данные переписывают данные канал.
         /// </summary>
-        /// <param name="fData">Данные для записи в канал</param>
-        public void AddData(float fData)
+        /// <param name="data">Данные для записи в канал.</param>
+        public void AddData(float data)
         {
-                if (_btCurPoint == _listDatas.Count)
-                    _btCurPoint = 0;
-                _listDatas[_btCurPoint] = fData;
-                _btCurPoint++;
-                if (_uiDataCnt != _listDatas.Count)
-                    _uiDataCnt++;
+            if (_currentPoint == _listDatas.Count)
+            {
+                _currentPoint = 0;
+            }
+
+            _listDatas[_currentPoint] = data;
+            _currentPoint++;
+            if (_uiDataCnt != _listDatas.Count)
+            {
+                _uiDataCnt++;
+            }
         }
 
         /// <summary>
-        /// Метод получения значения для канала, с учетом среднего значения и
-        /// калибровочных данных.
-        /// Если в канале только одно значение - генерируется исключение
+        /// Метод получения значения для канала, с учетом среднего значения и калибровочных данных.
+        /// Примечание:
+        /// Если в канале только одно значение - генерируется исключение.
         /// </summary>
-        /// <returns>Значение для канала</returns>
+        /// <returns>Значение для канала.</returns>
         public float GetValue()
         {
-            float fMidle = 0;
+            float middle = 0;
 
-            if (_btCurPoint == 0)
+            if (_currentPoint == 0)
             {
                 ADCException exc = new ADCException("Ошибка: канал с ID " + _uiId + " не имеет данных!");
                 throw exc; 
@@ -307,13 +369,16 @@ namespace EGSE.Utilites.ADC
             foreach (float fval in _listDatas)
                 fMidle += fval;
              */
-            fMidle = _listDatas.Sum() / _uiDataCnt;
+            middle = _listDatas.Sum() / _uiDataCnt;
 
-            // fMidle /= _uiDataCnt;
+            //// fMidle /= _uiDataCnt;
 
             if (_clbrtValues == null)
-                return fMidle;
-            return _clbrtValues.Get(fMidle, NegativeValuesIsCorrect); 
+            {
+                return middle;
+            }
+
+            return _clbrtValues.Get(middle, NegativeValuesIsCorrect); 
         }
     }
 
@@ -369,45 +434,34 @@ namespace EGSE.Utilites.ADC
         /// <summary>
         /// Добавляем канал рассчета данных
         /// </summary>
-        /// <param name="chId">Уникальный Id канала. Если такой Id уже есть в классе, генерируем исключение</param>
+        /// <param name="channelId">Уникальный Id канала. Если такой Id уже есть в классе, генерируем исключение</param>
         /// <param name="calibration">Набор калибровочных значений для данного канала. Если калибровочных значений нет, передаем null</param>
         /// <param name="averageLevel">Уровен усреднения значения - от 0 (не усредняем) до 10 (максимально по 10 значениям)</param>
-        public void AddChannel(uint chId, CalibrationValues calibration, uint averageLevel)
+        public void AddChannel(uint channelId, CalibrationValues calibration, uint averageLevel)
         {
             if (_listChannel.Count != 0)
+            {
                 foreach (Channel chnl in _listChannel)
-                    if (chnl.IsThisId(chId))
+                {
+                    if (chnl.IsThisId(channelId))
                     {
-                        ADCException exc = new ADCException("Ошибка: канал с ID " + chId + " уже существует!");
-                        throw exc; 
+                        ADCException exc = new ADCException("Ошибка: канал с ID " + channelId + " уже существует!");
+                        throw exc;
                     }
-            _listChannel.Add(new Channel(chId, calibration, averageLevel));
+                }
+            }
+
+            _listChannel.Add(new Channel(channelId, calibration, averageLevel));
         }
 
         /// <summary>
-        /// Метод определяет индекс канала в List по заданному ID
-        /// Если заданный ID не существует - генерируется исключение
+        /// Добавляем очередное изменение в канал.
         /// </summary>
-        /// <param name="chId">Заданный ID</param>
-        /// <returns>Индекс канала в List</returns>
-        private int SearchChannel(uint chId)
+        /// <param name="channelID">Уникальный ID канала.</param>
+        /// <param name="newData">Данные для изменения.</param>
+        public void AddData(uint channelID, float newData)
         {
-            for (int i = 0; i < _listChannel.Count; i++)
-                if (_listChannel[i].IsThisId(chId))
-                    return i;
-
-            ADCException exc = new ADCException("Ошибка: канал с ID " + chId + " не найден!");
-            throw exc; 
-        }
-
-        /// <summary>
-        /// Добавляем очередное изменение в канал
-        /// </summary>
-        /// <param name="chId">Уникальный ID канала</param>
-        /// <param name="newData">Данные для изменения</param>
-        public void AddData(uint chId, float newData)
-        {
-            _listChannel[SearchChannel(chId)].AddData(newData);
+            _listChannel[SearchChannel(channelID)].AddData(newData);
         }
 
         /// <summary>
@@ -418,6 +472,27 @@ namespace EGSE.Utilites.ADC
         public float GetValue(uint chanelId) 
         {
             return _listChannel[SearchChannel(chanelId)].GetValue();
+        }
+
+        /// <summary>
+        /// Метод определяет индекс канала в List по заданному ID.
+        /// Примечание:
+        /// Если заданный ID не существует - генерируется исключение.
+        /// </summary>
+        /// <param name="channelId">Заданный ID.</param>
+        /// <returns>Индекс канала в List.</returns>
+        private int SearchChannel(uint channelId)
+        {
+            for (int i = 0; i < _listChannel.Count; i++)
+            {
+                if (_listChannel[i].IsThisId(channelId))
+                {
+                    return i;
+                }
+            }
+
+            ADCException exc = new ADCException("Ошибка: канал с ID " + channelId + " не найден!");
+            throw exc;
         }
     }
 }

@@ -19,9 +19,9 @@ namespace EGSE.Threading
     public class ProtocolThread
     {
         /// <summary>
-        /// размер буфера, при достижении которого происходит считывание данных из источника 
+        /// Размер буфера, при достижении которого происходит считывание данных из USB.
         /// </summary>
-        private const int READ_BUF_SIZE_IN_BYTES = 1024;
+        private const int ReadBufferSizeInBytes = 1024;
 
         /// <summary>
         /// декодер, использующийся для декодирования данных 
@@ -36,12 +36,12 @@ namespace EGSE.Threading
         /// <summary>
         /// поток входных данных из USB 
         /// </summary>
-        private FTDIThread _fThread;
+        private FTDIThread _threadFTDI;
 
         /// <summary>
-        /// поток входных данных, если читаем из файла
+        /// Поток входных данных, если читаем из файла.
         /// </summary>
-        private Stream _fStream;
+        private Stream _fileStream;
 
         /// <summary>
         /// максимальный размер буфера, который был доступен для чтения
@@ -57,6 +57,47 @@ namespace EGSE.Threading
         /// флаг остановки потока 
         /// </summary>
         private volatile bool _terminateFlag;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolThread" />.
+        /// Основной конструктор потока декодера. Используется по-умолчанию, если читаем данные из USB.
+        /// </summary>
+        /// <param name="dec">Декодер, который будем использовать.</param>
+        /// <param name="threadFTDI">Поток, из которого получаем данные для декодирования.</param>
+        public ProtocolThread(ProtocolUSBBase dec, FTDIThread threadFTDI)
+        {
+            _dec = dec;
+            _resetDecoderFlag = false;
+            _maxBufferSize = 0;
+            _threadFTDI = threadFTDI;
+            _fileStream = null;
+            _terminateFlag = false;
+
+            _thread = new Thread(Execution);
+            _thread.IsBackground = true;
+            _thread.Start();
+        }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolThread" />.
+        /// Дополнительный конструктор потока декодера. Используется, если нужно декодировать данные из любого объекта Stream.
+        /// </summary>
+        /// <param name="dec">Декодер, который будем использовать.</param>
+        /// <param name="stream">Stream, откуда будем брать данные для декодирования.</param>
+        public ProtocolThread(ProtocolUSBBase dec, Stream stream)
+        {
+            _dec = dec;
+            _fileStream = stream;
+
+            // проверим, что поток может читать
+            if (_fileStream.CanRead == false)
+            {
+                // TODO
+            }
+
+            _thread = new Thread(ExecutionStream);
+            _thread.Start();
+        }
 
         /// <summary>
         /// Получает или задает максимальный размер кольцевого буфера.
@@ -75,82 +116,6 @@ namespace EGSE.Threading
         }
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="ProtocolThread" />.
-        /// Основной конструктор потока декодера. Используется по-умолчанию, если читаем данные из USB.
-        /// </summary>
-        /// <param name="dec">Декодер, который будем использовать</param>
-        /// <param name="fThread">Поток, из которого получаем данные для декодирования</param>
-        public ProtocolThread(ProtocolUSBBase dec, FTDIThread fThread)
-        {
-            _dec = dec;
-            _resetDecoderFlag = false;
-            _maxBufferSize = 0;
-            _fThread = fThread;
-            _fStream = null;
-            _terminateFlag = false;
-
-            _thread = new Thread(Execution);
-            _thread.IsBackground = true;
-            _thread.Start();
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="ProtocolThread" />.
-        /// Дополнительный конструктор потока декодера. Используется, если нужно декодировать данные из любого объекта Stream.
-        /// </summary>
-        /// <param name="dec">Декодер, который будем использовать</param>
-        /// <param name="fStream">Stream, откуда будем брать данные для декодирования</param>
-        public ProtocolThread(ProtocolUSBBase dec, Stream fStream)
-        {
-            _dec = dec;
-            _fStream = fStream;
-
-            // проверим, что поток может читать
-            if (_fStream.CanRead == false)
-            {
-                // TODO
-            }
-
-            _thread = new Thread(ExecutionStream);
-            _thread.Start();
-        }
-
-        /// <summary>
-        /// Основной поток получения и декодирования данных. Вызывается из основного конструктора
-        /// </summary>
-        private void Execution()
-        {
-            uint bytesToRead = 0;
-            while (!_terminateFlag)
-            {
-                // если нужно перевеси декодер в начальное состояние
-                if (_resetDecoderFlag)                              
-                {
-                    _resetDecoderFlag = false;
-                    _dec.Reset();
-                }
-
-                // сколько байт можно считать из потока
-                bytesToRead = (uint)_fThread.BigBuf.BytesAvailable;
-
-                // будем читать большими порциями
-                if (bytesToRead >= READ_BUF_SIZE_IN_BYTES)          
-                {
-                    // для статистики рассчитаем максимальную заполненность буфера, которая была
-                    if (bytesToRead > _maxBufferSize)                 
-                    {
-                        _maxBufferSize = bytesToRead;
-                    }
-
-                    _dec.Decode(_fThread.BigBuf.ReadBuf, _fThread.BigBuf.ReadBufSize);
-                    _fThread.BigBuf.MoveNextRead();
-                }
-
-                System.Threading.Thread.Sleep(1);
-            }
-        }
-
-        /// <summary>
         /// выставляем флаг остановки потока
         /// </summary>
         public void Finish()
@@ -160,22 +125,68 @@ namespace EGSE.Threading
         }
 
         /// <summary>
-        /// Дополнительный поток получения и декодирования данных из Stream
-        /// Останавливается, когда считали 0 байт
+        /// Для безопасного перевода декодара в начальное состояние (например, когда USB подключилось/отключилось)
+        /// </summary>
+        public void ResetDecoder()
+        {
+            _resetDecoderFlag = true;
+        }
+
+        /// <summary>
+        /// Основной поток получения и декодирования данных. 
+        /// Примечание:
+        /// Вызывается из основного конструктора.
+        /// </summary>
+        private void Execution()
+        {
+            uint bytesToRead = 0;
+            while (!_terminateFlag)
+            {
+                // если нужно перевеси декодер в начальное состояние
+                if (_resetDecoderFlag)
+                {
+                    _resetDecoderFlag = false;
+                    _dec.Reset();
+                }
+
+                // сколько байт можно считать из потока
+                bytesToRead = (uint)_threadFTDI.BigBuf.BytesAvailable;
+
+                // будем читать большими порциями
+                if (bytesToRead >= ReadBufferSizeInBytes)
+                {
+                    // для статистики рассчитаем максимальную заполненность буфера, которая была
+                    if (bytesToRead > _maxBufferSize)
+                    {
+                        _maxBufferSize = bytesToRead;
+                    }
+
+                    _dec.Decode(_threadFTDI.BigBuf.ReadBuf, _threadFTDI.BigBuf.ReadBufSize);
+                    _threadFTDI.BigBuf.MoveNextRead();
+                }
+
+                System.Threading.Thread.Sleep(1);
+            }
+        }
+
+        /// <summary>
+        /// Дополнительный поток получения и декодирования данных из Stream.
+        /// Примечание:
+        /// Останавливается, когда считали 0 байт.
         /// 566 ms (byte to byte)
         /// 144 ms (copyTo)
         /// </summary>
         private void ExecutionStream()
         {
             int bytesReaded = 1;
-            byte[] tmpBuf = new byte[READ_BUF_SIZE_IN_BYTES];
+            byte[] tmpBuf = new byte[ReadBufferSizeInBytes];
 #if DEBUG_TIME
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 #endif
             while (bytesReaded > 0)
             {
-                bytesReaded = _fStream.Read(tmpBuf, 0, READ_BUF_SIZE_IN_BYTES);
+                bytesReaded = _fileStream.Read(tmpBuf, 0, ReadBufferSizeInBytes);
                 if (bytesReaded > 0)
                 {
                     _dec.Decode(tmpBuf, bytesReaded);
@@ -193,14 +204,6 @@ namespace EGSE.Threading
                 ts.Milliseconds / 10);
             Console.WriteLine("RunTime " + elapsedTime);
 #endif
-        }
-
-        /// <summary>
-        /// Для безопасного перевода декодара в начальное состояние (например, когда USB подключилось/отключилось)
-        /// </summary>
-        public void ResetDecoder()
-        {
-            _resetDecoderFlag = true;
         }
     }
 }

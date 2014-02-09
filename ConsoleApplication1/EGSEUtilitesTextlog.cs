@@ -13,10 +13,10 @@ namespace EGSE.Utilites
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using System.IO;
 
     /// <summary>
     /// Класс единичного текстлога
@@ -117,12 +117,12 @@ namespace EGSE.Utilites
                         _logtime = DateTime.Now;
                         _sw.Write("{0:d2}:{1:d2}:{2:d2}:{3:d3} ", _logtime.Hour, _logtime.Minute, _logtime.Second, _logtime.Millisecond);
                     }
+
                     _sw.WriteLine(value);
 
                     // введена для отладки USB, может быть вдальнейшем ввести параметр лога
                     _sw.Flush();
                 }
-                    
             }
         }
 
@@ -167,7 +167,6 @@ namespace EGSE.Utilites
         /// <returns>Полное имя файла</returns>
         public string GetLoggerFileName(string strFileName)
         {
-
             string[] strName;
             string strRes = null;
 
@@ -176,8 +175,11 @@ namespace EGSE.Utilites
             strName = strFileName.Split(new char[] { '.' });
             strRes += strName[0];
             for (int i = 1; i < strName.GetLength(0) - 1; i++)
+            {
                 strRes += "." + strName[i];
-            strRes += System.String.Format("_{0:d2}_{1:d2}{2:d2}{3:d2}.", _logtime.Day, _logtime.Hour, _logtime.Minute, _logtime.Second);
+            }
+
+            strRes += string.Format("_{0:d2}_{1:d2}{2:d2}{3:d2}.", _logtime.Day, _logtime.Hour, _logtime.Minute, _logtime.Second);
             strRes += strName[strName.GetLength(0) - 1];
 
             return strRes;
@@ -207,10 +209,13 @@ namespace EGSE.Utilites
             _logtime = DateTime.Now;
             strRes = Directory.GetCurrentDirectory().ToString();
             if (!strRes.EndsWith("\\") && !strRes.EndsWith("/"))
+            {
                 strRes += "\\";
+            }
+
             strRes += "LOGS\\";
             strRes += _logtime.Year.ToString().Substring(2);
-            strRes += System.String.Format("{0:d2}", _logtime.Month);
+            strRes += string.Format("{0:d2}", _logtime.Month);
             return strRes;
         }
 
@@ -242,12 +247,12 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Метод, создающий новый log-файл.
+        /// Уничтожает экземпляр класса <see cref="TxtLoggers" />.
         /// </summary>
-        /// <param name="filename">The filename.</param>
-        public void AddFile(string filename)
+        ~TxtLoggers()
         {
-            txtLoggers.Add(new TxtLogger(filename));
+            // foreach (TxtLogger tl in txtLoggers)
+            //    tl.Dispose(); 
         }
 
         /// <summary>
@@ -258,18 +263,10 @@ namespace EGSE.Utilites
             set
             {
                 foreach (TxtLogger tl in txtLoggers)
+                {
                     tl.LogEnable = value;
+                }
             }
-        }
-
-        /// <summary>
-        /// Метод, очищающий все буфера и производящий сброс всей информации 
-        /// непосредственно в соответствующие log-файлы
-        /// </summary>
-        public void FlushAll()
-        {
-            foreach (TxtLogger tl in txtLoggers)
-                tl.LogFlush(); 
         }
 
         /// <summary>
@@ -285,10 +282,25 @@ namespace EGSE.Utilites
             }
         }
 
-        ~TxtLoggers()
+        /// <summary>
+        /// Метод, создающий новый log-файл.
+        /// </summary>
+        /// <param name="filename">The filename.</param>
+        public void AddFile(string filename)
         {
-            // foreach (TxtLogger tl in txtLoggers)
-            //    tl.Dispose(); 
+            txtLoggers.Add(new TxtLogger(filename));
+        }
+
+        /// <summary>
+        /// Метод, очищающий все буфера и производящий сброс всей информации 
+        /// непосредственно в соответствующие log-файлы
+        /// </summary>
+        public void FlushAll()
+        {
+            foreach (TxtLogger tl in txtLoggers)
+            {
+                tl.LogFlush();
+            }
         }
     }
 }

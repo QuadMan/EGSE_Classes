@@ -7,9 +7,9 @@
 
 namespace EGSE.Threading 
 {
-    using EGSE.Cyclogram;
     using System;
     using System.Threading;
+    using EGSE.Cyclogram;
 
     /// <summary>
     /// Делегат, вызываемый при изменении состояния циклограмм (выполняет, пауза)
@@ -67,75 +67,6 @@ namespace EGSE.Threading
     public class CyclogramThread
     {
         /// <summary>
-        /// The cyclo file
-        /// </summary>
-        public CyclogramFile CycloFile;
-
-        /// <summary>
-        /// Метод, вызываемый при изменении состояния циклограммы.
-        /// </summary>
-        public StateChangeEventHandler ChangeStateEvent;
-
-        /// <summary>
-        /// Событие, вызываемый при отсчете секунд ожидания выполнения текущей команды
-        /// Может и не нужен?
-        /// </summary>
-        public StepEventHandler DelaySecondEvent;
-
-        /// <summary>
-        /// Событие, вызываемое при переходе на следующую команду
-        /// </summary>
-        private StepEventHandler _nextCommandEvent;
-
-        /// <summary>
-        /// Получает или задает событие, вызываемое при переходе на новую команду.
-        /// </summary>
-        public StepEventHandler NextCommandEvent
-        {
-            get 
-            { 
-                return _nextCommandEvent; 
-            }
-
-            set 
-            { 
-                _nextCommandEvent = value;
-                _cycloPos.SetCmdEvent = value;
-            } 
-        }
-
-        /// <summary>
-        /// Метод, вызываемый при окончании выполнения циклограммы (когда доходим до конца циклограммы)
-        /// </summary>
-        public StartFinishEventHandler FinishedEvent;
-
-        /// <summary>
-        /// Метод, вызываемый при остановке циклограммы по команде STOP, или по кнопке стоп
-        /// </summary>
-        public StartFinishEventHandler StopEvent;
-
-        /// <summary>
-        /// Событие, вызываемое при старте циклограммы
-        /// </summary>
-        public StartFinishEventHandler StartEvent;
-
-        /// <summary>
-        /// Метод, вызываемый при ошибке выполнения команды
-        /// </summary>
-        public ExecErrorEventHandler CommandExecErrorEvent;
-    
-        /// <summary>
-        /// Получает текущее состояние циклограммы.
-        /// </summary>
-        public CurState State
-        {
-            get
-            {
-                return _cycloState;
-            }
-        }
-
-        /// <summary>
         /// The _cyclo thread
         /// </summary>
         private Thread _cycloThread;
@@ -149,7 +80,7 @@ namespace EGSE.Threading
         /// The _cyclo thread terminated
         /// </summary>
         private volatile bool _cycloThreadTerminated;
-        
+
         /// <summary>
         /// Признак, что циклограмма загружена без ошибок и можно ее выполнять
         /// при завершении потока, нужно ли переходить на следующую команду.
@@ -160,6 +91,11 @@ namespace EGSE.Threading
         /// текущая позиция в файле циклограмм
         /// </summary>
         private CycPosition _cycloPos;
+
+        /// <summary>
+        /// Событие, вызываемое при переходе на следующую команду
+        /// </summary>
+        private StepEventHandler _nextCommandEvent;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="CyclogramThread" />.
@@ -176,135 +112,83 @@ namespace EGSE.Threading
         }
 
         /// <summary>
-        /// Метод изменения текущего состояния потока циклограмм.
+        /// Получает или задает экземпляр класса, представляющий файл циклограммы.
         /// </summary>
-        /// <param name="newState">The new state.</param>
-        private void ChangeState(CurState newState)
+        public CyclogramFile CycloFile { get; set; }
+
+        /// <summary>
+        /// Получает или задает метод, вызываемый при изменении состояния циклограммы.
+        /// </summary>
+        public StateChangeEventHandler ChangeStateEvent { get; set; }
+
+        /// <summary>
+        /// Получает или задает событие, вызываемый при отсчете секунд ожидания выполнения текущей команды.
+        /// TODO Может и не нужен?
+        /// </summary>
+        public StepEventHandler DelaySecondEvent { get; set; }
+
+        /// <summary>
+        /// Получает или задает событие, вызываемое при переходе на новую команду.
+        /// </summary>
+        public StepEventHandler NextCommandEvent
         {
-            if (_cycloState != newState)
+            get
             {
-                _cycloState = newState;
+                return _nextCommandEvent;
+            }
 
-                // если поменяли состояние на отличное от "выполнение", поток останавливаем
-                if (_cycloState != CurState.cycloRunning)      
-                {
-                    _cycloThreadTerminated = true;
-                }
-
-                if (ChangeStateEvent != null)
-                {
-                    ChangeStateEvent(_cycloState);
-                }
+            set
+            {
+                _nextCommandEvent = value;
+                _cycloPos.SetCmdEvent = value;
             }
         }
 
         /// <summary>
-        /// Выполняем текущую команду
+        /// Получает или задает метод, вызываемый при окончании выполнения циклограммы.
+        /// Примечание:
+        /// Когда доходим до конца циклограммы.
         /// </summary>
-        private void ExecCurCmdFunction()
-        {
-            if (_cycloPos.CurCmd == null)
-            {
-                return;
-            }
+        public StartFinishEventHandler FinishedEvent { get; set; }
 
-            bool cmdResult = _cycloPos.CurCmd.ExecFunction(_cycloPos.CurCmd.Parameters);       
-     
-            // если команда выполнилась с ошибкой, вызовем соответствующий делегат
-            if ((!cmdResult) && (CommandExecErrorEvent != null))
+        /// <summary>
+        /// Получает или задает метод, вызываемый при остановке циклограммы по команде STOP, или по кнопке стоп.
+        /// </summary>
+        public StartFinishEventHandler StopEvent { get; set; }
+
+        /// <summary>
+        /// Получает или задает событие, вызываемое при старте циклограммы.
+        /// </summary>
+        public StartFinishEventHandler StartEvent { get; set; }
+
+        /// <summary>
+        /// Получает или задает метод, вызываемый при ошибке выполнения команды.
+        /// </summary>
+        public ExecErrorEventHandler CommandExecErrorEvent { get; set; }
+
+        /// <summary>
+        /// Получает текущее состояние циклограммы.
+        /// </summary>
+        public CurState State
+        {
+            get
             {
-                CommandExecErrorEvent(_cycloPos.CurCmd);
+                return _cycloState;
             }
         }
 
         /// <summary>
-        /// Поток выполнения циклограммы
+        /// Загружаем циклограмму.
+        /// Примечание:
+        /// В случае ошмибки загрузки циклограммы, генерируем исключение.
         /// </summary>
-        private void Execute() 
-        {
-            int delayMs;
-
-            while (!_cycloThreadTerminated)
-            {
-                // в состоянии выполнения циклограммы
-                if (_cycloState == CurState.cycloRunning)
-                {
-                    delayMs = (_cycloPos.CurCmd.DelayMs > 1000) ? 1000 : _cycloPos.CurCmd.DelayMs;     
-                    if (DelaySecondEvent != null)
-                    {
-                        DelaySecondEvent(_cycloPos.CurCmd);
-                    }
-                }
-                else 
-                {
-                    // останавливаем поток
-                    ChangeState(CurState.cycloLoaded);
-                    if (_setNextCmd)
-                    {
-                        _cycloPos.GetNextCmd();
-                        if (NextCommandEvent != null)
-                        {
-                            NextCommandEvent(_cycloPos.CurCmd);
-                        }
-                    }
-
-                    continue;
-                }
-
-                System.Threading.Thread.Sleep(delayMs);
-                
-                // уменьшаем время до выполнения команды
-                _cycloPos.CurCmd.DelayMs -= delayMs;
-
-                // пришло время выполнить команду и мы не остановлены извне
-                if ((_cycloPos.CurCmd.DelayMs <= 0) && (!_cycloThreadTerminated))       
-                {
-                    ExecCurCmdFunction();
-                    _cycloPos.CurCmd.RestoreDelay();
-
-                    // больше команд нет, останавливаем поток выполнения циклограммы
-                    if (_cycloPos.GetNextCmd() == null)
-                    {
-                        ChangeState(CurState.cycloLoaded);       
-                    }
-
-                    if (NextCommandEvent != null)
-                    {
-                        NextCommandEvent(_cycloPos.CurCmd);
-                    }
-                }
-            }
-
-            // восстанавливаем предыдущее значение задержки, если принудительно остановили циклограмму (по кнопку Стоп)
-            if (_cycloPos.CurCmd != null)
-            {
-                _cycloPos.CurCmd.RestoreDelay();
-            }
-
-            // циклограмма остановлена
-            if (StopEvent != null)
-            {
-                StopEvent(CycloFile.FileName);
-            }
-
-            // проверим, кончилась ли циклограмма
-            if ((_cycloPos.IsLastCommand) && (FinishedEvent != null))
-            {
-                FinishedEvent(CycloFile.FileName);
-            }
-        }
-
-        /// <summary>
-        /// Загружаем циклограмму
-        /// В случае ошмибки загрузки циклограммы, генерируем исключение
-        /// </summary>
-        /// <param name="fName">Путь к файлу циклограмм</param>
-        /// <param name="availableCommands">Список доступных команд</param>
-        public void Load(string fName, CyclogramCommands availableCommands)
+        /// <param name="fileName">Путь к файлу циклограмм.</param>
+        /// <param name="availableCommands">Список доступных команд.</param>
+        public void Load(string fileName, CyclogramCommands availableCommands)
         {
             try 
             {
-                CycloFile.TryLoad(fName, availableCommands);
+                CycloFile.TryLoad(fileName, availableCommands);
                 if (CycloFile.WasError)
                 {
                     CyclogramParsingException exc = new CyclogramParsingException("Ошибки в циклограмме");
@@ -401,6 +285,125 @@ namespace EGSE.Threading
         {
             _setNextCmd = true;
             ChangeState(CurState.cycloLoaded);
+        }
+
+        /// <summary>
+        /// Метод изменения текущего состояния потока циклограмм.
+        /// </summary>
+        /// <param name="newState">The new state.</param>
+        private void ChangeState(CurState newState)
+        {
+            if (_cycloState != newState)
+            {
+                _cycloState = newState;
+
+                // если поменяли состояние на отличное от "выполнение", поток останавливаем
+                if (_cycloState != CurState.cycloRunning)
+                {
+                    _cycloThreadTerminated = true;
+                }
+
+                if (ChangeStateEvent != null)
+                {
+                    ChangeStateEvent(_cycloState);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Выполняем текущую команду
+        /// </summary>
+        private void ExecCurCmdFunction()
+        {
+            if (_cycloPos.CurCmd == null)
+            {
+                return;
+            }
+
+            bool cmdResult = _cycloPos.CurCmd.ExecFunction(_cycloPos.CurCmd.Parameters);
+
+            // если команда выполнилась с ошибкой, вызовем соответствующий делегат
+            if ((!cmdResult) && (CommandExecErrorEvent != null))
+            {
+                CommandExecErrorEvent(_cycloPos.CurCmd);
+            }
+        }
+
+        /// <summary>
+        /// Поток выполнения циклограммы
+        /// </summary>
+        private void Execute()
+        {
+            int delayMs;
+
+            while (!_cycloThreadTerminated)
+            {
+                // в состоянии выполнения циклограммы
+                if (_cycloState == CurState.cycloRunning)
+                {
+                    delayMs = (_cycloPos.CurCmd.DelayMs > 1000) ? 1000 : _cycloPos.CurCmd.DelayMs;
+                    if (DelaySecondEvent != null)
+                    {
+                        DelaySecondEvent(_cycloPos.CurCmd);
+                    }
+                }
+                else
+                {
+                    // останавливаем поток
+                    ChangeState(CurState.cycloLoaded);
+                    if (_setNextCmd)
+                    {
+                        _cycloPos.GetNextCmd();
+                        if (NextCommandEvent != null)
+                        {
+                            NextCommandEvent(_cycloPos.CurCmd);
+                        }
+                    }
+
+                    continue;
+                }
+
+                System.Threading.Thread.Sleep(delayMs);
+
+                // уменьшаем время до выполнения команды
+                _cycloPos.CurCmd.DelayMs -= delayMs;
+
+                // пришло время выполнить команду и мы не остановлены извне
+                if ((_cycloPos.CurCmd.DelayMs <= 0) && (!_cycloThreadTerminated))
+                {
+                    ExecCurCmdFunction();
+                    _cycloPos.CurCmd.RestoreDelay();
+
+                    // больше команд нет, останавливаем поток выполнения циклограммы
+                    if (_cycloPos.GetNextCmd() == null)
+                    {
+                        ChangeState(CurState.cycloLoaded);
+                    }
+
+                    if (NextCommandEvent != null)
+                    {
+                        NextCommandEvent(_cycloPos.CurCmd);
+                    }
+                }
+            }
+
+            // восстанавливаем предыдущее значение задержки, если принудительно остановили циклограмму (по кнопку Стоп)
+            if (_cycloPos.CurCmd != null)
+            {
+                _cycloPos.CurCmd.RestoreDelay();
+            }
+
+            // циклограмма остановлена
+            if (StopEvent != null)
+            {
+                StopEvent(CycloFile.FileName);
+            }
+
+            // проверим, кончилась ли циклограмма
+            if (_cycloPos.IsLastCommand && (FinishedEvent != null))
+            {
+                FinishedEvent(CycloFile.FileName);
+            }
         }
     }
 }

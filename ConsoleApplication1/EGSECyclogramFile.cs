@@ -89,11 +89,6 @@ namespace EGSE.Cyclogram
         private bool _wasError;
 
         /// <summary>
-        /// Получает или задает имя файла циклограмм.
-        /// </summary>
-        public string FileName { get; set; }
-
-        /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="CyclogramFile" />.
         /// </summary>
         public CyclogramFile()
@@ -104,6 +99,11 @@ namespace EGSE.Cyclogram
             _curCommand = new CyclogramLine();
             Commands = new ObservableCollection<CyclogramLine>();
         }
+
+        /// <summary>
+        /// Получает или задает имя файла циклограмм.
+        /// </summary>
+        public string FileName { get; set; }
 
         /// <summary>
         /// Получает или задает список команд, создаваемый из файла циклограмм.
@@ -118,129 +118,6 @@ namespace EGSE.Cyclogram
             get
             {
                 return _wasError;
-            }
-        }
-
-        /// <summary>
-        /// Функция из строки вырезает комментарии и возвращает строку без комментариев по ссылке и сам комментарий в возвращаемом значении.
-        /// </summary>
-        /// <param name="cycStr">Исходная строка, из которой исключаются комментарии</param>
-        /// <returns>Cтрока комментариев (если их нет, возвращет String.Empty)</returns>
-        private string TakeComments(ref string cycStr)
-        {
-            int commentStartPos = cycStr.IndexOf(CycloCommentChar);
-            if (commentStartPos != -1)
-            {
-                string commentStr = cycStr.Substring(commentStartPos).Trim();
-
-                cycStr = cycStr.Remove(commentStartPos).Trim();                 // убираем из исходной строки комментарии
-
-                return commentStr;
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Проверяем время на корректность данных
-        /// Время может быть задано в секундах и в долях секунд
-        /// 0; 0.230; 33.675.
-        /// Миллисекунды должны быть от 0 до 999.
-        /// Значение секунд не должно быть больше 65535
-        /// TODO: избавиться от дубликата проверки секунд
-        /// </summary>
-        /// <param name="timeStr">распознанное время из команды</param>
-        private void TryParseTimeToken(string timeStr)
-        {
-            string[] timeTokens = timeStr.Split('.');   // timeTokens[0] - значение секунд, timeTokens[1] - значение мс, если задано
-
-            // дробное значение не задано, считаем, что заданы секунды
-            if (timeTokens.Length == 1)
-            {
-                try
-                {
-                    int tempSec = int.Parse(timeTokens[0]);
-                    if ((tempSec < 0) || (tempSec > MaxSecondsValue))
-                    {
-                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr + ". Секунды должны быть заданы от 0 до " + MaxSecondsValue.ToString());
-                        throw exc;
-                    }
-
-                    _curCommand.DelayMs = tempSec * 1000;
-                    _curCommand.DelayOriginal = _curCommand.DelayMs;
-                }
-                catch (FormatException)
-                {
-                    CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr);
-                    throw exc;
-                }
-            }
-            else if (timeTokens.Length == 2)
-            { // задано и дробное значение
-                try
-                {
-                    int tempSec = int.Parse(timeTokens[0]);
-                    if ((tempSec < 0) || (tempSec > MaxSecondsValue))
-                    {
-                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr + ". Секунды должны быть заданы от 0 до " + MaxSecondsValue.ToString());
-                        throw exc;
-                    }
-
-                    int ms = int.Parse(timeTokens[1]);
-                    if ((ms < 0) && (ms > 999))
-                    {
-                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr + ". Милисекунды должны быть от 0 до 999.");
-                        throw exc;
-                    }
-
-                    _curCommand.DelayMs = (tempSec * 1000) + ms;
-                    _curCommand.DelayOriginal = _curCommand.DelayMs;
-                }
-                catch (FormatException)
-                {
-                    CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr);
-                    throw exc;
-                }
-            }            
-            else
-            { // ошибка задания времени (время разделено более одной точкой)
-                CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr);
-                throw exc;
-            }
-        }
-
-        /// <summary>
-        /// Проверяем, что команда существует в списке доступных команд
-        /// Если команда не находится в списке, вызывается исключение CyclogramParsingException
-        /// Если команда в списке находится, переменной _curCommand присваиваются значения id, execFunction и testFunction
-        /// Выставляется флаг cmdExists
-        /// </summary>
-        /// <param name="cmdStr">Название команды</param>
-        private void TryParseCmdToken(string cmdStr)
-        {
-            Debug.Assert(_availableCommands != null, "Список доступных команд циклограммы пуст!");
-
-            bool cmdExists = false;
-
-            foreach (var cmd in _availableCommands)
-            {
-                if (cmd.Key == cmdStr)
-                {
-                    cmdExists = true;
-                    _curCommand.Id = cmd.Value.Id;
-                    _curCommand.ExecFunction = cmd.Value.ExecFunction;
-                    _curCommand.TestFunction = cmd.Value.TestFunction;
-
-                    break;
-                }
-            }
-
-            if (!cmdExists)
-            {
-                CyclogramParsingException exc = new CyclogramParsingException("Команды " + cmdStr + " нет в списке поддерживаемых команд!");
-                throw exc;
             }
         }
 
@@ -471,6 +348,129 @@ namespace EGSE.Cyclogram
 
             return false;
         }
+
+        /// <summary>
+        /// Функция из строки вырезает комментарии и возвращает строку без комментариев по ссылке и сам комментарий в возвращаемом значении.
+        /// </summary>
+        /// <param name="cycStr">Исходная строка, из которой исключаются комментарии</param>
+        /// <returns>Cтрока комментариев (если их нет, возвращет String.Empty)</returns>
+        private string TakeComments(ref string cycStr)
+        {
+            int commentStartPos = cycStr.IndexOf(CycloCommentChar);
+            if (commentStartPos != -1)
+            {
+                string commentStr = cycStr.Substring(commentStartPos).Trim();
+
+                cycStr = cycStr.Remove(commentStartPos).Trim();                 // убираем из исходной строки комментарии
+
+                return commentStr;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Проверяем время на корректность данных
+        /// Время может быть задано в секундах и в долях секунд
+        /// 0; 0.230; 33.675.
+        /// Миллисекунды должны быть от 0 до 999.
+        /// Значение секунд не должно быть больше 65535
+        /// TODO: избавиться от дубликата проверки секунд
+        /// </summary>
+        /// <param name="timeStr">распознанное время из команды</param>
+        private void TryParseTimeToken(string timeStr)
+        {
+            string[] timeTokens = timeStr.Split('.');   // timeTokens[0] - значение секунд, timeTokens[1] - значение мс, если задано
+
+            // дробное значение не задано, считаем, что заданы секунды
+            if (timeTokens.Length == 1)
+            {
+                try
+                {
+                    int tempSec = int.Parse(timeTokens[0]);
+                    if ((tempSec < 0) || (tempSec > MaxSecondsValue))
+                    {
+                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr + ". Секунды должны быть заданы от 0 до " + MaxSecondsValue.ToString());
+                        throw exc;
+                    }
+
+                    _curCommand.DelayMs = tempSec * 1000;
+                    _curCommand.DelayOriginal = _curCommand.DelayMs;
+                }
+                catch (FormatException)
+                {
+                    CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr);
+                    throw exc;
+                }
+            }
+            else if (timeTokens.Length == 2)
+            { // задано и дробное значение
+                try
+                {
+                    int tempSec = int.Parse(timeTokens[0]);
+                    if ((tempSec < 0) || (tempSec > MaxSecondsValue))
+                    {
+                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразования времени выполнения команды: " + timeStr + ". Секунды должны быть заданы от 0 до " + MaxSecondsValue.ToString());
+                        throw exc;
+                    }
+
+                    int ms = int.Parse(timeTokens[1]);
+                    if ((ms < 0) && (ms > 999))
+                    {
+                        CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr + ". Милисекунды должны быть от 0 до 999.");
+                        throw exc;
+                    }
+
+                    _curCommand.DelayMs = (tempSec * 1000) + ms;
+                    _curCommand.DelayOriginal = _curCommand.DelayMs;
+                }
+                catch (FormatException)
+                {
+                    CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr);
+                    throw exc;
+                }
+            }
+            else
+            { // ошибка задания времени (время разделено более одной точкой)
+                CyclogramParsingException exc = new CyclogramParsingException("Ошибка преобразованя времени выполнения команды: " + timeStr);
+                throw exc;
+            }
+        }
+
+        /// <summary>
+        /// Проверяем, что команда существует в списке доступных команд
+        /// Если команда не находится в списке, вызывается исключение CyclogramParsingException
+        /// Если команда в списке находится, переменной _curCommand присваиваются значения id, execFunction и testFunction
+        /// Выставляется флаг cmdExists
+        /// </summary>
+        /// <param name="cmdStr">Название команды</param>
+        private void TryParseCmdToken(string cmdStr)
+        {
+            Debug.Assert(_availableCommands != null, "Список доступных команд циклограммы пуст!");
+
+            bool cmdExists = false;
+
+            foreach (var cmd in _availableCommands)
+            {
+                if (cmd.Key == cmdStr)
+                {
+                    cmdExists = true;
+                    _curCommand.Id = cmd.Value.Id;
+                    _curCommand.ExecFunction = cmd.Value.ExecFunction;
+                    _curCommand.TestFunction = cmd.Value.TestFunction;
+
+                    break;
+                }
+            }
+
+            if (!cmdExists)
+            {
+                CyclogramParsingException exc = new CyclogramParsingException("Команды " + cmdStr + " нет в списке поддерживаемых команд!");
+                throw exc;
+            }
+        }
     }
 
     /// <summary>
@@ -478,28 +478,6 @@ namespace EGSE.Cyclogram
     /// </summary>
     public class CycPosition
     {
-        /// <summary>
-        /// Получает или задает обработчик команды для очередного шага циклограммы.
-        /// </summary>
-        /// <value>
-        /// Обработчик команды для очередного шага циклограммы.
-        /// </value>
-        public EGSE.Threading.StepEventHandler SetCmdEvent { get; set; }
-
-        /// <summary>
-        /// Получает значение, показывающее, является ли текущая команда последней.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if [is last command]; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsLastCommand 
-        { 
-            get 
-            { 
-                return _lastCommand; 
-            } 
-        }
-
         /// <summary>
         /// Экземпляр класса, отвечающий за представления файла циклограммы.
         /// </summary>
@@ -521,6 +499,41 @@ namespace EGSE.Cyclogram
         private bool _lastCommand;
 
         /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="CycPosition" />.
+        /// </summary>
+        /// <param name="cycloFile">Экземпляр класса, представляющий файл циклограммы</param>
+        public CycPosition(CyclogramFile cycloFile)
+        {
+            _cycloFile = cycloFile;
+            _curLine = 0;
+            CurCmd = null;
+            SetCmdEvent = null;
+            _lastCommand = false;
+        }
+
+        /// <summary>
+        /// Получает или задает обработчик команды для очередного шага циклограммы.
+        /// </summary>
+        /// <value>
+        /// Обработчик команды для очередного шага циклограммы.
+        /// </value>
+        public EGSE.Threading.StepEventHandler SetCmdEvent { get; set; }
+
+        /// <summary>
+        /// Получает значение, показывающее, является ли [текущая команда последняя].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [текущая команда последняя]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsLastCommand
+        {
+            get
+            {
+                return _lastCommand;
+            }
+        }
+
+        /// <summary>
         /// Получает текущую команду циклограммы.
         /// </summary>
         /// <value>
@@ -528,9 +541,9 @@ namespace EGSE.Cyclogram
         /// </value>
         public CyclogramLine CurCmd
         {
-            get 
-            { 
-                return _curCmd; 
+            get
+            {
+                return _curCmd;
             }
 
             private set
@@ -545,19 +558,6 @@ namespace EGSE.Cyclogram
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="CycPosition" />.
-        /// </summary>
-        /// <param name="cycloFile">Экземпляр класса, представляющий файл циклограммы</param>
-        public CycPosition(CyclogramFile cycloFile)
-        {
-            _cycloFile = cycloFile;
-            _curLine = 0;
-            CurCmd = null;
-            SetCmdEvent = null;
-            _lastCommand = false;
         }
 
         /// <summary>

@@ -6,235 +6,301 @@
 //-----------------------------------------------------------------------
 
 // TODO нужно написать юнит-тест для декодера
-using System;
-using System.IO;
-using System.Collections.Generic;
-
-using EGSE.Protocols;
-using EGSE.Utilites;
 
 namespace EGSE.Protocols 
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using EGSE.Protocols;
+    using EGSE.Utilites;
+
     /// <summary>
     /// Класс USB-протокола формата: 7C6E...
     /// </summary>
-        public class ProtocolUSB7C6E : ProtocolUSBBase
-        {
-            // максимальное количество ошибок декдера, при котором мы перестаем вызывать делегата
-            private const uint MAX_ERRORS_COUNT = 100;
+    public class ProtocolUSB7C6E : ProtocolUSBBase
+    {
+        /// <summary>
+        /// Максимальное количество ошибок декодера, при котором перестанет вызываться делегат.
+        /// </summary>
+        private const uint MaxErrorsCount = 100;
 
-            // максимальный размер данных в одной посылке, который доступен по протоколу
-            private const uint DECODER_MAX_DATA_LEN = 256;
+        /// <summary>
+        /// Максимальный размер данных в одной посылке.
+        /// Примечание:
+        /// Размер по протоколу.
+        /// </summary>
+        private const uint DecoderMaxDataLength = 256;
 
-            // текущее состояние декодера
-            private int _iStep = 0;
+        /// <summary>
+        /// Текущее состояние декодера.
+        /// </summary>
+        private int _step = 0;
 
-            // текущий байт при декодировании посылки
-            private byte _bt = 0;
+        /// <summary>
+        /// Текущий байт при декодировании посылки.
+        /// </summary>
+        private byte _bt = 0;
 
-            // сколько ошибок протокола зафиксировал декодер
-            private uint _errorsCount = 0;
+        /// <summary>
+        /// Сколько ошибок протокола зафиксировал декодер.
+        /// </summary>
+        private uint _errorsCount = 0;
 
-            // сообщение, которое мы собираем и при окончании, пересылаем дальше в делегат
-            private ProtocolMsgEventArgs _tmpMsg;
+        /// <summary>
+        /// Сообщение, формируется при окончании декодирования кадра.
+        /// </summary>
+        private ProtocolMsgEventArgs _protoMsg;
 
-            // сообщение об ошибке в протоколе
-            private ProtocolErrorEventArgs _tmpErrMsg;
+        /// <summary>
+        /// Сообщение об ошибке в протоколе.
+        /// </summary>
+        private ProtocolErrorEventArgs _protoErrMsg;
 
-            // внутренние переменные
-            private int _dt = 0;
-            private int _bufI = 0;
-            private int _msgLen = 0;
-            private bool _firstMsg = true;
+        /// <summary>
+        /// Внутренняя переменная.
+        /// Примечание:
+        /// Вычисляем размер буфера для копирования.
+        /// </summary>
+        private int _dt = 0;
 
-            private TxtLogger _fEncStream;
-            private FileStream _fDecStream;
+        /// <summary>
+        /// Внутренняя переменная.
+        /// Примечание:
+        /// Позиция последнего скопированного байта.
+        /// </summary>
+        private int _bufI = 0;
 
-            // писать бинарный лог данных USB (при вызове соответствующего конструктора)
-            public bool writeEncLog = false;
-            public bool writeDecLog = false;
+        /// <summary>
+        /// Внутренняя переменная.
+        /// Примечание:
+        /// Длина формируемого сообщения.
+        /// </summary>
+        private int _msgLen = 0;
+
+        /// <summary>
+        /// Внутренняя переменная.
+        /// Примечание:
+        /// Флаг обнаружения ошибки "байт-мусор" между кадрами. 
+        /// </summary>
+        private bool _firstMsg = true;
+
+        /// <summary>
+        /// Экземпляр класса, отвечающий за логирование кодируемых данных.
+        /// </summary>
+        private TxtLogger _encodeStream;
+
+        /// <summary>
+        /// Экземпляр класса, отвечающий за логирование декодируемых данных.
+        /// </summary>
+        private FileStream _decoderStream;
+
+        /// <summary>
+        /// Запись бинарного лога данных USB.
+        /// Примичание:
+        /// При вызове соответствующего конструктора.
+        /// </summary>
+        private bool _writeEncLog = false;
+
+        /// <summary>
+        /// Запись бинарного лога данных USB.
+        /// </summary>
+        private bool _writeDecLog = false;
             
-            /// <summary>
-            /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB7C6E" />.
-            /// </summary>
-            public ProtocolUSB7C6E()
-            {
-                _tmpMsg = new ProtocolMsgEventArgs(DECODER_MAX_DATA_LEN);
-                _tmpErrMsg = new ProtocolErrorEventArgs(70000);        // FIXIT: убрать константу
-                Reset();
-            }
-
-            /// <summary>
-            /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB7C6E" />.
-            /// </summary>
-            /// <param name="fDecStream">Поток файла, куда пишем decoder</param>
-            /// <param name="fEncStream">Текслогер для encoder-а</param>
-            /// <param name="decLog">if set to <c>true</c> [decoder log].</param>
-            /// <param name="encLog">if set to <c>true</c> [encoder log].</param>
-            public ProtocolUSB7C6E(FileStream fDecStream, TxtLogger fEncStream, bool decLog, bool encLog) : this()
-            {
-                _fDecStream = null;
-                _fEncStream = null;
-
-                writeDecLog = false;
-
-                if ((fDecStream != null) && (fDecStream.CanRead))
-                {
-                    _fDecStream = fDecStream;
-                    writeDecLog = decLog;
-                }
-
-                _fEncStream = fEncStream;
-                
-                writeEncLog = encLog;
-            }
-
-            /// <summary>
-            /// Получает количество ошибок декодера.
-            /// </summary>
-            public uint errorsCount
-            {
-                get
-                {
-                    return _errorsCount;
-                }
-            }
-
-            /// <summary>
-            /// Вызывается при инициализации декодера
-            /// </summary>
-            override public void Reset()
-            {
-                _iStep = 0;
-                _bt = 0;
-                _bufI = 0;
-                _msgLen = 0;
-                _errorsCount = 0;
-                _firstMsg = true;
-            }
-
-
-            /// <summary>
-            /// Формируем сообщение об ошибке и отпарвляем его в делегат
-            /// </summary>
-            /// <param name="buf">буфер, содержащий ошибку</param>
-            /// <param name="bufPos">позиция в буфере, где обнаружена ошибка</param>
-            /// <param name="bLen">длина буфера</param>
-            private void makeErrorMsg(byte[] buf, int bufPos, int bLen)
-            {
-                Array.Copy(buf, _tmpErrMsg.Data, bLen);
-                _tmpErrMsg.ErrorPos = (uint)bufPos;
-                OnProtocolError(_tmpErrMsg);
-            }
-
-            /// <summary>
-            /// Декодируем весь буфер
-            /// </summary>
-            /// <param name="buffer">The buffer.</param>
-            /// <param name="bufferSize">Size of the buffer.</param>
-            override public void Decode(byte[] buffer, int bufferSize)
-            {
-                int i = 0;
-
-                if (writeDecLog && (_fDecStream != null))
-                {
-                    _fDecStream.Write(buffer, 0, bufferSize);
-                }
-
-                while (i < bufferSize)
-                { 
-                    _bt = buffer[i];
-                    switch (_iStep) {
-                        case 0: if (_bt != 0x7C) {
-                                if (!_firstMsg)                      // если после предыдущего сообщения сразу не встречается 0x7C - считаем ошибкой
-                                {
-                                    _firstMsg = true;
-                                    _errorsCount++;
-                                    if (_errorsCount < MAX_ERRORS_COUNT)
-                                    {
-                                        makeErrorMsg(buffer, i, bufferSize);     // сформируем сообщение об ошибке и передадим его делегату
-                                    }
-                                }
-                                _iStep = -1;
-                            }
-                            break;
-                        case 1: if (_bt != 0x6E) {
-                                _iStep = 0;
-                                _errorsCount++;
-                                if (_errorsCount < MAX_ERRORS_COUNT)
-                                {
-                                    makeErrorMsg(buffer, i, bufferSize);         // сформируем сообщение об ошибке и передадим его делегату
-                                }
-                                _iStep = -1;
-                            }
-                            break;
-                        case 2: _tmpMsg.Addr = _bt;
-                            break;
-                        case 3: if (_bt == 0) {
-                                _msgLen = (int)DECODER_MAX_DATA_LEN;
-                            }
-                            else {
-                                _msgLen = _bt;
-                            }
-                            _tmpMsg.DataLen = _msgLen;
-                            break;
-                        default:
-                            if (bufferSize - i >= _msgLen)                // в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
-                            {
-                                Array.Copy(buffer, i, _tmpMsg.Data, _bufI, _msgLen);
-                                OnProtocolMsg(_tmpMsg);
-                                _firstMsg = false;
-                                _iStep = -1;
-                                _bufI = 0;
-                                i += _msgLen - 1; // ?_tmpMsg.len;
-                            }
-                            else                                    // копируем только часть, до конца буфера 
-                            {
-                                _dt = bufferSize - i;
-                                Array.Copy(buffer, i, _tmpMsg.Data, _bufI, _dt);
-                                _bufI += _dt;
-                                _msgLen -= _dt;
-                                i += _dt;
-                            }
-                           
-                            break;
-                    }
-                    _iStep++;
-                    i++;
-                }
-            }
-
-            /// <summary>
-            /// Кодируем сообщение в соответствии с протоколом
-            /// Можем закодировать только сообщение длиной не больше 256 байт
-            /// Адрес должен быть не больше 255
-            /// </summary>
-            /// <param name="addr">адрес, по которому нужно передать данные</param>
-            /// <param name="buf">данные (максимум 256 байт)</param>
-            /// <param name="bufOut">выходной буфер</param>
-            /// <returns>True - если выполнено успешно</returns>
-            override public bool Encode(uint addr, byte[] buf, out byte[] bufOut)
-            {
-                bufOut = null; 
-                if ((buf.Length > 256) || (addr > 255))
-                {
-                    return false;
-                }
-                byte bufLen = (buf.Length == 256) ? (byte)0 : (byte)buf.Length;
-
-                bufOut = new byte[buf.Length + 4];
-                bufOut[0] = 0x7C;
-                bufOut[1] = 0x6E;
-                bufOut[2] = (byte)addr; 
-                bufOut[3] = bufLen;
-                Array.Copy(buf, 0, bufOut, 4, buf.Length);
-
-                if (writeEncLog && (_fEncStream != null)) 
-                {
-                    _fEncStream.LogText = Converter.ByteArrayToHexStr(bufOut);
-                }
-                return true;
-            }
-
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB7C6E" />.
+        /// </summary>
+        public ProtocolUSB7C6E()
+        {
+            _protoMsg = new ProtocolMsgEventArgs(DecoderMaxDataLength);
+            _protoErrMsg = new ProtocolErrorEventArgs(70000);        // FIXIT: убрать константу
+            Reset();
         }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolUSB7C6E" />.
+        /// </summary>
+        /// <param name="decodeStream">Поток файла, куда пишем decoder</param>
+        /// <param name="encodeStream">Текслогер для encoder-а</param>
+        /// <param name="decLog">if set to <c>true</c> [decoder log].</param>
+        /// <param name="encLog">if set to <c>true</c> [encoder log].</param>
+        public ProtocolUSB7C6E(FileStream decodeStream, TxtLogger encodeStream, bool decLog, bool encLog) : this()
+        {
+            _decoderStream = null;
+            _encodeStream = null;
+
+            _writeDecLog = false;
+
+            if ((decodeStream != null) && decodeStream.CanRead)
+            {
+                _decoderStream = decodeStream;
+                _writeDecLog = decLog;
+            }
+
+            _encodeStream = encodeStream;
+                
+            _writeEncLog = encLog;
+        }
+
+        /// <summary>
+        /// Получает количество ошибок декодера.
+        /// </summary>
+        public uint ErrorsCount
+        {
+            get
+            {
+                return _errorsCount;
+            }
+        }
+
+        /// <summary>
+        /// Вызывается при инициализации декодера.
+        /// </summary>
+        public override void Reset()
+        {
+            _step = 0;
+            _bt = 0;
+            _bufI = 0;
+            _msgLen = 0;
+            _errorsCount = 0;
+            _firstMsg = true;
+        }
+
+        /// <summary>
+        /// Декодируем весь буфер.
+        /// </summary>
+        /// <param name="buffer">The buffer.</param>
+        /// <param name="bufferSize">Size of the buffer.</param>
+        public override void Decode(byte[] buffer, int bufferSize)
+        {
+            int i = 0;
+
+            if (_writeDecLog && (_decoderStream != null))
+            {
+                _decoderStream.Write(buffer, 0, bufferSize);
+            }
+
+            while (i < bufferSize)
+            { 
+                _bt = buffer[i];
+                switch (_step) 
+                {
+                    case 0: if (_bt != 0x7C) 
+                    {
+                            if (!_firstMsg) 
+                            {
+                                // если после предыдущего сообщения сразу не встречается 0x7C - считаем ошибкой
+                                _firstMsg = true;
+                                _errorsCount++;
+                                if (_errorsCount < MaxErrorsCount)
+                                {
+                                    MakeErrorMsg(buffer, i, bufferSize); // сформируем сообщение об ошибке и передадим его делегату
+                                }
+                            }
+
+                            _step = -1;
+                        }
+
+                        break;
+                    case 1: if (_bt != 0x6E) 
+                    {
+                            _step = 0;
+                            _errorsCount++;
+                            if (_errorsCount < MaxErrorsCount)
+                            {
+                                MakeErrorMsg(buffer, i, bufferSize); // сформируем сообщение об ошибке и передадим его делегату
+                            }
+
+                            _step = -1;
+                        }
+
+                        break;
+                    case 2: _protoMsg.Addr = _bt;
+                        break;
+                    case 3: if (_bt == 0) 
+                    {
+                            _msgLen = (int)DecoderMaxDataLength;
+                        }
+                        else {
+                            _msgLen = _bt;
+                        }
+
+                        _protoMsg.DataLen = _msgLen;
+                        break;
+                    default:
+                        if (bufferSize - i >= _msgLen) 
+                        {
+                            // в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
+                            Array.Copy(buffer, i, _protoMsg.Data, _bufI, _msgLen);
+                            OnProtocolMsg(_protoMsg);
+                            _firstMsg = false;
+                            _step = -1;
+                            _bufI = 0;
+                            i += _msgLen - 1; // ?_tmpMsg.len;
+                        }
+                        else // копируем только часть, до конца буфера 
+                        {
+                            _dt = bufferSize - i;
+                            Array.Copy(buffer, i, _protoMsg.Data, _bufI, _dt);
+                            _bufI += _dt;
+                            _msgLen -= _dt;
+                            i += _dt;
+                        }
+                           
+                        break;
+                }
+
+                _step++;
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// Кодируем сообщение в соответствии с протоколом.
+        /// Примечание:
+        /// Можем закодировать только сообщение длиной не больше 256 байт.
+        /// Адрес должен быть не больше 255.
+        /// </summary>
+        /// <param name="addr">Адрес, по которому нужно передать данные.</param>
+        /// <param name="buf">Данные (максимум 256 байт).</param>
+        /// <param name="bufOut">Выходной буфер.</param>
+        /// <returns>True - если выполнено успешно.</returns>
+        public override bool Encode(uint addr, byte[] buf, out byte[] bufOut)
+        {
+            bufOut = null; 
+            if ((buf.Length > 256) || (addr > 255))
+            {
+                return false;
+            }
+
+            byte bufLen = (buf.Length == 256) ? (byte)0 : (byte)buf.Length;
+
+            bufOut = new byte[buf.Length + 4];
+            bufOut[0] = 0x7C;
+            bufOut[1] = 0x6E;
+            bufOut[2] = (byte)addr; 
+            bufOut[3] = bufLen;
+            Array.Copy(buf, 0, bufOut, 4, buf.Length);
+
+            if (_writeEncLog && (_encodeStream != null)) 
+            {
+                _encodeStream.LogText = Converter.ByteArrayToHexStr(bufOut);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Формируем сообщение об ошибке и отпарвляем его в делегат.
+        /// </summary>
+        /// <param name="buf">Буфер, содержащий ошибку.</param>
+        /// <param name="bufPos">Позиция в буфере, где обнаружена ошибка.</param>
+        /// <param name="bufferLen">Длина буфера.</param>
+        private void MakeErrorMsg(byte[] buf, int bufPos, int bufferLen)
+        {
+            Array.Copy(buf, _protoErrMsg.Data, bufferLen);
+            _protoErrMsg.ErrorPos = (uint)bufPos;
+            OnProtocolError(_protoErrMsg);
+        }
+    }
 }

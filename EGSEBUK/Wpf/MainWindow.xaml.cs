@@ -21,9 +21,10 @@ namespace EGSE.Defaults
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
     using System.Windows.Shapes;
+    using EGSE.Constants;
     using EGSE.Cyclogram.Command;
     using EGSE.Devices;
-    using EGSE.Constants;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -92,10 +93,13 @@ namespace EGSE.Defaults
                 IXSANLabel.Content = "---";
             }*/
 
-            updateTM();
+            UpdateTM();
         }
 
-        private void updateTM()
+        /// <summary>
+        /// Обновляет состояние UI телеметрии.
+        /// </summary>
+        private void UpdateTM()
         {
             // Индикация питания
             if (_intfEGSE.Tele.BUSKPower1)
@@ -192,26 +196,46 @@ namespace EGSE.Defaults
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
 
-            // hsiWin.Init(_EGSE);
+            //// hsiWin.Init(_EGSE);
 
             DataContext = _intfEGSE;
         }
 
+        /// <summary>
+        /// Handles the Click event of the BUSKPower1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUSKPower1_Click(object sender, RoutedEventArgs e)
         {
             _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUSKPower1, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower1));
         }
 
+        /// <summary>
+        /// Handles the Click event of the BUSKPower2 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUSKPower2_Click(object sender, RoutedEventArgs e)
         {
             _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUSKPower2, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower2));
         }
 
+        /// <summary>
+        /// Handles the Click event of the BUNDPower1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUNDPower1_Click(object sender, RoutedEventArgs e)
         {
             _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUNDPower1, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower1));
         }
 
+        /// <summary>
+        /// Handles the Click event of the BUNDPower2 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUNDPower2_Click(object sender, RoutedEventArgs e)
         {
             _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUNDPower2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower2));

@@ -33,59 +33,12 @@ namespace EGSE.Utilites
         /// <summary>
         /// через сколько вызововк TimerTick проверять значения UsbValue и UiValue
         /// </summary>
-        private const int updateTimeoutTicks = 3;
-
-        /// <summary>
-        /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue.
-        /// </summary>
-        /// <param name="value">TODO описание</param>
-        public delegate void ControlValueEventHandler(uint value);
+        private const int UpdateTimeoutTicks = 3;
         
         /// <summary>
-        /// Класс свойства
+        /// Список свойств у значения управления.
         /// </summary>
-        private class CVProperty
-        {
-            /// <summary>
-            /// Индекс (в битах) с которого начинается значение
-            /// </summary>
-            public ushort BitIdx;
-
-            /// <summary>
-            /// Длина (в битах) значения
-            /// </summary>
-            public ushort BitLen;
-
-            /// <summary>
-            /// Делегат, вызваемый, когда необходимо записать значение в USB
-            /// </summary>
-            public ControlValueEventHandler SetUsbEvent;
-
-            /// <summary>
-            /// Делегат, вызываемый, когда значения из USB и заданные пользователем разошлись
-            /// </summary>
-            public ControlValueEventHandler ChangeEvent;
-
-            /// <summary>
-            /// Инициализирует новый экземпляр класса <see cref="CVProperty" />.
-            /// </summary>
-            /// <param name="_bitIdx">Позиция первого бита</param>
-            /// <param name="_bitLen">Длина свойства(в битах)</param>
-            /// <param name="_setUsbEvent">Делегат вызывается принеобходимости ищменить свойство</param>
-            /// <param name="_changeEvent">Если через 2 TickTime значения от USB не совпадают, вызывается этот делегат</param>
-            public CVProperty(ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
-            {
-                BitIdx = _bitIdx;
-                BitLen = _bitLen;
-                SetUsbEvent = _setUsbEvent;
-                ChangeEvent = _changeEvent;
-            }
-        }
-
-        /// <summary>
-        /// Список свойств у значения управления
-        /// </summary>
-        private Dictionary<int, CVProperty> _cvDictionary = new Dictionary<int, CVProperty>();
+        private Dictionary<int, CVProperty> _dictionaryCV = new Dictionary<int, CVProperty>();
 
         /// <summary>
         /// значение, которое получаем из USB
@@ -125,93 +78,10 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Добавляем свойство.
+        /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue.
         /// </summary>
-        /// <param name="_idx">Индекс свойства, должно быть уникально</param>
-        /// <param name="_bitIdx">Индекс бита, с которого свойство начинается</param>
-        /// <param name="_bitLen">Длина в битах свойства</param>
-        /// <param name="_setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
-        /// <param name="_changeEvent">Функция, которая должна вызываться при изменении свойства</param>
-        /// <returns>True - если выполнено успешно</returns>
-        public bool AddProperty(int _idx, ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
-        {
-            if (_cvDictionary.ContainsKey(_idx) || (_bitLen == 0))
-            {
-                return false;
-            }
-
-            _cvDictionary.Add(_idx, new CVProperty(_bitIdx, _bitLen, _setUsbEvent, _changeEvent));
-            return true;
-        }
-
-        /// <summary>
-        /// Получаем значение свойства из величины value.
-        /// </summary>
-        /// <param name="cv">Описание свойства</param>
-        /// <param name="value">Значение величины, для которого нужно взять свойство</param>
-        /// <returns>Величина value свойства</returns>
-        private int GetCVProperty(CVProperty cv, int value)
-        {
-            if (cv == null) return -1;
-
-            int mask = 0;
-            for (ushort i = 0; i < cv.BitLen; i++)
-            {
-                mask |= (1 << i);
-            }
-            value >>= cv.BitIdx;
-            value &= mask;
-
-            return value;
-        }
-
-        /// <summary>
-        /// Задаем значение свойства для величины pValue.
-        /// </summary>
-        /// <param name="propertyIdx">Index of the property.</param>
-        /// <param name="pValue">Значение величины, к которому нужно применть установку свойства</param>
-        /// <param name="autoSendValue">Автоматически отправлять значение (вызовом делегата SetUsbEvent)</param>
-        /// <returns>
-        /// True - если выполнено успешно
-        /// </returns>
-        public bool SetProperty(int propertyIdx, int pValue, bool autoSendValue = true)
-        {
-            if (!_cvDictionary.ContainsKey(propertyIdx)) return false;
-
-            CVProperty cv = _cvDictionary[propertyIdx];
-
-            int mask = 0;
-            for (ushort i = 0; i < cv.BitLen; i++)
-            {
-                mask |= (1 << (cv.BitIdx + i));
-            }
-
-            pValue &= (mask >> cv.BitIdx);
-            _uiValue &= ~mask;
-            _uiValue |= pValue << cv.BitIdx;
-            if (_refreshFlag)
-            {
-                return true;
-            }
-
-            if (autoSendValue)
-            {
-                _timerCnt = updateTimeoutTicks;
-                cv.SetUsbEvent((uint)_uiValue);
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Метод для принудительного вызова через определнное время проверки
-        /// установленного и полученного значений
-        /// </summary>
-        public void RefreshGetValue()
-        {
-            _timerCnt = updateTimeoutTicks;
-            _refreshFlag = true;
-        }
+        /// <param name="value">TODO описание</param>
+        public delegate void ControlValueEventHandler(uint value);
 
         /// <summary>
         /// Получает или задает значение, полученное из USB.
@@ -242,8 +112,79 @@ namespace EGSE.Utilites
             set
             {
                 _uiValue = value;
-                _timerCnt = updateTimeoutTicks;       // проверим значение из USB через некоторое время
+                _timerCnt = UpdateTimeoutTicks;       // проверим значение из USB через некоторое время
             }
+        }
+
+        /// <summary>
+        /// Добавляем свойство.
+        /// </summary>
+        /// <param name="_idx">Индекс свойства, должно быть уникально</param>
+        /// <param name="_bitIdx">Индекс бита, с которого свойство начинается</param>
+        /// <param name="_bitLen">Длина в битах свойства</param>
+        /// <param name="_setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
+        /// <param name="_changeEvent">Функция, которая должна вызываться при изменении свойства</param>
+        /// <returns>True - если выполнено успешно</returns>
+        public bool AddProperty(int _idx, ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
+        {
+            if (_dictionaryCV.ContainsKey(_idx) || (_bitLen == 0))
+            {
+                return false;
+            }
+
+            _dictionaryCV.Add(_idx, new CVProperty(_bitIdx, _bitLen, _setUsbEvent, _changeEvent));
+            return true;
+        }
+
+        /// <summary>
+        /// Задаем значение свойства для величины pValue.
+        /// </summary>
+        /// <param name="propertyIdx">Index of the property.</param>
+        /// <param name="valueP">Значение величины, к которому нужно применть установку свойства</param>
+        /// <param name="autoSendValue">Автоматически отправлять значение (вызовом делегата SetUsbEvent)</param>
+        /// <returns>
+        /// True - если выполнено успешно
+        /// </returns>
+        public bool SetProperty(int propertyIdx, int valueP, bool autoSendValue = true)
+        {
+            if (!_dictionaryCV.ContainsKey(propertyIdx))
+            {
+                return false;
+            }
+
+            CVProperty cv = _dictionaryCV[propertyIdx];
+
+            int mask = 0;
+            for (ushort i = 0; i < cv.BitLen; i++)
+            {
+                mask |= 1 << (cv.BitIdx + i);
+            }
+
+            valueP &= mask >> cv.BitIdx;
+            _uiValue &= ~mask;
+            _uiValue |= valueP << cv.BitIdx;
+            if (_refreshFlag)
+            {
+                return true;
+            }
+
+            if (autoSendValue)
+            {
+                _timerCnt = UpdateTimeoutTicks;
+                cv.SetUsbEvent((uint)_uiValue);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Метод для принудительного вызова через определнное время проверки
+        /// установленного и полученного значений
+        /// </summary>
+        public void RefreshGetValue()
+        {
+            _timerCnt = UpdateTimeoutTicks;
+            _refreshFlag = true;
         }
 
         /// <summary>
@@ -251,13 +192,39 @@ namespace EGSE.Utilites
         /// </summary>
         public void TimerTick()
         {
-            if ((_timerCnt > 0) && (--_timerCnt == 0))          // пришло время для проверки Get и Set Value
+            if ((_timerCnt > 0) && (--_timerCnt == 0))
             {
-                if ((_uiValue != _usbValue) || (_refreshFlag))
+                // пришло время для проверки Get и Set Value
+                if ((_uiValue != _usbValue) || _refreshFlag)
                 {
                     CheckPropertiesForChanging();
                 }
             }
+        }
+
+        /// <summary>
+        /// Получаем значение свойства из величины value.
+        /// </summary>
+        /// <param name="cv">Описание свойства</param>
+        /// <param name="value">Значение величины, для которого нужно взять свойство</param>
+        /// <returns>Величина value свойства</returns>
+        private int GetCVProperty(CVProperty cv, int value)
+        {
+            if (cv == null)
+            {
+                return -1;
+            }
+
+            int mask = 0;
+            for (ushort i = 0; i < cv.BitLen; i++)
+            {
+                mask |= 1 << i;
+            }
+
+            value >>= cv.BitIdx;
+            value &= mask;
+
+            return value;
         }
 
         /// <summary>
@@ -269,7 +236,7 @@ namespace EGSE.Utilites
             int usbVal;
             int uiVal;
 
-            foreach (KeyValuePair<int, CVProperty> pair in _cvDictionary)
+            foreach (KeyValuePair<int, CVProperty> pair in _dictionaryCV)
             {
                 usbVal = GetCVProperty(pair.Value, _usbValue);
                 uiVal = GetCVProperty(pair.Value, _uiValue);
@@ -280,6 +247,47 @@ namespace EGSE.Utilites
             }
 
             _refreshFlag = false;
+        }
+
+        /// <summary>
+        /// Класс свойства.
+        /// </summary>
+        private class CVProperty
+        {
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="CVProperty" />.
+            /// </summary>
+            /// <param name="_bitIdx">Позиция первого бита.</param>
+            /// <param name="_bitLen">Длина свойства(в битах).</param>
+            /// <param name="_setUsbEvent">Делегат, вызывается принеобходимости ищменить свойство.</param>
+            /// <param name="_changeEvent">Если через 2 TickTime значения от USB не совпадают, вызывается этот делегат.</param>
+            public CVProperty(ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
+            {
+                BitIdx = _bitIdx;
+                BitLen = _bitLen;
+                SetUsbEvent = _setUsbEvent;
+                ChangeEvent = _changeEvent;
+            }
+
+            /// <summary>
+            /// Получает или задает индекс (в битах) с которого начинается значение.
+            /// </summary>
+            public ushort BitIdx { get; set; }
+
+            /// <summary>
+            /// Получает или задает длину (в битах) значения.
+            /// </summary>
+            public ushort BitLen { get; set; }
+
+            /// <summary>
+            /// Получает или задает делегат, вызваемый, когда необходимо записать значение в USB.
+            /// </summary>
+            public ControlValueEventHandler SetUsbEvent { get; set; }
+
+            /// <summary>
+            /// Получает или задает делегат, вызываемый, когда значения из USB и заданные пользователем несовпадают.
+            /// </summary>
+            public ControlValueEventHandler ChangeEvent { get; set; }
         }
     }
 }

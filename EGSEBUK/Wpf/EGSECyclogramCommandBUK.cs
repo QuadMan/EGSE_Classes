@@ -231,8 +231,8 @@ namespace EGSE.Cyclogram.Command
         /// Команда UKS - Выдача УКС.
         /// </summary>
         /// <param name="cmdParams">Передаваемые параметры УКС: BYTE1..BYTE62</param>
-        /// <param name="errString">Сообщение об ошибке</param>
-        /// <returns>False - если ошибка</returns>
+        /// <param name="errString">Сообщение об ошибке.</param>
+        /// <returns>False - если ошибка.</returns>
         public bool UksTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -269,11 +269,11 @@ namespace EGSE.Cyclogram.Command
         ////}
         
         /// <summary>
-        /// Команда POWER - выдача питания устройства
+        /// Команда POWER - выдача питания устройства.
         /// </summary>
-        /// <param name="cmdParams">Возможные ON|OFF</param>
-        /// <param name="errString">Сообщение об ошибке</param>
-        /// <returns>False - если ошибка</returns>
+        /// <param name="cmdParams">Возможные ON|OFF.</param>
+        /// <param name="errString">Сообщение об ошибке.</param>
+        /// <returns>False - если ошибка.</returns>
         public bool PowerTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -287,10 +287,10 @@ namespace EGSE.Cyclogram.Command
         }
 
         /// <summary>
-        /// Выполнить команду POWER
+        /// Выполнить команду POWER.
         /// </summary>
-        /// <param name="cmdParams">Параметры команды</param>
-        /// <returns>False - если не удалось выполнить команду</returns>
+        /// <param name="cmdParams">Параметры команды.</param>
+        /// <returns>False - если не удалось выполнить команду.</returns>
         public bool PowerExec(string[] cmdParams)
         {
             int val = Convert.ToInt32(cmdParams[0] == "ON");
