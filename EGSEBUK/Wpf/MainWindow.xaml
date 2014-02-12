@@ -9,7 +9,8 @@
         MinWidth="640"
         MinHeight="480"
         FontFamily="Consolas"
-        FontSize="13">
+        FontSize="13" 
+        Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -507,7 +508,8 @@
                               Margin="4"/>
                     <CheckBox x:Name="ControlSimRouter" 
                               Content="Управление имитатором БМ-4" 
-                              Margin="4"/>
+                              Margin="4"
+                              Click="ControlSimRouter_Click"/>
                     <CheckBox x:Name="ControlSpaceWire" 
                               Content="Имитаторы SpaceWire" 
                               Margin="4"/>

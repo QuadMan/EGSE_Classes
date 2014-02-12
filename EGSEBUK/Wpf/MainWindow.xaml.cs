@@ -32,8 +32,12 @@ namespace EGSE.Defaults
     {
         /*private HSIWindow winHSI = new HSIWindow();
         private SpaceWireWindow winSW = new SpaceWireWindow();
-        private SDWindow winSD = new SDWindow();
-        private SimRouterWindow winSimRouter = new SimRouterWindow();*/
+        private SDWindow winSD = new SDWindow();*/
+
+        /// <summary>
+        /// Окно "имитатор БМ-4"
+        /// </summary>
+        private SimRouterWindow winSimRouter = new SimRouterWindow();
 
         /// <summary>
         /// Экземпляр для работы с командами циклограммы.
@@ -279,8 +283,13 @@ namespace EGSE.Defaults
                 winSD.Hide();
             }
 
-        }
+        }*/
 
+        /// <summary>
+        /// Handles the Click event of the ControlSimRouter control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void ControlSimRouter_Click(object sender, RoutedEventArgs e)
         {
             if ((bool)ControlSimRouter.IsChecked)
@@ -291,7 +300,6 @@ namespace EGSE.Defaults
             {
                 winSimRouter.Hide();
             }
-
-        }*/
+        }
     }
 }

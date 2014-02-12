@@ -44,7 +44,8 @@ namespace EGSE.Defaults
         public MainWindow()
         {
             InitializeComponent();
-            Title = BUKConst.ShowCaption;
+            Application.Current.MainWindow = this;
+            Title = BUKConst.ShowCaption;            
 
             InitControlValues();
             LoadWindows();
@@ -139,8 +140,6 @@ namespace EGSE.Defaults
         /// </summary>
         private void CloseAll()
         {
-            //// Window mainWin = Window.GetWindow(this);
-            
             foreach (Window w in Application.Current.Windows)
             {
                 if (w != Application.Current.MainWindow)
