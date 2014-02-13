@@ -61,7 +61,7 @@ namespace EGSE.Defaults
         }
 
         /// <summary>
-        /// Загружаем параметры окон из конфигурационного файла
+        /// Загружаем параметры окон из конфигурационного файла.
         /// </summary>
         private void LoadWindows()
         {
@@ -72,7 +72,7 @@ namespace EGSE.Defaults
         }
 
         /// <summary>
-        /// Сохраняем параметры окно в конфигурационном файле
+        /// Сохраняем параметры окно в конфигурационном файле.
         /// </summary>
         private void SaveAllWindows()
         {
@@ -135,8 +135,8 @@ namespace EGSE.Defaults
         }
 
         /// <summary>
-        /// Закрываем все окна, кроме основного, так как оно само закрывается
-        /// И отключаемся от устройства
+        /// Закрываем все окна, кроме основного, так как оно само закрывается.
+        /// И отключаемся от устройства.
         /// </summary>
         private void CloseAll()
         {
@@ -194,33 +194,4 @@ namespace EGSE.Defaults
             // checkWindowsActivation();
         }
     }
-
-    ////public class TestC : INotifyPropertyChanged
-    ////{
-    ////    private bool _isWinOpened;
-
-    ////    public bool IsWinOpened
-    ////    {
-    ////        get 
-    ////        { 
-    ////            return _isWinOpened; 
-    ////        }
-
-    ////        set
-    ////        {
-    ////            _isWinOpened = value;
-    ////            FirePropertyChangedEvent("IsWinOpened");
-    ////        }
-    ////    }
-
-    ////    public event PropertyChangedEventHandler PropertyChanged;
-
-    ////    private void FirePropertyChangedEvent(string propertyName)
-    ////    {
-    ////        if (PropertyChanged != null)
-    ////        {
-    ////            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-    ////        }
-    ////    }
-    ////}
 }

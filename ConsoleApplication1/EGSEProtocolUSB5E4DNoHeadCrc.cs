@@ -312,7 +312,7 @@ namespace EGSE.Protocols
                         }
                         else
                         {
-                            OnProtocolMsg(_package);
+                            OnProtocolMsg(this, _package);
                             _finishFrame = true;
                         }
 
@@ -392,7 +392,7 @@ namespace EGSE.Protocols
                 _errorFrame.ErrorPos = pos;
                 _errorFrame.DataLen = (len > 256) ? 255 : len;
                 _errorFrame.Msg = msg;
-                OnProtocolError(_errorFrame);
+                OnProtocolError(this, _errorFrame);
             }
         }
     }

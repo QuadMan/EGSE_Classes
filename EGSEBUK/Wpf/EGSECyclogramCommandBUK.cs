@@ -62,7 +62,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Получает или задает ссылку на экземпляр устройства.
         /// </summary>
-        public IBUK BUK { private get; set; }
+        public DevBUK BUK { private get; set; }
 
         /// <summary>
         /// Команда XSAN 

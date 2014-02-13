@@ -72,8 +72,8 @@ namespace EGSE.Telemetry
         {
             BUSKPower1 = 0x80 == (buf[3] & 0x80);
             BUSKPower2 = 0x40 == (buf[3] & 0x40);
-            BUNDPower1 = 0x20 == (buf[3] & 0x20);
-            BUNDPower2 = 0x10 == (buf[3] & 0x10);
+            BUNDPower1 = 0x10 == (buf[3] & 0x10);
+            BUNDPower2 = 0x20 == (buf[3] & 0x20);
         }
     }
 }

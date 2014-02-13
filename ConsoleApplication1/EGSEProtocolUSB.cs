@@ -165,14 +165,16 @@ namespace EGSE.Protocols
         /// <summary>
         /// Объявление делегата обработки ошибок протокола
         /// </summary>
+        /// <param name="sender">The sender.</param>
         /// <param name="e">Класс описывающий ошибку протокола</param>
-        public delegate void ProtocolErrorEventHandler(ProtocolErrorEventArgs e);
+        public delegate void ProtocolErrorEventHandler(object sender, ProtocolErrorEventArgs e);
 
         /// <summary>
         /// Объявление делегата обработки сообщений протокола
         /// </summary>
+        /// <param name="sender">The sender.</param>
         /// <param name="e">Класс описывающий сообщение протокола</param>
-        public delegate void ProtocolMsgEventHandler(ProtocolMsgEventArgs e);
+        public delegate void ProtocolMsgEventHandler(object sender, ProtocolMsgEventArgs e);
 
         /// <summary>
         /// Объявление события: возникновение ошибки протокола в декодере
@@ -211,26 +213,28 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Обертка события: возникновение ошибки протокола в декодере
+        /// Обертка события: возникновение ошибки протокола в декодере.
         /// </summary>
-        /// <param name="e">Класс описывающий ошибку протокола</param>
-        protected virtual void OnProtocolError(ProtocolErrorEventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">Класс описывающий ошибку протокола.</param>
+        protected virtual void OnProtocolError(object sender, ProtocolErrorEventArgs e)
         {
             if (this.GotProtocolError != null)
             {
-                this.GotProtocolError(e);
+                this.GotProtocolError(sender, e);
             }
         }
 
         /// <summary>
-        /// Обертка события: возникновение сообщения протокола в декодере
+        /// Обертка события: возникновение сообщения протокола в декодере.
         /// </summary>
-        /// <param name="e">Класс описывающий сообщение протокола</param>
-        protected virtual void OnProtocolMsg(ProtocolMsgEventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">Класс описывающий сообщение протокола.</param>
+        protected virtual void OnProtocolMsg(object sender, ProtocolMsgEventArgs e)
         {
             if (this.GotProtocolMsg != null)
             {
-                this.GotProtocolMsg(e);
+                this.GotProtocolMsg(sender, e);
             }
         }
     }

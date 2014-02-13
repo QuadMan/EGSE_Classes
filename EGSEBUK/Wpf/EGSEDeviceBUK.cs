@@ -61,9 +61,14 @@ namespace EGSE.Devices
         private const int PowerSetAddr = 0x42;
 
         /// <summary>
+        /// Адресный байт "Управление".
+        /// </summary>
+        private const int SpaceWire2Control = 0x04;
+
+        /// <summary>
         /// Обеспечивает доступ к интерфейсу устройства. 
         /// </summary>
-        private readonly IBUK _intfBUK;
+        private readonly DevBUK _intfBUK;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="DeviceBUK" />.
@@ -71,7 +76,7 @@ namespace EGSE.Devices
         /// <param name="serial">Уникальный идентификатор USB.</param>
         /// <param name="dec">Экземпляр декодера USB для данного устройства.</param>
         /// <param name="intfBUK">Интерфейс управления данным устройством.</param>
-        public DeviceBUK(string serial, ProtocolUSBBase dec, IBUK intfBUK)
+        public DeviceBUK(string serial, ProtocolUSBBase dec, DevBUK intfBUK)
             : base(serial, dec, new USBCfg(10))
         {
             _intfBUK = intfBUK;
@@ -80,13 +85,13 @@ namespace EGSE.Devices
         /// <summary>
         /// Отправляет команду включить/выключить питание ПК1 БУСК.
         /// </summary>
-        /// <param name="buskPower1"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
-        public void CmdBUSKPower1(uint buskPower1)
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
+        public void CmdBUSKPower1(uint value)
         {
             byte buf = 0;
             if (_intfBUK.IsBUSKLineA)
             {
-                if (0 == buskPower1)
+                if (0 == value)
                 {
                     buf |= 1 << 2;
                 }
@@ -98,7 +103,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.IsBUSKLineB)
             {
-                if (0 == buskPower1)
+                if (0 == value)
                 {
                     buf |= 1 << 3;
                 }
@@ -115,13 +120,13 @@ namespace EGSE.Devices
         /// <summary>
         /// Отправляет команду включить/выключить питание ПК2 БУСК.
         /// </summary>
-        /// <param name="buskPower2"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
-        public void CmdBUSKPower2(uint buskPower2)
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
+        public void CmdBUSKPower2(uint value)
         {
             byte buf = 0;
             if (_intfBUK.IsBUSKLineA)
             {
-                if (0 == buskPower2)
+                if (0 == value)
                 {
                     buf |= 1 << 6;
                 }
@@ -133,7 +138,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.IsBUSKLineB)
             {
-                if (0 == buskPower2)
+                if (0 == value)
                 {
                     buf |= 1 << 7;
                 }
@@ -150,13 +155,13 @@ namespace EGSE.Devices
         /// <summary>
         /// Отправляет команду включить/выключить питание ПК1 БУНД.
         /// </summary>
-        /// <param name="bundPower1"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
-        public void CmdBUNDPower1(uint bundPower1)
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
+        public void CmdBUNDPower1(uint value)
         {
             byte buf = 0;
             if (_intfBUK.IsBUNDLineA)
             {
-                if (0 == bundPower1)
+                if (0 == value)
                 {
                     buf |= 1 << 1;
                 }
@@ -168,7 +173,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.IsBUNDLineB)
             {
-                if (0 == bundPower1)
+                if (0 == value)
                 {
                     buf |= 1 << 3;
                 }
@@ -185,13 +190,13 @@ namespace EGSE.Devices
         /// <summary>
         /// Отправляет команду включить/выключить питание ПК2 БУНД.
         /// </summary>
-        /// <param name="bundPower2"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
-        public void CmdBUNDPower2(uint bundPower2)
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
+        public void CmdBUNDPower2(uint value)
         {
             byte buf = 0;
             if (_intfBUK.IsBUNDLineA)
             {
-                if (0 == bundPower2)
+                if (0 == value)
                 {
                     buf |= 1 << 0;
                 }
@@ -203,7 +208,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.IsBUNDLineB)
             {
-                if (0 == bundPower2)
+                if (0 == value)
                 {
                     buf |= 1 << 2;
                 }
@@ -215,6 +220,29 @@ namespace EGSE.Devices
 
             SendToUSB(PowerHiAddr, new byte[1] { buf });
             SendToUSB(PowerSetAddr, new byte[1] { 1 });
+        }
+
+        /// <summary>
+        /// Команда установки канала SpaceWire2.
+        /// </summary>
+        /// <param name="value">
+        /// <c>0</c> если [ПК 1 БУК - ПК 1 БМ-4];
+        /// <c>2</c> если [ПК 1 БУК - ПК 2 БМ-4];
+        /// <c>4</c> если [ПК 2 БУК - ПК 1 БМ-4];
+        /// <c>6</c> если [ПК 2 БУК - ПК 2 БМ-4]; 
+        /// </param>
+        public void CmdSimRouterChannel(uint value)
+        {
+            SendToUSB(SpaceWire2Control, new byte[1] { (byte)value }); 
+        }
+
+        /// <summary>
+        /// Команда включения интерфейса SpaceWire2.
+        /// </summary>
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
+        public void CmdSimRouterIntfOn(uint value)
+        {
+            SendToUSB(SpaceWire2Control, new byte[1] { (byte)value }); 
         }
 
         /// <summary>
@@ -234,7 +262,7 @@ namespace EGSE.Devices
     /// <summary>
     /// Общий экземпляр, позволяющий управлять прибором (принимать данные, выдавать команды).
     /// </summary>
-    public class IBUK : INotifyPropertyChanged
+    public class DevBUK : INotifyPropertyChanged
     {
         /// <summary>
         /// Адресный байт "Статус".
@@ -245,6 +273,11 @@ namespace EGSE.Devices
         /// Адресный байт "Телеметрия".
         /// </summary>
         private const int TeleDataAddr = 0x15;
+
+        /// <summary>
+        /// Адресный байт SpaceWire2 "Управление".
+        /// </summary>
+        private const int SpaceWire2Ctrl = 0x04;
 
         /// <summary>
         /// Экземпляр декодера протокола USB.
@@ -279,22 +312,27 @@ namespace EGSE.Devices
         /// <summary>
         /// Передавать релейные команды БУСК по линии A.
         /// </summary>
-        private bool _isBUSKLineA;
+        private bool _isBUSKLineA = true;
 
         /// <summary>
         /// Передавать релейные команды БУСК по линии B.
         /// </summary>
-        private bool _isBUSKLineB;
+        private bool _isBUSKLineB = true;
 
         /// <summary>
         /// Передавать релейные команды БУНД по линии A.
         /// </summary>
-        private bool _isBUNDLineA;
+        private bool _isBUNDLineA = true;
 
         /// <summary>
         /// Передавать релейные команды БУНД по линии B.
         /// </summary>
-        private bool _isBUNDLineB;
+        private bool _isBUNDLineB = true;
+
+        /// <summary>
+        /// Интерфейс SpaceWire2 включен.
+        /// </summary>
+        private bool _isSpaceWire2IntfOn;
 
         /// <summary>
         /// Записывать данные от прибора в файл.
@@ -302,18 +340,24 @@ namespace EGSE.Devices
         private bool _isWriteDevDataToFile;
 
         /// <summary>
+        /// Канал имитатора БМ-4.
+        /// </summary>
+        private SimRouterChannel _simRouterChannel = SimRouterChannel.None;
+
+        /// <summary>
         /// Экземпляр класса, представляющий файл для записи данных от прибора.
         /// </summary>
         private FileStream _devDataLogStream;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="IBUK" />.
+        /// Инициализирует новый экземпляр класса <see cref="DevBUK" />.
         /// </summary>
-        public IBUK()
+        public DevBUK()
         {
             Connected = false;
             ControlValuesList = new List<ControlValue>();
             ControlValuesList.Add(new ControlValue()); // PowerControl = 0
+            ControlValuesList.Add(new ControlValue()); // SpaceWire2 = 1
 
             _decoder = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
             _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
@@ -331,12 +375,46 @@ namespace EGSE.Devices
             ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUSKPower2, 6, 1, Device.CmdBUSKPower2, delegate(uint value) { BUSKPower2 = 1 == value; });
             ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUNDPower1, 4, 1, Device.CmdBUNDPower1, delegate(uint value) { BUNDPower1 = 1 == value; });
             ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUNDPower2, 5, 1, Device.CmdBUNDPower2, delegate(uint value) { BUNDPower2 = 1 == value; });
+
+            ControlValuesList[BUKConst.SpaceWire2].AddProperty(BUKConst.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterChannel, delegate(uint value) { SelectSimRouterChannel = (SimRouterChannel)value; });
+            ControlValuesList[BUKConst.SpaceWire2].AddProperty(BUKConst.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterIntfOn, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
         }
 
         /// <summary>
         /// Вызывается, когда меняется значение свойства.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Список возможных каналов имитатора БМ-4.
+        /// </summary>
+        public enum SimRouterChannel
+        {
+            /// <summary>
+            /// Канал не выбран.
+            /// </summary>
+            None = 0xFF,
+
+            /// <summary>
+            /// Канал "БУК ПК1 - БМ-4 ПК1".
+            /// </summary>
+            BUK1BM1 = 0x00,
+
+            /// <summary>
+            /// Канал "БУК ПК1 - БМ-4 ПК2".
+            /// </summary>
+            BUK1BM2 = 0x01,
+
+            /// <summary>
+            /// Канал "БУК ПК2 - БМ-4 ПК1".
+            /// </summary>
+            BUK2BM1 = 0x02,
+
+            /// <summary>
+            /// Канал "БУК ПК2 - БМ-4 ПК2".
+            /// </summary>
+            BUK2BM2 = 0x03
+        }
 
         /// <summary>
         /// Получает или задает доступ к USB прибора.
@@ -545,6 +623,133 @@ namespace EGSE.Devices
         }
 
         /// <summary>
+        /// Получает или задает канал имитатора БМ-4.
+        /// </summary>
+        /// <value>
+        /// Канал имитатора БМ-4.
+        /// </value>
+        public SimRouterChannel SelectSimRouterChannel
+        {
+            get 
+            {
+                return _simRouterChannel;
+            }
+
+            set
+            {
+                if (value == _simRouterChannel)
+                {
+                    return;
+                }        
+            
+                _simRouterChannel = value;
+                ControlValuesList[BUKConst.SpaceWire2].SetProperty(BUKConst.PropertySpaceWire2Channel, (int)value); 
+                FirePropertyChangedEvent("SelectSimRouterChannel");
+                FirePropertyChangedEvent("IsBUK2BM2Channel");
+                FirePropertyChangedEvent("IsBUK1BM1Channel");
+                FirePropertyChangedEvent("IsBUK1BM2Channel");
+                FirePropertyChangedEvent("IsBUK2BM1Channel");                
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [выбран канал БУК ПК1 - БМ-4 ПК1].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [выбран канал БУК ПК1 - БМ-4 ПК1]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsBUK1BM1Channel
+        {
+            get
+            {
+                return SimRouterChannel.BUK1BM1 == SelectSimRouterChannel;
+            }
+
+            set
+            {
+                SelectSimRouterChannel = value ? SimRouterChannel.BUK1BM1 : SelectSimRouterChannel;
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [выбран канал БУК ПК1 - БМ-4 ПК2].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [выбран канал БУК ПК1 - БМ-4 ПК2]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsBUK1BM2Channel
+        {
+            get
+            {
+                return SimRouterChannel.BUK1BM2 == SelectSimRouterChannel;
+            }
+
+            set
+            {
+                SelectSimRouterChannel = value ? SimRouterChannel.BUK1BM2 : SelectSimRouterChannel;
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [выбран канал БУК ПК2 - БМ-4 ПК1].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [выбран канал БУК ПК2 - БМ-4 ПК1]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsBUK2BM1Channel
+        {
+            get
+            {
+                return SimRouterChannel.BUK2BM1 == SelectSimRouterChannel;
+            }
+
+            set
+            {
+                SelectSimRouterChannel = value ? SimRouterChannel.BUK2BM1 : SelectSimRouterChannel;
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [выбран канал БУК ПК2 - БМ-4 ПК2].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [выбран канал БУК ПК2 - БМ-4 ПК2]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsBUK2BM2Channel
+        {
+            get
+            {
+                return SimRouterChannel.BUK2BM2 == SelectSimRouterChannel;
+            }
+
+            set
+            {
+                SelectSimRouterChannel = value ? SimRouterChannel.BUK2BM2 : SelectSimRouterChannel;
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [интерфейс SpaceWire2 включен].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [интерфейс SpaceWire2 включен]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2IntfOn
+        { 
+            get
+            {
+                return _isSpaceWire2IntfOn;
+            }
+
+            set
+            {
+                _isSpaceWire2IntfOn = value;
+                ControlValuesList[BUKConst.SpaceWire2].SetProperty(BUKConst.PropertySpaceWire2IntfOn, Convert.ToInt32(_isSpaceWire2IntfOn));
+                FirePropertyChangedEvent("IsSpaceWire2IntfOn");
+            }
+        }
+
+        /// <summary>
         /// Получает размер файла данных от прибора.
         /// </summary>
         /// <value>
@@ -680,8 +885,9 @@ namespace EGSE.Devices
         /// <summary>
         /// Метод, обрабатывающий сообщения от декодера USB.
         /// </summary>
+        /// <param name="sender">The sender.</param>
         /// <param name="msg">Сообщение для обработки.</param>
-        private void OnMessageFunc(ProtocolMsgEventArgs msg)
+        private void OnMessageFunc(object sender, ProtocolMsgEventArgs msg)
         {
             if (msg != null)
             {
@@ -689,6 +895,7 @@ namespace EGSE.Devices
                 {
                     case TimeDataAddr:
                         Array.Copy(msg.Data, 0, ETime.Data, 0, 6);
+                        ControlValuesList[BUKConst.SpaceWire2].UsbValue = msg.Data[7];
                         break;
                     case TeleDataAddr:
                         Tele.Update(msg.Data);
@@ -701,8 +908,9 @@ namespace EGSE.Devices
         /// <summary>
         /// Обработчик ошибок протокола декодера USB.
         /// </summary>
+        /// <param name="sender">The sender.</param>
         /// <param name="msg">Сообщение об ошибке.</param>
-        private void OnErrorFunc(ProtocolErrorEventArgs msg)
+        private void OnErrorFunc(object sender, ProtocolErrorEventArgs msg)
         {
             string bufferStr = Converter.ByteArrayToHexStr(msg.Data);
             LogsClass.LogErrors.LogText = string.Format(Resource.Get(@"stOnErrorUSBMsg"), msg.Msg, bufferStr, msg.ErrorPos.ToString());

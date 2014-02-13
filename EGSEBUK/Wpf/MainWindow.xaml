@@ -37,7 +37,7 @@
                     Margin="5"/>
             <Button Grid.Column="1" 
                     Content="Выход"
-                    Margin="5"/>
+                    Margin="5" Click="CloseButton_Click"/>
         </Grid>           
         <StackPanel Grid.Row="1" 
                     Grid.Column="0">

@@ -42,9 +42,24 @@ namespace EGSE.Constants
         public const int PropertyBUNDPower2 = 3;
 
         /// <summary>
+        /// Индекс свойства [Выбор канала SpaceWire2].
+        /// </summary>
+        public const int PropertySpaceWire2Channel = 0;
+
+        /// <summary>
+        /// Индекс свойства [D].
+        /// </summary>
+        public const int PropertySpaceWire2IntfOn = 1;
+
+        /// <summary>
         /// Индекс объекта управления POWER в массиве ControlValuesList.
         /// </summary>
         public const int PowerControl = 0;
+
+        /// <summary>
+        /// Индекс объекта управления SpaceWire2 в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire2 = 1;
 
         /// <summary>
         /// Заголовок главного окна.

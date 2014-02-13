@@ -232,7 +232,7 @@ namespace EGSE.Protocols
                         {
                             // в текущем буфере есть вся наша посылка, просто копируем из буфера в сообщение
                             Array.Copy(buffer, i, _protoMsg.Data, _bufI, _msgLen);
-                            OnProtocolMsg(_protoMsg);
+                            OnProtocolMsg(this, _protoMsg);
                             _firstMsg = false;
                             _step = -1;
                             _bufI = 0;
@@ -300,7 +300,7 @@ namespace EGSE.Protocols
         {
             Array.Copy(buf, _protoErrMsg.Data, bufferLen);
             _protoErrMsg.ErrorPos = (uint)bufPos;
-            OnProtocolError(_protoErrMsg);
+            OnProtocolError(this, _protoErrMsg);
         }
     }
 }

@@ -47,7 +47,7 @@ namespace EGSE.Defaults
         /// <summary>
         /// Интерфейс работы с устройством устройства.
         /// </summary>
-        private IBUK _intfEGSE = new IBUK();
+        private DevBUK _intfEGSE = new DevBUK();
 
         /// <summary>
         /// Инициализация параметров управления
@@ -201,6 +201,7 @@ namespace EGSE.Defaults
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
 
             //// hsiWin.Init(_EGSE);
+            winSimRouter.Init(_intfEGSE);
 
             DataContext = _intfEGSE;
         }

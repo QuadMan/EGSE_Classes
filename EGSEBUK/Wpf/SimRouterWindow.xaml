@@ -1,8 +1,62 @@
 ﻿<Window x:Class="EGSE.Defaults.SimRouterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Управление имитатором БМ-4">
+        xmlns:l="clr-namespace:EGSE.Defaults"
+        Title="Управление имитатором БМ-4" Closing="Window_Closing">
+    <Window.Resources>
+
+    </Window.Resources>
     <Grid Background="LightBlue">
+        <Grid.Resources>
+            <l:BoolToIntConverter x:Key="boolToIndexConverter" />
+            <ControlTemplate x:Key="RadioButton" TargetType="{x:Type ToggleButton}">
+                <Border Name="Border"
+                        Background="White"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Margin="0">
+                    <ContentPresenter HorizontalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"/>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                        <Setter TargetName="Border" Property="BorderBrush" Value="Blue"/>
+                        <Setter TargetName="Border" Property="Background" Value="LightBlue"/>                        
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="true">
+                        <Setter TargetName="Border" Property="Background" Value="LightGreen"/>
+                        <Setter TargetName="Border" Property="BorderBrush" Value="LightBlue"/>                        
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            <ControlTemplate x:Key="Button" TargetType="{x:Type Button}">                      
+                <Border Name="Border"
+                        Background="Red"                        
+                        BorderBrush="Red"                         
+                        BorderThickness="1"
+                        Margin="0">
+                    <ContentPresenter HorizontalAlignment="Center"
+                                      Margin="{TemplateBinding Padding}"
+                                      VerticalAlignment="Center"/>
+                </Border>
+                <ControlTemplate.Triggers>                    
+                    <Trigger Property="Tag" Value="true">
+                        <Setter TargetName="Border" Property="Background" Value="LightGreen"/>
+                        <Setter TargetName="Border" Property="BorderBrush" Value="LightBlue"/>
+                        <Setter Property="Content" Value="ВКЛ"/>
+                    </Trigger>
+                    <Trigger Property="Tag" Value="false">
+                        <Setter Property="Content" Value="ВЫКЛ"/>
+                    </Trigger>
+                    <Trigger Property="Button.IsMouseOver" Value="true">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="Blue"/>
+                            <Setter TargetName="Border" Property="Background" Value="LightBlue"/>
+                    </Trigger>                    
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -15,9 +69,10 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="6"
+        <Grid Grid.Row="7"
               Grid.ColumnSpan="3"
               Background="LightBlue"
               Margin="0">
@@ -27,27 +82,17 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Content="Монитор SpaceWire (Выходные данные)"
+            <Label Content="Монитор SpaceWire"
                    HorizontalContentAlignment="Center"
                    Background="White"
                    Margin="1,0,1,1"/>
-            <Label Grid.Column="1"
-                   Content="Монитор SpaceWire (Входные данные)"
-                   HorizontalContentAlignment="Center"
-                   Background="White"
-                   Margin="0,0,1,1"/>
             <ListBox Grid.Row="1" 
                      BorderThickness="0"
                      Margin="1,0,1,1"/>
-            <ListBox Grid.Column="1"
-                     Grid.Row="1" 
-                     BorderThickness="0"
-                     Margin="0,0,1,1"/>
         </Grid>
         <Button Grid.Column="2"                               
-				Grid.Row="5"  
+				Grid.Row="6"  
 				Content="ВЫКЛ"
 				Background="Red"
 				Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
@@ -57,7 +102,17 @@
 				VerticalAlignment="Stretch" 
 				Margin="0,0,1,1"/>
         <Button Grid.Column="2"                               
-				Grid.Row="4"  
+				Grid.Row="5"  
+				Content="ВЫКЛ"
+				Background="Red"
+				Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+				Focusable="False" 
+				BorderThickness="0" 
+				HorizontalAlignment="Stretch" 
+				VerticalAlignment="Stretch" 
+				Margin="0,0,1,1"/>
+        <Button Grid.Column="1"                               
+				Grid.Row="6"  
 				Content="ВЫКЛ"
 				Background="Red"
 				Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
@@ -76,22 +131,12 @@
 				HorizontalAlignment="Stretch" 
 				VerticalAlignment="Stretch" 
 				Margin="0,0,1,1"/>
-        <Button Grid.Column="1"                               
-				Grid.Row="4"  
-				Content="ВЫКЛ"
-				Background="Red"
-				Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-				Focusable="False" 
-				BorderThickness="0" 
-				HorizontalAlignment="Stretch" 
-				VerticalAlignment="Stretch" 
-				Margin="0,0,1,1"/>
-        <Label Grid.Row="5"
+        <Label Grid.Row="6"
                Content="Выдача КБВ"
                VerticalContentAlignment="Center" 
                Background="White"
                Margin="1,0,1,1"/>
-        <Label Grid.Row="4"
+        <Label Grid.Row="5"
                Content="Обмен"
                VerticalContentAlignment="Center" 
                Background="White"
@@ -114,7 +159,7 @@
                Background="White"
                Margin="1,0,1,1"/>
         <Button Grid.Column="1"                               
-				Grid.Row="2"  
+				Grid.Row="4"  
                 Grid.ColumnSpan="2"
 				Content="ВЫКЛ"
 				Background="Red"
@@ -124,7 +169,7 @@
 				HorizontalAlignment="Stretch" 
 				VerticalAlignment="Stretch" 
 				Margin="0,0,1,1"/>
-        <Label Grid.Row="2"
+        <Label Grid.Row="4"
                Content="Метка времени"
                VerticalContentAlignment="Center" 
                Background="White"
@@ -137,23 +182,57 @@
                Grid.ColumnSpan="2"
 			   Background="White"
 			   Margin="0,1,1,1"/>
-        <StackPanel Grid.Column="1">
-            <RadioButton HorizontalAlignment="Center" 
-                         Content="БУК 1ПК - БМ-4 1ПК"
-                         Margin="2"/>
-            <RadioButton HorizontalAlignment="Center"
-                         Content="БУК 2ПК - БМ-4 1ПК"
-                         Margin="2"/>
+        <StackPanel Grid.Column="1">            
+            <RadioButton HorizontalAlignment="Stretch" 
+                         Content="БУК 1ПК :: БМ-4 1ПК"
+                         Margin="2" 
+                         GroupName="ChannelSim"
+                         Focusable="False"    
+                         Template="{DynamicResource RadioButton}"
+                         IsChecked="{Binding IsBUK1BM1Channel}">             
+            </RadioButton>
+            <RadioButton HorizontalAlignment="Stretch"
+                         Content="БУК 2ПК :: БМ-4 1ПК"
+                         Margin="2"
+                         GroupName="ChannelSim"
+                         Focusable="False"
+                         Template="{DynamicResource RadioButton}"
+                         IsChecked="{Binding IsBUK2BM1Channel}"/>
         </StackPanel>
         <StackPanel Grid.Column="2">
-            <RadioButton HorizontalAlignment="Center"
-                         Content="БУК 1ПК - БМ-4 2ПК"
-                         Margin="2"/>
-            <RadioButton HorizontalAlignment="Center"
-                         Content="БУК 2ПК - БМ-4 2ПК"
-                         Margin="2"/>
+            <RadioButton HorizontalAlignment="Stretch"
+                         Content="БУК 1ПК :: БМ-4 2ПК"
+                         Margin="2"
+                         GroupName="ChannelSim"
+                         Focusable="False"
+                         Template="{DynamicResource RadioButton}"
+                         IsChecked="{Binding IsBUK1BM2Channel}"/>
+            <RadioButton HorizontalAlignment="Stretch"
+                         Content="БУК 2ПК :: БМ-4 2ПК"
+                         Margin="2"
+                         GroupName="ChannelSim"
+                         Focusable="False"
+                         Template="{DynamicResource RadioButton}"
+                         IsChecked="{Binding IsBUK2BM2Channel}"/>
         </StackPanel>
-        <Label Grid.Row="1" 
+        <Label Grid.Row="1"
+               Content="Интерфейс SpaceWire"
+               VerticalContentAlignment="Center" 
+               Background="White"
+               Margin="1,0,1,1"/>
+        <Button Name="SpaceWire2IntfOn"
+                Grid.Column="1"                               
+				Grid.Row="1"  
+                Grid.ColumnSpan="2"	
+                Tag="{Binding IsSpaceWire2IntfOn, Converter={StaticResource boolToIndexConverter}}"
+                Template="{DynamicResource Button}"
+				Focusable="False" 
+				BorderThickness="0" 
+				HorizontalAlignment="Stretch" 
+				VerticalAlignment="Stretch"                 
+				Margin="0,0,1,1" Click="SpaceWire2IntfOn_Click">
+        </Button>
+        <Label Grid.Row="2" 
 			   Grid.ColumnSpan="3"
 			   Content="Связь не установлена"
 			   HorizontalContentAlignment="Center"
