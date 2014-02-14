@@ -337,7 +337,7 @@ namespace EGSE.Devices
         /// <summary>
         /// SPACEWIRE 2: Управление: Выбор канала.
         /// </summary>
-        private SimRouterChannel _simRouterChannel = SimRouterChannel.None;
+        private SimRouterChannel _simRouterChannel;
 
         /// <summary>
         /// SPACEWIRE 2: Управление: Установлена связь.
@@ -439,10 +439,6 @@ namespace EGSE.Devices
         /// </summary>
         public enum SimRouterChannel
         {
-            /// <summary>
-            /// Канал не выбран.
-            /// </summary>
-            None = 0xFF,
 
             /// <summary>
             /// Канал "БУК ПК1 - БМ-4 ПК1".
