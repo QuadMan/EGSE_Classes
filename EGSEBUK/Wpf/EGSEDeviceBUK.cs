@@ -66,6 +66,11 @@ namespace EGSE.Devices
         private const int SpaceWire2Control = 0x04;
 
         /// <summary>
+        /// Адресный байт "Управление обменом с приборами по SPTP".
+        /// </summary>
+        private const int SpaceWire2ControlSPTP = 0x0B;
+
+        /// <summary>
         /// Обеспечивает доступ к интерфейсу устройства. 
         /// </summary>
         private readonly DevBUK _intfBUK;
@@ -223,26 +228,21 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Команда установки канала SpaceWire2.
+        /// Команда SpaceWire2: Управление.
         /// </summary>
-        /// <param name="value">
-        /// <c>0</c> если [ПК 1 БУК - ПК 1 БМ-4];
-        /// <c>2</c> если [ПК 1 БУК - ПК 2 БМ-4];
-        /// <c>4</c> если [ПК 2 БУК - ПК 1 БМ-4];
-        /// <c>6</c> если [ПК 2 БУК - ПК 2 БМ-4]; 
-        /// </param>
-        public void CmdSimRouterChannel(uint value)
+        /// <param name="value">Параметры управления.</param>
+        public void CmdSimRouterControl(uint value)
         {
             SendToUSB(SpaceWire2Control, new byte[1] { (byte)value }); 
         }
 
         /// <summary>
-        /// Команда включения интерфейса SpaceWire2.
+        /// Команда SpaceWire2: Управление SPTP.
         /// </summary>
-        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
-        public void CmdSimRouterIntfOn(uint value)
+        /// <param name="value">Параметры управления SPTP.</param>
+        public void CmdSimRouterControlSPTP(uint value)
         {
-            SendToUSB(SpaceWire2Control, new byte[1] { (byte)value }); 
+            SendToUSB(SpaceWire2ControlSPTP, new byte[1] { (byte)value }); 
         }
 
         /// <summary>
@@ -290,22 +290,22 @@ namespace EGSE.Devices
         private bool _connected;
 
         /// <summary>
-        /// Питание первого полукомплекта БУСК.
+        /// Телеметрия: Запитан ПК1 от БУСК.
         /// </summary>
         private bool _buskPower1;
 
         /// <summary>
-        /// Питание второго полукомплекта БУСК.
+        /// Телеметрия: Запитан ПК2 от БУСК.
         /// </summary>
         private bool _buskPower2;
 
         /// <summary>
-        /// Питание первого полукомплекта БУНД.
+        /// Телеметрия: Запитан ПК1 от БУНД.
         /// </summary>
         private bool _bundPower1;
 
         /// <summary>
-        /// Питание второго полукомплекта БУНД.
+        /// Телеметрия: Запитан ПК2 от БУНД.
         /// </summary>
         private bool _bundPower2;
 
@@ -330,19 +330,59 @@ namespace EGSE.Devices
         private bool _isBUNDLineB = true;
 
         /// <summary>
-        /// Интерфейс SpaceWire2 включен.
+        /// SPACEWIRE 2: Управление: вкл/выкл интерфейса Spacewire.
         /// </summary>
         private bool _isSpaceWire2IntfOn;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление: Выбор канала.
+        /// </summary>
+        private SimRouterChannel _simRouterChannel = SimRouterChannel.None;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление: Установлена связь.
+        /// </summary>
+        private bool _isSpaceWire2Connected;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление обменом с приборами по SPTP: включить выдачу секундных меток (1PPS).
+        /// </summary>
+        private bool _isSpaceWire2TimeMark;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление обменом с приборами по SPTP: включение обмена прибора БС.
+        /// </summary>
+        private bool _isSpaceWire2BukTrans;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление обменом с приборами по SPTP: включение обмена прибора БКП.
+        /// </summary>
+        private bool _isSpaceWire2BkpTrans;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление обменом с приборами по SPTP: можно выдавать пакет в БС.
+        /// </summary>
+        private bool _isSpaceWire2BukTransData;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление обменом с приборами по SPTP: можно выдавать пакет в БКП.
+        /// </summary>
+        private bool _isSpaceWire2BkpTransData;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление обменом с приборами по SPTP: выдача КБВ прибору БС (только при «1 PPS» == 1).
+        /// </summary>
+        private bool _isSpaceWire2BukKbv;
+
+        /// <summary>
+        /// SPACEWIRE 2: Управление обменом с приборами по SPTP: выдача КБВ прибору БКП (только при «1 PPS» == 1).
+        /// </summary>
+        private bool _isSpaceWire2BkpKbv;
 
         /// <summary>
         /// Записывать данные от прибора в файл.
         /// </summary>
         private bool _isWriteDevDataToFile;
-
-        /// <summary>
-        /// Канал имитатора БМ-4.
-        /// </summary>
-        private SimRouterChannel _simRouterChannel = SimRouterChannel.None;
 
         /// <summary>
         /// Экземпляр класса, представляющий файл для записи данных от прибора.
@@ -357,7 +397,8 @@ namespace EGSE.Devices
             Connected = false;
             ControlValuesList = new List<ControlValue>();
             ControlValuesList.Add(new ControlValue()); // PowerControl = 0
-            ControlValuesList.Add(new ControlValue()); // SpaceWire2 = 1
+            ControlValuesList.Add(new ControlValue()); // SpaceWire2Control = 1
+            ControlValuesList.Add(new ControlValue()); // SpaceWire2ControlSPTP = 2
 
             _decoder = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
             _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
@@ -371,13 +412,21 @@ namespace EGSE.Devices
 
             Tele = new TelemetryBUK();
 
-            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUSKPower1, 7, 1, Device.CmdBUSKPower1, delegate(uint value) { BUSKPower1 = 1 == value; });
-            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUSKPower2, 6, 1, Device.CmdBUSKPower2, delegate(uint value) { BUSKPower2 = 1 == value; });
-            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUNDPower1, 4, 1, Device.CmdBUNDPower1, delegate(uint value) { BUNDPower1 = 1 == value; });
+            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyTelePowerBUSK1, 7, 1, Device.CmdBUSKPower1, delegate(uint value) { BUSKPower1 = 1 == value; });
+            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyTelePowerBUSK2, 6, 1, Device.CmdBUSKPower2, delegate(uint value) { BUSKPower2 = 1 == value; });
+            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyTelePowerBUND1, 4, 1, Device.CmdBUNDPower1, delegate(uint value) { BUNDPower1 = 1 == value; });
             ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUNDPower2, 5, 1, Device.CmdBUNDPower2, delegate(uint value) { BUNDPower2 = 1 == value; });
 
-            ControlValuesList[BUKConst.SpaceWire2].AddProperty(BUKConst.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterChannel, delegate(uint value) { SelectSimRouterChannel = (SimRouterChannel)value; });
-            ControlValuesList[BUKConst.SpaceWire2].AddProperty(BUKConst.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterIntfOn, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2Control].AddProperty(BUKConst.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterControl, delegate(uint value) { SelectSimRouterChannel = (SimRouterChannel)value; });
+            ControlValuesList[BUKConst.SpaceWire2Control].AddProperty(BUKConst.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterControl, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2Control].AddProperty(BUKConst.PropertySpaceWire2Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire2Connected = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2TimeMark, 0, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2TimeMark = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BukTrans, 1, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTrans = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BkpTrans, 4, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTrans = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BukKbv, 2, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukKbv = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BkpKbv, 5, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpKbv = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BukTransData, 3, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTransData = 1 == value; });
+            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BkpTransData, 6, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTransData = 1 == value; });
         }
 
         /// <summary>
@@ -643,7 +692,7 @@ namespace EGSE.Devices
                 }        
             
                 _simRouterChannel = value;
-                ControlValuesList[BUKConst.SpaceWire2].SetProperty(BUKConst.PropertySpaceWire2Channel, (int)value); 
+                ControlValuesList[BUKConst.SpaceWire2Control].SetProperty(BUKConst.PropertySpaceWire2Channel, (int)value); 
                 FirePropertyChangedEvent("SelectSimRouterChannel");
                 FirePropertyChangedEvent("IsBUK2BM2Channel");
                 FirePropertyChangedEvent("IsBUK1BM1Channel");
@@ -744,8 +793,175 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2IntfOn = value;
-                ControlValuesList[BUKConst.SpaceWire2].SetProperty(BUKConst.PropertySpaceWire2IntfOn, Convert.ToInt32(_isSpaceWire2IntfOn));
+                ControlValuesList[BUKConst.SpaceWire2Control].SetProperty(BUKConst.PropertySpaceWire2IntfOn, Convert.ToInt32(_isSpaceWire2IntfOn));
                 FirePropertyChangedEvent("IsSpaceWire2IntfOn");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [связь по интерфейсу SpaceWire2 установлена].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [связь по интерфейсу SpaceWire2 установлена]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2Connected 
+        {
+            get
+            {
+                return _isSpaceWire2Connected;
+            }
+
+            set
+            {
+                _isSpaceWire2Connected = value;
+                FirePropertyChangedEvent("IsSpaceWire2Connected");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [выдаются метки времени приборам].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [выдаются метки времени приборам]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2TimeMark
+        {
+            get
+            {
+                return _isSpaceWire2TimeMark;
+            }
+
+            set
+            {
+                _isSpaceWire2TimeMark = value;
+                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2TimeMark, Convert.ToInt32(_isSpaceWire2TimeMark));
+                FirePropertyChangedEvent("IsSpaceWire2TimeMark");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [включен обмен для прибора БУК].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [включен обмен для прибора БУК]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2BukTrans
+        {
+            get
+            {
+                return _isSpaceWire2BukTrans;
+            }
+
+            set
+            {
+                _isSpaceWire2BukTrans = value;
+                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BukTrans, Convert.ToInt32(_isSpaceWire2BukTrans));
+                FirePropertyChangedEvent("IsSpaceWire2BukTrans");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [включен обмен для прибора БКП].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [включен обмен для прибора БКП]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2BkpTrans
+        {
+            get
+            {
+                return _isSpaceWire2BkpTrans;
+            }
+
+            set
+            {
+                _isSpaceWire2BkpTrans = value;
+                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BkpTrans, Convert.ToInt32(_isSpaceWire2BkpTrans));
+                FirePropertyChangedEvent("IsSpaceWire2BkpTrans");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [выдается КБВ для прибора БУК].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [выдается КБВ для прибора БУК]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2BukKbv
+        {
+            get
+            {
+                return _isSpaceWire2BukKbv;
+            }
+
+            set
+            {
+                _isSpaceWire2BukKbv = value;
+                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BukKbv, Convert.ToInt32(_isSpaceWire2BukKbv));
+                FirePropertyChangedEvent("IsSpaceWire2BukKbv");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [выдается КБВ для прибора БКП].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [выдается КБВ для прибора БКП]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2BkpKbv
+        {
+            get
+            {
+                return _isSpaceWire2BkpKbv;
+            }
+
+            set
+            {
+                _isSpaceWire2BkpKbv = value;
+                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BkpKbv, Convert.ToInt32(_isSpaceWire2BkpKbv));
+                FirePropertyChangedEvent("IsSpaceWire2BkpKbv");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в БУК].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [можно выдавать пакеты данных в БУК]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2BukTransData
+        {
+            get
+            {
+                return _isSpaceWire2BukTransData;
+            }
+
+            set
+            {
+                _isSpaceWire2BukTransData = value;
+                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BukTransData, Convert.ToInt32(_isSpaceWire2BukTransData));
+                FirePropertyChangedEvent("IsSpaceWire2BukTransData");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в БКП].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [можно выдавать пакеты данных в БКП]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire2BkpTransData
+        {
+            get
+            {
+                return _isSpaceWire2BkpTransData;
+            }
+
+            set
+            {
+                _isSpaceWire2BkpTransData = value;
+                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BkpTransData, Convert.ToInt32(_isSpaceWire2BkpTransData));
+                FirePropertyChangedEvent("IsSpaceWire2BkpTransData");
             }
         }
 
@@ -895,7 +1111,8 @@ namespace EGSE.Devices
                 {
                     case TimeDataAddr:
                         Array.Copy(msg.Data, 0, ETime.Data, 0, 6);
-                        ControlValuesList[BUKConst.SpaceWire2].UsbValue = msg.Data[7];
+                        ControlValuesList[BUKConst.SpaceWire2Control].UsbValue = msg.Data[7];
+                        ControlValuesList[BUKConst.SpaceWire2ControlSPTP].UsbValue = msg.Data[14];
                         break;
                     case TeleDataAddr:
                         Tele.Update(msg.Data);
