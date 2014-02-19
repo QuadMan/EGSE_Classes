@@ -390,6 +390,36 @@ namespace EGSE.Devices
         private bool _isSpaceWire2BkpKbv;
 
         /// <summary>
+        /// SPACEWIRE 1: Управление: вкл/выкл интерфейса Spacewire.
+        /// </summary>
+        private bool _isSpaceWire1IntfOn;
+
+        /// <summary>
+        /// SPACEWIRE 1: Управление: Установлена связь.
+        /// </summary>
+        private bool _isSpaceWire1Connected;
+
+        /// <summary>
+        /// SPACEWIRE 1: Управление обменом с приборами по SPTP: включение обмена прибора НП1.
+        /// </summary>
+        private bool _isSpaceWire1NP1Trans;
+
+        /// <summary>
+        /// SPACEWIRE 1: Управление обменом с приборами по SPTP: включение обмена прибора НП2.
+        /// </summary>
+        private bool _isSpaceWire1NP2Trans;
+
+        /// <summary>
+        /// SPACEWIRE 1: Управление обменом с приборами по SPTP: можно выдавать пакет в НП1.
+        /// </summary>
+        private bool _isSpaceWire1NP1TransData;
+
+        /// <summary>
+        /// SPACEWIRE 1: Управление обменом с приборами по SPTP: можно выдавать пакет в НП2.
+        /// </summary>
+        private bool _isSpaceWire1NP2TransData;
+
+        /// <summary>
         /// Записывать данные от прибора в файл.
         /// </summary>
         private bool _isWriteDevDataToFile;
@@ -409,6 +439,7 @@ namespace EGSE.Devices
             ControlValuesList.Add(new ControlValue()); // PowerControl = 0
             ControlValuesList.Add(new ControlValue()); // SpaceWire2Control = 1
             ControlValuesList.Add(new ControlValue()); // SpaceWire2ControlSPTP = 2
+            ControlValuesList.Add(new ControlValue()); // SpaceWire1Control = 3
 
             _decoder = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
             _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
@@ -1027,6 +1058,131 @@ namespace EGSE.Devices
                 _isSpaceWire2BkpTransData = value;
                 ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2BkpTransData, Convert.ToInt32(_isSpaceWire2BkpTransData));
                 FirePropertyChangedEvent("IsSpaceWire2BkpTransData");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [интерфейс SpaceWire1 включен].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [интерфейс SpaceWire1 включен]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire1IntfOn
+        {
+            get
+            {
+                return _isSpaceWire1IntfOn;
+            }
+
+            set
+            {
+                _isSpaceWire1IntfOn = value;
+                ControlValuesList[Global.SpaceWire1Control].SetProperty(Global.PropertySpaceWire1IntfOn, Convert.ToInt32(_isSpaceWire1IntfOn));
+                FirePropertyChangedEvent("IsSpaceWire1IntfOn");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [связь по интерфейсу SpaceWire1 установлена].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [связь по интерфейсу SpaceWire1 установлена]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire1Connected
+        {
+            get
+            {
+                return _isSpaceWire1Connected;
+            }
+
+            set
+            {
+                _isSpaceWire1Connected = value;
+                FirePropertyChangedEvent("IsSpaceWire1Connected");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [включен обмен для прибора НП1].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [включен обмен для прибора НП1]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire1NP1Trans
+        {
+            get
+            {
+                return _isSpaceWire1NP1Trans;
+            }
+
+            set
+            {
+                _isSpaceWire1NP1Trans = value;
+                ControlValuesList[Global.SpaceWire1Control].SetProperty(Global.PropertySpaceWire1NP1Trans, Convert.ToInt32(_isSpaceWire1NP1Trans));
+                FirePropertyChangedEvent("IsSpaceWire1NP1Trans");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [включен обмен для прибора НП2].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [включен обмен для прибора НП2]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire1NP2Trans
+        {
+            get
+            {
+                return _isSpaceWire1NP2Trans;
+            }
+
+            set
+            {
+                _isSpaceWire1NP2Trans = value;
+                ControlValuesList[Global.SpaceWire1Control].SetProperty(Global.PropertySpaceWire1NP2Trans, Convert.ToInt32(_isSpaceWire1NP2Trans));
+                FirePropertyChangedEvent("IsSpaceWire1NP2Trans");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в НП1].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [можно выдавать пакеты данных в НП1]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire1NP1TransData
+        {
+            get
+            {
+                return _isSpaceWire1NP1TransData;
+            }
+
+            set
+            {
+                _isSpaceWire1NP1TransData = value;
+                ControlValuesList[Global.SpaceWire1Control].SetProperty(Global.PropertySpaceWire1NP1TransData, Convert.ToInt32(_isSpaceWire1NP1TransData));
+                FirePropertyChangedEvent("IsSpaceWire1NP1TransData");
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в НП2].
+        /// </summary>
+        /// <value>
+        /// <c>true</c> если [можно выдавать пакеты данных в НП2]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsSpaceWire1NP2TransData
+        {
+            get
+            {
+                return _isSpaceWire1NP2TransData;
+            }
+
+            set
+            {
+                _isSpaceWire1NP2TransData = value;
+                ControlValuesList[Global.SpaceWire1Control].SetProperty(Global.PropertySpaceWire1NP2TransData, Convert.ToInt32(_isSpaceWire1NP2TransData));
+                FirePropertyChangedEvent("IsSpaceWire1NP2TransData");
             }
         }
 

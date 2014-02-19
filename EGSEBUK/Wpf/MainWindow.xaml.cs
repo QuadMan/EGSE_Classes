@@ -40,6 +40,11 @@ namespace EGSE.Defaults
         private SimRouterWindow winSimRouter = new SimRouterWindow();
 
         /// <summary>
+        /// Окно "имитаторы spacewire"
+        /// </summary>
+        private SimSpacewireWindow winSimSpacewire = new SimSpacewireWindow();
+
+        /// <summary>
         /// Экземпляр для работы с командами циклограммы.
         /// </summary>
         private CyclogramCommandBUK _bukCycCommands = new CyclogramCommandBUK();
@@ -200,8 +205,8 @@ namespace EGSE.Defaults
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
 
-            //// hsiWin.Init(_EGSE);
             winSimRouter.Init(_intfEGSE);
+            winSimSpacewire.Init(_intfEGSE);
 
             DataContext = _intfEGSE;
         }
@@ -246,20 +251,24 @@ namespace EGSE.Defaults
             _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyBUNDPower2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower2));
         }
 
-        /*
-        private void ControlSpaceWire_Checked(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Handles the Click event of the ControlSpaceWire control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void ControlSpaceWire_Click(object sender, RoutedEventArgs e)
         {
             if ((bool)ControlSpaceWire.IsChecked)
             {
-                winSW.Show();
+                winSimSpacewire.Show();
             }
             else
             {
-                winSW.Hide();
+                winSimSpacewire.Hide();
             }
 
         }
-
+        /*
         private void ControlHSI_Checked(object sender, RoutedEventArgs e)
         {
             if ((bool)ControlHSI.IsChecked)

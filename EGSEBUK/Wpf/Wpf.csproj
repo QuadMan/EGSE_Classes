@@ -98,8 +98,8 @@
     <Compile Include="SimRouterWindow.xaml.cs">
       <DependentUpon>SimRouterWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpaceWireWindow.xaml.cs">
-      <DependentUpon>SpaceWireWindow.xaml</DependentUpon>
+    <Compile Include="SimSpacewireWindow.xaml.cs">
+      <DependentUpon>SimSpacewireWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EGSEDeviceBUK.cs" />
     <Compile Include="EGSEConstantsBUK.cs" />
@@ -204,7 +204,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SpaceWireWindow.xaml">
+    <Page Include="SimSpacewireWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

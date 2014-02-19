@@ -49,7 +49,7 @@ namespace EGSE.Constants
         /// <summary>
         /// Индекс свойства [SPACEWIRE 2: Управление: вкл/выкл интерфейса Spacewire].
         /// </summary>
-        public const int PropertySpaceWire2IntfOn = 1;
+        public const int PropertySpaceWire2IntfOn = 0;
 
         /// <summary>
         /// Индекс свойства [SPACEWIRE 2: Управление: Установлена связь].
@@ -92,6 +92,31 @@ namespace EGSE.Constants
         public const int PropertySpaceWire2BkpKbv = 6;
 
         /// <summary>
+        /// Индекс свойства [SPACEWIRE 1: Управление: вкл/выкл интерфейса Spacewire].
+        /// </summary>
+        public const int PropertySpaceWire1IntfOn = 0;
+
+        /// <summary>
+        /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: включение обмена прибора НП1].
+        /// </summary>
+        public const int PropertySpaceWire1NP1Trans = 1;
+
+        /// <summary>
+        /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: включение обмена прибора НП2].
+        /// </summary>
+        public const int PropertySpaceWire1NP2Trans = 2;
+
+        /// <summary>
+        /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: можно выдавать пакет в НП1].
+        /// </summary>
+        public const int PropertySpaceWire1NP1TransData = 3;
+
+        /// <summary>
+        /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: можно выдавать пакет в НП2].
+        /// </summary>
+        public const int PropertySpaceWire1NP2TransData = 4;
+
+        /// <summary>
         /// Индекс объекта "Телеметрия" в массиве ControlValuesList.
         /// </summary>
         public const int PowerControl = 0;
@@ -105,6 +130,11 @@ namespace EGSE.Constants
         /// Индекс объекта "Управление SPTP SpaceWire2" в массиве ControlValuesList.
         /// </summary>
         public const int SpaceWire2ControlSPTP = 2;
+
+        /// <summary>
+        /// Индекс объекта "Управление SpaceWire1" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire1Control = 3;
 
         /// <summary>
         /// Заголовок главного окна.

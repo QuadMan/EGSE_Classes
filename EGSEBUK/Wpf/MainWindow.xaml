@@ -615,7 +615,8 @@
                               Click="ControlSimRouter_Click"/>
                     <CheckBox x:Name="ControlSpaceWire" 
                               Content="Имитаторы SpaceWire" 
-                              Margin="4"/>
+                              Margin="4"
+                              Click="ControlSpaceWire_Click"/>
                 </StackPanel>
             </Expander>
         </StackPanel>

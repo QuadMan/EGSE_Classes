@@ -144,6 +144,7 @@
                      Grid.ColumnSpan="3"
                      TextWrapping="Wrap"
                      BorderThickness="0"
+                     Margin="1"
                      Height="80"/>
             <Button Grid.Column="2"  
                     Template="{DynamicResource FlatButtonClick}"                       
@@ -173,7 +174,9 @@
             </Grid.ColumnDefinitions>
             <Label Content="Монитор SpaceWire"
                    Template="{DynamicResource FlatLabel}"/>
-            <ListBox x:Name="Spacewire2Mon" Grid.Row="1" 
+            <ListBox x:Name="Spacewire2Mon" 
+                     Grid.Row="1"
+                     Margin="1"
                      BorderThickness="0"/>
         </Grid>
         <Button Grid.Column="2"                               
