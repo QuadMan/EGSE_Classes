@@ -213,7 +213,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUSKPower1_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyTelePowerBUSK1, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower1));
+            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyTelePowerBUSK1, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower1));
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUSKPower2_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyTelePowerBUSK2, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower2));
+            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyTelePowerBUSK2, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower2));
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUNDPower1_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyTelePowerBUND1, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower1));
+            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyTelePowerBUND1, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower1));
         }
 
         /// <summary>
@@ -243,7 +243,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void BUNDPower2_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PropertyBUNDPower2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower2));
+            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyBUNDPower2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower2));
         }
 
         /*

@@ -10,104 +10,102 @@
         <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
         <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
-    </Window.Resources>
-    <Grid Background="LightBlue">
-        <Grid.Resources>
-            <l:BoolToIntConverter x:Key="boolToIndexConverter" />
-            <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
-                <Border x:Name="Border" 
+        <l:BoolToIntConverter x:Key="boolToIndexConverter" />
+        <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
+            <Border x:Name="Border" 
                         Background="{DynamicResource ClickBrush}"
                         Focusable="False" 
                         BorderThickness="0"
-                        Margin="1">                    
-                    <ContentPresenter HorizontalAlignment="Center"
+                        Margin="1">
+                <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"                                        
                                       Content="{TemplateBinding Content}"/>
-                </Border>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>                        
-                    </Trigger>
-                    <Trigger Property="IsPressed" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    </Trigger>
-                    <Trigger Property="IsChecked" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>                       
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-            <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">                      
-                <Border x:Name="Border"
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
+            <Border x:Name="Border"
                         Background="{DynamicResource UnSelectBrush}" 
                         Focusable="False" 
                         BorderThickness="0"
                         Margin="1">
-                    <ContentPresenter HorizontalAlignment="Center"
+                <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"/>
-                </Border>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="Tag" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                        <Setter Property="Content" Value="ВКЛ"/>
-                    </Trigger>
-                    <Trigger Property="Tag" Value="false">
-                        <Setter Property="Content" Value="ВЫКЛ"/>
-                    </Trigger>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                    </Trigger>
-                    <Trigger Property="IsPressed" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-            <ControlTemplate x:Key="FlatButtonClick" TargetType="{x:Type Button}">
-                <Border x:Name="Border"
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Tag" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter Property="Content" Value="ВКЛ"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="false">
+                    <Setter Property="Content" Value="ВЫКЛ"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="FlatButtonClick" TargetType="{x:Type Button}">
+            <Border x:Name="Border"
                         Background="{DynamicResource ClickBrush}"   
                         Focusable="False" 
                         BorderThickness="0"
                         Margin="1">
-                    <ContentPresenter HorizontalAlignment="Center"
+                <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"/>
-                </Border>
-                <ControlTemplate.Triggers>                                   
-                    <Trigger Property="Button.IsMouseOver" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                    </Trigger>
-                    <Trigger Property="Button.IsPressed" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-            <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
-                <Border x:Name="Border"
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsMouseOver" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                </Trigger>
+                <Trigger Property="Button.IsPressed" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
+            <Border x:Name="Border"
                         Background="{DynamicResource UnSelectBrush}"                                          
                         BorderThickness="0"
                         Margin="1">
-                    <ContentPresenter HorizontalAlignment="Center"
+                <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"/>
-                </Border>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="Tag" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                        <Setter Property="Content" Value="Связь установлена"/>
-                    </Trigger>
-                    <Trigger Property="Tag" Value="false">
-                        <Setter Property="Content" Value="Связь не установлена"/>
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-            <ControlTemplate x:Key="FlatLabel" TargetType="{x:Type Label}">
-                <Border x:Name="Border"
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Tag" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter Property="Content" Value="Связь установлена"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="false">
+                    <Setter Property="Content" Value="Связь не установлена"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="FlatLabel" TargetType="{x:Type Label}">
+            <Border x:Name="Border"
                         Background="{DynamicResource TextBrush}"                                          
                         BorderThickness="0"
                         Margin="1">
-                    <ContentPresenter HorizontalAlignment="Center"
+                <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
                                       Content="{TemplateBinding Content}"/>
-                </Border>
-            </ControlTemplate>
-        </Grid.Resources>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
+    <Grid Background="LightBlue">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -175,7 +173,7 @@
             </Grid.ColumnDefinitions>
             <Label Content="Монитор SpaceWire"
                    Template="{DynamicResource FlatLabel}"/>
-            <ListBox Grid.Row="1" 
+            <ListBox x:Name="Spacewire2Mon" Grid.Row="1" 
                      BorderThickness="0"/>
         </Grid>
         <Button Grid.Column="2"                               

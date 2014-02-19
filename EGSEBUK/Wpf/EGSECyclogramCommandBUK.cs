@@ -294,7 +294,7 @@ namespace EGSE.Cyclogram.Command
         public bool PowerExec(string[] cmdParams)
         {
             int val = Convert.ToInt32(cmdParams[0] == "ON");
-            return BUK.ControlValuesList[BUKConst.PowerControl].SetProperty(BUKConst.PowerControl, val);
+            return BUK.ControlValuesList[Global.PowerControl].SetProperty(Global.PowerControl, val);
         }
     }
 }

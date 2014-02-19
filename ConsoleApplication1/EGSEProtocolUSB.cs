@@ -59,6 +59,52 @@ namespace EGSE.Protocols
     }
 
     /// <summary>
+    /// Класс обмена сообщениями по протоколу Spacewire.
+    /// </summary>
+    public class SpacewireMsgEventArgs : MsgBase
+    {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireMsgEventArgs" />.
+        /// </summary>
+        /// <param name="msgDataLen">Длина текущего сообщения spacewire.</param>
+        /// <param name="time1">Time tick 1</param>
+        /// <param name="time2">Time tick 2</param>
+        /// <param name="error">Ошибка в сообщении.</param>
+        public SpacewireMsgEventArgs(uint msgDataLen, byte time1, byte time2, byte error = 0x00)
+        {
+            Data = new byte[msgDataLen];
+            DataLen = 0;
+            Error = error;
+            Time1 = time1;
+            Time2 = time2;
+        }
+        
+        /// <summary>
+        /// Получает или задает ошибку в приеме сообщения.
+        /// </summary>
+        /// <value>
+        /// Метка ошибки.
+        /// </value>
+        public byte Error { get; set; }
+
+        /// <summary>
+        /// Получает или задает Time tick 1.
+        /// </summary>
+        /// <value>
+        /// Значение Time tick 1.
+        /// </value>
+        public byte Time1 { get; set; }
+
+        /// <summary>
+        /// Получает или задает Time tick 2.
+        /// </summary>
+        /// <value>
+        /// Значение Time tick 2.
+        /// </value>
+        public byte Time2 { get; set; }
+    }
+
+    /// <summary>
     /// Класс обмена сообщениями по протоколам USB.
     /// </summary>
     public class ProtocolMsgEventArgs : MsgBase
@@ -170,42 +216,42 @@ namespace EGSE.Protocols
         public delegate void ProtocolErrorEventHandler(object sender, ProtocolErrorEventArgs e);
 
         /// <summary>
-        /// Объявление делегата обработки сообщений протокола
+        /// Объявление делегата обработки сообщений протокола.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">Класс описывающий сообщение протокола</param>
         public delegate void ProtocolMsgEventHandler(object sender, ProtocolMsgEventArgs e);
 
         /// <summary>
-        /// Объявление события: возникновение ошибки протокола в декодере
+        /// Объявление события: возникновение ошибки протокола в декодере.
         /// </summary>
         public event ProtocolErrorEventHandler GotProtocolError;
 
         /// <summary>
-        /// Объявление события: возникновение сообщения протокола в декодере
+        /// Объявление события: возникновение сообщения протокола в декодере.
         /// </summary>
         public event ProtocolMsgEventHandler GotProtocolMsg;
 
         /// <summary>
-        /// Сброс конечного автомата состояния протокола в исходное состояние 
+        /// Сброс конечного автомата состояния протокола в исходное состояние .
         /// </summary>
         public abstract void Reset();
 
         /// <summary>
-        /// Метод декодирования данных
+        /// Метод декодирования данных.
         /// </summary>
-        /// <param name="buf">Буфер с данными для декодирования</param>
-        /// <param name="bufLen">Размер буфера с данными</param>
+        /// <param name="buf">Буфер с данными для декодирования.</param>
+        /// <param name="bufLen">Размер буфера с данными.</param>
         public abstract void Decode(byte[] buf, int bufLen);
 
         /// <summary>
-        /// Метод кодирования данных
-        /// Если функция выполняется с ошибкой, bufOut = null
+        /// Метод кодирования данных.
+        /// Если функция выполняется с ошибкой, bufOut = null.
         /// </summary>
-        /// <param name="addr">Адрес, по которому данные должны быть переданы</param>
-        /// <param name="buf">Буфер для передачи</param>
-        /// <param name="bufOut">Выходной буфер</param>
-        /// <returns>false если функция выполнена с ошибкой</returns>
+        /// <param name="addr">Адрес, по которому данные должны быть переданы.</param>
+        /// <param name="buf">Буфер для передачи.</param>
+        /// <param name="bufOut">Выходной буфер.</param>
+        /// <returns>false если функция выполнена с ошибкой.</returns>
         public virtual bool Encode(uint addr, byte[] buf, out byte[] bufOut)
         {
             bufOut = null;

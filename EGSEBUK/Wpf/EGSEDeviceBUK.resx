@@ -124,6 +124,6 @@
     <value>buk</value>
   </data>
   <data name="stOnErrorUSBMsg" xml:space="preserve">
-    <value>{0} ({0}, на позиции: {0})</value>
+    <value>{0} ({1}, на позиции: {2})</value>
   </data>
 </root>

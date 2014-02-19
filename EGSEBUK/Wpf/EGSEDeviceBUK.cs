@@ -250,7 +250,7 @@ namespace EGSE.Devices
         /// </summary>
         public void CmdSetDeviceTime()
         {
-            EGSETime time = new EGSETime();
+            EgseTime time = new EgseTime();
             time.Encode();
             byte[] buf = new byte[1] { 1 };
             SendToUSB(TimeResetAddr, buf);
@@ -273,7 +273,7 @@ namespace EGSE.Devices
         /// Адресный байт "Телеметрия".
         /// </summary>
         private const int TeleDataAddr = 0x15;
-
+        
         /// <summary>
         /// Адресный байт SpaceWire2 "Управление".
         /// </summary>
@@ -283,6 +283,16 @@ namespace EGSE.Devices
         /// Экземпляр декодера протокола USB.
         /// </summary>
         private ProtocolUSB7C6E _decoder;
+
+        /// <summary>
+        /// Экземпляр декодера протокола Spacewire.
+        /// </summary>
+        private ProtocolSpacewire _spacewire2Busk;
+
+        /// <summary>
+        /// Экземпляр декодера протокола Spacewire.
+        /// </summary>
+        private ProtocolSpacewire _spacewire2Buk;
 
         /// <summary>
         /// Текущее состояние подключения устройства.
@@ -403,43 +413,56 @@ namespace EGSE.Devices
             _decoder = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
             _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
             _decoder.GotProtocolError += new ProtocolUSBBase.ProtocolErrorEventHandler(OnErrorFunc);
-            ETime = new EGSETime();
+            DeviceTime = new EgseTime();
 
-            Device = new DeviceBUK(BUKConst.DeviceSerial, _decoder, this);
+            _spacewire2Busk = new ProtocolSpacewire((uint)Spacewire2Addr.Data, (uint)Spacewire2Addr.End, (uint)Spacewire2Addr.Time1, (uint)Spacewire2Addr.Time2);
+            _spacewire2Busk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_spacewire2Busk.OnMessageFunc);
+
+            _spacewire2Buk = new ProtocolSpacewire((uint)Spacewire2Addr.BukData, (uint)Spacewire2Addr.BukEnd, (uint)Spacewire2Addr.BukTime1, (uint)Spacewire2Addr.BukTime2);
+            _spacewire2Buk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_spacewire2Buk.OnMessageFunc);  
+
+            Device = new DeviceBUK(Global.DeviceSerial, _decoder, this);
             Device.ChangeStateEvent = OnChangeConnection;
             _devDataLogStream = null;
             _isWriteDevDataToFile = false;
 
             Tele = new TelemetryBUK();
 
-            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyTelePowerBUSK1, 7, 1, Device.CmdBUSKPower1, delegate(uint value) { BUSKPower1 = 1 == value; });
-            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyTelePowerBUSK2, 6, 1, Device.CmdBUSKPower2, delegate(uint value) { BUSKPower2 = 1 == value; });
-            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyTelePowerBUND1, 4, 1, Device.CmdBUNDPower1, delegate(uint value) { BUNDPower1 = 1 == value; });
-            ControlValuesList[BUKConst.PowerControl].AddProperty(BUKConst.PropertyBUNDPower2, 5, 1, Device.CmdBUNDPower2, delegate(uint value) { BUNDPower2 = 1 == value; });
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUSK1, 7, 1, Device.CmdBUSKPower1, delegate(uint value) { BUSKPower1 = 1 == value; });
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUSK2, 6, 1, Device.CmdBUSKPower2, delegate(uint value) { BUSKPower2 = 1 == value; });
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUND1, 4, 1, Device.CmdBUNDPower1, delegate(uint value) { BUNDPower1 = 1 == value; });
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyBUNDPower2, 5, 1, Device.CmdBUNDPower2, delegate(uint value) { BUNDPower2 = 1 == value; });
 
-            ControlValuesList[BUKConst.SpaceWire2Control].AddProperty(BUKConst.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterControl, delegate(uint value) { SelectSimRouterChannel = (SimRouterChannel)value; });
-            ControlValuesList[BUKConst.SpaceWire2Control].AddProperty(BUKConst.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterControl, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2Control].AddProperty(BUKConst.PropertySpaceWire2Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire2Connected = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2TimeMark, 0, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2TimeMark = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BukTrans, 1, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTrans = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BkpTrans, 4, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTrans = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BukKbv, 2, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukKbv = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BkpKbv, 5, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpKbv = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BukTransData, 3, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTransData = 1 == value; });
-            ControlValuesList[BUKConst.SpaceWire2ControlSPTP].AddProperty(BUKConst.PropertySpaceWire2BkpTransData, 6, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTransData = 1 == value; });
+            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterControl, delegate(uint value) { SelectSimRouterChannel = (SimRouterChannel)value; });
+            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterControl, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
+            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire2Connected = 1 == value; });
+
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2TimeMark, 0, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2TimeMark = 1 == value; });
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukTrans, 1, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTrans = 1 == value; });
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpTrans, 4, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTrans = 1 == value; });
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukKbv, 2, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukKbv = 1 == value; });
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpKbv, 5, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpKbv = 1 == value; });
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukTransData, 3, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTransData = 1 == value; });
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpTransData, 6, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTransData = 1 == value; });
         }
 
         /// <summary>
-        /// Вызывается, когда меняется значение свойства.
+        /// Вызывается, когда [меняется значение свойства].
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Вызывается, когда [получено сообщение по spacewire 2].
+        /// </summary>
+        public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire2Msg;
 
         /// <summary>
         /// Список возможных каналов имитатора БМ-4.
         /// </summary>
         public enum SimRouterChannel
         {
-
             /// <summary>
             /// Канал "БУК ПК1 - БМ-4 ПК1".
             /// </summary>
@@ -459,6 +482,52 @@ namespace EGSE.Devices
             /// Канал "БУК ПК2 - БМ-4 ПК2".
             /// </summary>
             BUK2BM2 = 0x03
+        }
+
+        /// <summary>
+        /// Описывает адресные байты Spacewire2.
+        /// </summary>
+        public enum Spacewire2Addr : uint
+        {
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): Данные Spacewire".
+            /// </summary>
+            Data = 0x04,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): EOP или EEP".
+            /// </summary>
+            End = 0x05,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
+            /// </summary>
+            Time1 = 0x06,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
+            /// </summary>
+            Time2 = 0x07,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): Данные Spacewire".
+            /// </summary>
+            BukData = 0x08,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): EOP или EEP".
+            /// </summary>
+            BukEnd = 0x09,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
+            /// </summary>
+            BukTime1 = 0x0a,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
+            /// </summary>
+            BukTime2 = 0x0b
         }
 
         /// <summary>
@@ -688,7 +757,7 @@ namespace EGSE.Devices
                 }        
             
                 _simRouterChannel = value;
-                ControlValuesList[BUKConst.SpaceWire2Control].SetProperty(BUKConst.PropertySpaceWire2Channel, (int)value); 
+                ControlValuesList[Global.SpaceWire2Control].SetProperty(Global.PropertySpaceWire2Channel, (int)value); 
                 FirePropertyChangedEvent("SelectSimRouterChannel");
                 FirePropertyChangedEvent("IsBUK2BM2Channel");
                 FirePropertyChangedEvent("IsBUK1BM1Channel");
@@ -789,7 +858,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2IntfOn = value;
-                ControlValuesList[BUKConst.SpaceWire2Control].SetProperty(BUKConst.PropertySpaceWire2IntfOn, Convert.ToInt32(_isSpaceWire2IntfOn));
+                ControlValuesList[Global.SpaceWire2Control].SetProperty(Global.PropertySpaceWire2IntfOn, Convert.ToInt32(_isSpaceWire2IntfOn));
                 FirePropertyChangedEvent("IsSpaceWire2IntfOn");
             }
         }
@@ -830,7 +899,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2TimeMark = value;
-                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2TimeMark, Convert.ToInt32(_isSpaceWire2TimeMark));
+                ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2TimeMark, Convert.ToInt32(_isSpaceWire2TimeMark));
                 FirePropertyChangedEvent("IsSpaceWire2TimeMark");
             }
         }
@@ -851,7 +920,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2BukTrans = value;
-                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BukTrans, Convert.ToInt32(_isSpaceWire2BukTrans));
+                ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2BukTrans, Convert.ToInt32(_isSpaceWire2BukTrans));
                 FirePropertyChangedEvent("IsSpaceWire2BukTrans");
             }
         }
@@ -872,7 +941,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2BkpTrans = value;
-                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BkpTrans, Convert.ToInt32(_isSpaceWire2BkpTrans));
+                ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2BkpTrans, Convert.ToInt32(_isSpaceWire2BkpTrans));
                 FirePropertyChangedEvent("IsSpaceWire2BkpTrans");
             }
         }
@@ -893,7 +962,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2BukKbv = value;
-                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BukKbv, Convert.ToInt32(_isSpaceWire2BukKbv));
+                ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2BukKbv, Convert.ToInt32(_isSpaceWire2BukKbv));
                 FirePropertyChangedEvent("IsSpaceWire2BukKbv");
             }
         }
@@ -914,7 +983,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2BkpKbv = value;
-                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BkpKbv, Convert.ToInt32(_isSpaceWire2BkpKbv));
+                ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2BkpKbv, Convert.ToInt32(_isSpaceWire2BkpKbv));
                 FirePropertyChangedEvent("IsSpaceWire2BkpKbv");
             }
         }
@@ -935,7 +1004,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2BukTransData = value;
-                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BukTransData, Convert.ToInt32(_isSpaceWire2BukTransData));
+                ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2BukTransData, Convert.ToInt32(_isSpaceWire2BukTransData));
                 FirePropertyChangedEvent("IsSpaceWire2BukTransData");
             }
         }
@@ -956,7 +1025,7 @@ namespace EGSE.Devices
             set
             {
                 _isSpaceWire2BkpTransData = value;
-                ControlValuesList[BUKConst.SpaceWire2ControlSPTP].SetProperty(BUKConst.PropertySpaceWire2BkpTransData, Convert.ToInt32(_isSpaceWire2BkpTransData));
+                ControlValuesList[Global.SpaceWire2ControlSPTP].SetProperty(Global.PropertySpaceWire2BkpTransData, Convert.ToInt32(_isSpaceWire2BkpTransData));
                 FirePropertyChangedEvent("IsSpaceWire2BkpTransData");
             }
         }
@@ -1006,7 +1075,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Получает или задает время, пришедшее от прибора.
         /// </summary>       
-        public EGSETime ETime { get; set; }
+        public EgseTime DeviceTime { get; set; }
 
         /// <summary>
         /// Получает или задает экземпляр декодера телеметрии.
@@ -1083,6 +1152,19 @@ namespace EGSE.Devices
         }
 
         /// <summary>
+        /// Called when [spacewire2 MSG].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnSpacewire2Msg(object sender, SpacewireMsgEventArgs e)
+        {
+            if (this.GotSpacewire2Msg != null)
+            {
+                this.GotSpacewire2Msg(sender, e);
+            }
+        }
+
+        /// <summary>
         /// Вызывается при подключении прибора, чтобы все элементы управления обновили свои значения.
         /// </summary>
         private void RefreshAllControlsValues()
@@ -1106,17 +1188,17 @@ namespace EGSE.Devices
                 switch (msg.Addr)
                 {
                     case TimeDataAddr:
-                        Array.Copy(msg.Data, 0, ETime.Data, 0, 6);
-                        ControlValuesList[BUKConst.SpaceWire2Control].UsbValue = msg.Data[7];
-                        ControlValuesList[BUKConst.SpaceWire2ControlSPTP].UsbValue = msg.Data[14];
+                        Array.Copy(msg.Data, 0, DeviceTime.Data, 0, 6);
+                        ControlValuesList[Global.SpaceWire2Control].UsbValue = msg.Data[7];
+                        ControlValuesList[Global.SpaceWire2ControlSPTP].UsbValue = msg.Data[14];
                         break;
                     case TeleDataAddr:
                         Tele.Update(msg.Data);
-                        ControlValuesList[BUKConst.PowerControl].UsbValue = msg.Data[3];
+                        ControlValuesList[Global.PowerControl].UsbValue = msg.Data[3];
                         break;
                 }
             }
-        }
+        }    
 
         /// <summary>
         /// Обработчик ошибок протокола декодера USB.

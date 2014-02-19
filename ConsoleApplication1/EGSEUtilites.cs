@@ -474,7 +474,7 @@ namespace EGSE.Utilites
     /// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время.
     /// Необходимо заполнить поле данных времени data (6 байт).
     /// </summary>
-    public class EGSETime
+    public class EgseTime
     {
         /// <summary>
         /// Размер кадра "Время" устройства (в байтах).
@@ -487,9 +487,9 @@ namespace EGSE.Utilites
         private StringBuilder sb;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="EGSETime" />.
+        /// Инициализирует новый экземпляр класса <see cref="EgseTime" />.
         /// </summary>
-        public EGSETime()
+        public EgseTime()
         {
             Data = new byte[DefaultTimeSize];
             Day = 0;

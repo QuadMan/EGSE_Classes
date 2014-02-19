@@ -45,7 +45,7 @@ namespace EGSE.Defaults
         {
             InitializeComponent();
             Application.Current.MainWindow = this;
-            Title = BUKConst.ShowCaption;            
+            Title = Global.ShowCaption;            
 
             InitControlValues();
             LoadWindows();
@@ -99,12 +99,12 @@ namespace EGSE.Defaults
             if (_intfEGSE.Connected)
             {
                 ConnectionLabel.Background = Brushes.LightGreen;
-                ConnectionLabel.Content = BUKConst.DeviceName + Resource.Get("stConnected");
+                ConnectionLabel.Content = Global.DeviceName + Resource.Get("stConnected");
             }
             else
             {
                 ConnectionLabel.Background = Brushes.Red;
-                ConnectionLabel.Content = BUKConst.DeviceName + Resource.Get("stDisconnected");
+                ConnectionLabel.Content = Global.DeviceName + Resource.Get("stDisconnected");
 
                 // инициализируем все экранные формы на значения по-умолчанию при отключении от устройства
                 // DefaultScreenInit();

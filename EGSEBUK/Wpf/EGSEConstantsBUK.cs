@@ -19,7 +19,7 @@ namespace EGSE.Constants
     /// <summary>
     /// Основные значения констант прибора.
     /// </summary>
-    public static class BUKConst
+    public static class Global
     {
         /// <summary>
         /// Индекс свойства [Телеметрия: Запитан ПК1 от БУСК].
@@ -122,9 +122,9 @@ namespace EGSE.Constants
         public static readonly string DeviceSerial;
         
         /// <summary>
-        /// Инициализирует статические поля класса <see cref="BUKConst" />.
+        /// Инициализирует статические поля класса <see cref="Global" />.
         /// </summary>
-        static BUKConst()
+        static Global()
         { 
             ShowCaption = Resource.Get("stShowCaption");
             DeviceName = Resource.Get("stDeviceName");

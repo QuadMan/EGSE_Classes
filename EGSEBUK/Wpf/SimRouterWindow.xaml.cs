@@ -23,6 +23,8 @@ namespace EGSE.Defaults
     using System.Windows.Shapes;
     using EGSE.Constants;
     using EGSE.Devices;
+    using EGSE.Protocols;
+    using EGSE.Utilites;
 
     /// <summary>
     /// Interaction logic for SimRouterWindow.xaml
@@ -59,8 +61,30 @@ namespace EGSE.Defaults
         public void Init(DevBUK intfEGSE)
         {
             _intfEGSE = intfEGSE;
+            _intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             DataContext = _intfEGSE;
         }
+
+        /// <summary>
+        /// Вызывается когда [пришло сообщение по протоколу spacewire].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="msg">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
+        public void OnSpacewire2Msg(object sender, SpacewireMsgEventArgs msg)
+        {
+            if (msg != null)
+            {
+                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data);
+                if (null != Spacewire2Mon && Visibility.Visible == this.Visibility)
+                {
+                    Spacewire2Mon.Dispatcher.Invoke(new Action(delegate
+                        { 
+                            Spacewire2Mon.Items.Add(spacewireMsg); 
+                            Spacewire2Mon.ScrollIntoView(spacewireMsg); 
+                        }));
+                }
+            }
+        }  
 
         /// <summary>
         /// Обновляет состояние UI.
