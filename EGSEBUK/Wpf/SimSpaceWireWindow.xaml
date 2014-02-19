@@ -9,8 +9,22 @@
         <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
         <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
+        <SolidColorBrush x:Key="UnCheckedBrush" Color="Red"/>
+        <SolidColorBrush x:Key="CheckedBrush" Color="LightGreen"/>
         <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
         <l:BoolToIntConverter x:Key="boolToIndexConverter" />
+        <l:StrToBytesConverter x:Key="strToBytesConverter" />        
+        <ControlTemplate x:Key="FlatTextBox" TargetType="{x:Type TextBox}">
+            <Border Name="Border" 
+                    Background="{DynamicResource TextBrush}" 
+                    Margin="1" 
+                    BorderThickness="0">
+                <Grid>
+                    <ScrollViewer Margin="0" 
+                                  x:Name="PART_ContentHost"/>                                     
+                </Grid>
+            </Border>
+        </ControlTemplate>
         <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
             <Border x:Name="Border" 
                         Background="{DynamicResource ClickBrush}"
@@ -58,6 +72,32 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <ControlTemplate x:Key="FlatButtonClickBusy" TargetType="{x:Type Button}">
+            <Border x:Name="Border"
+                        Background="{DynamicResource ClickBrush}"   
+                        Focusable="False" 
+                        BorderThickness="0"
+                        Margin="1">
+                <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Tag" Value="false">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource ClickBrush}"/>
+                    <Setter Property="Content" Value="Выдать посылку"/>
+                </Trigger>
+                <Trigger Property="Button.IsMouseOver" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                </Trigger>
+                <Trigger Property="Button.IsPressed" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource UnSelectBrush}"/>
+                    <Setter Property="Content" Value="Нельзя выдать посылку (занят)"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         <ControlTemplate x:Key="FlatButtonClick" TargetType="{x:Type Button}">
             <Border x:Name="Border"
                         Background="{DynamicResource ClickBrush}"   
@@ -65,7 +105,7 @@
                         BorderThickness="0"
                         Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
+                                  VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="Button.IsMouseOver" Value="true">
@@ -73,7 +113,7 @@
                 </Trigger>
                 <Trigger Property="Button.IsPressed" Value="true">
                     <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
+                </Trigger>          
             </ControlTemplate.Triggers>
         </ControlTemplate>
         <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
@@ -148,14 +188,15 @@
                          Grid.ColumnSpan="3"
                          TextWrapping="Wrap"
                          Margin="1"
+                         Text="{Binding Spacewire1Data, Converter={StaticResource strToBytesConverter}}"
                          BorderThickness="0"/>
                 <Button Grid.Column="2"  
                         Template="{DynamicResource FlatButtonClick}"                       
                         Content="из файла..."/>
                 <Button Grid.Row="2"  
                         Grid.ColumnSpan="3"
-                        Template="{DynamicResource FlatButtonClick}"                       
-                        Content="Выдать посылку"/>                     
+                        Tag="{Binding IsSpaceWire1RecordBusy, Converter={StaticResource boolToIndexConverter}}"
+                        Template="{DynamicResource FlatButtonClickBusy}" Click="Button_Click_10"/>                     
             </Grid>
             <Button Grid.Column="2"                               
                     Grid.Row="3"    
@@ -171,20 +212,20 @@
                     Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_2"/>
             <TextBox Grid.Column="1"                               
                      Grid.Row="5"                      
-                     Margin="1"
-                     BorderThickness="0"/>
+                     Template="{DynamicResource FlatTextBox}"
+                     Text="{Binding SpaceWire1NP1SendTime}"/>
             <TextBox Grid.Column="2"                               
                      Grid.Row="5"                      
-                     Margin="1"
-                     BorderThickness="0"/>
+                     Text="{Binding SpaceWire1NP2SendTime}"
+                     Template="{DynamicResource FlatTextBox}"/>
             <TextBox Grid.Column="1"                               
                      Grid.Row="6"                      
-                     Margin="1"
-                     BorderThickness="0"/>
+                     Template="{DynamicResource FlatTextBox}"
+                     Text="{Binding SpaceWire1NP1DataSize}"/>
             <TextBox Grid.Column="2"                               
                      Grid.Row="6"                      
-                     Margin="1"
-                     BorderThickness="0"/>
+                     Template="{DynamicResource FlatTextBox}"
+                     Text="{Binding SpaceWire1NP2DataSize}"/>
             <Button Grid.Column="2"                               
                     Grid.Row="4"    
                     Tag="{Binding IsSpaceWire1NP2TransData, Converter={StaticResource boolToIndexConverter}}"
@@ -266,28 +307,28 @@
                         Content="из файла..."/>
                 <Label Grid.Row="2"   
                        Grid.ColumnSpan="2"	
-                       Content="EOP или EEP"
+                       Content="Выдавать ошибку EEP"
                        Template="{DynamicResource FlatLabel}"/>
-                <TextBox Grid.Column="2"                               
-                         Grid.Row="2"                      
-                         Margin="1"
-                         BorderThickness="0"/>
+                <Button Grid.Row="2"   
+                        Grid.Column="2"                         
+                        Tag="{Binding IsSpaceWire4EEPSend, Converter={StaticResource boolToIndexConverter}}"
+                        Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_9"/>
                 <Label Grid.Row="3"   
                        Grid.ColumnSpan="2"	
                        Content="Выдавать в конце посылки EOP или EEP"
                        Template="{DynamicResource FlatLabel}"/>
                 <Button Grid.Row="3"   
                         Grid.Column="2"                         
-                        Tag="{Binding IsSpaceWire4SendEOP, Converter={StaticResource boolToIndexConverter}}"
-                        Template="{DynamicResource FlatButtonCheck}"/>
+                        Tag="{Binding IsSpaceWire4EOPSend, Converter={StaticResource boolToIndexConverter}}"
+                        Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_7"/>
                 <Button Grid.Row="4"  
                         Grid.ColumnSpan="3"
-                        Template="{DynamicResource FlatButtonClick}"                       
-                        Content="Выдать посылку"/>
+                        Tag="{Binding IsSpaceWire4RecordBusy, Converter={StaticResource boolToIndexConverter}}"
+                        Template="{DynamicResource FlatButtonClickBusy}" Click="Button_Click_11"/>
                 <Button Grid.Row="5"   
                         Grid.Column="2"                         
                         Tag="{Binding IsSpaceWire4AutoSend, Converter={StaticResource boolToIndexConverter}}"
-                        Template="{DynamicResource FlatButtonCheck}"/>
+                        Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_8"/>
                 <Label Grid.Row="5"   
                        Grid.ColumnSpan="2"	
                        Content="Автоматическая выдача посылки"
@@ -296,22 +337,16 @@
             <Button Grid.Column="1"                               
                     Grid.Row="2"    
                     Tag="{Binding IsSpaceWire4TimeMark, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}"/>
+                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_6"/>
             <Label Grid.Row="2" 
                    Content="Выдача секундных меток"
                    Template="{DynamicResource FlatLabel}"/>
             <Label Content="Имитатор БУК"
 				   Template="{DynamicResource FlatLabel}"/>
             <Button Grid.Column="1"                               
-				            Grid.Row="0"    
-				            Content="ВЫКЛ"
-				            Background="Red"
-				            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-				            Focusable="False" 
-				            BorderThickness="0" 
-				            HorizontalAlignment="Stretch" 
-				            VerticalAlignment="Stretch" 
-				            Margin="0,1,1,1"/>
+                    Grid.Row="0"    
+                    Tag="{Binding IsSpaceWire4IntfOn, Converter={StaticResource boolToIndexConverter}}"
+                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_5"/>
             <Label Grid.Row="1" 
                    Grid.ColumnSpan="2"
                    Tag="{Binding IsSpaceWire4Connected, Converter={StaticResource boolToIndexConverter}}"     

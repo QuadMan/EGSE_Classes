@@ -197,7 +197,7 @@ namespace EGSE.Defaults
     }
 
     /// <summary>
-    /// Конвертор для wpf.
+    /// Конвертор bool to int для wpf.
     /// </summary>
     public class BoolToIntConverter : IValueConverter
     {
@@ -229,6 +229,40 @@ namespace EGSE.Defaults
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return ((string)value == "true") ? true : false;
+        }
+    }
+    /// <summary>
+    /// Конвертор string to array для wpf.
+    /// </summary>
+    public class StrToBytesConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (null == value)
+            {
+                return string.Empty;
+            }            
+            byte[] source = ObjectToByteArray(value);
+            byte[] dest = new byte[source.Length - 28];
+            Array.Copy(source, 27, dest, 0, source.Length - 28);
+            return Converter.ByteArrayToHexStr(dest);            
+        }
+        private byte[] ObjectToByteArray(Object obj)
+        {
+            if (obj == null)
+                return null;
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            bf.Serialize(ms, obj);
+            return ms.ToArray();
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (null == value)
+            {
+                return new byte[] { };
+            }
+            return Converter.HexStrToByteArray((string)value); 
         }
     }
 }

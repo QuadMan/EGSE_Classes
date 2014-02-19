@@ -99,23 +99,56 @@ namespace EGSE.Constants
         /// <summary>
         /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: включение обмена прибора НП1].
         /// </summary>
-        public const int PropertySpaceWire1NP1Trans = 1;
+        public const int PropertySpaceWire1NP1Trans = 0;
 
         /// <summary>
         /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: включение обмена прибора НП2].
         /// </summary>
-        public const int PropertySpaceWire1NP2Trans = 2;
+        public const int PropertySpaceWire1NP2Trans = 1;
 
         /// <summary>
         /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: можно выдавать пакет в НП1].
         /// </summary>
-        public const int PropertySpaceWire1NP1TransData = 3;
+        public const int PropertySpaceWire1NP1TransData = 2;
 
         /// <summary>
         /// Индекс свойства [SPACEWIRE 1: Управление обменом с приборами по SPTP: можно выдавать пакет в НП2].
         /// </summary>
-        public const int PropertySpaceWire1NP2TransData = 4;
+        public const int PropertySpaceWire1NP2TransData = 3;
 
+        public const int PropertySpaceWire1Connected = 4;
+
+        public const int PropertySpaceWire1RecordBusy = 0;
+
+        public const int PropertySpaceWire1RecordSend = 1;
+
+        public const int PropertySpaceWire1NP1SendTime = 0;
+
+        public const int PropertySpaceWire1NP2SendTime = 0;
+
+        public const int PropertySpaceWire1NP1DataSize = 0;
+
+        public const int PropertySpaceWire1NP2DataSize = 0;
+
+        /// <summary>
+        /// Индекс свойства [SPACEWIRE 4: Управление: вкл/выкл интерфейса Spacewire].
+        /// </summary>
+        public const int PropertySpaceWire4IntfOn = 0;
+
+        public const int PropertySpaceWire4Connected = 1;
+
+        public const int PropertySpaceWire4TimeMark = 2;
+       
+        public const int PropertySpaceWire4EEPSend = 0;
+
+        public const int PropertySpaceWire4EOPSend = 1;
+
+        public const int PropertySpaceWire4AutoSend = 2;
+
+        public const int PropertySpaceWire4RecordBusy = 3;
+
+        public const int PropertySpaceWire4RecordSend = 4;
+        
         /// <summary>
         /// Индекс объекта "Телеметрия" в массиве ControlValuesList.
         /// </summary>
@@ -135,6 +168,46 @@ namespace EGSE.Constants
         /// Индекс объекта "Управление SpaceWire1" в массиве ControlValuesList.
         /// </summary>
         public const int SpaceWire1Control = 3;
+
+        /// <summary>
+        /// Индекс объекта "Управление SpaceWire4" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire4Control = 4;
+
+        /// <summary>
+        /// Индекс объекта "Управление SPTP SpaceWire1" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire1ControlSPTP = 5;
+
+        /// <summary>
+        /// Индекс объекта "Запись данных (до 1 Кбайт) SpaceWire4" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire4Record = 6;
+
+        /// <summary>
+        /// Индекс объекта "Запись данных (до 1 Кбайт) SpaceWire1" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire1Record = 7;
+
+        /// <summary>
+        /// Индекс объекта "Spacewire1 Счетчик миллисекунд для НП1 (через сколько готовы данные)" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire1ControlSPTPNP1SendTime = 8;
+
+        /// <summary>
+        /// Индекс объекта "Spacewire1 Счетчик миллисекунд для НП2 (через сколько готовы данные)" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire1ControlSPTPNP2SendTime = 9;
+
+        /// <summary>
+        /// Индекс объекта "Spacewire1 Кол-во байт в пакете НП1" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire1ControlSPTPNP1DataSize = 10;
+
+        /// <summary>
+        /// Индекс объекта "Spacewire1 Кол-во байт в пакете НП2" в массиве ControlValuesList.
+        /// </summary>
+        public const int SpaceWire1ControlSPTPNP2DataSize = 11;
 
         /// <summary>
         /// Заголовок главного окна.

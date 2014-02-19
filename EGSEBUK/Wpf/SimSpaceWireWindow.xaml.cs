@@ -88,5 +88,47 @@ namespace EGSE.Defaults
         {
             _intfEGSE.IsSpaceWire1IntfOn = !_intfEGSE.IsSpaceWire1IntfOn;
         }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire4IntfOn = !_intfEGSE.IsSpaceWire4IntfOn;
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire4TimeMark = !_intfEGSE.IsSpaceWire4TimeMark;
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire4EOPSend = !_intfEGSE.IsSpaceWire4EOPSend;
+        }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire4AutoSend = !_intfEGSE.IsSpaceWire4AutoSend;
+        }
+
+        private void Button_Click_9(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire4EEPSend = !_intfEGSE.IsSpaceWire4EEPSend;
+        }
+
+        private void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            if ("false" == (string)(sender as Button).Tag)
+            {
+                _intfEGSE.IsSpaceWire1RecordSend = true;
+            }
+        }
+
+        private void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            if ("false" == (string)(sender as Button).Tag)
+            {
+                return;
+            }
+        }
+
     }
 }

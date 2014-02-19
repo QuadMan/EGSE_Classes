@@ -642,7 +642,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Padding="1" Grid.Column="0">
-                <Label Content="Состояние: Ожидание подключения БИ КИА " Template="{DynamicResource FlatLabel}"/>
+                <Label Visibility="Hidden" Content="Состояние: Ожидание подключения БИ КИА " Template="{DynamicResource FlatLabel}"/>
             </StatusBarItem>
             <StatusBarItem Padding="1" Grid.Column="1"
                            HorizontalAlignment="Right">
