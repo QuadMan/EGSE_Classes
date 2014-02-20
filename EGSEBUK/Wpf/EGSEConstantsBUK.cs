@@ -49,7 +49,7 @@ namespace EGSE.Constants
         /// <summary>
         /// Индекс свойства [SPACEWIRE 2: Управление: вкл/выкл интерфейса Spacewire].
         /// </summary>
-        public const int PropertySpaceWire2IntfOn = 0;
+        public const int PropertySpaceWire2IntfOn = 1;
 
         /// <summary>
         /// Индекс свойства [SPACEWIRE 2: Управление: Установлена связь].
