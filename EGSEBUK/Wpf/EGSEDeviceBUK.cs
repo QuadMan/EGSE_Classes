@@ -30,6 +30,18 @@ namespace EGSE.Devices
     /// </summary>
     public class DeviceBUK : Device
     {
+        private const int SpaceWire2SPTPBuskAddr = 0x08;
+
+        private const int SpaceWire2SPTPBukAddr = 0x09;
+
+        private const int SpaceWire2SPTPBkpAddr = 0x0a;
+
+        private const int SimSpaceWire1SPTPBuskAddr = 0x17;
+
+        private const int SimSpaceWire1SPTPNP1Addr = 0x18;
+
+        private const int SimSpaceWire1SPTPNP2Addr = 0x19;
+
         /// <summary>
         /// Адресный байт "Сброс адреса записи времени".
         /// </summary>
@@ -63,63 +75,63 @@ namespace EGSE.Devices
         /// <summary>
         /// Адресный байт "Управление".
         /// </summary>
-        private const int SpaceWire2Control = 0x04;
+        private const int SpaceWire2ControlAddr = 0x04;
 
         /// <summary>
         /// Адресный байт "Управление обменом с приборами по SPTP".
         /// </summary>
-        private const int SpaceWire2ControlSPTP = 0x0B;
+        private const int SpaceWire2ControlSPTPAddr = 0x0B;
 
         /// <summary>
         /// Адресный байт "Управление".
         /// </summary>
-        private const int SimSpaceWire1Control = 0x12;
+        private const int SimSpaceWire1ControlAddr = 0x12;
 
         /// <summary>
         /// Адресный байт "Управление обменом с приборами по SPTP".
         /// </summary>
-        private const int SimSpaceWire1ControlSPTP = 0x21;
+        private const int SimSpaceWire1ControlSPTPAddr = 0x21;
 
-        private const int SimSpaceWire1ControlSPTPNP1SendTimeLo = 0x1a;
+        private const int SimSpaceWire1ControlSPTPNP1SendTimeLoAddr = 0x1a;
 
-        private const int SimSpaceWire1ControlSPTPNP1SendTimeHi = 0x1b;
+        private const int SimSpaceWire1ControlSPTPNP1SendTimeHiAddr = 0x1b;
 
-        private const int SimSpaceWire1ControlSPTPNP2SendTimeLo = 0x1c;
+        private const int SimSpaceWire1ControlSPTPNP2SendTimeLoAddr = 0x1c;
 
-        private const int SimSpaceWire1ControlSPTPNP2SendTimeHi = 0x1d;
+        private const int SimSpaceWire1ControlSPTPNP2SendTimeHiAddr = 0x1d;
 
-        private const int SimSpaceWire1ControlSPTPNP1DataSizeLo = 0x1e;
+        private const int SimSpaceWire1ControlSPTPNP1DataSizeLoAddr = 0x1e;
 
-        private const int SimSpaceWire1ControlSPTPNP1DataSizeHi = 0x1f;
+        private const int SimSpaceWire1ControlSPTPNP1DataSizeHiAddr = 0x1f;
 
-        private const int SimSpaceWire1ControlSPTPNP2DataSizeLo = 0x20;
+        private const int SimSpaceWire1ControlSPTPNP2DataSizeLoAddr = 0x20;
 
-        private const int SimSpaceWire1ControlSPTPNP2DataSizeHi = 0x21;
+        private const int SimSpaceWire1ControlSPTPNP2DataSizeHiAddr = 0x21;
 
-        private const int SimSpaceWire1RecordFlush = 0x12;
+        private const int SimSpaceWire1RecordFlushAddr = 0x12;
 
-        private const int SimSpaceWire1RecordData = 0x14;
+        private const int SimSpaceWire1RecordDataAddr = 0x14;
 
-        private const int SimSpaceWire1RecordSend = 0x15;
+        private const int SimSpaceWire1RecordSendAddr = 0x15;
 
         /// <summary>
         /// Адресный байт "Управление".
         /// </summary>
-        private const int SimSpaceWire4Control = 0x24;
+        private const int SimSpaceWire4ControlAddr = 0x24;
 
-        private const int SimSpaceWire4RecordFlush = 0x25;
+        private const int SimSpaceWire4RecordFlushAddr = 0x25;
 
-        private const int SimSpaceWire4RecordData = 0x26;
+        private const int SimSpaceWire4RecordDataAddr = 0x26;
 
         /// <summary>
         /// Адресный байт "Запись данных(до 1 Кбайт)".
         /// </summary>
-        private const int SimSpaceWire4RecordSend = 0x32;
+        private const int SimSpaceWire4RecordSendAddr = 0x32;
 
         /// <summary>
         /// Адресный байт "Выбор имитатора Spacewire".
         /// </summary>
-        private const int SimSpaceWireControl = 0x11;
+        private const int SimSpaceWireControlAddr = 0x11;
 
         /// <summary>
         /// Обеспечивает доступ к интерфейсу устройства. 
@@ -283,8 +295,9 @@ namespace EGSE.Devices
         /// </summary>
         /// <param name="value">Параметры управления.</param>
         public void CmdSimRouterControl(uint value)
-        {
-            SendToUSB(SpaceWire2Control, new byte[1] { (byte)value }); 
+        {            
+            SendToUSB(SpaceWire2ControlAddr, new byte[1] { (byte)value });
+            CmdSetDeviceLogicAddr();
         }
 
         /// <summary>
@@ -293,73 +306,73 @@ namespace EGSE.Devices
         /// <param name="value">Параметры управления SPTP.</param>
         public void CmdSimRouterControlSPTP(uint value)
         {
-            SendToUSB(SpaceWire2ControlSPTP, new byte[1] { (byte)value }); 
+            SendToUSB(SpaceWire2ControlSPTPAddr, new byte[1] { (byte)value }); 
         }
 
         public void CmdSimSpacewire1Control(uint value)
         {
             if (_intfBUK.IsSpaceWire4IntfOn)
             {
-                SendToUSB(SimSpaceWire4Control, new byte[1] { 0 });
+                SendToUSB(SimSpaceWire4ControlAddr, new byte[1] { 0 });
             }
-            SendToUSB(SimSpaceWireControl, new byte[1] { 0 });
-            SendToUSB(SimSpaceWire1Control, new byte[1] { (byte)value });            
+            SendToUSB(SimSpaceWireControlAddr, new byte[1] { 0 });
+            SendToUSB(SimSpaceWire1ControlAddr, new byte[1] { (byte)value });            
         }
 
         public void CmdSimSpacewire1ControlSPTP(uint value)
         {
-            SendToUSB(SimSpaceWire1ControlSPTP, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWire1ControlSPTPAddr, new byte[1] { (byte)value });
         }
 
         public void CmdSimSpacewire1ControlSPTPNP1SendTime(uint value)
         {
-            SendToUSB(SimSpaceWire1ControlSPTPNP1SendTimeLo, new byte[1] { (byte)value });
-            SendToUSB(SimSpaceWire1ControlSPTPNP1SendTimeHi, new byte[1] { (byte)(value >> 8) });
+            SendToUSB(SimSpaceWire1ControlSPTPNP1SendTimeLoAddr, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWire1ControlSPTPNP1SendTimeHiAddr, new byte[1] { (byte)(value >> 8) });
         }
 
         public void CmdSimSpacewire1ControlSPTPNP2SendTime(uint value)
         {
-            SendToUSB(SimSpaceWire1ControlSPTPNP2SendTimeLo, new byte[1] { (byte)value });
-            SendToUSB(SimSpaceWire1ControlSPTPNP2SendTimeHi, new byte[1] { (byte)(value >> 8) });
+            SendToUSB(SimSpaceWire1ControlSPTPNP2SendTimeLoAddr, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWire1ControlSPTPNP2SendTimeHiAddr, new byte[1] { (byte)(value >> 8) });
         }
 
         public void CmdSimSpacewire1ControlSPTPNP1DataSize(uint value)
         {
-            SendToUSB(SimSpaceWire1ControlSPTPNP1DataSizeLo, new byte[1] { (byte)value });
-            SendToUSB(SimSpaceWire1ControlSPTPNP1DataSizeHi, new byte[1] { (byte)(value >> 8) });
+            SendToUSB(SimSpaceWire1ControlSPTPNP1DataSizeLoAddr, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWire1ControlSPTPNP1DataSizeHiAddr, new byte[1] { (byte)(value >> 8) });
         }
 
         public void CmdSimSpacewire1ControlSPTPNP2DataSize(uint value)
         {
-            SendToUSB(SimSpaceWire1ControlSPTPNP2DataSizeLo, new byte[1] { (byte)value });
-            SendToUSB(SimSpaceWire1ControlSPTPNP2DataSizeHi, new byte[1] { (byte)(value >> 8) });
+            SendToUSB(SimSpaceWire1ControlSPTPNP2DataSizeLoAddr, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWire1ControlSPTPNP2DataSizeHiAddr, new byte[1] { (byte)(value >> 8) });
         }
 
         public void CmdSimSpacewire1Record(uint value)
         {           
-            SendToUSB(SimSpaceWire1RecordFlush, new byte[1] { 1 });
+            SendToUSB(SimSpaceWire1RecordFlushAddr, new byte[1] { 1 });
             if (null != _intfBUK.Spacewire1Data)
             {
-                SendToUSB(SimSpaceWire1RecordData, _intfBUK.Spacewire1Data);
+                SendToUSB(SimSpaceWire1RecordDataAddr, _intfBUK.Spacewire1Data);
             }
-            SendToUSB(SimSpaceWire1RecordSend, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWire1RecordSendAddr, new byte[1] { (byte)value });
         }
 
         public void CmdSimSpacewire4Control(uint value)
         {
             if (_intfBUK.IsSpaceWire1IntfOn)
             {
-                SendToUSB(SimSpaceWire1Control, new byte[1] { 0 });
+                SendToUSB(SimSpaceWire1ControlAddr, new byte[1] { 0 });
             }
-            SendToUSB(SimSpaceWireControl, new byte[1] { 1 });
-            SendToUSB(SimSpaceWire4Control, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWireControlAddr, new byte[1] { 1 });
+            SendToUSB(SimSpaceWire4ControlAddr, new byte[1] { (byte)value });
         }
 
         public void CmdSimSpacewire4Record(uint value)
         {
-            SendToUSB(SimSpaceWire4RecordFlush, new byte[1] { 1 });
-            SendToUSB(SimSpaceWire4RecordData, _intfBUK.Spacewire4Data);   
-            SendToUSB(SimSpaceWire4RecordSend, new byte[1] { (byte)value });
+            SendToUSB(SimSpaceWire4RecordFlushAddr, new byte[1] { 1 });
+            SendToUSB(SimSpaceWire4RecordDataAddr, _intfBUK.Spacewire4Data);   
+            SendToUSB(SimSpaceWire4RecordSendAddr, new byte[1] { (byte)value });
         }
 
 
@@ -374,6 +387,42 @@ namespace EGSE.Devices
             SendToUSB(TimeResetAddr, buf);
             SendToUSB(TimeDataAddr, time.Data);
             SendToUSB(TimeSetAddr, buf);
+        }
+
+        public void CmdSetDeviceLogicAddr()
+        {
+            if (_intfBUK.IsBUK1BM1Channel || _intfBUK.IsBUK1BM2Channel)
+            {
+                if (Global.LogicAddrBuk1 != _intfBUK.SpaceWire2AddrBuk)
+                {
+                    SendToUSB(SpaceWire2SPTPBukAddr, new byte[1] { (byte)Global.LogicAddrBuk1 });
+                    SendToUSB(SimSpaceWire1SPTPNP1Addr, new byte[1] { (byte)Global.LogicAddrBuk1 });                    
+                }    
+            }
+            else            
+            {
+                if (Global.LogicAddrBuk2 != _intfBUK.SpaceWire2AddrBuk)
+                {
+                    SendToUSB(SpaceWire2SPTPBukAddr, new byte[1] { (byte)Global.LogicAddrBuk2 });
+                    SendToUSB(SimSpaceWire1SPTPNP1Addr, new byte[1] { (byte)Global.LogicAddrBuk2 });  
+                }            
+            }
+            if (_intfBUK.IsBUK1BM1Channel || _intfBUK.IsBUK2BM1Channel)
+            {
+                if (Global.LogicAddrBusk1 != _intfBUK.SpaceWire2AddrBusk)
+                {
+                    SendToUSB(SpaceWire2SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk1 });
+                    SendToUSB(SimSpaceWire1SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk1 });  
+                }
+            }
+            else
+            {
+                if (Global.LogicAddrBusk2 != _intfBUK.SpaceWire2AddrBusk)
+                {
+                    SendToUSB(SpaceWire2SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk2 });
+                    SendToUSB(SimSpaceWire1SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk2 });  
+                }
+            }
         }
     }
 
@@ -466,6 +515,13 @@ namespace EGSE.Devices
         /// SPACEWIRE 2: Управление: Выбор канала.
         /// </summary>
         private SimRouterChannel _simRouterChannel;
+
+        private int _spaceWire2AddrBusk;
+        private int _spaceWire2AddrBuk;
+        private int _spaceWire2AddrBkp;
+        private int _simSpaceWire1AddrBusk;
+        private int _simSpaceWire1AddrNP1;
+        private int _simSpaceWire1AddrNP2;
 
         /// <summary>
         /// SPACEWIRE 2: Управление: Установлена связь.
@@ -600,6 +656,12 @@ namespace EGSE.Devices
             ControlValuesList.Add(new ControlValue()); // SpaceWire1ControlSPTPNP2SendTime = 9
             ControlValuesList.Add(new ControlValue()); // SpaceWire1ControlSPTPNP1DataSize = 10
             ControlValuesList.Add(new ControlValue()); // SpaceWire1ControlSPTPNP2DataSize = 11
+            ControlValuesList.Add(new ControlValue()); // SpaceWire2SPTPLogicBusk = 12
+            ControlValuesList.Add(new ControlValue()); // SpaceWire2SPTPLogicBuk = 13
+            ControlValuesList.Add(new ControlValue()); // SpaceWire2SPTPLogicBkp = 14
+            ControlValuesList.Add(new ControlValue()); // SpaceWire1SPTPSimLogicBusk = 15
+            ControlValuesList.Add(new ControlValue()); // SpaceWire1SPTPSimLogicNP1 = 16
+            ControlValuesList.Add(new ControlValue()); // SpaceWire1SPTPSimLogicNP2 = 17
 
             _decoder = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
             _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
@@ -630,6 +692,10 @@ namespace EGSE.Devices
             ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterControl, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
             ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire2Connected = 1 == value; });
 
+            ControlValuesList[Global.SpaceWire2SPTPLogicBusk].AddProperty(Global.PropertySpaceWire2LogicBusk, 0, 8, delegate(uint value) { }, delegate(uint value) { SpaceWire2AddrBusk = value; });
+            ControlValuesList[Global.SpaceWire2SPTPLogicBuk].AddProperty(Global.PropertySpaceWire2LogicBuk, 0, 8, delegate(uint value) { }, delegate(uint value) { SpaceWire2AddrBuk = value; });
+            ControlValuesList[Global.SpaceWire2SPTPLogicBkp].AddProperty(Global.PropertySpaceWire2LogicBkp, 0, 8, delegate(uint value) { }, delegate(uint value) { SpaceWire2AddrBkp = value; });
+
             ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2TimeMark, 0, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2TimeMark = 1 == value; });
             ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukTrans, 1, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTrans = 1 == value; });
             ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpTrans, 4, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTrans = 1 == value; });
@@ -640,6 +706,11 @@ namespace EGSE.Devices
 
             ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1IntfOn, 0, 1, Device.CmdSimSpacewire1Control, delegate(uint value) { IsSpaceWire1IntfOn = 1 == value; });
             ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire1Connected = 1 == value; });
+
+            ControlValuesList[Global.SimSpaceWire1SPTPLogicBusk].AddProperty(Global.PropertySimSpaceWire1LogicBusk, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrBusk = value; });
+            ControlValuesList[Global.SimSpaceWire1SPTPLogicNP1].AddProperty(Global.PropertySimSpaceWire1LogicNP1, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrNP1 = value; });
+            ControlValuesList[Global.SimSpaceWire1SPTPLogicNP2].AddProperty(Global.PropertySimSpaceWire1LogicNP2, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrNP2 = value; });
+
             ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1Trans, 0, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP1Trans = 1 == value; });
             ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP2Trans, 2, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP2Trans = 1 == value; });
             ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1TransData, 1, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP1TransData = 1 == value; });
@@ -1001,6 +1072,150 @@ namespace EGSE.Devices
             }
         }
 
+        public string ShowSpaceWire2AddrBusk
+        { 
+            get
+            {
+                return string.Format(Resource.Get(@"stShowLogicBusk"), SpaceWire2AddrBusk);
+            }
+        }
+
+        public int SpaceWire2AddrBusk
+        {
+            get
+            {
+                return _spaceWire2AddrBusk;
+            }
+
+            set
+            {
+                _spaceWire2AddrBusk = value;
+                ControlValuesList[Global.SpaceWire2SPTPLogicBusk].SetProperty(Global.PropertySpaceWire2LogicBusk, (int)value); 
+                FirePropertyChangedEvent("SpaceWire2AddrBusk");
+                FirePropertyChangedEvent("ShowSpaceWire2AddrBusk");
+            }
+        }
+
+
+        public string ShowSpaceWire2AddrBuk
+        {
+            get
+            {
+                return string.Format(Resource.Get(@"stShowLogicBuk"), SpaceWire2AddrBuk);
+            }
+        }
+
+        public int SpaceWire2AddrBuk
+        {
+            get
+            {
+                return _spaceWire2AddrBuk;
+            }
+
+            set
+            {
+                _spaceWire2AddrBuk = value;
+                ControlValuesList[Global.SpaceWire2SPTPLogicBuk].SetProperty(Global.PropertySpaceWire2LogicBuk, (int)value); 
+                FirePropertyChangedEvent("SpaceWire2AddrBuk");
+                FirePropertyChangedEvent("ShowSpaceWire2AddrBuk");
+            }
+        }
+
+        public string ShowSpaceWire2AddrBkp
+        {
+            get
+            {
+                return string.Format(Resource.Get(@"stShowLogicBkp"), SpaceWire2AddrBkp);
+            }
+        }
+
+        public int SpaceWire2AddrBkp
+        {
+            get
+            {
+                return _spaceWire2AddrBkp;
+            }
+
+            set
+            {
+                _spaceWire2AddrBkp = value;
+                ControlValuesList[Global.SpaceWire2SPTPLogicBkp].SetProperty(Global.PropertySpaceWire2LogicBkp, (int)value); 
+                FirePropertyChangedEvent("SpaceWire2AddrBkp");
+                FirePropertyChangedEvent("ShowSpaceWire2AddrBkp");
+            }
+        }
+
+        public string ShowSimSpaceWire1AddrBusk
+        {
+            get
+            {
+                return string.Format(Resource.Get(@"stShowSimLogicBusk"), SimSpaceWire1AddrBusk);
+            }
+        }
+
+        public int SimSpaceWire1AddrBusk
+        {
+            get
+            {
+                return _simSpaceWire1AddrBusk;
+            }
+
+            set
+            {
+                _simSpaceWire1AddrBusk = value;
+                ControlValuesList[Global.SimSpaceWire1SPTPLogicBusk].SetProperty(Global.PropertySimSpaceWire1LogicBusk, (int)value); 
+                FirePropertyChangedEvent("SimSpaceWire1AddrBusk");
+                FirePropertyChangedEvent("ShowSimSpaceWire1AddrBusk");
+            }
+        }
+
+        public string ShowSimSpaceWire1AddrNP1
+        {
+            get
+            {
+                return string.Format(Resource.Get(@"stShowSimLogicNP1"), SimSpaceWire1AddrNP1);
+            }
+        }
+
+        public uint SimSpaceWire1AddrNP1
+        {
+            get
+            {
+                return _simSpaceWire1AddrNP1;
+            }
+
+            set
+            {
+                _simSpaceWire1AddrNP1 = value;
+                ControlValuesList[Global.SimSpaceWire1SPTPLogicNP1].SetProperty(Global.PropertySimSpaceWire1LogicNP1, (int)value); 
+                FirePropertyChangedEvent("SimSpaceWire1AddrNP1");
+                FirePropertyChangedEvent("ShowSimSpaceWire1AddrNP1");
+            }
+        }
+
+        public string ShowSimSpaceWire1AddrNP2
+        {
+            get
+            {
+                return string.Format(Resource.Get(@"stShowSimLogicNP2"), SimSpaceWire1AddrNP2);
+            }
+        }
+
+        public uint SimSpaceWire1AddrNP2
+        {
+            get
+            {
+                return _simSpaceWire1AddrNP2;
+            }
+
+            set
+            {
+                _simSpaceWire1AddrNP2 = value;
+                ControlValuesList[Global.SimSpaceWire1SPTPLogicNP2].SetProperty(Global.PropertySimSpaceWire1LogicNP2, (int)value); 
+                FirePropertyChangedEvent("SimSpaceWire1AddrNP2");
+                FirePropertyChangedEvent("ShowSimSpaceWire1AddrNP2");
+            }
+        }
         /// <summary>
         /// Получает или задает значение, показывающее, что [выбран канал БУК ПК1 - БМ-4 ПК2].
         /// </summary>
@@ -1670,6 +1885,7 @@ namespace EGSE.Devices
             if (Connected)
             {
                 Device.CmdSetDeviceTime();
+                Device.CmdSetDeviceLogicAddr();
                 RefreshAllControlsValues();
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
@@ -1750,10 +1966,16 @@ namespace EGSE.Devices
                     case TimeDataAddr:
                         Array.Copy(msg.Data, 0, DeviceTime.Data, 0, 6);
                         ControlValuesList[Global.SpaceWire2Control].UsbValue = msg.Data[7];
+                        ControlValuesList[Global.SpaceWire2SPTPLogicBusk].UsbValue = msg.Data[11];
+                        ControlValuesList[Global.SpaceWire2SPTPLogicBuk].UsbValue = msg.Data[12];
+                        ControlValuesList[Global.SpaceWire2SPTPLogicBkp].UsbValue = msg.Data[13];
                         ControlValuesList[Global.SpaceWire2ControlSPTP].UsbValue = msg.Data[14];
                         ControlValuesList[Global.SpaceWire1Control].UsbValue = msg.Data[17];
                         ControlValuesList[Global.SpaceWire1Record].UsbValue = msg.Data[20];
                         ControlValuesList[Global.SpaceWire1ControlSPTP].UsbValue = msg.Data[21];
+                        ControlValuesList[Global.SimSpaceWire1SPTPLogicBusk].UsbValue = msg.Data[22];
+                        ControlValuesList[Global.SimSpaceWire1SPTPLogicNP1].UsbValue = msg.Data[23];
+                        ControlValuesList[Global.SimSpaceWire1SPTPLogicNP2].UsbValue = msg.Data[24];
                         ControlValuesList[Global.SpaceWire1ControlSPTPNP1SendTime].UsbValue = (msg.Data[26] << 8) | (msg.Data[25]);
                         ControlValuesList[Global.SpaceWire1ControlSPTPNP2SendTime].UsbValue = (msg.Data[28] << 8) | (msg.Data[27]);
                         ControlValuesList[Global.SpaceWire1ControlSPTPNP1DataSize].UsbValue = (msg.Data[30] << 8) | (msg.Data[29]); // XXX

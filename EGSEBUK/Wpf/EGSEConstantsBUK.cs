@@ -56,6 +56,13 @@ namespace EGSE.Constants
         /// </summary>
         public const int PropertySpaceWire2Connected = 2;
 
+        public const int PropertySpaceWire2LogicBuk = 0;
+        public const int PropertySpaceWire2LogicBusk = 0;
+        public const int PropertySpaceWire2LogicBkp = 0;
+
+        public const int PropertySimSpaceWire1LogicBusk = 0;
+        public const int PropertySimSpaceWire1LogicNP1 = 0;
+        public const int PropertySimSpaceWire1LogicNP2 = 0;
         /// <summary>
         /// Индекс свойства [SPACEWIRE 2: Управление обменом с приборами по SPTP: включить выдачу секундных меток (1PPS)].
         /// </summary>
@@ -209,6 +216,18 @@ namespace EGSE.Constants
         /// </summary>
         public const int SpaceWire1ControlSPTPNP2DataSize = 11;
 
+        public const int SpaceWire2SPTPLogicBusk = 12;
+
+        public const int SpaceWire2SPTPLogicBuk = 13;
+
+        public const int SpaceWire2SPTPLogicBkp = 14;
+
+        public const int SimSpaceWire1SPTPLogicBusk = 15;
+
+        public const int SimSpaceWire1SPTPLogicNP1 = 16;
+
+        public const int SimSpaceWire1SPTPLogicNP2 = 17;
+
         /// <summary>
         /// Заголовок главного окна.
         /// </summary>
@@ -224,6 +243,15 @@ namespace EGSE.Constants
         /// </summary>
         public static readonly string DeviceSerial;
         
+        public const uint LogicAddrBusk1 = 32;
+        public const uint LogicAddrBusk2 = 33;
+
+        public const uint LogicAddrBuk1 = 38;
+        public const uint LogicAddrBuk2 = 39;
+
+        public const uint LogicAddrBkp1 = 36;
+        public const uint LogicAddrBkp2 = 37;
+
         /// <summary>
         /// Инициализирует статические поля класса <see cref="Global" />.
         /// </summary>

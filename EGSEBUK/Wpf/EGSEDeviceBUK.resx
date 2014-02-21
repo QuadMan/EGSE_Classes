@@ -126,4 +126,22 @@
   <data name="stOnErrorUSBMsg" xml:space="preserve">
     <value>{0} ({1}, на позиции: {2})</value>
   </data>
+  <data name="stShowLogicBkp" xml:space="preserve">
+    <value>БКП (Логический адрес: {0})</value>
+  </data>
+  <data name="stShowLogicBuk" xml:space="preserve">
+    <value>БУК (Логический адрес: {0})</value>
+  </data>
+  <data name="stShowLogicBusk" xml:space="preserve">
+    <value>Управление имитатором БМ-4(БУСК/БУНД) (Логический адрес: {0})</value>
+  </data>
+  <data name="stShowSimLogicBusk" xml:space="preserve">
+    <value>Имитатор НП (Логический адрес: {0})</value>
+  </data>
+  <data name="stShowSimLogicNP1" xml:space="preserve">
+    <value>НП1 (Логический адрес: {0})</value>
+  </data>
+  <data name="stShowSimLogicNP2" xml:space="preserve">
+    <value>НП2 (Логический адрес: {0})</value>
+  </data>
 </root>

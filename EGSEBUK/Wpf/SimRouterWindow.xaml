@@ -1,8 +1,8 @@
 ﻿<Window x:Class="EGSE.Defaults.SimRouterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:l="clr-namespace:EGSE.Defaults"
-        Title="Управление имитатором БМ-4" Closing="Window_Closing">
+        xmlns:l="clr-namespace:EGSE.Defaults"        
+        Title="{Binding ShowSpaceWire2AddrBusk}" Closing="Window_Closing">
     <Window.Resources>
         <SolidColorBrush x:Key="TextBrush" Color="White"/>
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
@@ -214,11 +214,11 @@
                Template="{DynamicResource FlatLabel}"/>
         <Label Grid.Row="3"
                Grid.Column="2"
-               Content="БКП"
+               Content="{Binding ShowSpaceWire2AddrBkp}"
                Template="{DynamicResource FlatLabel}"/>
         <Label Grid.Row="3"
-               Grid.Column="1"
-               Content="БУК"
+               Grid.Column="1"               
+               Content="{Binding ShowSpaceWire2AddrBuk}"
                Template="{DynamicResource FlatLabel}"/>
         <Label Grid.Row="3"
                Content="Прибор"
