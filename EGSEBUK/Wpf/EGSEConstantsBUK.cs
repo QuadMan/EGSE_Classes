@@ -56,6 +56,10 @@ namespace EGSE.Constants
         /// </summary>
         public const int PropertySpaceWire2Connected = 2;
 
+        public const int PropertySpaceWire2RecordSendRMAP = 0;
+        public const int PropertySpaceWire2RecordSendBuk = 1;
+        public const int PropertySpaceWire2RecordSendBkp = 2;
+
         public const int PropertySpaceWire2LogicBuk = 0;
         public const int PropertySpaceWire2LogicBusk = 0;
         public const int PropertySpaceWire2LogicBkp = 0;
@@ -63,6 +67,7 @@ namespace EGSE.Constants
         public const int PropertySimSpaceWire1LogicBusk = 0;
         public const int PropertySimSpaceWire1LogicNP1 = 0;
         public const int PropertySimSpaceWire1LogicNP2 = 0;
+
         /// <summary>
         /// Индекс свойства [SPACEWIRE 2: Управление обменом с приборами по SPTP: включить выдачу секундных меток (1PPS)].
         /// </summary>
@@ -222,11 +227,13 @@ namespace EGSE.Constants
 
         public const int SpaceWire2SPTPLogicBkp = 14;
 
-        public const int SimSpaceWire1SPTPLogicBusk = 15;
+        public const int SpaceWire1SPTPSimLogicBusk = 15;
 
-        public const int SimSpaceWire1SPTPLogicNP1 = 16;
+        public const int SpaceWire1SPTPSimLogicNP1 = 16;
 
-        public const int SimSpaceWire1SPTPLogicNP2 = 17;
+        public const int SpaceWire1SPTPSimLogicNP2 = 17;
+
+        public const int SpaceWire2Record = 18;
 
         /// <summary>
         /// Заголовок главного окна.

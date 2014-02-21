@@ -17,6 +17,7 @@ namespace EGSE.Utilites
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Windows;
+    using System.Globalization;
 
     /// <summary>
     /// Класс сохранения настроек приложения в Ini файл.
@@ -324,13 +325,13 @@ namespace EGSE.Utilites
     public static class Converter
     {
         /// <summary>
-        /// Строка шестнадцатеричных чисел в массив байт
+        /// Строка шестнадцатеричных чисел в массив байт.
         /// </summary>
-        /// <param name="hexStr">Строка HEX чисел, разделенных пробелами</param>
-        /// <returns>Массив байт или null, если HexStr пустая </returns>
+        /// <param name="hexStr">Строка HEX чисел, разделенных пробелами.</param>
+        /// <returns>Массив байт или null, если HexStr пустая.</returns>
         public static byte[] HexStrToByteArray(string hexStr)
         {
-            if (hexStr == string.Empty)
+            if (string.Empty == hexStr)
             {
                 return null;
             }
@@ -340,7 +341,11 @@ namespace EGSE.Utilites
             int i = 0;
             foreach (string hex in hexValuesSplit)
             {
-                outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
+                if (!byte.TryParse(hex, NumberStyles.HexNumber, new CultureInfo("en-US"), out outBuf[i++]))
+                {
+                    return new byte[] { };
+                }
+                //outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
             }
 
             return outBuf;
@@ -372,11 +377,11 @@ namespace EGSE.Utilites
 
         /// <summary>
         /// Функция преобразует массив байт в строку.
-        /// Байты в строке будут разделяться строкой, заданной в delimeter
+        /// Байты в строке будут разделяться строкой, заданной в delimeter.
         /// </summary>
-        /// <param name="data">Массив байт</param>
-        /// <param name="delimeter">Разделитель между байтами в строке</param>
-        /// <returns>Результирующая строка, возвращает пустую строку, если data = null</returns>
+        /// <param name="data">Массив байт.</param>
+        /// <param name="delimeter">Разделитель между байтами в строке.</param>
+        /// <returns>Результирующая строка, возвращает пустую строку, если data = null.</returns>
         public static string ByteArrayToHexStr(byte[] data, string delimeter = " ")
         {
             if (data == null)

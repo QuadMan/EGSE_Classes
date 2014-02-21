@@ -232,36 +232,79 @@ namespace EGSE.Defaults
         }
     }
     /// <summary>
-    /// Конвертор string to array для wpf.
+    /// Конвертор array to string для wpf.
     /// </summary>
-    public class StrToBytesConverter : IValueConverter
+    public class BytesToStrConverter : IValueConverter
     {
+        /// <summary>
+        /// Количество системных байт в начале массива.
+        /// Примечание:
+        /// Используется для приведения типа object к byte[].
+        /// </summary>
+        private const int ObjHeaderSysBytesCount = 27;
+
+        /// <summary>
+        /// Количество системных байт в конце массива.
+        /// Примечание:
+        /// Используется для приведения типа object к byte[].
+        /// </summary>
+        private const int ObjEnderSysBytesCount = 1;
+
+        /// <summary>
+        /// Converts a value.
+        /// </summary>
+        /// <param name="value">The value produced by the binding source.</param>
+        /// <param name="targetType">The type of the binding target property.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>
+        /// A converted value. If the method returns null, the valid null value is used.
+        /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (null == value)
             {
                 return string.Empty;
-            }            
-            byte[] source = ObjectToByteArray(value);
-            byte[] dest = new byte[source.Length - 28];
-            Array.Copy(source, 27, dest, 0, source.Length - 28);
-            return Converter.ByteArrayToHexStr(dest);            
+            }
+
+            byte[] buf = (ObjectToByteArray(value));
+            if (0 == buf.Length)
+            {
+                return " ";
+            }
+
+            return Converter.ByteArrayToHexStr(buf);            
         }
-        private byte[] ObjectToByteArray(Object obj)
+
+        /// <summary>
+        /// Приведение типа object к byte[].
+        /// </summary>
+        /// <param name="obj">Переменная типа object.</param>
+        /// <returns>Полученный массив.</returns>
+        private byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)
+            {
                 return null;
-            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            }
+
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            bf.Serialize(ms, obj);
-            return ms.ToArray();
+            (new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter()).Serialize(ms, obj);
+            return ms.ToArray().Take<byte>((int)(ms.Length - ObjEnderSysBytesCount)).ToArray().Skip<byte>(ObjHeaderSysBytesCount).ToArray();
         }
+
+        /// <summary>
+        /// Converts a value.
+        /// </summary>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>
+        /// A converted value. If the method returns null, the valid null value is used.
+        /// </returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (null == value)
-            {
-                return new byte[] { };
-            }
             return Converter.HexStrToByteArray((string)value); 
         }
     }

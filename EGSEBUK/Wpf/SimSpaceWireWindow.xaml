@@ -4,6 +4,65 @@
         xmlns:l="clr-namespace:EGSE.Defaults"
         Title="Имитаторы SpaceWire" Closing="Window_Closing">
     <Window.Resources>
+        <ControlTemplate x:Key="NumberInError" TargetType="TextBox">
+            <Border Name="Border"
+                    Margin="1"
+                    Background="{DynamicResource TextBrush}"
+                    BorderThickness="0">
+                <Grid>
+                    <ScrollViewer x:Name="PART_ContentHost"/>
+                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" Margin="3,1,0,0" Foreground="Gray" IsHitTestVisible="False" Text=""/>
+                    <TextBlock Visibility="Hidden" x:Name="ErrorText" Margin="6,1,0,0" Foreground="Red" IsHitTestVisible="False" Text="Некорректный ввод данных!"/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="Text" Value=" ">
+                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="DataSendInError" TargetType="TextBox">
+            <Border Name="Border"
+                    Margin="1"
+                                Background="{DynamicResource TextBrush}"
+                                BorderThickness="0">
+                <Grid>
+                    <ScrollViewer x:Name="PART_ContentHost"/>
+                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" Margin="3,1,0,0" Foreground="Gray" IsHitTestVisible="False" Text="Введите данные, например: AB 45 FF EE"/>
+                    <TextBlock Visibility="Hidden" x:Name="ErrorText" Margin="6,1,0,0" Foreground="Red" IsHitTestVisible="False" Text="Некорректный ввод данных! Повторите ввод."/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" TargetName="WatermarkText" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="Text" Value=" ">
+                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="TextBoxInError" TargetType="TextBox">            
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Border BorderBrush="Red" BorderThickness="2">
+                                <AdornedElementPlaceholder />
+                            </Border>
+                        </DockPanel>                                                        
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <SolidColorBrush x:Key="TextBrush" Color="White"/>
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
         <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
@@ -13,18 +72,7 @@
         <SolidColorBrush x:Key="CheckedBrush" Color="LightGreen"/>
         <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
         <l:BoolToIntConverter x:Key="boolToIndexConverter" />
-        <l:StrToBytesConverter x:Key="strToBytesConverter" />        
-        <ControlTemplate x:Key="FlatTextBox" TargetType="{x:Type TextBox}">
-            <Border Name="Border" 
-                    Background="{DynamicResource TextBrush}" 
-                    Margin="1" 
-                    BorderThickness="0">
-                <Grid>
-                    <ScrollViewer Margin="0" 
-                                  x:Name="PART_ContentHost"/>                                     
-                </Grid>
-            </Border>
-        </ControlTemplate>
+        <l:BytesToStrConverter x:Key="bytesToStrConverter" />        
         <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
             <Border x:Name="Border" 
                         Background="{DynamicResource ClickBrush}"
@@ -185,11 +233,11 @@
                        Content="Передать данные"
                        Template="{DynamicResource FlatLabel}"/>
                 <TextBox Grid.Row="1"
-                         Grid.ColumnSpan="3"
-                         TextWrapping="Wrap"
-                         Margin="1"
-                         Text="{Binding Spacewire1Data, Converter={StaticResource strToBytesConverter}}"
-                         BorderThickness="0"/>
+                         Grid.ColumnSpan="3"   
+                         Template="{DynamicResource DataSendInError}"
+                         Style="{StaticResource TextBoxInError}"
+                         Text="{Binding Spacewire1Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}">
+                </TextBox>
                 <Button Grid.Column="2"  
                         Template="{DynamicResource FlatButtonClick}"                       
                         Content="из файла..."/>
@@ -212,19 +260,23 @@
                     Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_2"/>
             <TextBox Grid.Column="1"                               
                      Grid.Row="5"                      
-                     Template="{DynamicResource FlatTextBox}"
+                     Template="{DynamicResource NumberInError}"
+                     Style="{StaticResource TextBoxInError}"
                      Text="{Binding SpaceWire1NP1SendTime}"/>
             <TextBox Grid.Column="2"                               
                      Grid.Row="5"                      
                      Text="{Binding SpaceWire1NP2SendTime}"
-                     Template="{DynamicResource FlatTextBox}"/>
+                     Template="{DynamicResource NumberInError}"
+                     Style="{StaticResource TextBoxInError}"/>
             <TextBox Grid.Column="1"                               
-                     Grid.Row="6"                      
-                     Template="{DynamicResource FlatTextBox}"
+                     Grid.Row="6"   
+                     Template="{DynamicResource NumberInError}"
+                     Style="{StaticResource TextBoxInError}"
                      Text="{Binding SpaceWire1NP1DataSize}"/>
             <TextBox Grid.Column="2"                               
                      Grid.Row="6"                      
-                     Template="{DynamicResource FlatTextBox}"
+                     Template="{DynamicResource NumberInError}"
+                     Style="{StaticResource TextBoxInError}"
                      Text="{Binding SpaceWire1NP2DataSize}"/>
             <Button Grid.Column="2"                               
                     Grid.Row="4"    
@@ -299,9 +351,9 @@
                        Template="{DynamicResource FlatLabel}"/>
                 <TextBox Grid.Row="1"
                          Grid.ColumnSpan="3"
-                         TextWrapping="Wrap"
-                         Margin="1"
-                         BorderThickness="0"/>
+                         Template="{DynamicResource DataSendInError}"
+                         Style="{StaticResource TextBoxInError}"
+                         Text="{Binding Spacewire4Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
                 <Button Grid.Column="2"  
                         Template="{DynamicResource FlatButtonClick}"                       
                         Content="из файла..."/>

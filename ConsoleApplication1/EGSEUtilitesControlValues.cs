@@ -31,9 +31,11 @@ namespace EGSE.Utilites
     public class ControlValue
     {
         /// <summary>
-        /// через сколько вызововк TimerTick проверять значения UsbValue и UiValue
+        /// Счетчик TimerTick.
+        /// Примечание:
+        /// По истечению лимита сравниваются UsbValue и UiValue.
         /// </summary>
-        private const int UpdateTimeoutTicks = 3;
+        private const int LimitUiUpdateTick = 3;
         
         /// <summary>
         /// Список свойств у значения управления.
@@ -41,27 +43,27 @@ namespace EGSE.Utilites
         private Dictionary<int, CVProperty> _dictionaryCV = new Dictionary<int, CVProperty>();
 
         /// <summary>
-        /// значение, которое получаем из USB
+        /// Значение, которое получаем из USB.
         /// </summary>
         private int _usbValue;
 
         /// <summary>
-        /// значение, которое уставливается из интерфейса
+        /// Значение, которое уставливается из интерфейса.
         /// </summary>
         private int _uiValue;
 
         /// <summary>
-        /// значение счетчика времени до проверки совпадения GetValue и SetValue
+        /// Значение счетчика времени до проверки совпадения GetValue и SetValue.
         /// </summary>
         private int _timerCnt;
 
         /// <summary>
-        /// значение по-умолчанию, которое накладывается всегда на устанавливаемое значение
+        /// Значение по-умолчанию, которое накладывается всегда на устанавливаемое значение.
         /// </summary>
         private int _defaultValue;
 
         /// <summary>
-        /// флаг говорящий о том, что не нужно записывать значения в USB, используется при первой инициализации
+        /// Флаг говорящий о том, что не нужно записывать значения в USB, используется при первой инициализации.
         /// </summary>
         private bool _refreshFlag;
 
@@ -112,27 +114,27 @@ namespace EGSE.Utilites
             set
             {
                 _uiValue = value;
-                _timerCnt = UpdateTimeoutTicks;       // проверим значение из USB через некоторое время
+                _timerCnt = LimitUiUpdateTick;       // проверим значение из USB через некоторое время
             }
         }
 
         /// <summary>
         /// Добавляем свойство.
         /// </summary>
-        /// <param name="_idx">Индекс свойства, должно быть уникально</param>
-        /// <param name="_bitIdx">Индекс бита, с которого свойство начинается</param>
-        /// <param name="_bitLen">Длина в битах свойства</param>
-        /// <param name="_setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
-        /// <param name="_changeEvent">Функция, которая должна вызываться при изменении свойства</param>
+        /// <param name="idx">Индекс свойства, должно быть уникально</param>
+        /// <param name="bitIdx">Индекс бита, с которого свойство начинается</param>
+        /// <param name="bitLen">Длина в битах свойства</param>
+        /// <param name="setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
+        /// <param name="changeEvent">Функция, которая должна вызываться при изменении свойства</param>
         /// <returns>True - если выполнено успешно</returns>
-        public bool AddProperty(int _idx, ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
+        public bool AddProperty(int idx, ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent)
         {
-            if (_dictionaryCV.ContainsKey(_idx) || (_bitLen == 0))
+            if (_dictionaryCV.ContainsKey(idx) || (bitLen == 0))
             {
                 return false;
             }
 
-            _dictionaryCV.Add(_idx, new CVProperty(_bitIdx, _bitLen, _setUsbEvent, _changeEvent));
+            _dictionaryCV.Add(idx, new CVProperty(bitIdx, bitLen, setUsbEvent, changeEvent));
             return true;
         }
 
@@ -170,7 +172,7 @@ namespace EGSE.Utilites
 
             if (autoSendValue)
             {
-                _timerCnt = UpdateTimeoutTicks;
+                _timerCnt = LimitUiUpdateTick;
                 cv.SetUsbEvent((uint)_uiValue);
             }
 
@@ -183,7 +185,7 @@ namespace EGSE.Utilites
         /// </summary>
         public void RefreshGetValue()
         {
-            _timerCnt = UpdateTimeoutTicks;
+            _timerCnt = LimitUiUpdateTick;
             _refreshFlag = true;
         }
 

@@ -114,6 +114,12 @@ namespace EGSE.Devices
 
         private const int SimSpaceWire1RecordSendAddr = 0x15;
 
+        private const int SpaceWire2RecordFlushAddr = 0x05;
+
+        private const int SpaceWire2RecordDataAddr = 0x06;
+
+        private const int SpaceWire2RecordSendAddr = 0x07;
+
         /// <summary>
         /// Адресный байт "Управление".
         /// </summary>
@@ -297,7 +303,6 @@ namespace EGSE.Devices
         public void CmdSimRouterControl(uint value)
         {            
             SendToUSB(SpaceWire2ControlAddr, new byte[1] { (byte)value });
-            CmdSetDeviceLogicAddr();
         }
 
         /// <summary>
@@ -349,13 +354,23 @@ namespace EGSE.Devices
         }
 
         public void CmdSimSpacewire1Record(uint value)
-        {           
-            SendToUSB(SimSpaceWire1RecordFlushAddr, new byte[1] { 1 });
-            if (null != _intfBUK.Spacewire1Data)
+        {                       
+            if ((null != _intfBUK.Spacewire1Data) && (0 < _intfBUK.Spacewire1Data.Length))
             {
+                SendToUSB(SimSpaceWire1RecordFlushAddr, new byte[1] { 1 });
                 SendToUSB(SimSpaceWire1RecordDataAddr, _intfBUK.Spacewire1Data);
-            }
-            SendToUSB(SimSpaceWire1RecordSendAddr, new byte[1] { (byte)value });
+                SendToUSB(SimSpaceWire1RecordSendAddr, new byte[1] { (byte)value });
+            }            
+        }
+
+        public void CmdSpacewire2Record(uint value)
+        {          
+            if ((null != _intfBUK.Spacewire2Data) && (0 < _intfBUK.Spacewire2Data.Length))
+            {
+                SendToUSB(SpaceWire2RecordFlushAddr, new byte[1] { 1 });
+                SendToUSB(SpaceWire2RecordDataAddr, _intfBUK.Spacewire2Data);
+                SendToUSB(SpaceWire2RecordSendAddr, new byte[1] { (byte)value });
+            }            
         }
 
         public void CmdSimSpacewire4Control(uint value)
@@ -370,11 +385,13 @@ namespace EGSE.Devices
 
         public void CmdSimSpacewire4Record(uint value)
         {
-            SendToUSB(SimSpaceWire4RecordFlushAddr, new byte[1] { 1 });
-            SendToUSB(SimSpaceWire4RecordDataAddr, _intfBUK.Spacewire4Data);   
-            SendToUSB(SimSpaceWire4RecordSendAddr, new byte[1] { (byte)value });
+            if ((null != _intfBUK.Spacewire4Data) && (0 < _intfBUK.Spacewire4Data.Length))
+            {
+                SendToUSB(SimSpaceWire4RecordFlushAddr, new byte[1] { 1 });
+                SendToUSB(SimSpaceWire4RecordDataAddr, _intfBUK.Spacewire4Data);
+                SendToUSB(SimSpaceWire4RecordSendAddr, new byte[1] { (byte)value });
+            }            
         }
-
 
         /// <summary>
         /// Команда установки внутреннего времени устройства.
@@ -389,39 +406,47 @@ namespace EGSE.Devices
             SendToUSB(TimeSetAddr, buf);
         }
 
+        public void CmdSpaceWire2LogicAddrBuk(uint value)
+        {
+            SendToUSB(SpaceWire2SPTPBukAddr, new byte[1] { (byte)value });
+        }
+
+        public void CmdSpaceWire2LogicAddrBusk(uint value)
+        {
+            SendToUSB(SpaceWire2SPTPBuskAddr, new byte[1] { (byte)value });
+        }
+
+        public void CmdSimSpaceWire2LogicAddrBuk(uint value)
+        {
+            SendToUSB(SimSpaceWire1SPTPNP1Addr, new byte[1] { (byte)value });
+        }
+
+        public void CmdSimSpaceWire2LogicAddrBusk(uint value)
+        {
+            SendToUSB(SimSpaceWire1SPTPBuskAddr, new byte[1] { (byte)value });
+        }
+
         public void CmdSetDeviceLogicAddr()
         {
             if (_intfBUK.IsBUK1BM1Channel || _intfBUK.IsBUK1BM2Channel)
             {
-                if (Global.LogicAddrBuk1 != _intfBUK.SpaceWire2AddrBuk)
-                {
-                    SendToUSB(SpaceWire2SPTPBukAddr, new byte[1] { (byte)Global.LogicAddrBuk1 });
-                    SendToUSB(SimSpaceWire1SPTPNP1Addr, new byte[1] { (byte)Global.LogicAddrBuk1 });                    
-                }    
+                _intfBUK.SpaceWire2LogicAddrBuk = Global.LogicAddrBuk1;
+                _intfBUK.SimSpaceWire1AddrNP1 = Global.LogicAddrBuk1;  
             }
             else            
             {
-                if (Global.LogicAddrBuk2 != _intfBUK.SpaceWire2AddrBuk)
-                {
-                    SendToUSB(SpaceWire2SPTPBukAddr, new byte[1] { (byte)Global.LogicAddrBuk2 });
-                    SendToUSB(SimSpaceWire1SPTPNP1Addr, new byte[1] { (byte)Global.LogicAddrBuk2 });  
-                }            
+                _intfBUK.SpaceWire2LogicAddrBuk = Global.LogicAddrBuk2;
+                _intfBUK.SimSpaceWire1AddrNP1 = Global.LogicAddrBuk2;  
             }
             if (_intfBUK.IsBUK1BM1Channel || _intfBUK.IsBUK2BM1Channel)
             {
-                if (Global.LogicAddrBusk1 != _intfBUK.SpaceWire2AddrBusk)
-                {
-                    SendToUSB(SpaceWire2SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk1 });
-                    SendToUSB(SimSpaceWire1SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk1 });  
-                }
+                _intfBUK.SpaceWire2AddrBusk = Global.LogicAddrBusk1;
+                _intfBUK.SimSpaceWire1AddrBusk = Global.LogicAddrBusk1;  
             }
             else
             {
-                if (Global.LogicAddrBusk2 != _intfBUK.SpaceWire2AddrBusk)
-                {
-                    SendToUSB(SpaceWire2SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk2 });
-                    SendToUSB(SimSpaceWire1SPTPBuskAddr, new byte[1] { (byte)Global.LogicAddrBusk2 });  
-                }
+                _intfBUK.SpaceWire2AddrBusk = Global.LogicAddrBusk2;
+                _intfBUK.SimSpaceWire1AddrBusk = Global.LogicAddrBusk2;  
             }
         }
     }
@@ -429,7 +454,7 @@ namespace EGSE.Devices
     /// <summary>
     /// Общий экземпляр, позволяющий управлять прибором (принимать данные, выдавать команды).
     /// </summary>
-    public class DevBUK : INotifyPropertyChanged
+    public class DevBUK : INotifyPropertyChanged, IDataErrorInfo
     {
         /// <summary>
         /// Адресный байт "Статус".
@@ -516,17 +541,21 @@ namespace EGSE.Devices
         /// </summary>
         private SimRouterChannel _simRouterChannel;
 
-        private int _spaceWire2AddrBusk;
-        private int _spaceWire2AddrBuk;
-        private int _spaceWire2AddrBkp;
-        private int _simSpaceWire1AddrBusk;
-        private int _simSpaceWire1AddrNP1;
-        private int _simSpaceWire1AddrNP2;
+        private uint _spaceWire2AddrBusk;
+        private uint _spaceWire2AddrBuk;
+        private uint _spaceWire2AddrBkp;
+        private uint _simSpaceWire1AddrBusk;
+        private uint _simSpaceWire1AddrNP1;
+        private uint _simSpaceWire1AddrNP2;
 
         /// <summary>
         /// SPACEWIRE 2: Управление: Установлена связь.
         /// </summary>
         private bool _isSpaceWire2Connected;
+
+        private bool _isSpaceWire2RecordSendRMAP;
+        private bool _isSpaceWire2RecordSendBuk;
+        private bool _isSpaceWire2RecordSendBkp;
 
         /// <summary>
         /// SPACEWIRE 2: Управление обменом с приборами по SPTP: включить выдачу секундных меток (1PPS).
@@ -662,7 +691,8 @@ namespace EGSE.Devices
             ControlValuesList.Add(new ControlValue()); // SpaceWire1SPTPSimLogicBusk = 15
             ControlValuesList.Add(new ControlValue()); // SpaceWire1SPTPSimLogicNP1 = 16
             ControlValuesList.Add(new ControlValue()); // SpaceWire1SPTPSimLogicNP2 = 17
-
+            ControlValuesList.Add(new ControlValue()); // SpaceWire2Record = 18
+            
             _decoder = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
             _decoder.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
             _decoder.GotProtocolError += new ProtocolUSBBase.ProtocolErrorEventHandler(OnErrorFunc);
@@ -691,9 +721,12 @@ namespace EGSE.Devices
             ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterControl, delegate(uint value) { SelectSimRouterChannel = (SimRouterChannel)value; });
             ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterControl, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
             ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire2Connected = 1 == value; });
+            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendRMAP, 0, 1, Device.CmdSpacewire2Record, delegate(uint value) { IsSpaceWire2RecordSendRMAP = 1 == value; });
+            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendBuk, 1, 1, Device.CmdSpacewire2Record, delegate(uint value) { IsSpaceWire2RecordSendBuk = 1 == value; });
+            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendBkp, 2, 1, Device.CmdSpacewire2Record, delegate(uint value) { IsSpaceWire2RecordSendBkp = 1 == value; });
 
-            ControlValuesList[Global.SpaceWire2SPTPLogicBusk].AddProperty(Global.PropertySpaceWire2LogicBusk, 0, 8, delegate(uint value) { }, delegate(uint value) { SpaceWire2AddrBusk = value; });
-            ControlValuesList[Global.SpaceWire2SPTPLogicBuk].AddProperty(Global.PropertySpaceWire2LogicBuk, 0, 8, delegate(uint value) { }, delegate(uint value) { SpaceWire2AddrBuk = value; });
+            ControlValuesList[Global.SpaceWire2SPTPLogicBusk].AddProperty(Global.PropertySpaceWire2LogicBusk, 0, 8, Device.CmdSpaceWire2LogicAddrBusk, delegate(uint value) { SpaceWire2AddrBusk = value; });
+            ControlValuesList[Global.SpaceWire2SPTPLogicBuk].AddProperty(Global.PropertySpaceWire2LogicBuk, 0, 8, Device.CmdSpaceWire2LogicAddrBuk, delegate(uint value) { SpaceWire2LogicAddrBuk = value; });
             ControlValuesList[Global.SpaceWire2SPTPLogicBkp].AddProperty(Global.PropertySpaceWire2LogicBkp, 0, 8, delegate(uint value) { }, delegate(uint value) { SpaceWire2AddrBkp = value; });
 
             ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2TimeMark, 0, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2TimeMark = 1 == value; });
@@ -707,10 +740,10 @@ namespace EGSE.Devices
             ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1IntfOn, 0, 1, Device.CmdSimSpacewire1Control, delegate(uint value) { IsSpaceWire1IntfOn = 1 == value; });
             ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire1Connected = 1 == value; });
 
-            ControlValuesList[Global.SimSpaceWire1SPTPLogicBusk].AddProperty(Global.PropertySimSpaceWire1LogicBusk, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrBusk = value; });
-            ControlValuesList[Global.SimSpaceWire1SPTPLogicNP1].AddProperty(Global.PropertySimSpaceWire1LogicNP1, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrNP1 = value; });
-            ControlValuesList[Global.SimSpaceWire1SPTPLogicNP2].AddProperty(Global.PropertySimSpaceWire1LogicNP2, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrNP2 = value; });
-
+            ControlValuesList[Global.SpaceWire1SPTPSimLogicBusk].AddProperty(Global.PropertySimSpaceWire1LogicBusk, 0, 8, Device.CmdSimSpaceWire2LogicAddrBusk, delegate(uint value) { SimSpaceWire1AddrBusk = value; });
+            ControlValuesList[Global.SpaceWire1SPTPSimLogicNP1].AddProperty(Global.PropertySimSpaceWire1LogicNP1, 0, 8, Device.CmdSimSpaceWire2LogicAddrBuk, delegate(uint value) { SimSpaceWire1AddrNP1 = value; });
+            ControlValuesList[Global.SpaceWire1SPTPSimLogicNP2].AddProperty(Global.PropertySimSpaceWire1LogicNP2, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrNP2 = value; });
+            
             ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1Trans, 0, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP1Trans = 1 == value; });
             ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP2Trans, 2, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP2Trans = 1 == value; });
             ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1TransData, 1, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP1TransData = 1 == value; });
@@ -998,8 +1031,8 @@ namespace EGSE.Devices
                 FirePropertyChangedEvent("IsBUNDLineB");
             }
         }
-
         public byte[] Spacewire1Data { get; set; }
+        public byte[] Spacewire2Data { get; set; }
         public byte[] Spacewire4Data { get; set; }
 
         /// <summary>
@@ -1049,7 +1082,8 @@ namespace EGSE.Devices
                 FirePropertyChangedEvent("IsBUK2BM2Channel");
                 FirePropertyChangedEvent("IsBUK1BM1Channel");
                 FirePropertyChangedEvent("IsBUK1BM2Channel");
-                FirePropertyChangedEvent("IsBUK2BM1Channel");                
+                FirePropertyChangedEvent("IsBUK2BM1Channel");
+                Device.CmdSetDeviceLogicAddr();
             }
         }
 
@@ -1080,7 +1114,7 @@ namespace EGSE.Devices
             }
         }
 
-        public int SpaceWire2AddrBusk
+        public uint SpaceWire2AddrBusk
         {
             get
             {
@@ -1091,7 +1125,6 @@ namespace EGSE.Devices
             {
                 _spaceWire2AddrBusk = value;
                 ControlValuesList[Global.SpaceWire2SPTPLogicBusk].SetProperty(Global.PropertySpaceWire2LogicBusk, (int)value); 
-                FirePropertyChangedEvent("SpaceWire2AddrBusk");
                 FirePropertyChangedEvent("ShowSpaceWire2AddrBusk");
             }
         }
@@ -1101,11 +1134,11 @@ namespace EGSE.Devices
         {
             get
             {
-                return string.Format(Resource.Get(@"stShowLogicBuk"), SpaceWire2AddrBuk);
+                return string.Format(Resource.Get(@"stShowLogicBuk"), SpaceWire2LogicAddrBuk);
             }
         }
 
-        public int SpaceWire2AddrBuk
+        public uint SpaceWire2LogicAddrBuk
         {
             get
             {
@@ -1116,7 +1149,6 @@ namespace EGSE.Devices
             {
                 _spaceWire2AddrBuk = value;
                 ControlValuesList[Global.SpaceWire2SPTPLogicBuk].SetProperty(Global.PropertySpaceWire2LogicBuk, (int)value); 
-                FirePropertyChangedEvent("SpaceWire2AddrBuk");
                 FirePropertyChangedEvent("ShowSpaceWire2AddrBuk");
             }
         }
@@ -1129,7 +1161,7 @@ namespace EGSE.Devices
             }
         }
 
-        public int SpaceWire2AddrBkp
+        public uint SpaceWire2AddrBkp
         {
             get
             {
@@ -1140,7 +1172,6 @@ namespace EGSE.Devices
             {
                 _spaceWire2AddrBkp = value;
                 ControlValuesList[Global.SpaceWire2SPTPLogicBkp].SetProperty(Global.PropertySpaceWire2LogicBkp, (int)value); 
-                FirePropertyChangedEvent("SpaceWire2AddrBkp");
                 FirePropertyChangedEvent("ShowSpaceWire2AddrBkp");
             }
         }
@@ -1153,7 +1184,7 @@ namespace EGSE.Devices
             }
         }
 
-        public int SimSpaceWire1AddrBusk
+        public uint SimSpaceWire1AddrBusk
         {
             get
             {
@@ -1163,8 +1194,7 @@ namespace EGSE.Devices
             set
             {
                 _simSpaceWire1AddrBusk = value;
-                ControlValuesList[Global.SimSpaceWire1SPTPLogicBusk].SetProperty(Global.PropertySimSpaceWire1LogicBusk, (int)value); 
-                FirePropertyChangedEvent("SimSpaceWire1AddrBusk");
+                ControlValuesList[Global.SpaceWire1SPTPSimLogicBusk].SetProperty(Global.PropertySimSpaceWire1LogicBusk, (int)value); 
                 FirePropertyChangedEvent("ShowSimSpaceWire1AddrBusk");
             }
         }
@@ -1187,8 +1217,7 @@ namespace EGSE.Devices
             set
             {
                 _simSpaceWire1AddrNP1 = value;
-                ControlValuesList[Global.SimSpaceWire1SPTPLogicNP1].SetProperty(Global.PropertySimSpaceWire1LogicNP1, (int)value); 
-                FirePropertyChangedEvent("SimSpaceWire1AddrNP1");
+                ControlValuesList[Global.SpaceWire1SPTPSimLogicNP1].SetProperty(Global.PropertySimSpaceWire1LogicNP1, (int)value); 
                 FirePropertyChangedEvent("ShowSimSpaceWire1AddrNP1");
             }
         }
@@ -1211,8 +1240,7 @@ namespace EGSE.Devices
             set
             {
                 _simSpaceWire1AddrNP2 = value;
-                ControlValuesList[Global.SimSpaceWire1SPTPLogicNP2].SetProperty(Global.PropertySimSpaceWire1LogicNP2, (int)value); 
-                FirePropertyChangedEvent("SimSpaceWire1AddrNP2");
+                ControlValuesList[Global.SpaceWire1SPTPSimLogicNP2].SetProperty(Global.PropertySimSpaceWire1LogicNP2, (int)value); 
                 FirePropertyChangedEvent("ShowSimSpaceWire1AddrNP2");
             }
         }
@@ -1311,6 +1339,51 @@ namespace EGSE.Devices
             {
                 _isSpaceWire2Connected = value;
                 FirePropertyChangedEvent("IsSpaceWire2Connected");
+            }
+        }
+
+        public bool IsSpaceWire2RecordSendRMAP
+        {
+            get
+            {
+                return _isSpaceWire2RecordSendRMAP;
+            }
+
+            set
+            {
+                _isSpaceWire2RecordSendRMAP = value;
+                ControlValuesList[Global.SpaceWire2Record].SetProperty(Global.PropertySpaceWire2RecordSendRMAP, Convert.ToInt32(_isSpaceWire2RecordSendRMAP));
+                FirePropertyChangedEvent("IsSpaceWire2RecordSendRMAP");
+            }
+        }
+
+        public bool IsSpaceWire2RecordSendBuk
+        {
+            get
+            {
+                return _isSpaceWire2RecordSendBuk;
+            }
+
+            set
+            {
+                _isSpaceWire2RecordSendBuk = value;
+                ControlValuesList[Global.SpaceWire2Record].SetProperty(Global.PropertySpaceWire2RecordSendBuk, Convert.ToInt32(_isSpaceWire2RecordSendBuk));
+                FirePropertyChangedEvent("IsSpaceWire2RecordSendBuk");
+            }
+        }
+
+        public bool IsSpaceWire2RecordSendBkp
+        {
+            get
+            {
+                return _isSpaceWire2RecordSendBkp;
+            }
+
+            set
+            {
+                _isSpaceWire2RecordSendBkp = value;
+                ControlValuesList[Global.SpaceWire2Record].SetProperty(Global.PropertySpaceWire2RecordSendBkp, Convert.ToInt32(_isSpaceWire2RecordSendBkp));
+                FirePropertyChangedEvent("IsSpaceWire2RecordSendBkp");
             }
         }
 
@@ -1966,16 +2039,17 @@ namespace EGSE.Devices
                     case TimeDataAddr:
                         Array.Copy(msg.Data, 0, DeviceTime.Data, 0, 6);
                         ControlValuesList[Global.SpaceWire2Control].UsbValue = msg.Data[7];
+                        ControlValuesList[Global.SpaceWire2Record].UsbValue = msg.Data[10]; 
                         ControlValuesList[Global.SpaceWire2SPTPLogicBusk].UsbValue = msg.Data[11];
                         ControlValuesList[Global.SpaceWire2SPTPLogicBuk].UsbValue = msg.Data[12];
                         ControlValuesList[Global.SpaceWire2SPTPLogicBkp].UsbValue = msg.Data[13];
-                        ControlValuesList[Global.SpaceWire2ControlSPTP].UsbValue = msg.Data[14];
+                        ControlValuesList[Global.SpaceWire2ControlSPTP].UsbValue = msg.Data[14];                       
                         ControlValuesList[Global.SpaceWire1Control].UsbValue = msg.Data[17];
                         ControlValuesList[Global.SpaceWire1Record].UsbValue = msg.Data[20];
                         ControlValuesList[Global.SpaceWire1ControlSPTP].UsbValue = msg.Data[21];
-                        ControlValuesList[Global.SimSpaceWire1SPTPLogicBusk].UsbValue = msg.Data[22];
-                        ControlValuesList[Global.SimSpaceWire1SPTPLogicNP1].UsbValue = msg.Data[23];
-                        ControlValuesList[Global.SimSpaceWire1SPTPLogicNP2].UsbValue = msg.Data[24];
+                        ControlValuesList[Global.SpaceWire1SPTPSimLogicBusk].UsbValue = msg.Data[22];
+                        ControlValuesList[Global.SpaceWire1SPTPSimLogicNP1].UsbValue = msg.Data[23];
+                        ControlValuesList[Global.SpaceWire1SPTPSimLogicNP2].UsbValue = msg.Data[24];
                         ControlValuesList[Global.SpaceWire1ControlSPTPNP1SendTime].UsbValue = (msg.Data[26] << 8) | (msg.Data[25]);
                         ControlValuesList[Global.SpaceWire1ControlSPTPNP2SendTime].UsbValue = (msg.Data[28] << 8) | (msg.Data[27]);
                         ControlValuesList[Global.SpaceWire1ControlSPTPNP1DataSize].UsbValue = (msg.Data[30] << 8) | (msg.Data[29]); // XXX
@@ -2011,6 +2085,48 @@ namespace EGSE.Devices
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public string Error
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public string this[string name]
+        {
+            get
+            {
+                string result = null;
+
+                if (name == "Spacewire1Data")
+                {
+                    if ((null != Spacewire1Data) && (0 == Spacewire1Data.Length))
+                    {
+                        result = "Некорректный ввод данных! Повторите ввод.";
+                    }
+                }
+
+                if (name == "Spacewire4Data")
+                {
+                    if ((null != Spacewire4Data) && (0 == Spacewire4Data.Length))
+                    {
+                        result = "Некорректный ввод данных! Повторите ввод.";
+                    }
+                }
+
+                if (name == "Spacewire2Data")
+                {
+                    if ((null != Spacewire2Data) && (0 == Spacewire2Data.Length))
+                    {
+                        result = "Некорректный ввод данных! Повторите ввод.";
+                    }
+                }
+
+                return result;
             }
         }
     }

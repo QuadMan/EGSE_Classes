@@ -125,8 +125,8 @@ namespace EGSE.Defaults
         private void Button_Click_11(object sender, RoutedEventArgs e)
         {
             if ("false" == (string)(sender as Button).Tag)
-            {
-                return;
+            {           
+                _intfEGSE.IsSpaceWire4RecordSend = true;
             }
         }
 

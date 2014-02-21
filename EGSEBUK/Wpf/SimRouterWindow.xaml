@@ -11,6 +11,46 @@
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
         <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
         <l:BoolToIntConverter x:Key="boolToIndexConverter" />
+        <l:BytesToStrConverter x:Key="bytesToStrConverter" />
+        <ControlTemplate x:Key="DataSendInError" TargetType="TextBox">
+            <Border Name="Border"
+                    Margin="1"
+                                Background="{DynamicResource TextBrush}"
+                                BorderThickness="0">
+                <Grid>
+                    <ScrollViewer x:Name="PART_ContentHost"/>
+                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" Margin="3,1,0,0" Foreground="Gray" IsHitTestVisible="False" Text="Введите данные, например: AB 45 FF EE"/>
+                    <TextBlock Visibility="Hidden" x:Name="ErrorText" Margin="6,1,0,0" Foreground="Red" IsHitTestVisible="False" Text="Некорректный ввод данных! Повторите ввод."/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" TargetName="WatermarkText" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="Text" Value=" ">
+                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="TextBoxInError" TargetType="TextBox">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Border BorderBrush="Red" BorderThickness="2">
+                                <AdornedElementPlaceholder />
+                            </Border>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
             <Border x:Name="Border" 
                         Background="{DynamicResource ClickBrush}"
@@ -142,24 +182,24 @@
                    Template="{DynamicResource FlatLabel}"/>
             <TextBox Grid.Row="1"
                      Grid.ColumnSpan="3"
-                     TextWrapping="Wrap"
-                     BorderThickness="0"
-                     Margin="1"
+                     Template="{DynamicResource DataSendInError}"
+                     Style="{StaticResource TextBoxInError}"
+                     Text="{Binding Spacewire2Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"
                      Height="80"/>
             <Button Grid.Column="2"  
                     Template="{DynamicResource FlatButtonClick}"                       
                     Content="из файла..."/>
             <Button Grid.Row="2"  
                     Template="{DynamicResource FlatButtonClick}"                       
-                    Content="Передать в БКП"/>
+                    Content="Передать в БКП" Click="Button_Click_8"/>
             <Button Grid.Row="2"  
                     Grid.Column="1"
                     Template="{DynamicResource FlatButtonClick}"                       
-                    Content="Передать в БУК"/>
+                    Content="Передать в БУК" Click="Button_Click_9"/>
             <Button Grid.Row="2"  
                     Grid.Column="2"
                     Template="{DynamicResource FlatButtonClick}"                       
-                    Content="RMAP"/>
+                    Content="RMAP" Click="Button_Click_10"/>
         </Grid>
         <Grid Grid.Row="9"
               Grid.ColumnSpan="3"

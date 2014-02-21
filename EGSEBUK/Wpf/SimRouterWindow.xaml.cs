@@ -184,5 +184,20 @@ namespace EGSE.Defaults
         {
             _intfEGSE.IsSpaceWire2BkpTransData = !_intfEGSE.IsSpaceWire2BkpTransData;
         }
+
+        private void Button_Click_8(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire2RecordSendBkp = true;
+        }
+
+        private void Button_Click_9(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire2RecordSendBuk = true;
+        }
+
+        private void Button_Click_10(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.IsSpaceWire2RecordSendRMAP = true;       
+        }
     }
 }
