@@ -713,56 +713,56 @@ namespace EGSE.Devices
 
             Tele = new TelemetryBUK();
 
-            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUSK1, 7, 1, Device.CmdBUSKPower1, delegate(uint value) { BUSKPower1 = 1 == value; });
-            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUSK2, 6, 1, Device.CmdBUSKPower2, delegate(uint value) { BUSKPower2 = 1 == value; });
-            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUND1, 4, 1, Device.CmdBUNDPower1, delegate(uint value) { BUNDPower1 = 1 == value; });
-            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyBUNDPower2, 5, 1, Device.CmdBUNDPower2, delegate(uint value) { BUNDPower2 = 1 == value; });
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUSK1, 7, 1, Device.CmdBUSKPower1, value => BUSKPower1 = 1 == value );
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUSK2, 6, 1, Device.CmdBUSKPower2, value => BUSKPower2 = 1 == value );
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyTelePowerBUND1, 4, 1, Device.CmdBUNDPower1, value => BUNDPower1 = 1 == value );
+            ControlValuesList[Global.PowerControl].AddProperty(Global.PropertyBUNDPower2, 5, 1, Device.CmdBUNDPower2, value => BUNDPower2 = 1 == value );
 
-            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterControl, delegate(uint value) { SelectSimRouterChannel = (SimRouterChannel)value; });
-            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterControl, delegate(uint value) { IsSpaceWire2IntfOn = 1 == value; });
-            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire2Connected = 1 == value; });
-            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendRMAP, 0, 1, Device.CmdSpacewire2Record, delegate(uint value) { IsSpaceWire2RecordSendRMAP = 1 == value; });
-            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendBuk, 1, 1, Device.CmdSpacewire2Record, delegate(uint value) { IsSpaceWire2RecordSendBuk = 1 == value; });
-            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendBkp, 2, 1, Device.CmdSpacewire2Record, delegate(uint value) { IsSpaceWire2RecordSendBkp = 1 == value; });
+            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Channel, 1, 2, Device.CmdSimRouterControl, value => SelectSimRouterChannel = (SimRouterChannel)value );
+            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2IntfOn, 0, 1, Device.CmdSimRouterControl, value => IsSpaceWire2IntfOn = 1 == value );
+            ControlValuesList[Global.SpaceWire2Control].AddProperty(Global.PropertySpaceWire2Connected, 3, 1, delegate { }, value => IsSpaceWire2Connected = 1 == value );
+            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendRMAP, 0, 1, Device.CmdSpacewire2Record, value => IsSpaceWire2RecordSendRMAP = 1 == value );
+            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendBuk, 1, 1, Device.CmdSpacewire2Record, value => IsSpaceWire2RecordSendBuk = 1 == value);
+            ControlValuesList[Global.SpaceWire2Record].AddProperty(Global.PropertySpaceWire2RecordSendBkp, 2, 1, Device.CmdSpacewire2Record, value => IsSpaceWire2RecordSendBkp = 1 == value);
 
-            ControlValuesList[Global.SpaceWire2SPTPLogicBusk].AddProperty(Global.PropertySpaceWire2LogicBusk, 0, 8, Device.CmdSpaceWire2LogicAddrBusk, delegate(uint value) { SpaceWire2AddrBusk = value; });
-            ControlValuesList[Global.SpaceWire2SPTPLogicBuk].AddProperty(Global.PropertySpaceWire2LogicBuk, 0, 8, Device.CmdSpaceWire2LogicAddrBuk, delegate(uint value) { SpaceWire2LogicAddrBuk = value; });
-            ControlValuesList[Global.SpaceWire2SPTPLogicBkp].AddProperty(Global.PropertySpaceWire2LogicBkp, 0, 8, delegate(uint value) { }, delegate(uint value) { SpaceWire2AddrBkp = value; });
+            ControlValuesList[Global.SpaceWire2SPTPLogicBusk].AddProperty(Global.PropertySpaceWire2LogicBusk, 0, 8, Device.CmdSpaceWire2LogicAddrBusk, value => SpaceWire2AddrBusk = value);
+            ControlValuesList[Global.SpaceWire2SPTPLogicBuk].AddProperty(Global.PropertySpaceWire2LogicBuk, 0, 8, Device.CmdSpaceWire2LogicAddrBuk, value => SpaceWire2LogicAddrBuk = value);
+            ControlValuesList[Global.SpaceWire2SPTPLogicBkp].AddProperty(Global.PropertySpaceWire2LogicBkp, 0, 8, delegate { }, value => SpaceWire2AddrBkp = value);
 
-            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2TimeMark, 0, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2TimeMark = 1 == value; });
-            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukTrans, 1, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTrans = 1 == value; });
-            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpTrans, 4, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTrans = 1 == value; });
-            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukKbv, 2, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukKbv = 1 == value; });
-            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpKbv, 5, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpKbv = 1 == value; });
-            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukTransData, 3, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BukTransData = 1 == value; });
-            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpTransData, 6, 1, Device.CmdSimRouterControlSPTP, delegate(uint value) { IsSpaceWire2BkpTransData = 1 == value; });
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2TimeMark, 0, 1, Device.CmdSimRouterControlSPTP, value => IsSpaceWire2TimeMark = 1 == value);
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukTrans, 1, 1, Device.CmdSimRouterControlSPTP, value => IsSpaceWire2BukTrans = 1 == value);
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpTrans, 4, 1, Device.CmdSimRouterControlSPTP, value => IsSpaceWire2BkpTrans = 1 == value);
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukKbv, 2, 1, Device.CmdSimRouterControlSPTP, value => IsSpaceWire2BukKbv = 1 == value);
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpKbv, 5, 1, Device.CmdSimRouterControlSPTP, value => IsSpaceWire2BkpKbv = 1 == value);
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BukTransData, 3, 1, Device.CmdSimRouterControlSPTP, value => IsSpaceWire2BukTransData = 1 == value);
+            ControlValuesList[Global.SpaceWire2ControlSPTP].AddProperty(Global.PropertySpaceWire2BkpTransData, 6, 1, Device.CmdSimRouterControlSPTP, value => IsSpaceWire2BkpTransData = 1 == value);
 
-            ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1IntfOn, 0, 1, Device.CmdSimSpacewire1Control, delegate(uint value) { IsSpaceWire1IntfOn = 1 == value; });
-            ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire1Connected = 1 == value; });
+            ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1IntfOn, 0, 1, Device.CmdSimSpacewire1Control, value => IsSpaceWire1IntfOn = 1 == value);
+            ControlValuesList[Global.SpaceWire1Control].AddProperty(Global.PropertySpaceWire1Connected, 3, 1, delegate { }, value => IsSpaceWire1Connected = 1 == value);
 
-            ControlValuesList[Global.SpaceWire1SPTPSimLogicBusk].AddProperty(Global.PropertySimSpaceWire1LogicBusk, 0, 8, Device.CmdSimSpaceWire2LogicAddrBusk, delegate(uint value) { SimSpaceWire1AddrBusk = value; });
-            ControlValuesList[Global.SpaceWire1SPTPSimLogicNP1].AddProperty(Global.PropertySimSpaceWire1LogicNP1, 0, 8, Device.CmdSimSpaceWire2LogicAddrBuk, delegate(uint value) { SimSpaceWire1AddrNP1 = value; });
-            ControlValuesList[Global.SpaceWire1SPTPSimLogicNP2].AddProperty(Global.PropertySimSpaceWire1LogicNP2, 0, 8, delegate(uint value) { }, delegate(uint value) { SimSpaceWire1AddrNP2 = value; });
+            ControlValuesList[Global.SpaceWire1SPTPSimLogicBusk].AddProperty(Global.PropertySimSpaceWire1LogicBusk, 0, 8, Device.CmdSimSpaceWire2LogicAddrBusk, value => SimSpaceWire1AddrBusk = value);
+            ControlValuesList[Global.SpaceWire1SPTPSimLogicNP1].AddProperty(Global.PropertySimSpaceWire1LogicNP1, 0, 8, Device.CmdSimSpaceWire2LogicAddrBuk, value => SimSpaceWire1AddrNP1 = value);
+            ControlValuesList[Global.SpaceWire1SPTPSimLogicNP2].AddProperty(Global.PropertySimSpaceWire1LogicNP2, 0, 8, delegate { }, value => SimSpaceWire1AddrNP2 = value);
             
-            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1Trans, 0, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP1Trans = 1 == value; });
-            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP2Trans, 2, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP2Trans = 1 == value; });
-            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1TransData, 1, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP1TransData = 1 == value; });
-            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP2TransData, 3, 1, Device.CmdSimSpacewire1ControlSPTP, delegate(uint value) { IsSpaceWire1NP2TransData = 1 == value; });
-            ControlValuesList[Global.SpaceWire1ControlSPTPNP1SendTime].AddProperty(Global.PropertySpaceWire1NP1SendTime, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP1SendTime, delegate(uint value) { SpaceWire1NP1SendTime = value; });
-            ControlValuesList[Global.SpaceWire1ControlSPTPNP2SendTime].AddProperty(Global.PropertySpaceWire1NP2SendTime, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP2SendTime, delegate(uint value) { SpaceWire1NP2SendTime = value; });
-            ControlValuesList[Global.SpaceWire1ControlSPTPNP1DataSize].AddProperty(Global.PropertySpaceWire1NP1DataSize, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP1DataSize, delegate(uint value) { SpaceWire1NP1DataSize = value; });
-            ControlValuesList[Global.SpaceWire1ControlSPTPNP2DataSize].AddProperty(Global.PropertySpaceWire1NP2DataSize, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP2DataSize, delegate(uint value) { SpaceWire1NP2DataSize = value; });
-            ControlValuesList[Global.SpaceWire1Record].AddProperty(Global.PropertySpaceWire1RecordBusy, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire1RecordBusy = 1 == value; });
-            ControlValuesList[Global.SpaceWire1Record].AddProperty(Global.PropertySpaceWire1RecordSend, 0, 1, Device.CmdSimSpacewire1Record, delegate(uint value) { IsSpaceWire1RecordSend = 1 == value; });
+            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1Trans, 0, 1, Device.CmdSimSpacewire1ControlSPTP, value => IsSpaceWire1NP1Trans = 1 == value );
+            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP2Trans, 2, 1, Device.CmdSimSpacewire1ControlSPTP, value => IsSpaceWire1NP2Trans = 1 == value );
+            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP1TransData, 1, 1, Device.CmdSimSpacewire1ControlSPTP, value => IsSpaceWire1NP1TransData = 1 == value );
+            ControlValuesList[Global.SpaceWire1ControlSPTP].AddProperty(Global.PropertySpaceWire1NP2TransData, 3, 1, Device.CmdSimSpacewire1ControlSPTP, value => IsSpaceWire1NP2TransData = 1 == value );
+            ControlValuesList[Global.SpaceWire1ControlSPTPNP1SendTime].AddProperty(Global.PropertySpaceWire1NP1SendTime, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP1SendTime, value => SpaceWire1NP1SendTime = value );
+            ControlValuesList[Global.SpaceWire1ControlSPTPNP2SendTime].AddProperty(Global.PropertySpaceWire1NP2SendTime, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP2SendTime, value => SpaceWire1NP2SendTime = value );
+            ControlValuesList[Global.SpaceWire1ControlSPTPNP1DataSize].AddProperty(Global.PropertySpaceWire1NP1DataSize, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP1DataSize, value => SpaceWire1NP1DataSize = value );
+            ControlValuesList[Global.SpaceWire1ControlSPTPNP2DataSize].AddProperty(Global.PropertySpaceWire1NP2DataSize, 0, 16, Device.CmdSimSpacewire1ControlSPTPNP2DataSize, value => SpaceWire1NP2DataSize = value );
+            ControlValuesList[Global.SpaceWire1Record].AddProperty(Global.PropertySpaceWire1RecordBusy, 3, 1, delegate { }, value => IsSpaceWire1RecordBusy = 1 == value );
+            ControlValuesList[Global.SpaceWire1Record].AddProperty(Global.PropertySpaceWire1RecordSend, 0, 1, Device.CmdSimSpacewire1Record, value => IsSpaceWire1RecordSend = 1 == value );
 
-            ControlValuesList[Global.SpaceWire4Control].AddProperty(Global.PropertySpaceWire4IntfOn, 0, 1, Device.CmdSimSpacewire4Control, delegate(uint value) { IsSpaceWire4IntfOn = 1 == value; });
-            ControlValuesList[Global.SpaceWire4Control].AddProperty(Global.PropertySpaceWire4Connected, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire4Connected = 1 == value; });
-            ControlValuesList[Global.SpaceWire4Control].AddProperty(Global.PropertySpaceWire4TimeMark, 4, 1, Device.CmdSimSpacewire4Control, delegate(uint value) { IsSpaceWire4TimeMark = 1 == value; });
-            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4EOPSend, 1, 1, Device.CmdSimSpacewire4Record, delegate(uint value) { IsSpaceWire4EOPSend = 1 == value; });
-            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4AutoSend, 4, 1, Device.CmdSimSpacewire4Record, delegate(uint value) { IsSpaceWire4AutoSend = 1 == value; });
-            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4EEPSend, 2, 1, Device.CmdSimSpacewire4Record, delegate(uint value) { IsSpaceWire4EEPSend = 1 == value; });
-            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4RecordBusy, 3, 1, delegate(uint value) { }, delegate(uint value) { IsSpaceWire4RecordBusy = 1 == value; });
-            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4RecordSend, 0, 1, Device.CmdSimSpacewire4Record, delegate(uint value) { IsSpaceWire4RecordSend = 1 == value; });
+            ControlValuesList[Global.SpaceWire4Control].AddProperty(Global.PropertySpaceWire4IntfOn, 0, 1, Device.CmdSimSpacewire4Control, value => IsSpaceWire4IntfOn = 1 == value );
+            ControlValuesList[Global.SpaceWire4Control].AddProperty(Global.PropertySpaceWire4Connected, 3, 1, delegate { }, value => IsSpaceWire4Connected = 1 == value );
+            ControlValuesList[Global.SpaceWire4Control].AddProperty(Global.PropertySpaceWire4TimeMark, 4, 1, Device.CmdSimSpacewire4Control, value => IsSpaceWire4TimeMark = 1 == value );
+            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4EOPSend, 1, 1, Device.CmdSimSpacewire4Record, value => IsSpaceWire4EOPSend = 1 == value );
+            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4AutoSend, 4, 1, Device.CmdSimSpacewire4Record, value => IsSpaceWire4AutoSend = 1 == value );
+            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4EEPSend, 2, 1, Device.CmdSimSpacewire4Record, value => IsSpaceWire4EEPSend = 1 == value );
+            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4RecordBusy, 3, 1, delegate { }, value => IsSpaceWire4RecordBusy = 1 == value );
+            ControlValuesList[Global.SpaceWire4Record].AddProperty(Global.PropertySpaceWire4RecordSend, 0, 1, Device.CmdSimSpacewire4Record, value => IsSpaceWire4RecordSend = 1 == value );
         }
 
         /// <summary>
