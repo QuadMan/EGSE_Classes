@@ -51,7 +51,7 @@ namespace EGSE.Cyclogram.Command
         public CyclogramCommandBUK()
         {
             CyclogramCommandsAvailable = new CyclogramCommands();
-            CyclogramCommandsAvailable.AddCommand("POWER", new CyclogramLine("POWER", PowerTest, PowerExec, string.Empty));
+           //// CyclogramCommandsAvailable.AddCommand("POWER", new CyclogramLine("POWER", PowerTest, PowerExec, string.Empty));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Получает или задает ссылку на экземпляр устройства.
         /// </summary>
-        public DevBUK BUK { private get; set; }
+        public EgseBukNotify BUK { private get; set; }
 
         /// <summary>
         /// Команда XSAN 
@@ -284,17 +284,6 @@ namespace EGSE.Cyclogram.Command
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Выполнить команду POWER.
-        /// </summary>
-        /// <param name="cmdParams">Параметры команды.</param>
-        /// <returns>False - если не удалось выполнить команду.</returns>
-        public bool PowerExec(string[] cmdParams)
-        {
-            int val = Convert.ToInt32(cmdParams[0] == "ON");
-            return BUK.ControlValuesList[Global.PowerControl].SetProperty(Global.PowerControl, val);
         }
     }
 }

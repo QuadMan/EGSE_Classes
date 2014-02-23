@@ -33,12 +33,7 @@ namespace EGSE.Defaults
         /// <summary>
         /// Интерфейс управления прибором.
         /// </summary>
-        private DevBUK _intfEGSE;
-
-        /// <summary>
-        /// Таймер обновления UI.
-        /// </summary>
-        private System.Windows.Threading.DispatcherTimer _dispatcherTimer; 
+        private EgseBukNotify _intfEGSE;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SimRouterWindow" />.
@@ -46,22 +41,18 @@ namespace EGSE.Defaults
         public SimRouterWindow()
         {
             InitializeComponent();
-            
-            _dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            _dispatcherTimer.Tick += new EventHandler(TimerWork);
-            _dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            _dispatcherTimer.Start();
         }
 
         /// <summary>
         /// Инициализирует интерфейс управления прибором.
         /// </summary>
         /// <param name="intfEGSE">Интерфейс управления прибором.</param>
-        public void Init(DevBUK intfEGSE)
+        public void Init(EgseBukNotify intfEGSE)
         {
             _intfEGSE = intfEGSE;
             _intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             DataContext = _intfEGSE;
+            GridSpacewire2.DataContext = _intfEGSE.Spacewire2Notify;
         }
 
         /// <summary>
@@ -86,15 +77,6 @@ namespace EGSE.Defaults
         }  
 
         /// <summary>
-        /// Обновляет состояние UI.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        public void TimerWork(object sender, EventArgs e)
-        {
-        }
-
-        /// <summary>
         /// Handles the Closing event of the Window control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
@@ -112,7 +94,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2TimeMark = !_intfEGSE.IsSpaceWire2TimeMark;
+            _intfEGSE.Spacewire2Notify.IsTimeMark = !_intfEGSE.Spacewire2Notify.IsTimeMark;
         }
 
         /// <summary>
@@ -122,7 +104,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2BukTrans = !_intfEGSE.IsSpaceWire2BukTrans;
+            _intfEGSE.Spacewire2Notify.IsBukTrans = !_intfEGSE.Spacewire2Notify.IsBukTrans;
         }
 
         /// <summary>
@@ -132,7 +114,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2BkpTrans = !_intfEGSE.IsSpaceWire2BkpTrans;
+            _intfEGSE.Spacewire2Notify.IsBkpTrans = !_intfEGSE.Spacewire2Notify.IsBkpTrans;
         }
 
         /// <summary>
@@ -142,7 +124,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2BukKbv = !_intfEGSE.IsSpaceWire2BukKbv;
+            _intfEGSE.Spacewire2Notify.IsBukKbv = !_intfEGSE.Spacewire2Notify.IsBukKbv;
         }
 
         /// <summary>
@@ -152,7 +134,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2BkpKbv = !_intfEGSE.IsSpaceWire2BkpKbv;
+            _intfEGSE.Spacewire2Notify.IsBkpKbv = !_intfEGSE.Spacewire2Notify.IsBkpKbv;
         }
 
         /// <summary>
@@ -162,7 +144,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2IntfOn = !_intfEGSE.IsSpaceWire2IntfOn;
+            _intfEGSE.Spacewire2Notify.IsIntfOn = !_intfEGSE.Spacewire2Notify.IsIntfOn;
         }
 
         /// <summary>
@@ -172,7 +154,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2BukTransData = !_intfEGSE.IsSpaceWire2BukTransData;
+            _intfEGSE.Spacewire2Notify.IsBukTransData = !_intfEGSE.Spacewire2Notify.IsBukTransData;
         }
 
         /// <summary>
@@ -182,22 +164,37 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_7(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2BkpTransData = !_intfEGSE.IsSpaceWire2BkpTransData;
+            _intfEGSE.Spacewire2Notify.IsBkpTransData = !_intfEGSE.Spacewire2Notify.IsBkpTransData;
         }
 
+        /// <summary>
+        /// Handles the 8 event of the Button_Click control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_8(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2RecordSendBkp = true;
+            _intfEGSE.Spacewire2Notify.IsSendBkp = true;
         }
 
+        /// <summary>
+        /// Handles the 9 event of the Button_Click control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_9(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2RecordSendBuk = true;
+            _intfEGSE.Spacewire2Notify.IsSendBuk = true;
         }
 
+        /// <summary>
+        /// Handles the 10 event of the Button_Click control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_10(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.IsSpaceWire2RecordSendRMAP = true;       
+            _intfEGSE.Spacewire2Notify.IsSendRMAP = true;       
         }
     }
 }

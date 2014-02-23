@@ -40,7 +40,7 @@ namespace EGSE.Utilites
         /// <summary>
         /// Список свойств у значения управления.
         /// </summary>
-        private Dictionary<int, CVProperty> _dictionaryCV = new Dictionary<int, CVProperty>();
+        private Dictionary<string, CVProperty> _dictionaryCV = new Dictionary<string, CVProperty>();
 
         /// <summary>
         /// Значение, которое получаем из USB.
@@ -83,7 +83,7 @@ namespace EGSE.Utilites
         /// Делегат, использующийся при описании функции для отправки значения в USB и вызова метода при несовпадении значений UsbValue и UiValue.
         /// </summary>
         /// <param name="value">TODO описание</param>
-        public delegate void ControlValueEventHandler(uint value);
+        public delegate void ControlValueEventHandler(int value);
 
         /// <summary>
         /// Получает или задает значение, полученное из USB.
@@ -127,7 +127,7 @@ namespace EGSE.Utilites
         /// <param name="setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
         /// <param name="changeEvent">Функция, которая должна вызываться при изменении свойства</param>
         /// <returns>True - если выполнено успешно</returns>
-        public bool AddProperty(int idx, ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent)
+        public bool AddProperty(string idx, ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent)
         {
             if (_dictionaryCV.ContainsKey(idx) || (bitLen == 0))
             {
@@ -147,7 +147,7 @@ namespace EGSE.Utilites
         /// <returns>
         /// True - если выполнено успешно
         /// </returns>
-        public bool SetProperty(int propertyIdx, int valueP, bool autoSendValue = true)
+        public bool SetProperty(string propertyIdx, int valueP, bool autoSendValue = true)
         {
             if (!_dictionaryCV.ContainsKey(propertyIdx))
             {
@@ -173,7 +173,7 @@ namespace EGSE.Utilites
             if (autoSendValue)
             {
                 _timerCnt = LimitUiUpdateTick;
-                cv.SetUsbEvent((uint)_uiValue);
+                cv.SetUsbEvent(_uiValue);
             }
 
             return true;
@@ -238,13 +238,13 @@ namespace EGSE.Utilites
             int usbVal;
             int uiVal;
 
-            foreach (KeyValuePair<int, CVProperty> pair in _dictionaryCV)
+            foreach (KeyValuePair<string, CVProperty> pair in _dictionaryCV)
             {
                 usbVal = GetCVProperty(pair.Value, _usbValue);
                 uiVal = GetCVProperty(pair.Value, _uiValue);
                 if (((usbVal != -1) && (uiVal != -1) && (usbVal != uiVal)) || _refreshFlag)
                 {
-                    pair.Value.ChangeEvent((uint)usbVal);
+                    pair.Value.ChangeEvent(usbVal);
                 }
             }
 

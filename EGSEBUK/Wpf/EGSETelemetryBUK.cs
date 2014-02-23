@@ -26,10 +26,10 @@ namespace EGSE.Telemetry
         /// </summary>
         public TelemetryBUK()
         {
-            BUSKPower1 = false;
-            BUSKPower2 = false;
-            BUNDPower1 = false;
-            BUNDPower2 = false;
+            PowerBusk1 = false;
+            PowerBusk2 = false;
+            PowerBund1 = false;
+            PowerBund2 = false;
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace EGSE.Telemetry
         /// <value>
         ///   <c>true</c>  если питание [ПК1 БУСК] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUSKPower1 { get; private set; }
+        public bool PowerBusk1 { get; private set; }
 
         /// <summary>
         /// Получает значение, показывающее, есть ли питание у [ПК2 БУСК].
@@ -46,7 +46,7 @@ namespace EGSE.Telemetry
         /// <value>
         ///   <c>true</c> если питание [ПК2 БУСК] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUSKPower2 { get; private set; }
+        public bool PowerBusk2 { get; private set; }
 
         /// <summary>
         /// Получает значение, показывающее, есть ли питание у [ПК1 БУНД].
@@ -54,7 +54,7 @@ namespace EGSE.Telemetry
         /// <value>
         ///   <c>true</c> если питание [ПК1 БУНД] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUNDPower1 { get; private set; }
+        public bool PowerBund1 { get; private set; }
 
         /// <summary>
         /// Получает значение, показывающее, есть ли питание у [ПК2 БУНД].
@@ -62,7 +62,7 @@ namespace EGSE.Telemetry
         /// <value>
         ///   <c>true</c> если питание [ПК2 БУНД] есть; иначе, <c>false</c>.
         /// </value>
-        public bool BUNDPower2 { get; private set; }
+        public bool PowerBund2 { get; private set; }
 
         /// <summary>
         /// Обрабатываем данные телеметрии.
@@ -70,10 +70,10 @@ namespace EGSE.Telemetry
         /// <param name="buf">Буфер с данными.</param>
         public void Update(byte[] buf)
         {
-            BUSKPower1 = 0x80 == (buf[3] & 0x80);
-            BUSKPower2 = 0x40 == (buf[3] & 0x40);
-            BUNDPower1 = 0x10 == (buf[3] & 0x10);
-            BUNDPower2 = 0x20 == (buf[3] & 0x20);
+            PowerBusk1 = 0x80 == (buf[3] & 0x80);
+            PowerBusk2 = 0x40 == (buf[3] & 0x40);
+            PowerBund1 = 0x10 == (buf[3] & 0x10);
+            PowerBund2 = 0x20 == (buf[3] & 0x20);
         }
     }
 }

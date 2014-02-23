@@ -37,12 +37,12 @@ namespace EGSE.Defaults
         /// <summary>
         /// Окно "имитатор БМ-4"
         /// </summary>
-        private SimRouterWindow winSimRouter = new SimRouterWindow();
+        private SimRouterWindow winSimRouter;
 
         /// <summary>
         /// Окно "имитаторы spacewire"
         /// </summary>
-        private SimSpacewireWindow winSimSpacewire = new SimSpacewireWindow();
+        private SimSpacewireWindow winSimSpacewire;
 
         /// <summary>
         /// Экземпляр для работы с командами циклограммы.
@@ -52,7 +52,7 @@ namespace EGSE.Defaults
         /// <summary>
         /// Интерфейс работы с устройством устройства.
         /// </summary>
-        private DevBUK _intfEGSE = new DevBUK();
+        private EgseBukNotify _intfEGSE = new EgseBukNotify();
 
         /// <summary>
         /// Инициализация параметров управления
@@ -68,94 +68,8 @@ namespace EGSE.Defaults
         private void OnTimerWork()
         {
             _intfEGSE.TickAllControlsValues();
-            /* выведем значения АЦП
-            if (_EGSE.Tm.IsPowerOn)
-            {
-                try
-                {
-                    float tmpUValue = _EGSE.Tm.Adc.GetValue(XsanTm.ADC_CH_U);
-                    if (tmpUValue > 15)
-                    {
-                        U27VLabel.Content = Math.Round(tmpUValue).ToString();
-                    }
-                    else
-                    {
-                        U27VLabel.Content = "---";
-                    }
-                }
-                catch (ADCException)
-                {
-                    U27VLabel.Content = "---";
-                }
-                try
-                {
-                    IXSANLabel.Content = Math.Round(EGSE.Tm.Adc.GetValue(XsanTm.ADC_CH_I)).ToString();
-                }
-                catch (ADCException)
-                {
-                    IXSANLabel.Content = "---";
-                }
-            }
-            else
-            {
-                U27VLabel.Content = "---";
-                IXSANLabel.Content = "---";
-            }*/
-
-            UpdateTM();
         }
-
-        /// <summary>
-        /// Обновляет состояние UI телеметрии.
-        /// </summary>
-        private void UpdateTM()
-        {
-            // Индикация питания
-            if (_intfEGSE.Tele.BUSKPower1)
-            {
-                BUSKPower1.Content = "ВКЛ";
-                BUSKPower1.Background = Brushes.LightGreen;
-            }
-            else
-            {
-                BUSKPower1.Content = "ВЫКЛ";
-                BUSKPower1.Background = Brushes.Red;
-            }
-
-            if (_intfEGSE.Tele.BUSKPower2)
-            {
-                BUSKPower2.Content = "ВКЛ";
-                BUSKPower2.Background = Brushes.LightGreen;
-            }
-            else
-            {
-                BUSKPower2.Content = "ВЫКЛ";
-                BUSKPower2.Background = Brushes.Red;
-            }
-
-            if (_intfEGSE.Tele.BUNDPower1)
-            {
-                BUNDPower1.Content = "ВКЛ";
-                BUNDPower1.Background = Brushes.LightGreen;
-            }
-            else
-            {
-                BUNDPower1.Content = "ВЫКЛ";
-                BUNDPower1.Background = Brushes.Red;
-            }
-
-            if (_intfEGSE.Tele.BUNDPower2)
-            {
-                BUNDPower2.Content = "ВКЛ";
-                BUNDPower2.Background = Brushes.LightGreen;
-            }
-            else
-            {
-                BUNDPower2.Content = "ВЫКЛ";
-                BUNDPower2.Background = Brushes.Red;
-            }
-        }
-
+       
         /// <summary>
         /// Сохраняем специфические настройки приложения
         /// В данном случае - видимость панели телеметрии
@@ -171,11 +85,7 @@ namespace EGSE.Defaults
         /// </summary>
         private void LoadAppSettings()
         {
-            // если окно открыто, соответствующий чекбокс должен быть выбран
-           /* if (hsiWin.Visibility == System.Windows.Visibility.Visible)
-            {
-                HSIControlCb.IsChecked = true;
-            }
+            /*
             // управляем отображением телеметрической информацией
             string powerLabelVisible = AppSettings.Load("PowerLabel");
             if (powerLabelVisible != null)
@@ -204,112 +114,52 @@ namespace EGSE.Defaults
         private void InitModules()
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
-
+            winSimRouter = new SimRouterWindow();
             winSimRouter.Init(_intfEGSE);
+            winSimSpacewire = new SimSpacewireWindow();            
             winSimSpacewire.Init(_intfEGSE);
-
             DataContext = _intfEGSE;
+            GridTelemetry.DataContext = _intfEGSE.TelemetryNotify;
         }
 
         /// <summary>
-        /// Handles the Click event of the BUSKPower1 control.
+        /// Handles the Click event of the Button control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void BUSKPower1_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyTelePowerBUSK1, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower1));
+            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!_intfEGSE.Tele.PowerBusk1));
         }
 
         /// <summary>
-        /// Handles the Click event of the BUSKPower2 control.
+        /// Handles the 1 event of the Button_Click control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void BUSKPower2_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyTelePowerBUSK2, Convert.ToInt32(!_intfEGSE.Tele.BUSKPower2));
+            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!_intfEGSE.Tele.PowerBusk2));
         }
 
         /// <summary>
-        /// Handles the Click event of the BUNDPower1 control.
+        /// Handles the 2 event of the Button_Click control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void BUNDPower1_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyTelePowerBUND1, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower1));
+            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!_intfEGSE.Tele.PowerBund1));
         }
 
         /// <summary>
-        /// Handles the Click event of the BUNDPower2 control.
+        /// Handles the 3 event of the Button_Click control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void BUNDPower2_Click(object sender, RoutedEventArgs e)
+        private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.PowerControl].SetProperty(Global.PropertyBUNDPower2, Convert.ToInt32(!_intfEGSE.Tele.BUNDPower2));
-        }
-
-        /// <summary>
-        /// Handles the Click event of the ControlSpacewire control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void ControlSpacewire_Click(object sender, RoutedEventArgs e)
-        {
-            if ((bool)ControlSpacewire.IsChecked)
-            {
-                winSimSpacewire.Show();
-            }
-            else
-            {
-                winSimSpacewire.Hide();
-            }
-
-        }
-        /*
-        private void ControlHSI_Checked(object sender, RoutedEventArgs e)
-        {
-            if ((bool)ControlHSI.IsChecked)
-            {
-                winHSI.Show();
-            }
-            else
-            {
-                winHSI.Hide();
-            }
-
-        }
-
-        private void ControlSD_Checked(object sender, RoutedEventArgs e)
-        {
-            if ((bool)ControlSD.IsChecked)
-            {
-                winSD.Show();
-            }
-            else
-            {
-                winSD.Hide();
-            }
-
-        }*/
-
-        /// <summary>
-        /// Handles the Click event of the ControlSimRouter control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void ControlSimRouter_Click(object sender, RoutedEventArgs e)
-        {
-            if ((bool)ControlSimRouter.IsChecked)
-            {
-                winSimRouter.Show();
-            }
-            else
-            {
-                winSimRouter.Hide();
-            }
+            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!_intfEGSE.Tele.PowerBund2));
         }
     }
 }

@@ -47,11 +47,10 @@ namespace EGSE.Defaults
             InitializeComponent();
             Application.Current.MainWindow = this;
             Title = Global.ShowCaption;            
-
-            InitControlValues();
+            
             LoadWindows();
             InitModules();
-
+            InitControlValues();
             LoadAppSettings();
 
             _dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
@@ -97,7 +96,7 @@ namespace EGSE.Defaults
             //// индикация подключения, скорости
             ////TimeLabel.Content = _EGSE.ETime.ToString();
             
-            if (_intfEGSE.Connected)
+            if (_intfEGSE.IsConnected)
             {
                 ConnectionLabel.Background = Brushes.LightGreen;
                 ConnectionLabel.Content = Global.DeviceName + Resource.Get("stConnected");
@@ -231,6 +230,7 @@ namespace EGSE.Defaults
             return ((string)value == "true") ? true : false;
         }
     }
+
     /// <summary>
     /// Конвертор array to string для wpf.
     /// </summary>
@@ -267,13 +267,28 @@ namespace EGSE.Defaults
                 return string.Empty;
             }
 
-            byte[] buf = (ObjectToByteArray(value));
+            byte[] buf = ObjectToByteArray(value);
             if (0 == buf.Length)
             {
                 return " ";
             }
 
             return Converter.ByteArrayToHexStr(buf);            
+        }
+
+        /// <summary>
+        /// Converts a value.
+        /// </summary>
+        /// <param name="value">The value that is produced by the binding target.</param>
+        /// <param name="targetType">The type to convert to.</param>
+        /// <param name="parameter">The converter parameter to use.</param>
+        /// <param name="culture">The culture to use in the converter.</param>
+        /// <returns>
+        /// A converted value. If the method returns null, the valid null value is used.
+        /// </returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Converter.HexStrToByteArray((string)value);
         }
 
         /// <summary>
@@ -291,21 +306,6 @@ namespace EGSE.Defaults
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             (new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter()).Serialize(ms, obj);
             return ms.ToArray().Take<byte>((int)(ms.Length - ObjEnderSysBytesCount)).ToArray().Skip<byte>(ObjHeaderSysBytesCount).ToArray();
-        }
-
-        /// <summary>
-        /// Converts a value.
-        /// </summary>
-        /// <param name="value">The value that is produced by the binding target.</param>
-        /// <param name="targetType">The type to convert to.</param>
-        /// <param name="parameter">The converter parameter to use.</param>
-        /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>
-        /// A converted value. If the method returns null, the valid null value is used.
-        /// </returns>
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return Converter.HexStrToByteArray((string)value); 
         }
     }
 }

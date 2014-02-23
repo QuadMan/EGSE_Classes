@@ -144,13 +144,13 @@
         </Grid>           
         <StackPanel Grid.Row="1" 
                     Grid.Column="0">
-            <Expander Header="Телеметрия" 
-                      Margin="5" 
-                      BorderBrush="LightBlue" 
-                      BorderThickness="2" 
-                      IsExpanded="True">
+            <Grid x:Name="GridTelemetry"
+                  Margin="0"
+                  Background="{DynamicResource BackBrush}">                
                 <StackPanel>
-                    <Grid Margin="4" Background="LightBlue">
+                    <Label Content="Телеметрия"
+                           Template="{DynamicResource FlatLabel}"/>
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -165,149 +165,103 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="BUSKPower1" Grid.Column="2"
+                        <Button Grid.Column="2"
                                 Grid.Row="2" 
-                                Grid.RowSpan="2"
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1" Click="BUSKPower1_Click">
-                        </Button>
-                        <Button x:Name="BUSKPower2" Grid.Column="3"
+                                Grid.RowSpan="2"                           
+                                Tag="{Binding PowerBusk1, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}" 
+                                Click="Button_Click"/>
+                        <Button Grid.Column="3"
                                 Grid.Row="2"  
                                 Grid.RowSpan="2"
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1" Click="BUSKPower2_Click"/>                        
-                        <Button x:Name="BUNDPower1" Grid.Column="2"
+                                Tag="{Binding PowerBusk2, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}" 
+                                Click="Button_Click_1"/>                        
+                        <Button Grid.Column="2"
                                 Grid.Row="4"  
                                 Grid.RowSpan="2"
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1" Click="BUNDPower1_Click"/>
-                        <Button x:Name="BUNDPower2" Grid.Column="3"
+                                Tag="{Binding PowerBund1, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}" 
+                                Click="Button_Click_2"/>
+                        <Button Grid.Column="3"
                                 Grid.Row="4" 
                                 Grid.RowSpan="2"
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1" Click="BUNDPower2_Click"/>                        
-                        
+                                Tag="{Binding PowerBund2, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}" 
+                                Click="Button_Click_3"/>                                                
                         <Label Grid.Column="0"
                                Grid.Row="0"
                                Grid.RowSpan="2"
                                Grid.ColumnSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="1,1,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="Блок"/>
                         <Label Grid.Column="0"
                                Grid.Row="2"
                                Grid.RowSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="1,0,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="БУСК"/>
                         <Label Grid.Column="0"
                                Grid.Row="4"
                                Grid.RowSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="1,0,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="БУНД"/>
                         <Label Grid.Column="1"
                                Grid.Row="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
                                Background="White"
-                               Margin="0,0,1,1"/>
-                        <CheckBox x:Name="BUSKLineA" Grid.Column="1"
-                               Grid.Row="2"   
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                               Content="А" 
-                                  IsChecked="{Binding IsBUSKLineA, Mode=TwoWay}"/>
+                               Margin="1"/>
+                        <CheckBox Grid.Column="1"
+                                  Grid.Row="2"   
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Content="А" 
+                                  IsChecked="{Binding IsBuskLineA, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
-                               Grid.Row="3"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
+                               Grid.Row="3"                               
                                Background="White"
-                               Margin="0,0,1,1"/>
-                        <CheckBox x:Name="BUSKLineB" Grid.Column="1"
-                               Grid.Row="3"   
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                               Content="Б"
-                                  IsChecked="{Binding IsBUSKLineB, Mode=TwoWay}"/>
+                               Margin="1"/>
+                        <CheckBox Grid.Column="1"
+                                  Grid.Row="3"   
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Content="Б"
+                                  IsChecked="{Binding IsBuskLineB, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
                                Grid.Row="4"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
                                Background="White"
-                               Margin="0,0,1,1"/>
-                        <CheckBox x:Name="BUNDLineA" Grid.Column="1"
-                               Grid.Row="4"   
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                               Content="А" 
-                                  IsChecked="{Binding IsBUNDLineA, Mode=TwoWay}"/>
+                               Margin="1"/>
+                        <CheckBox Grid.Column="1"
+                                  Grid.Row="4"   
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Content="А" 
+                                  IsChecked="{Binding IsBundLineA, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
-                               Grid.Row="5"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
+                               Grid.Row="5"                               
                                Background="White"
-                               Margin="0,0,1,1"/>
-                        <CheckBox x:Name="BUNDLineB" Grid.Column="1"
-                               Grid.Row="5"   
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                               Content="Б"
-                                  IsChecked="{Binding IsBUNDLineB, Mode=TwoWay}"/>
+                               Margin="1"/>
+                        <CheckBox Grid.Column="1"
+                                  Grid.Row="5"   
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Content="Б"
+                                  IsChecked="{Binding IsBundLineB, Mode=TwoWay}"/>
                         <Label Grid.Column="2"
                                Grid.Row="0"
                                Grid.ColumnSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,1,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="Питание"/>
                         <Label Grid.Column="2"
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="ПК1"/>
                         <Label Grid.Column="3"
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="ПК2"/>
                     </Grid>
-                    <Grid Margin="4" Background="LightBlue">
+                    <Label Content="Телеметрия НП"
+                           Template="{DynamicResource FlatLabel}"/>
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -327,304 +281,158 @@
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="1"
                                 Grid.Row="2"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="1"
                                 Grid.Row="3"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="1"
                                 Grid.Row="4"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="2"
                                 Grid.Row="2"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="2"
                                 Grid.Row="3"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="2"
                                 Grid.Row="4"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="3"
                                 Grid.Row="2"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="3"
                                 Grid.Row="3"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="3"
                                 Grid.Row="4"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="4"
                                 Grid.Row="2"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="4"
                                 Grid.Row="3"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="4"
                                 Grid.Row="4"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="5"
                                 Grid.Row="2"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="5"
                                 Grid.Row="3"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="5"
                                 Grid.Row="4"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="6"
                                 Grid.Row="2"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="6"
                                 Grid.Row="3"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="6"
                                 Grid.Row="4"                            
-                                Content="ВЫКЛ"
-                                Background="Red"
-                                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                                Focusable="False" 
-                                BorderThickness="0" 
-                                HorizontalAlignment="Stretch" 
-                                VerticalAlignment="Stretch" 
-                                Margin="0,0,1,1"/>
+                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}"/>
                         <Label Grid.Column="0"
                                Grid.Row="0"
                                Grid.RowSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="1,1,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="НП"/>
                         <Label Grid.Column="0"
                                Grid.Row="2"
-                               Background="White"
-                               Margin="1,0,1,1"
-                               Content="УФЕС"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" УФЕС "/>
                         <Label Grid.Column="0"
                                Grid.Row="3"
-                               Background="White"
-                               Margin="1,0,1,1"
-                               Content="ВУФЕС"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" ВУФЕС "/>
                         <Label Grid.Column="0"
                                Grid.Row="4"
-                               Background="White"
-                               Margin="1,0,1,1"
-                               Content="СДЩ"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" СДЩ "/>
                         <Label Grid.Column="1"                               
                                Grid.Row="0"
                                Grid.ColumnSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,1,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="Питание"/>
                         <Label Grid.Column="3"                               
                                Grid.Row="0"
                                Grid.ColumnSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,1,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="Подсветка"/>
                         <Label Grid.Column="5"                               
                                Grid.Row="0"
                                Grid.ColumnSpan="2"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,1,1,1"
+                               Template="{DynamicResource FlatLabel}"
                                Content="Затворы"/>
                         <Label Grid.Column="1"                               
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
-                               Content="ОСН"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" ОСН "/>
                         <Label Grid.Column="2"                               
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
-                               Content="РЕЗ"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" РЕЗ "/>
                         <Label Grid.Column="3"                               
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
-                               Content="ОСН"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" ОСН "/>
                         <Label Grid.Column="4"                               
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
-                               Content="РЕЗ"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" РЕЗ "/>
                         <Label Grid.Column="5"                               
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
-                               Content="ОСН"/>
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" ОСН "/>
                         <Label Grid.Column="6"                               
                                Grid.Row="1"
-                               HorizontalContentAlignment="Center"
-                               VerticalContentAlignment="Center"
-                               Background="White"
-                               Margin="0,0,1,1"
-                               Content="РЕЗ"/>                        
+                               Template="{DynamicResource FlatLabel}"
+                               Content=" РЕЗ "/>                        
                     </Grid>
                 </StackPanel>
-            </Expander>
-            <Expander  Header="Окна управления" 
-                       BorderBrush="LightBlue" 
-                       BorderThickness="2" 
-                       Margin="5" 
-                       IsExpanded="True">
-                <StackPanel>
-                    <CheckBox x:Name="ControlHSI" 
-                              Content="Управление КВВ" 
+            </Grid>
+            <Grid Background="{DynamicResource BackBrush}"
+                  Margin="0">
+                <StackPanel Background="White"
+                            Margin="1">
+                    <Label Content="Окна управления"
+                           Template="{DynamicResource FlatLabel}"/>
+                    <CheckBox Content="Управление КВВ" 
                               Margin="4"/>
-                    <CheckBox x:Name="ControlSD" 
-                              Content="Управление НП" 
+                    <CheckBox Content="Управление НП" 
                               Margin="4"/>
-                    <CheckBox x:Name="ControlSimRouter" 
-                              Content="Управление имитатором БМ-4" 
+                    <CheckBox Content="Управление имитатором БМ-4" 
                               Margin="4"
-                              Click="ControlSimRouter_Click"/>
-                    <CheckBox x:Name="ControlSpacewire" 
-                              Content="Имитаторы Spacewire" 
+                              IsChecked="{Binding IsShowSimRouter, Mode=TwoWay}"/>
+                    <CheckBox Content="Имитаторы Spacewire" 
                               Margin="4"
-                              Click="ControlSpacewire_Click"/>
+                              IsChecked="{Binding IsShowSimSpacewire, Mode=TwoWay}"/>
                 </StackPanel>
-            </Expander>
+            </Grid>
         </StackPanel>
-        <Label x:Name="ConnectionLabel" Margin="4" 
-               Padding="4" 
+        <Label x:Name="ConnectionLabel" Margin="1" 
                Background="Red"
                BorderBrush="LightBlue" 
-               BorderThickness="2" 
+               BorderThickness="1" 
                VerticalContentAlignment="Center" 
                Grid.Row="0" 
                Grid.Column="0"/>

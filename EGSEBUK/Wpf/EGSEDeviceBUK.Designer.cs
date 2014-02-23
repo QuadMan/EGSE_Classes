@@ -88,7 +88,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to БКП (Логический адрес: {0}).
+        ///   Looks up a localized string similar to БКП (адрес: {0}).
         /// </summary>
         internal static string stShowLogicBkp {
             get {
@@ -97,7 +97,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to БУК (Логический адрес: {0}).
+        ///   Looks up a localized string similar to БУК (адрес: {0}).
         /// </summary>
         internal static string stShowLogicBuk {
             get {
@@ -106,7 +106,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Управление имитатором БМ-4(БУСК/БУНД) (Логический адрес: {0}).
+        ///   Looks up a localized string similar to Управление имитатором БМ-4(БУСК/БУНД) (адрес: {0}).
         /// </summary>
         internal static string stShowLogicBusk {
             get {
@@ -115,7 +115,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Имитатор НП (Логический адрес: {0}).
+        ///   Looks up a localized string similar to Имитатор НП (адрес: {0}).
         /// </summary>
         internal static string stShowSimLogicBusk {
             get {
@@ -124,20 +124,20 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to НП1 (Логический адрес: {0}).
+        ///   Looks up a localized string similar to НП1 (адрес: {0}).
         /// </summary>
-        internal static string stShowSimLogicNP1 {
+        internal static string stShowSimLogicSD1 {
             get {
-                return ResourceManager.GetString("stShowSimLogicNP1", resourceCulture);
+                return ResourceManager.GetString("stShowSimLogicSD1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to НП2 (Логический адрес: {0}).
+        ///   Looks up a localized string similar to НП2 (адрес: {0}).
         /// </summary>
-        internal static string stShowSimLogicNP2 {
+        internal static string stShowSimLogicSD2 {
             get {
-                return ResourceManager.GetString("stShowSimLogicNP2", resourceCulture);
+                return ResourceManager.GetString("stShowSimLogicSD2", resourceCulture);
             }
         }
     }

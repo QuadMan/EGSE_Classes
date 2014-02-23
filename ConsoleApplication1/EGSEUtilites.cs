@@ -11,13 +11,13 @@ namespace EGSE.Utilites
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.IO;
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Windows;
-    using System.Globalization;
 
     /// <summary>
     /// Класс сохранения настроек приложения в Ini файл.
@@ -345,7 +345,8 @@ namespace EGSE.Utilites
                 {
                     return new byte[] { };
                 }
-                //outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
+
+                // outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
             }
 
             return outBuf;
