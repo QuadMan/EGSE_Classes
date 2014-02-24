@@ -151,7 +151,8 @@
         <Binding Converter="{StaticResource BooleanToVisibilityConverter}" Mode="TwoWay" Path="IsShowSimRouter"/>
     </Window.Visibility>
     <Grid x:Name="GridSpacewire2"
-          Background="LightBlue">
+          Background="LightBlue"
+          Margin="4">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -210,8 +211,7 @@
         </Grid>
         <Grid Grid.Row="9"
               Grid.ColumnSpan="3"
-              Background="{DynamicResource BackBrush}"
-              Margin="0">
+              Background="{DynamicResource BackBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -222,7 +222,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                   Content="Монитор SpaceWire"
+                   Content="Монитор Spacewire"
                    Template="{DynamicResource FlatLabel}"/>
             <Label Grid.Row="1"
                    Content="Количество запросов квоты"
@@ -326,7 +326,7 @@
                          IsChecked="{Binding IsBUK2BM2Channel}"/>
         </StackPanel>
         <Label Grid.Row="1"
-               Content="Интерфейс SpaceWire"
+               Content="Интерфейс Spacewire"
                Template="{DynamicResource FlatLabel}"/>
         <Button Grid.Column="1"                               
 				Grid.Row="1"  

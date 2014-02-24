@@ -440,7 +440,8 @@
                     <CheckBox Content="Управление КВВ" 
                               Margin="4"/>
                     <CheckBox Content="Управление НП" 
-                              Margin="4"/>
+                              Margin="4"
+                              IsChecked="{Binding IsShowSimSD, Mode=TwoWay}"/>
                     <CheckBox Content="Управление имитатором БМ-4" 
                               Margin="4"
                               IsChecked="{Binding IsShowSimRouter, Mode=TwoWay}"/>

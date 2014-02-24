@@ -200,6 +200,11 @@ namespace EGSE.Devices
         private const int Spacewire4ControlAddr = 0x24;
 
         /// <summary>
+        /// Адресный байт "Управление".
+        /// </summary>
+        private const int Spacewire3ControlAddr = 0x0c;
+
+        /// <summary>
         /// Адресный байт "Сброс адреса записи данных".
         /// </summary>
         private const int Spacewire4RecordFlushAddr = 0x25;
@@ -375,7 +380,11 @@ namespace EGSE.Devices
             SendToUSB(PowerHiAddr, new byte[1] { buf });
             SendToUSB(PowerSetAddr, new byte[1] { 1 });
         }
-       
+
+        /// <summary>
+        /// Отправляет команду включить/выключить затвор УФЕС ОСН.
+        /// </summary>
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         public void CmdUfesLock1(int value)
         {
             byte buf = 0;
@@ -392,6 +401,10 @@ namespace EGSE.Devices
             SendToUSB(LockSetAddr, new byte[1] { 1 });
         }
 
+        /// <summary>
+        /// Отправляет команду включить/выключить затвор УФЕС РЕЗ.
+        /// </summary>
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         public void CmdUfesLock2(int value)
         {
             byte buf = 0;
@@ -408,6 +421,10 @@ namespace EGSE.Devices
             SendToUSB(LockSetAddr, new byte[1] { 1 });
         }
 
+        /// <summary>
+        /// Отправляет команду включить/выключить затвор ВУФЕС ОСН.
+        /// </summary>
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         public void CmdVufesLock1(int value)
         {
             byte buf = 0;
@@ -424,6 +441,10 @@ namespace EGSE.Devices
             SendToUSB(LockSetAddr, new byte[1] { 1 });
         }
 
+        /// <summary>
+        /// Отправляет команду включить/выключить затвор ВУФЕС РЕЗ.
+        /// </summary>
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         public void CmdVufesLock2(int value)
         {
             byte buf = 0;
@@ -440,6 +461,10 @@ namespace EGSE.Devices
             SendToUSB(LockSetAddr, new byte[1] { 1 });
         }
 
+        /// <summary>
+        /// Отправляет команду включить/выключить затвор СДЩ ОСН.
+        /// </summary>
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         public void CmdSdchshLock1(int value)
         {
             byte buf = 0;
@@ -456,6 +481,10 @@ namespace EGSE.Devices
             SendToUSB(LockSetAddr, new byte[1] { 1 });
         }
 
+        /// <summary>
+        /// Отправляет команду включить/выключить затвор СДЩ РЕЗ.
+        /// </summary>
+        /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         public void CmdSdchshLock2(int value)
         {
             byte buf = 0;
@@ -598,6 +627,15 @@ namespace EGSE.Devices
         }
 
         /// <summary>
+        /// Команда SpaceWire3: Управление.
+        /// </summary>
+        /// <param name="value">Параметры управления.</param>
+        public void CmdSpacewire3Control(int value)
+        {
+            SendToUSB(Spacewire3ControlAddr, new byte[1] { (byte)value });
+        }
+
+        /// <summary>
         /// Команда SpaceWire4: Запись данных(до 1 Кбайт).
         /// </summary>
         /// <param name="value">Данные для записи.</param>
@@ -667,48 +705,24 @@ namespace EGSE.Devices
         {
             if (_intfBUK.Spacewire2Notify.IsBUK1BM1Channel || _intfBUK.Spacewire2Notify.IsBUK1BM2Channel)
             {
-                if (Global.LogicAddrBuk1 != _intfBUK.Spacewire2Notify.LogicBuk)
-                {
-                    _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk1;
-                }
-                if (Global.LogicAddrBuk1 != _intfBUK.Spacewire1Notify.LogicSD1)
-                {
-                    _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk1;
-                }
+                _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk1;
+                _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk1;
             }
             else            
             {
-                if (Global.LogicAddrBuk2 != _intfBUK.Spacewire2Notify.LogicBuk)
-                {
-                    _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk2;
-                }
-                if (Global.LogicAddrBuk2 != _intfBUK.Spacewire1Notify.LogicSD1)
-                {
-                    _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk2;
-                }
+                _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk2;
+                _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk2;
             }
 
             if (_intfBUK.Spacewire2Notify.IsBUK1BM1Channel || _intfBUK.Spacewire2Notify.IsBUK2BM1Channel)
             {
-                if (Global.LogicAddrBusk1 != _intfBUK.Spacewire2Notify.LogicBusk)
-                {
-                    _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk1;
-                }
-                if (Global.LogicAddrBusk1 != _intfBUK.Spacewire1Notify.LogicBusk)
-                {
-                    _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk1;
-                }
+                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk1;
+                _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk1;
             }
             else
             {
-                if (Global.LogicAddrBusk2 != _intfBUK.Spacewire2Notify.LogicBusk)
-                {
-                    _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk2;
-                }
-                if (Global.LogicAddrBusk2 != _intfBUK.Spacewire1Notify.LogicBusk)
-                {
-                    _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk2;
-                }
+                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk2;
+                _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk2;
             }
         }
     }
@@ -744,6 +758,16 @@ namespace EGSE.Devices
         private ProtocolSpacewire _decoderSpacewireBuk;
 
         /// <summary>
+        /// Экземпляр декодера протокола Spacewire.
+        /// </summary>
+        private ProtocolSpacewire _decoderSpacewireSDIn;
+
+        /// <summary>
+        /// Экземпляр декодера протокола Spacewire.
+        /// </summary>
+        private ProtocolSpacewire _decoderSpacewireSDOut;
+
+        /// <summary>
         /// Текущее состояние подключения устройства.
         /// </summary>
         private bool _isConnected;
@@ -767,7 +791,12 @@ namespace EGSE.Devices
         /// Отображать ли окно имитатора БМ-4.
         /// </summary>
         private bool _isShowSimRouter;
-         
+
+        /// <summary>
+        /// Отображать ли окно управление НП.
+        /// </summary>
+        private bool _isShowSimSD;
+
         /// <summary>
         /// Время, пришедшее от прибора.
         /// </summary>
@@ -802,7 +831,15 @@ namespace EGSE.Devices
 
             _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2Addr.BukData, (uint)Spacewire2Addr.BukEnd, (uint)Spacewire2Addr.BukTime1, (uint)Spacewire2Addr.BukTime2);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
-            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);  
+            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
+
+            _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3Addr.InData, (uint)Spacewire3Addr.InEnd, (uint)Spacewire3Addr.InTime1, (uint)Spacewire3Addr.InTime2);
+            _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
+            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDIn.OnMessageFunc);
+
+            _decoderSpacewireSDOut = new ProtocolSpacewire((uint)Spacewire3Addr.OutData, (uint)Spacewire3Addr.OutEnd, (uint)Spacewire3Addr.OutTime1, (uint)Spacewire3Addr.OutTime2);
+            _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
+            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDOut.OnMessageFunc);  
 
             _devDataLogStream = null;
             _isWriteDevDataToFile = false;
@@ -817,6 +854,48 @@ namespace EGSE.Devices
         /// Вызывается, когда [получено сообщение по spacewire 2].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire2Msg;
+
+        /// <summary>
+        /// Вызывается, когда [получено сообщение по spacewire 3].
+        /// </summary>
+        public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
+
+        /// <summary>
+        /// Возможные рабочие приборы.
+        /// </summary>
+        public enum WorkDevice
+        {
+            /// <summary>
+            /// Рабочий прибор "УФЕС".
+            /// </summary>
+            Ufes = 0x00,
+
+            /// <summary>
+            /// Рабочий прибор "ВУФЕС".
+            /// </summary>
+            Vufes = 0x01,
+
+            /// <summary>
+            /// Рабочий прибор "СДЩ".
+            /// </summary>
+            Sdchsh = 0x02
+        }
+
+        /// <summary>
+        /// Полукомплекты рабочего прибора.
+        /// </summary>
+        public enum HalfSet
+        {
+            /// <summary>
+            /// Первый полукомплект.
+            /// </summary>
+            First = 0x00,
+
+            /// <summary>
+            /// Второй полукомплект.
+            /// </summary>
+            Second = 0x01
+        }
 
         /// <summary>
         /// Список возможных каналов имитатора БМ-4.
@@ -888,6 +967,52 @@ namespace EGSE.Devices
             /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
             /// </summary>
             BukTime2 = 0x0b
+        }
+
+        /// <summary>
+        /// Описывает адресные байты Spacewire2.
+        /// </summary>
+        public enum Spacewire3Addr : uint
+        {
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: Данные Spacewire".
+            /// </summary>
+            OutData = 0x0c,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: EOP или EEP".
+            /// </summary>
+            OutEnd = 0x0d,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: TIME TICK".
+            /// </summary>
+            OutTime1 = 0x0e,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: TIME TICK".
+            /// </summary>
+            OutTime2 = 0x0f,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 3: ВХОДНЫЕ ДАННЫЕ: Данные Spacewire".
+            /// </summary>
+            InData = 0x10,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 3: ВХОДНЫЕ ДАННЫЕ: EOP или EEP".
+            /// </summary>
+            InEnd = 0x11,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ: TIME TICK".
+            /// </summary>
+            InTime1 = 0x12,
+
+            /// <summary>
+            /// Адресный байт "SPACEWIRE 3: ВХОДНЫЕ ДАННЫЕ: TIME TICK".
+            /// </summary>
+            InTime2 = 0x13
         }
 
         /// <summary>
@@ -996,6 +1121,26 @@ namespace EGSE.Devices
         }
 
         /// <summary>
+        /// Получает значение, показывающее, видно ли [окно управление НП].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [окно управление НП] видно; иначе, <c>false</c>.
+        /// </value>
+        public bool IsShowSimSD
+        {
+            get
+            {
+                return _isShowSimSD;
+            }
+
+            private set
+            {
+                _isShowSimSD = value;
+                FirePropertyChangedEvent("IsShowSimSD");
+            }
+        }
+
+        /// <summary>
         /// Получает заголовок окна имитатора БМ-4.
         /// </summary>
         /// <value>
@@ -1009,6 +1154,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает значение текущей скорости по USB.
+        /// </summary>
+        /// <value>
+        /// Скорость передачи данных по USB.
+        /// </value>
         public float DeviceSpeed
         {
             get
@@ -1017,6 +1168,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает значение трафика по USB.
+        /// </summary>
+        /// <value>
+        /// Трафик данных по USB.
+        /// </value>
         public long DeviceTrafic
         {
             get
@@ -1203,11 +1360,6 @@ namespace EGSE.Devices
             }
         }
 
-        private bool IsQueueSpacewireMsg(SpacewireMsgEventArgs msg)
-        {
-            return ((4 == msg.Data.Length) && (0x26 == msg.Data[0]) && (0xF2 == msg.Data[1]) && (0x80 == msg.Data[2]) && (0x00 == msg.Data[3]));
-        }
-
         /// <summary>
         /// Called when [spacewire2 MSG].
         /// </summary>
@@ -1226,6 +1378,36 @@ namespace EGSE.Devices
                     this.GotSpacewire2Msg(sender, e);
                 }
             }
+        }
+
+        /// <summary>
+        /// Called when [spacewire3 MSG].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnSpacewire3Msg(object sender, SpacewireMsgEventArgs e)
+        {
+            if (this.GotSpacewire3Msg != null)
+            {
+                if (IsQueueSpacewireMsg(e))
+                {
+                    Spacewire3Notify.Spacewire3Queue++;
+                }
+                else
+                {
+                    this.GotSpacewire3Msg(sender, e);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Определяет когда [сообщение по spacewire] [является запросом квоты].
+        /// </summary>
+        /// <param name="msg">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns>true если сообщение "запрос квоты"</returns>
+        private bool IsQueueSpacewireMsg(SpacewireMsgEventArgs msg)
+        {
+            return (4 == msg.Data.Length) && (0x26 == msg.Data[0]) && (0xF2 == msg.Data[1]) && (0x80 == msg.Data[2]) && (0x00 == msg.Data[3]);
         }
 
         /// <summary>
@@ -1261,7 +1443,8 @@ namespace EGSE.Devices
                         ControlValuesList[Global.Spacewire2.SPTPLogicBusk].UsbValue = msg.Data[11];
                         ControlValuesList[Global.Spacewire2.SPTPLogicBuk].UsbValue = msg.Data[12];
                         ControlValuesList[Global.Spacewire2.SPTPLogicBkp].UsbValue = msg.Data[13];
-                        ControlValuesList[Global.Spacewire2.SPTPControl].UsbValue = msg.Data[14];                       
+                        ControlValuesList[Global.Spacewire2.SPTPControl].UsbValue = msg.Data[14];
+                        ControlValuesList[Global.Spacewire3.Control].UsbValue = msg.Data[15];  
                         ControlValuesList[Global.Spacewire1.Control].UsbValue = msg.Data[17];
                         ControlValuesList[Global.Spacewire1.Record].UsbValue = msg.Data[20];
                         ControlValuesList[Global.Spacewire1.SPTPControl].UsbValue = msg.Data[21];
@@ -1270,8 +1453,8 @@ namespace EGSE.Devices
                         ControlValuesList[Global.Spacewire1.SPTPLogicSD2].UsbValue = msg.Data[24];
                         ControlValuesList[Global.Spacewire1.SD1SendTime].UsbValue = (msg.Data[26] << 8) | msg.Data[25];
                         ControlValuesList[Global.Spacewire1.SD2SendTime].UsbValue = (msg.Data[28] << 8) | msg.Data[27];
-                        ControlValuesList[Global.Spacewire1.SD1DataSize].UsbValue = (msg.Data[30] << 8) | msg.Data[29]; // XXX
-                        ControlValuesList[Global.Spacewire1.SD2DataSize].UsbValue = (msg.Data[32] << 8) | msg.Data[31]; // XXX
+                        ////ControlValuesList[Global.Spacewire1.SD1DataSize].UsbValue = (msg.Data[30] << 8) | msg.Data[29]; // XXX
+                        ////ControlValuesList[Global.Spacewire1.SD2DataSize].UsbValue = (msg.Data[32] << 8) | msg.Data[31]; // XXX
                         ControlValuesList[Global.Spacewire4.Control].UsbValue = msg.Data[29];
                         ControlValuesList[Global.Spacewire4.Record].UsbValue = msg.Data[32];
                         break;
@@ -1415,26 +1598,94 @@ namespace EGSE.Devices
             /// </summary>
             private bool _powerBund2;
 
-
+            /// <summary>
+            /// Телеметрия: Питание УФЕС ОСН.
+            /// </summary>
             private bool _ufesPower1;
+
+            /// <summary>
+            /// Телеметрия: Питание УФЕС РЕЗ.
+            /// </summary>
             private bool _ufesPower2;
+
+            /// <summary>
+            /// Телеметрия: Питание ВУФЕС ОСН.
+            /// </summary>
             private bool _vufesPower1;
+
+            /// <summary>
+            /// Телеметрия: Питание ВУФЕС РЕЗ.
+            /// </summary>
             private bool _vufesPower2;
+
+            /// <summary>
+            /// Телеметрия: Питание СДЩ ОСН.
+            /// </summary>
             private bool _sdchshPower1;
+
+            /// <summary>
+            /// Телеметрия: Питание СДЩ РЕЗ.
+            /// </summary>
             private bool _sdchshPower2;
 
+            /// <summary>
+            /// Телеметрия: Подсветка УФЕС ОСН.
+            /// </summary>
             private bool _ufesLight1;
+
+            /// <summary>
+            /// Телеметрия: Подсветка УФЕС РЕЗ.
+            /// </summary>
             private bool _ufesLight2;
+
+            /// <summary>
+            /// Телеметрия: Подсветка ВУФЕС ОСН.
+            /// </summary>
             private bool _vufesLight1;
+
+            /// <summary>
+            /// Телеметрия: Подсветка ВУФЕС РЕЗ.
+            /// </summary>
             private bool _vufesLight2;
+
+            /// <summary>
+            /// Телеметрия: Подсветка СДЩ ОСН.
+            /// </summary>
             private bool _sdchshLight1;
+
+            /// <summary>
+            /// Телеметрия: Подсветка СДЩ РЕЗ.
+            /// </summary>
             private bool _sdchshLight2;
 
+            /// <summary>
+            /// Телеметрия: Затвор УФЕС ОСН.
+            /// </summary>
             private bool _ufesLock1;
+
+            /// <summary>
+            /// Телеметрия: Затвор УФЕС РЕЗ.
+            /// </summary>
             private bool _ufesLock2;
+
+            /// <summary>
+            /// Телеметрия: Затвор ВУФЕС ОСН.
+            /// </summary>
             private bool _vufesLock1;
+
+            /// <summary>
+            /// Телеметрия: Затвор ВУФЕС РЕЗ.
+            /// </summary>
             private bool _vufesLock2;
+
+            /// <summary>
+            /// Телеметрия: Затвор СДЩ ОСН.
+            /// </summary>
             private bool _sdchshLock1;
+
+            /// <summary>
+            /// Телеметрия: Затвор СДЩ РЕЗ.
+            /// </summary>
             private bool _sdchshLock2;
 
             /// <summary>
@@ -1527,7 +1778,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание первого полукомплекта БУСК].
+            /// Получает или задает значение, показывающее, есть ли [питание первого полукомплекта БУСК].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание первого полукомплекта БУСК]; иначе, <c>false</c>.
@@ -1548,7 +1799,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание второго полукомплекта БУСК].
+            /// Получает или задает значение, показывающее, есть ли [питание второго полукомплекта БУСК].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание второго полукомплекта БУСК]; иначе, <c>false</c>.
@@ -1569,7 +1820,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание первого полукомплекта БУНД].
+            /// Получает или задает значение, показывающее, есть ли [питание первого полукомплекта БУНД].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание первого полукомплекта БУНД]; иначе, <c>false</c>.
@@ -1590,7 +1841,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание второго полукомплекта БУНД].
+            /// Получает или задает значение, показывающее, есть ли [питание второго полукомплекта БУНД].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание второго полукомплекта БУНД]; иначе, <c>false</c>.
@@ -1609,6 +1860,13 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent("PowerBund2");
                 }
             }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, включен ли [затвор прибора УФЕС ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [затвор прибора УФЕС ОСН] включен; иначе, <c>false</c>.
+            /// </value>
             public bool UfesLock1 
             { 
                 get
@@ -1623,6 +1881,13 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent("UfesLock1");
                 }
             }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, включен ли [затвор прибора УФЕС РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [затвор прибора УФЕС РЕЗ] включен; иначе, <c>false</c>.
+            /// </value>
             public bool UfesLock2
             {
                 get
@@ -1630,12 +1895,20 @@ namespace EGSE.Devices
                     return _ufesLock2;
                 }
 
-                private set
+                set
                 {
                     _ufesLock2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock2, Convert.ToInt32(value));
                     FirePropertyChangedEvent("UfesLock2");
                 }
             }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, включен ли [затвор прибора ВУФЕС ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [затвор прибора ВУФЕС ОСН] включен; иначе, <c>false</c>.
+            /// </value>
             public bool VufesLock1
             {
                 get
@@ -1643,12 +1916,20 @@ namespace EGSE.Devices
                     return _vufesLock1;
                 }
 
-                private set
+                set
                 {
                     _vufesLock1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock1, Convert.ToInt32(value));
                     FirePropertyChangedEvent("VufesLock1");
                 }
             }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, включен ли [затвор прибора ВУФЕС РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [затвор прибора ВУФЕС РЕЗ] включен; иначе, <c>false</c>.
+            /// </value>
             public bool VufesLock2
             {
                 get
@@ -1656,12 +1937,20 @@ namespace EGSE.Devices
                     return _vufesLock2;
                 }
 
-                private set
+                set
                 {
                     _vufesLock2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock2, Convert.ToInt32(value));
                     FirePropertyChangedEvent("VufesLock2");
                 }
             }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, включен ли [затвор прибора СДЩ ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [затвор прибора СДЩ ОСН] включен; иначе, <c>false</c>.
+            /// </value>
             public bool SdchshLock1
             {
                 get
@@ -1669,12 +1958,20 @@ namespace EGSE.Devices
                     return _sdchshLock1;
                 }
 
-                private set
+                set
                 {
                     _sdchshLock1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock1, Convert.ToInt32(value));
                     FirePropertyChangedEvent("SdchshLock1");
                 }
             }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, включен ли [затвор прибора СДЩ РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [затвор прибора СДЩ РЕЗ] включен; иначе, <c>false</c>.
+            /// </value>
             public bool SdchshLock2
             {
                 get
@@ -1682,13 +1979,20 @@ namespace EGSE.Devices
                     return _sdchshLock2;
                 }
 
-                private set
+                set
                 {
                     _sdchshLock2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock2, Convert.ToInt32(value));
                     FirePropertyChangedEvent("SdchshLock2");
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [питание УФЕС ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [питание УФЕС ОСН]; иначе, <c>false</c>.
+            /// </value>
             public bool UfesPower1
             {
                 get
@@ -1703,6 +2007,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [питание УФЕС РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [питание УФЕС РЕЗ]; иначе, <c>false</c>.
+            /// </value>
             public bool UfesPower2
             {
                 get
@@ -1717,6 +2027,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [питание ВУФЕС ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [питание ВУФЕС ОСН]; иначе, <c>false</c>.
+            /// </value>
             public bool VufesPower1
             {
                 get
@@ -1731,6 +2047,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [питание ВУФЕС РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [питание ВУФЕС РЕЗ]; иначе, <c>false</c>.
+            /// </value>
             public bool VufesPower2
             {
                 get
@@ -1745,6 +2067,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [питание СДЩ ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [питание СДЩ ОСН]; иначе, <c>false</c>.
+            /// </value>
             public bool SdchshPower1
             {
                 get
@@ -1759,6 +2087,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [питание СДЩ РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [питание СДЩ РЕЗ]; иначе, <c>false</c>.
+            /// </value>
             public bool SdchshPower2
             {
                 get
@@ -1773,6 +2107,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [подсветка УФЕС ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [подсветка УФЕС ОСН]; иначе, <c>false</c>.
+            /// </value>
             public bool UfesLight1
             {
                 get
@@ -1787,6 +2127,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [подсветка УФЕС РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [подсветка УФЕС РЕЗ]; иначе, <c>false</c>.
+            /// </value>
             public bool UfesLight2
             {
                 get
@@ -1801,6 +2147,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [подсветка ВУФЕС ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [подсветка ВУФЕС ОСН]; иначе, <c>false</c>.
+            /// </value>
             public bool VufesLight1
             {
                 get
@@ -1814,7 +2166,13 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent("VufesLight1");
                 }
             }
-
+            
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [подсветка ВУФЕС РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [подсветка ВУФЕС РЕЗ]; иначе, <c>false</c>.
+            /// </value>
             public bool VufesLight2
             {
                 get
@@ -1829,6 +2187,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [подсветка СДЩ ОСН].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [подсветка СДЩ ОСН]; иначе, <c>false</c>.
+            /// </value>
             public bool SdchshLight1
             {
                 get
@@ -1843,6 +2207,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, есть ли [подсветка СДЩ РЕЗ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [подсветка СДЩ РЕЗ]; иначе, <c>false</c>.
+            /// </value>
             public bool SdchshLight2
             {
                 get
@@ -1925,8 +2295,6 @@ namespace EGSE.Devices
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock2, 3, 1, Device.CmdVufesLock2, value => VufesLock2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock1, 4, 1, Device.CmdSdchshLock1, value => SdchshLock1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock2, 5, 1, Device.CmdSdchshLock2, value => SdchshLock2 = 1 == value);
-
-
             }
         }
 
@@ -2056,6 +2424,11 @@ namespace EGSE.Devices
 
                 set
                 {
+                    if (value == _logicBusk)
+                    {
+                        return;
+                    }
+
                     _logicBusk = value;
                     ControlValuesList[Global.Spacewire1.SPTPLogicBusk].SetProperty(Global.Spacewire1.SPTPLogicBusk, value);
                     FirePropertyChangedEvent("ShowLogicBusk");
@@ -2092,6 +2465,11 @@ namespace EGSE.Devices
 
                 set
                 {
+                    if (value == _logicSD1)
+                    {
+                        return;
+                    }
+
                     _logicSD1 = value;
                     ControlValuesList[Global.Spacewire1.SPTPLogicSD1].SetProperty(Global.Spacewire1.SPTPLogicSD1, value);
                     FirePropertyChangedEvent("ShowLogicSD1");
@@ -2468,6 +2846,9 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire2 : SubNotify, IDataErrorInfo
         {
+            /// <summary>
+            /// Количество запросов квот по spacewire.
+            /// </summary>
             private long _spacewire2Queue;
 
             /// <summary>
@@ -2567,7 +2948,12 @@ namespace EGSE.Devices
             /// </value>
             public byte[] Data { get; set; }
 
-
+            /// <summary>
+            /// Получает или задает значение количества запросов квот по spacewire2.
+            /// </summary>
+            /// <value>
+            /// Количство запросов квот.
+            /// </value>
             public long Spacewire2Queue
             {
                 get
@@ -2719,6 +3105,11 @@ namespace EGSE.Devices
 
                 set
                 {
+                    if (value == _logicBusk)
+                    {
+                        return;
+                    }
+
                     _logicBusk = value;
                     ControlValuesList[Global.Spacewire2.SPTPLogicBusk].SetProperty(Global.Spacewire2.SPTPLogicBusk, value);
                     FirePropertyChangedEvent("ShowLogicBusk");
@@ -2755,6 +3146,11 @@ namespace EGSE.Devices
 
                 set
                 {
+                    if (value == _logicBuk)
+                    {
+                        return;
+                    }
+
                     _logicBuk = value;
                     ControlValuesList[Global.Spacewire2.SPTPLogicBuk].SetProperty(Global.Spacewire2.SPTPLogicBuk, value);
                     FirePropertyChangedEvent("ShowLogicBuk");
@@ -3130,12 +3526,275 @@ namespace EGSE.Devices
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
             /// <summary>
+            /// Рабочий прибор.
+            /// </summary>
+            private WorkDevice _workDevice;
+
+            /// <summary>
+            /// Управление: вкл/выкл интерфейса Spacewire.
+            /// </summary>
+            private bool _isIntfOn;
+
+            /// <summary>
+            /// Управление: Установлена связь.
+            /// </summary>
+            private bool _isConnected;
+
+            /// <summary>
+            /// Управление: Сигнал передачи кадров.
+            /// </summary>
+            private bool _isTransmission;
+
+            /// <summary>
+            /// Количество запросов квот по spacewire.
+            /// </summary>
+            private long _spacewire3Queue;
+
+            /// <summary>
+            /// Полукомплект рабочего прибора.
+            /// </summary>
+            private HalfSet _workDeviceHalfSet;
+
+            /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
             /// </summary>
             /// <param name="owner">The owner.</param>
             public Spacewire3(EgseBukNotify owner)
                 : base(owner)
             {
+            }
+
+            /// <summary>
+            /// Получает или задает значение количества запросов квот по spacewire3.
+            /// </summary>
+            /// <value>
+            /// Количство запросов квот.
+            /// </value>
+            public long Spacewire3Queue
+            {
+                get
+                {
+                    return _spacewire3Queue;
+                }
+
+                set
+                {
+                    _spacewire3Queue = value;
+                    FirePropertyChangedEvent("Spacewire3Queue");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsIntfOn
+            {
+                get
+                {
+                    return _isIntfOn;
+                }
+
+                set
+                {
+                    _isIntfOn = value;
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.IntfOn, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsIntfOn");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [связь по интерфейсу SpaceWire установлена]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsConnected
+            {
+                get
+                {
+                    return _isConnected;
+                }
+
+                set
+                {
+                    _isConnected = value;
+                    FirePropertyChangedEvent("IsConnected");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [выбрано рабочее устройство УФЕС].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выбрано рабочее устройство УФЕС]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsUfesDevice
+            {
+                get
+                {
+                    return WorkDevice.Ufes == SelectWorkDevice;
+                }
+
+                set
+                {
+                    SelectWorkDevice = value ? WorkDevice.Ufes : SelectWorkDevice;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [выбрано рабочее устройство ВУФЕС].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выбрано рабочее устройство ВУФЕС]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsVufesDevice
+            {
+                get
+                {
+                    return WorkDevice.Vufes == SelectWorkDevice;
+                }
+
+                set
+                {
+                    SelectWorkDevice = value ? WorkDevice.Vufes : SelectWorkDevice;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [выбрано рабочее устройство СДЩ].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выбрано рабочее устройство СДЩ]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsSdchshDevice
+            {
+                get
+                {
+                    return WorkDevice.Sdchsh == SelectWorkDevice;
+                }
+
+                set
+                {
+                    SelectWorkDevice = value ? WorkDevice.Sdchsh : SelectWorkDevice;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [передаются кадры данных].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [передаются кадры данных]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsTransmission
+            {
+                get
+                {
+                    return _isTransmission;
+                }
+
+                set
+                {
+                    _isTransmission = value;
+                    FirePropertyChangedEvent("IsTransmission");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [выбран первый полукомплект].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выбран первый полукомплект]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsFirstHalfSet
+            {
+                get
+                {
+                    return HalfSet.First == SelectHalfSet;
+                }
+
+                set
+                {
+                    SelectHalfSet = value ? HalfSet.First : SelectHalfSet;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [выбран второй полукомплект].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выбран второй полукомплект]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsSecondHalfSet
+            {
+                get
+                {
+                    return HalfSet.Second == SelectHalfSet;
+                }
+
+                set
+                {
+                    SelectHalfSet = value ? HalfSet.Second : SelectHalfSet;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает полукомплект прибора.
+            /// </summary>
+            /// <value>
+            /// Полукомплект прибора.
+            /// </value>
+            public HalfSet SelectHalfSet
+            {
+                get
+                {
+                    return _workDeviceHalfSet;
+                }
+
+                set
+                {
+                    if (value == _workDeviceHalfSet)
+                    {
+                        return;
+                    }
+
+                    _workDeviceHalfSet = value;
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.HalfSet, (int)value);
+                    FirePropertyChangedEvent("SelectHalfSet");
+                    FirePropertyChangedEvent("IsFirstHalfSet");
+                    FirePropertyChangedEvent("IsSecondHalfSet");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает рабочий прибор.
+            /// </summary>
+            /// <value>
+            /// Рабочий прибор.
+            /// </value>
+            public WorkDevice SelectWorkDevice
+            {
+                get
+                {
+                    return _workDevice;
+                }
+
+                set
+                {
+                    if (value == _workDevice)
+                    {
+                        return;
+                    }
+
+                    _workDevice = value;
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.WorkDevice, (int)value);
+                    FirePropertyChangedEvent("SelectWorkDevice");
+                    FirePropertyChangedEvent("IsUfesDevice");
+                    FirePropertyChangedEvent("IsVufesDevice");
+                    FirePropertyChangedEvent("IsSdchshDevice");
+                }
             }
 
             /// <summary>
@@ -3173,13 +3832,19 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitControlValue()
             {
+                ControlValuesList.Add(Global.Spacewire3.Control, new ControlValue());
             }
 
             /// <summary>
             /// Initializes the properties.
             /// </summary>
             protected override void InitProperties()
-            {
+            {                
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.IntfOn, 0, 1, Device.CmdSpacewire3Control, value => IsIntfOn = 1 == value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Transmission, 5, 1, delegate { }, value => IsTransmission = 1 == value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.HalfSet, 4, 1, Device.CmdSpacewire3Control, value => SelectHalfSet = (HalfSet)value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.WorkDevice, 1, 2, Device.CmdSpacewire3Control, value => SelectWorkDevice = (WorkDevice)value);
             }
         }
 
@@ -3249,7 +3914,7 @@ namespace EGSE.Devices
             /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [интерфейс SpaceWire4 включен]; иначе, <c>false</c>.
+            /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
             /// </value>
             public bool IsIntfOn
             {
@@ -3270,7 +3935,7 @@ namespace EGSE.Devices
             /// Получает или задает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [связь по интерфейсу SpaceWire4 установлена]; иначе, <c>false</c>.
+            /// <c>true</c> если [связь по интерфейсу SpaceWire установлена]; иначе, <c>false</c>.
             /// </value>
             public bool IsConnected
             {

@@ -50,7 +50,7 @@ namespace EGSE.Defaults
         public void Init(EgseBukNotify intfEGSE)
         {
             _intfEGSE = intfEGSE;
-            _intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            _intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
             DataContext = _intfEGSE;
             GridSpacewire2.DataContext = _intfEGSE.Spacewire2Notify;
         }
@@ -60,7 +60,7 @@ namespace EGSE.Defaults
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="msg">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
-        public void OnSpacewire2Msg(object sender, SpacewireMsgEventArgs msg)
+        public void OnSpacewireMsg(object sender, SpacewireMsgEventArgs msg)
         {
             if (msg != null)
             {

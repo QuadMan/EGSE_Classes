@@ -23,24 +23,6 @@ namespace EGSE.Constants
     public static class Global
     {
         /// <summary>
-        /// Расширяющий метод представления байт в формате: 0,00 байт/КБ/МБ/ГБ.
-        /// </summary>
-        /// <param name="IValueConverter">Поддерживающий интерфейс.</param>
-        /// <param name="value">Значение для преобразования.</param>
-        /// <returns>Строка в формате: 0,00 байт/КБ/МБ/ГБ.</returns>
-        public static string ReadableByte(this object IValueConverter, float value)
-        {
-            string[] sizes = { "байт", "КБ", "МБ", "ГБ" };
-            int order = 0;
-            while (value >= 1024 && order + 1 < sizes.Length)
-            {
-                order++;
-                value = value / 1024;
-            }
-            return string.Format("{0:0.##} {1}", value, sizes[order]);
-        }
-
-        /// <summary>
         /// Логическиq адрес [БУСК ПК1] для подключения к БМ-4.
         /// </summary>
         public const int LogicAddrBusk1 = 32;
@@ -100,6 +82,27 @@ namespace EGSE.Constants
         /// Получает индекс объекта "Телеметрия" в массиве ControlValuesList.
         /// </summary>
         public static CVTelemetry Telemetry { get; private set; }
+
+        /// <summary>
+        /// Расширяющий метод представления байт в формате: 0,00 байт/КБ/МБ/ГБ.
+        /// </summary>
+        /// <param name="obj">Расширяемый класс.</param>
+        /// <param name="value">Значение для преобразования.</param>
+        /// <returns>
+        /// Строка в формате: 0,00 байт/КБ/МБ/ГБ.
+        /// </returns>
+        public static string ReadableByte(this IValueConverter obj, float value)
+        {
+            string[] sizes = { "байт", "КБ", "МБ", "ГБ" };
+            int order = 0;
+            while (value >= 1024 && order + 1 < sizes.Length)
+            {
+                order++;
+                value = value / 1024;
+            }
+
+            return string.Format("{0:0.##} {1}", value, sizes[order]);
+        }
 
         /// <summary>
         /// Индексы свойств [SPACEWIRE 1 (ИМИТАТОР НП (БУК))]
@@ -585,6 +588,107 @@ namespace EGSE.Constants
         }
 
         /// <summary>
+        /// Индексы свойств [SPACEWIRE 3 (ИМИТАТОР УФЕС, ВУФЕС, СДЩ)]
+        /// </summary>
+        public static class Spacewire3
+        {
+            /// <summary>
+            /// Инициализирует статические поля класса <see cref="Spacewire3" />.
+            /// </summary>
+            static Spacewire3()
+            {
+                Control = new CVControl();
+            }
+
+            /// <summary>
+            /// Получает индекс объекта "Управление" в массиве ControlValuesList.
+            /// </summary>
+            public static CVControl Control { get; private set; }
+
+            /// <summary>
+            /// Индексы свойств [Управление].
+            /// </summary>
+            public class CVControl
+            {
+                /// <summary>
+                /// Индекс свойства [вкл/выкл интерфейса].
+                /// </summary>
+                public readonly string IntfOn = "a93332e69940441ba93247b7c962eff9";
+
+                /// <summary>
+                /// Индекс свойства [Установлена связь].
+                /// </summary>
+                public readonly string Connected = "f86f7cff64444b89941375109b499a71";
+
+                /// <summary>
+                /// Индекс свойства [Выбор рабочего прибора].
+                /// </summary>
+                public readonly string WorkDevice = "e492ba45d31b49b58178e00f519d7ad1";
+
+                /// <summary>
+                /// Индекс свойства [Выбор полукомплекта].
+                /// </summary>
+                public readonly string HalfSet = "7606efd54556417fb8a0ee3267eee449";
+
+                /// <summary>
+                /// Индекс свойства [Сигнал передачи кадров].
+                /// </summary>
+                public readonly string Transmission = "b265799f39d44309b49263c924b2b26c";
+
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVControl obj)
+                {
+                    return "62d4ddf675c54f628307456ed86fdd0e";
+                }
+            }
+
+            /// <summary>
+            /// Индексы свойств [Запись данных(до 1 Кбайт)].
+            /// </summary>
+            public class CVRecord
+            {
+                /// <summary>
+                /// Индекс свойства [EEP или EOP].
+                /// </summary>
+                public readonly string EEPSend = "2dc3af5bdee944879a5ac25dd6a45e92";
+
+                /// <summary>
+                /// Индекс свойства [Выдача в конце посылки EOP или EEP].
+                /// </summary>
+                public readonly string EOPSend = "30f280120fa74d4684407c9a311f99d8";
+
+                /// <summary>
+                /// Индекс свойства [Автоматическая выдача].
+                /// </summary>
+                public readonly string AutoSend = "99538c248ef244aaa03885d1853caafe";
+
+                /// <summary>
+                /// Индекс свойства [Бит занятости].
+                /// </summary>
+                public readonly string RecordBusy = "c1d34d90621240bdbb6296af31b3e0c0";
+
+                /// <summary>
+                /// Индекс свойства [Бит выдачи посылки].
+                /// </summary>
+                public readonly string RecordSend = "66facd91e95048308f194e726113804a";
+
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVRecord obj)
+                {
+                    return "1e560484a6514be0a7bc64e28d1f12a1";
+                }
+            }
+        }
+
+        /// <summary>
         /// Индексы свойств [SPACEWIRE 4 (ИМИТАТОР ДЕТЕКТОРОВ (БУК))]
         /// </summary>
         public static class Spacewire4
@@ -707,17 +811,59 @@ namespace EGSE.Constants
             /// </summary>
             public readonly string UfesPower1 = "77847f912b2842fd954a53454b1283af";
 
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Питание УФЕС (рез)].
+            /// </summary>
             public readonly string UfesPower2 = "eac13e31010a4639a7bb1a8eaa1e7059";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Питание ВУФЕС (осн)].
+            /// </summary>
             public readonly string VufesPower1 = "b0efec8196ff41a19193da4432342647";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Питание ВУФЕС (рез)].
+            /// </summary>
             public readonly string VufesPower2 = "94e0bcb218424ed9bd4d7c2365996aa9";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Питание СДЩ (осн)].
+            /// </summary>
             public readonly string SdchshPower1 = "b59d3528df6b4e9887aa3754e225758a";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Питание СДЩ (рез)].
+            /// </summary>
             public readonly string SdchshPower2 = "4c1443fda8bf48bdb019ef8e99325315";
 
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Подсветка УФЕС (осн)].
+            /// </summary>
             public readonly string UfesLight1 = "8bd191047cd345759fd844f6c4b643ff";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Подсветка УФЕС (рез)].
+            /// </summary>
             public readonly string UfesLight2 = "cb102496daac44ffa4136b4c071df11f";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Подсветка ВУФЕС (осн)].
+            /// </summary>
             public readonly string VufesLight1 = "db83722ee76f43f8a8688ccdbac81ef8";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Подсветка ВУФЕС (рез)].
+            /// </summary>
             public readonly string VufesLight2 = "0ad388efb4b641688a4134e613a9437e";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Подсветка СДЩ (осн)].
+            /// </summary>
             public readonly string SdchshLight1 = "09033a4f5c064af58241ce7bff73198a";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Подсветка СДЩ (рез)].
+            /// </summary>
             public readonly string SdchshLight2 = "979aa9840c644636988aa7e96487a973";
 
             /// <summary>

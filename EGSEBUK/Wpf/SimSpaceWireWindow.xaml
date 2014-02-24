@@ -205,7 +205,7 @@
         </Grid.ColumnDefinitions>
         <Grid Background="LightBlue"
               Margin="4"
-              Name="GridSpacewire1">
+              x:Name="GridSpacewire1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>

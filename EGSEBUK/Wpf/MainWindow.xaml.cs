@@ -45,6 +45,11 @@ namespace EGSE.Defaults
         private SimSpacewireWindow winSimSpacewire;
 
         /// <summary>
+        /// Окно "управление НП"
+        /// </summary>
+        private SDWindow winSimSD;
+
+        /// <summary>
         /// Экземпляр для работы с командами циклограммы.
         /// </summary>
         private CyclogramCommandBUK _bukCycCommands = new CyclogramCommandBUK();
@@ -118,6 +123,8 @@ namespace EGSE.Defaults
             winSimRouter.Init(_intfEGSE);
             winSimSpacewire = new SimSpacewireWindow();            
             winSimSpacewire.Init(_intfEGSE);
+            winSimSD = new SDWindow();
+            winSimSD.Init(_intfEGSE);
             DataContext = _intfEGSE;
             GridTelemetry.DataContext = _intfEGSE.TelemetryNotify;
         }
@@ -162,6 +169,11 @@ namespace EGSE.Defaults
             _intfEGSE.TelemetryNotify.PowerBund2 = !_intfEGSE.TelemetryNotify.PowerBund2;           
         }
 
+        /// <summary>
+        /// Handles the 4 event of the Button_Click control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             _intfEGSE.TelemetryNotify.UfesLock1 = !_intfEGSE.TelemetryNotify.UfesLock1;           
