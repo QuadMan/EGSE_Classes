@@ -90,7 +90,7 @@ namespace EGSE.Defaults
         private void TimerWork(object sender, EventArgs e)
         {
             OnTimerWork();
-
+            
             // проверяем элементы управления - изменились ли они
             // testControlValuesOnTimeTick();
             //// индикация подключения, скорости
@@ -230,6 +230,47 @@ namespace EGSE.Defaults
             return ((string)value == "true") ? true : false;
         }
     }
+
+    public class EgseTimeToStrConverter : IValueConverter
+    {     
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value as EgseTime).ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class DeviceSpeedToStrConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.Format(Resource.Get(@"stDeviceSpeed"), this.ReadableByte((float)value));             
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class DeviceTraficToStrConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.Format(Resource.Get(@"stDeviceTrafic"), this.ReadableByte((float)((long)value)));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+   
+
 
     /// <summary>
     /// Конвертор array to string для wpf.

@@ -68,11 +68,11 @@ namespace EGSE.Defaults
                 if (null != Spacewire2Mon && Visibility.Visible == this.Visibility)
                 {
                     Spacewire2Mon.Dispatcher.Invoke(new Action(delegate
-                        { 
-                            Spacewire2Mon.Items.Add(spacewireMsg); 
-                            Spacewire2Mon.ScrollIntoView(spacewireMsg); 
+                        {
+                            Spacewire2Mon.Items.Add(spacewireMsg);
+                            Spacewire2Mon.ScrollIntoView(spacewireMsg);
                         }));
-                }
+                }           
             }
         }  
 

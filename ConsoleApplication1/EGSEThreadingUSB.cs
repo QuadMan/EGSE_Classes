@@ -76,9 +76,14 @@ namespace EGSE.Threading
         private int _lastTickCount;
 
         /// <summary>
+        /// Значение размера трафика по USB.
+        /// </summary>
+        private long _trafic;
+
+        /// <summary>
         /// Для рассчета скорости, сколько было прочитано данных за секунду.
         /// </summary>
-        private ulong _dataReaded;
+        private long _dataReaded;
 
         /// <summary>
         /// Флаг остановки процесса получения данных.
@@ -98,13 +103,10 @@ namespace EGSE.Threading
             _lastTickCount = 0;
             _dataReaded = 0;
             _terminateFlag = false;
-
             _cmdQueue = new Queue<byte[]>();
-
             _cfg = cfg;
             BigBuf = new BigBufferManager(bufSize);
             _ftdi = new USBFTDI(serial, _cfg);
-
             _thread = new Thread(Execution);
             _thread.IsBackground = true;
         }
@@ -124,15 +126,32 @@ namespace EGSE.Threading
         /// Получает или задает событие на изменение состояния подключения.
         /// </summary>
         public StateChangedHandleEvent StateChangeEvent { get; set; }
-        
+
         /// <summary>
         /// Получает значение скорости приема данных из USB.
         /// </summary>
+        /// <value>
+        /// The speed bytes sec.
+        /// </value>
         public float SpeedBytesSec
         {
             get
             {
                 return _speed;
+            }
+        }
+
+        /// <summary>
+        /// Получает значение трафика по USB.
+        /// </summary>
+        /// <value>
+        /// The trafic.
+        /// </value>
+        public long Trafic
+        {
+            get
+            {
+                return _trafic;
             }
         }
 
@@ -183,11 +202,12 @@ namespace EGSE.Threading
             {
                 _lastTickCount = Environment.TickCount;
                 _speed = (float)_dataReaded / tickDelta * 1000;
+                _trafic += _dataReaded;
                 _dataReaded = 0;
             }
             else
             {
-                _dataReaded += (ulong)bytesReaded;
+                _dataReaded += bytesReaded;
             }
         }
 

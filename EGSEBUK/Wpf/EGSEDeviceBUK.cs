@@ -20,7 +20,6 @@ namespace EGSE.Devices
     using EGSE.Constants;
     using EGSE.Defaults;
     using EGSE.Protocols;
-    using EGSE.Telemetry;
     using EGSE.USB;
     using EGSE.Utilites;
 
@@ -89,6 +88,21 @@ namespace EGSE.Devices
         /// Адресный байт "Бит выдачи релейных команд".
         /// </summary>
         private const int PowerSetAddr = 0x42;
+
+        /// <summary>
+        /// Адресный байт "Датчики затворов [7:0]".
+        /// </summary>
+        private const int LockLoAddr = 0x44;
+
+        /// <summary>
+        /// Адресный байт "Датчики затворов [11:8]".
+        /// </summary>
+        private const int LockHiAddr = 0x45;
+
+        /// <summary>
+        /// Адресный байт "Бит выдачи релейных команд для установки затворов".
+        /// </summary>
+        private const int LockSetAddr = 0x46;
 
         /// <summary>
         /// Адресный байт "Управление".
@@ -361,6 +375,102 @@ namespace EGSE.Devices
             SendToUSB(PowerHiAddr, new byte[1] { buf });
             SendToUSB(PowerSetAddr, new byte[1] { 1 });
         }
+       
+        public void CmdUfesLock1(int value)
+        {
+            byte buf = 0;
+            if (0 == value)
+            {
+                buf |= 1 << 3;
+            }
+            else
+            {
+                buf |= 1 << 2;
+            }
+
+            SendToUSB(LockHiAddr, new byte[1] { buf });
+            SendToUSB(LockSetAddr, new byte[1] { 1 });
+        }
+
+        public void CmdUfesLock2(int value)
+        {
+            byte buf = 0;
+            if (0 == value)
+            {
+                buf |= 1 << 1;
+            }
+            else
+            {
+                buf |= 1 << 0;
+            }
+
+            SendToUSB(LockHiAddr, new byte[1] { buf });
+            SendToUSB(LockSetAddr, new byte[1] { 1 });
+        }
+
+        public void CmdVufesLock1(int value)
+        {
+            byte buf = 0;
+            if (0 == value)
+            {
+                buf |= 1 << 7;
+            }
+            else
+            {
+                buf |= 1 << 6;
+            }
+
+            SendToUSB(LockLoAddr, new byte[1] { buf });
+            SendToUSB(LockSetAddr, new byte[1] { 1 });
+        }
+
+        public void CmdVufesLock2(int value)
+        {
+            byte buf = 0;
+            if (0 == value)
+            {
+                buf |= 1 << 5;
+            }
+            else
+            {
+                buf |= 1 << 4;
+            }
+
+            SendToUSB(LockLoAddr, new byte[1] { buf });
+            SendToUSB(LockSetAddr, new byte[1] { 1 });
+        }
+
+        public void CmdSdchshLock1(int value)
+        {
+            byte buf = 0;
+            if (0 == value)
+            {
+                buf |= 1 << 3;
+            }
+            else
+            {
+                buf |= 1 << 2;
+            }
+
+            SendToUSB(LockLoAddr, new byte[1] { buf });
+            SendToUSB(LockSetAddr, new byte[1] { 1 });
+        }
+
+        public void CmdSdchshLock2(int value)
+        {
+            byte buf = 0;
+            if (0 == value)
+            {
+                buf |= 1 << 1;
+            }
+            else
+            {
+                buf |= 1 << 0;
+            }
+
+            SendToUSB(LockLoAddr, new byte[1] { buf });
+            SendToUSB(LockSetAddr, new byte[1] { 1 });
+        }
 
         /// <summary>
         /// Команда SpaceWire2: Управление.
@@ -557,24 +667,48 @@ namespace EGSE.Devices
         {
             if (_intfBUK.Spacewire2Notify.IsBUK1BM1Channel || _intfBUK.Spacewire2Notify.IsBUK1BM2Channel)
             {
-                _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk1;
-                _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk1;  
+                if (Global.LogicAddrBuk1 != _intfBUK.Spacewire2Notify.LogicBuk)
+                {
+                    _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk1;
+                }
+                if (Global.LogicAddrBuk1 != _intfBUK.Spacewire1Notify.LogicSD1)
+                {
+                    _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk1;
+                }
             }
             else            
             {
-                _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk2;
-                _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk2;  
+                if (Global.LogicAddrBuk2 != _intfBUK.Spacewire2Notify.LogicBuk)
+                {
+                    _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk2;
+                }
+                if (Global.LogicAddrBuk2 != _intfBUK.Spacewire1Notify.LogicSD1)
+                {
+                    _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk2;
+                }
             }
 
             if (_intfBUK.Spacewire2Notify.IsBUK1BM1Channel || _intfBUK.Spacewire2Notify.IsBUK2BM1Channel)
             {
-                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk1;
-                _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk1;  
+                if (Global.LogicAddrBusk1 != _intfBUK.Spacewire2Notify.LogicBusk)
+                {
+                    _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk1;
+                }
+                if (Global.LogicAddrBusk1 != _intfBUK.Spacewire1Notify.LogicBusk)
+                {
+                    _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk1;
+                }
             }
             else
             {
-                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk2;
-                _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk2;  
+                if (Global.LogicAddrBusk2 != _intfBUK.Spacewire2Notify.LogicBusk)
+                {
+                    _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk2;
+                }
+                if (Global.LogicAddrBusk2 != _intfBUK.Spacewire1Notify.LogicBusk)
+                {
+                    _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk2;
+                }
             }
         }
     }
@@ -633,6 +767,11 @@ namespace EGSE.Devices
         /// Отображать ли окно имитатора БМ-4.
         /// </summary>
         private bool _isShowSimRouter;
+         
+        /// <summary>
+        /// Время, пришедшее от прибора.
+        /// </summary>
+        private EgseTime _deviceTime;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseBukNotify" />.
@@ -651,7 +790,6 @@ namespace EGSE.Devices
 
             ControlValuesList = new Dictionary<string, ControlValue>();
 
-            ControlValuesList.Add(Global.Power, new ControlValue());
             TelemetryNotify = new Telemetry(this);
             Spacewire1Notify = new Spacewire1(this);
             Spacewire2Notify = new Spacewire2(this);
@@ -668,8 +806,6 @@ namespace EGSE.Devices
 
             _devDataLogStream = null;
             _isWriteDevDataToFile = false;
-            
-            Tele = new TelemetryBUK();
         }
 
         /// <summary>
@@ -873,6 +1009,22 @@ namespace EGSE.Devices
             }
         }
 
+        public float DeviceSpeed
+        {
+            get
+            {
+                return Device.Speed;
+            }
+        }
+
+        public long DeviceTrafic
+        {
+            get
+            {
+                return Device.Trafic;
+            }
+        }
+
         /// <summary>
         /// Получает или задает значение, показывающее, нужно ли [записывать данные от прибора в файл].
         /// </summary>
@@ -939,12 +1091,18 @@ namespace EGSE.Devices
         /// <summary>
         /// Получает или задает время, пришедшее от прибора.
         /// </summary>       
-        public EgseTime DeviceTime { get; set; }
+        public EgseTime DeviceTime
+        {
+            get
+            {                
+                return _deviceTime;                
+            }
 
-        /// <summary>
-        /// Получает или задает экземпляр декодера телеметрии.
-        /// </summary>
-        public TelemetryBUK Tele { get; set; }
+            set
+            {
+                _deviceTime = value;                
+            }
+        }
 
         /// <summary>
         /// Получает или задает список управляющих элементов.
@@ -1045,6 +1203,11 @@ namespace EGSE.Devices
             }
         }
 
+        private bool IsQueueSpacewireMsg(SpacewireMsgEventArgs msg)
+        {
+            return ((4 == msg.Data.Length) && (0x26 == msg.Data[0]) && (0xF2 == msg.Data[1]) && (0x80 == msg.Data[2]) && (0x00 == msg.Data[3]));
+        }
+
         /// <summary>
         /// Called when [spacewire2 MSG].
         /// </summary>
@@ -1054,7 +1217,14 @@ namespace EGSE.Devices
         {
             if (this.GotSpacewire2Msg != null)
             {
-                this.GotSpacewire2Msg(sender, e);
+                if (IsQueueSpacewireMsg(e))
+                {
+                    Spacewire2Notify.Spacewire2Queue++;
+                }
+                else
+                {
+                    this.GotSpacewire2Msg(sender, e);
+                }
             }
         }
 
@@ -1082,7 +1252,10 @@ namespace EGSE.Devices
                 switch (msg.Addr)
                 {
                     case TimeDataAddr:
-                        Array.Copy(msg.Data, 0, DeviceTime.Data, 0, 6);
+                        Array.Copy(msg.Data, 1, DeviceTime.Data, 0, 6);
+                        FirePropertyChangedEvent("DeviceTime");
+                        FirePropertyChangedEvent("DeviceSpeed");
+                        FirePropertyChangedEvent("DeviceTrafic");
                         ControlValuesList[Global.Spacewire2.Control].UsbValue = msg.Data[7];
                         ControlValuesList[Global.Spacewire2.Record].UsbValue = msg.Data[10]; 
                         ControlValuesList[Global.Spacewire2.SPTPLogicBusk].UsbValue = msg.Data[11];
@@ -1103,8 +1276,7 @@ namespace EGSE.Devices
                         ControlValuesList[Global.Spacewire4.Record].UsbValue = msg.Data[32];
                         break;
                     case TeleDataAddr:
-                        Tele.Update(msg.Data);
-                        ControlValuesList[Global.Power].UsbValue = msg.Data[3];
+                        ControlValuesList[Global.Telemetry].UsbValue = (msg.Data[2] << 16) | (msg.Data[3] << 8) | msg.Data[4];
                         break;
                 }
             }
@@ -1243,6 +1415,28 @@ namespace EGSE.Devices
             /// </summary>
             private bool _powerBund2;
 
+
+            private bool _ufesPower1;
+            private bool _ufesPower2;
+            private bool _vufesPower1;
+            private bool _vufesPower2;
+            private bool _sdchshPower1;
+            private bool _sdchshPower2;
+
+            private bool _ufesLight1;
+            private bool _ufesLight2;
+            private bool _vufesLight1;
+            private bool _vufesLight2;
+            private bool _sdchshLight1;
+            private bool _sdchshLight2;
+
+            private bool _ufesLock1;
+            private bool _ufesLock2;
+            private bool _vufesLock1;
+            private bool _vufesLock2;
+            private bool _sdchshLock1;
+            private bool _sdchshLock2;
+
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Telemetry" />.
             /// </summary>
@@ -1345,9 +1539,10 @@ namespace EGSE.Devices
                     return _powerBusk1;
                 }
 
-                private set
+                set
                 {
                     _powerBusk1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(value));
                     FirePropertyChangedEvent("PowerBusk1");
                 }
             }
@@ -1365,9 +1560,10 @@ namespace EGSE.Devices
                     return _powerBusk2;
                 }
 
-                private set
+                set
                 {
                     _powerBusk2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(value));
                     FirePropertyChangedEvent("PowerBusk2");
                 }
             }
@@ -1385,9 +1581,10 @@ namespace EGSE.Devices
                     return _powerBund1;
                 }
 
-                private set
+                set
                 {
                     _powerBund1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(value));
                     FirePropertyChangedEvent("PowerBund1");
                 }
             }
@@ -1405,10 +1602,258 @@ namespace EGSE.Devices
                     return _powerBund2;
                 }
 
-                private set
+                set
                 {
                     _powerBund2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(value));
                     FirePropertyChangedEvent("PowerBund2");
+                }
+            }
+            public bool UfesLock1 
+            { 
+                get
+                {
+                    return _ufesLock1;
+                }
+
+                set
+                {
+                    _ufesLock1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock1, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("UfesLock1");
+                }
+            }
+            public bool UfesLock2
+            {
+                get
+                {
+                    return _ufesLock2;
+                }
+
+                private set
+                {
+                    _ufesLock2 = value;
+                    FirePropertyChangedEvent("UfesLock2");
+                }
+            }
+            public bool VufesLock1
+            {
+                get
+                {
+                    return _vufesLock1;
+                }
+
+                private set
+                {
+                    _vufesLock1 = value;
+                    FirePropertyChangedEvent("VufesLock1");
+                }
+            }
+            public bool VufesLock2
+            {
+                get
+                {
+                    return _vufesLock2;
+                }
+
+                private set
+                {
+                    _vufesLock2 = value;
+                    FirePropertyChangedEvent("VufesLock2");
+                }
+            }
+            public bool SdchshLock1
+            {
+                get
+                {
+                    return _sdchshLock1;
+                }
+
+                private set
+                {
+                    _sdchshLock1 = value;
+                    FirePropertyChangedEvent("SdchshLock1");
+                }
+            }
+            public bool SdchshLock2
+            {
+                get
+                {
+                    return _sdchshLock2;
+                }
+
+                private set
+                {
+                    _sdchshLock2 = value;
+                    FirePropertyChangedEvent("SdchshLock2");
+                }
+            }
+
+            public bool UfesPower1
+            {
+                get
+                {
+                    return _ufesPower1;
+                }
+
+                private set
+                {
+                    _ufesPower1 = value;
+                    FirePropertyChangedEvent("UfesPower1");
+                }
+            }
+
+            public bool UfesPower2
+            {
+                get
+                {
+                    return _ufesPower2;
+                }
+
+                private set
+                {
+                    _ufesPower2 = value;
+                    FirePropertyChangedEvent("UfesPower2");
+                }
+            }
+
+            public bool VufesPower1
+            {
+                get
+                {
+                    return _vufesPower1;
+                }
+
+                private set
+                {
+                    _vufesPower1 = value;
+                    FirePropertyChangedEvent("VufesPower1");
+                }
+            }
+
+            public bool VufesPower2
+            {
+                get
+                {
+                    return _vufesPower2;
+                }
+
+                private set
+                {
+                    _vufesPower2 = value;
+                    FirePropertyChangedEvent("VufesPower2");
+                }
+            }
+
+            public bool SdchshPower1
+            {
+                get
+                {
+                    return _sdchshPower1;
+                }
+
+                private set
+                {
+                    _sdchshPower1 = value;
+                    FirePropertyChangedEvent("SdchshPower1");
+                }
+            }
+
+            public bool SdchshPower2
+            {
+                get
+                {
+                    return _sdchshPower2;
+                }
+
+                private set
+                {
+                    _sdchshPower2 = value;
+                    FirePropertyChangedEvent("SdchshPower2");
+                }
+            }
+
+            public bool UfesLight1
+            {
+                get
+                {
+                    return _ufesLight1;
+                }
+
+                private set
+                {
+                    _ufesLight1 = value;
+                    FirePropertyChangedEvent("UfesLight1");
+                }
+            }
+
+            public bool UfesLight2
+            {
+                get
+                {
+                    return _ufesLight2;
+                }
+
+                private set
+                {
+                    _ufesLight2 = value;
+                    FirePropertyChangedEvent("UfesLight2");
+                }
+            }
+
+            public bool VufesLight1
+            {
+                get
+                {
+                    return _vufesLight1;
+                }
+
+                private set
+                {
+                    _vufesLight1 = value;
+                    FirePropertyChangedEvent("VufesLight1");
+                }
+            }
+
+            public bool VufesLight2
+            {
+                get
+                {
+                    return _vufesLight2;
+                }
+
+                private set
+                {
+                    _vufesLight2 = value;
+                    FirePropertyChangedEvent("VufesLight2");
+                }
+            }
+
+            public bool SdchshLight1
+            {
+                get
+                {
+                    return _sdchshLight1;
+                }
+
+                private set
+                {
+                    _sdchshLight1 = value;
+                    FirePropertyChangedEvent("SdchshLight1");
+                }
+            }
+
+            public bool SdchshLight2
+            {
+                get
+                {
+                    return _sdchshLight2;
+                }
+
+                private set
+                {
+                    _sdchshLight2 = value;
+                    FirePropertyChangedEvent("SdchshLight2");
                 }
             }
 
@@ -1455,10 +1900,33 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk1, 7, 1, Device.CmdPowerBusk1, value => PowerBusk1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 6, 1, Device.CmdPowerBusk2, value => PowerBusk2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 4, 1, Device.CmdPowerBund1, value => PowerBund1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 5, 1, Device.CmdPowerBund2, value => PowerBund2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk1, 15, 1, Device.CmdPowerBusk1, value => PowerBusk1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => PowerBusk2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => PowerBund1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => PowerBund2 = 1 == value);
+
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 6, 1, delegate { }, value => UfesLight1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 7, 1, delegate { }, value => UfesLight2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 9, 1, delegate { }, value => VufesLight2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 10, 1, delegate { }, value => SdchshLight1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value);
+
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower1, 20, 1, delegate { }, value => UfesPower1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower2, 21, 1, delegate { }, value => UfesPower2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower1, 19, 1, delegate { }, value => VufesPower1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower2, 18, 1, delegate { }, value => VufesPower2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower1, 17, 1, delegate { }, value => SdchshPower1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower2, 16, 1, delegate { }, value => SdchshPower2 = 1 == value);
+
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock1, 0, 1, Device.CmdUfesLock1, value => UfesLock1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock2, 1, 1, Device.CmdUfesLock2, value => UfesLock2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock1, 2, 1, Device.CmdVufesLock1, value => VufesLock1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock2, 3, 1, Device.CmdVufesLock2, value => VufesLock2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock1, 4, 1, Device.CmdSdchshLock1, value => SdchshLock1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock2, 5, 1, Device.CmdSdchshLock2, value => SdchshLock2 = 1 == value);
+
+
             }
         }
 
@@ -1979,9 +2447,9 @@ namespace EGSE.Devices
             {
                 ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.IntfOn, 0, 1, Device.CmdSpacewire1Control, value => IsIntfOn = 1 == value);
                 ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
-                ControlValuesList[Global.Spacewire1.SPTPLogicBusk].AddProperty(Global.Spacewire1.SPTPLogicBusk, 0, 8, Device.CmdSpacewire1LogicBusk, value => LogicBusk = value);
-                ControlValuesList[Global.Spacewire1.SPTPLogicSD1].AddProperty(Global.Spacewire1.SPTPLogicSD1, 0, 8, Device.CmdSpacewire1LogicSD1, value => LogicSD1 = value);
-                ControlValuesList[Global.Spacewire1.SPTPLogicSD2].AddProperty(Global.Spacewire1.SPTPLogicSD2, 0, 8, delegate { }, value => LogicSD2 = value);
+                ControlValuesList[Global.Spacewire1.SPTPLogicBusk].AddProperty(Global.Spacewire1.SPTPLogicBusk, 0, 8, Device.CmdSpacewire1LogicBusk, value => _logicBusk = value);
+                ControlValuesList[Global.Spacewire1.SPTPLogicSD1].AddProperty(Global.Spacewire1.SPTPLogicSD1, 0, 8, Device.CmdSpacewire1LogicSD1, value => _logicSD1 = value);
+                ControlValuesList[Global.Spacewire1.SPTPLogicSD2].AddProperty(Global.Spacewire1.SPTPLogicSD2, 0, 8, delegate { }, value => _logicSD2 = value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP1Trans, 0, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP1Trans = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP2Trans, 2, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP2Trans = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP1TransData, 1, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP1TransData = 1 == value);
@@ -2000,6 +2468,8 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire2 : SubNotify, IDataErrorInfo
         {
+            private long _spacewire2Queue;
+
             /// <summary>
             /// SPTP: Адрес ИМИТАТОРА БУСКа.
             /// </summary>
@@ -2096,6 +2566,21 @@ namespace EGSE.Devices
             /// Буфер данных.
             /// </value>
             public byte[] Data { get; set; }
+
+
+            public long Spacewire2Queue
+            {
+                get
+                {
+                    return _spacewire2Queue;
+                }
+
+                set
+                {
+                    _spacewire2Queue = value;
+                    FirePropertyChangedEvent("Spacewire2Queue");
+                }
+            }
 
             /// <summary>
             /// Получает или задает значение, показывающее, что [выбран канал БУК ПК1 - БМ-4 ПК1].
@@ -2199,9 +2684,9 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent("IsBUK2BM2Channel");
                     FirePropertyChangedEvent("IsBUK1BM1Channel");
                     FirePropertyChangedEvent("IsBUK1BM2Channel");
-                    FirePropertyChangedEvent("IsBUK2BM1Channel");
-                    Owner.FirePropertyChangedEvent("Caption");
+                    FirePropertyChangedEvent("IsBUK2BM1Channel");                    
                     Device.CmdSetDeviceLogicAddr();
+                    Owner.FirePropertyChangedEvent("Caption");
                 }
             }
 

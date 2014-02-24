@@ -196,10 +196,11 @@
                     Template="{DynamicResource FlatButtonClick}"                       
                     Content="из файла..."/>
             <Button Grid.Row="2"  
-                    Template="{DynamicResource FlatButtonClick}"                       
-                    Content="Передать в БКП" Click="Button_Click_8"/>
-            <Button Grid.Row="2"  
                     Grid.Column="1"
+                    Template="{DynamicResource FlatButtonClick}"                       
+                    Content="Передать в БКП" Click="Button_Click_8" Visibility="Hidden"/>
+            <Button Grid.Row="2"  
+                    Grid.ColumnSpan="2"
                     Template="{DynamicResource FlatButtonClick}"                       
                     Content="Передать в БУК" Click="Button_Click_9"/>
             <Button Grid.Row="2"  
@@ -213,42 +214,56 @@
               Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Content="Монитор SpaceWire"
+            <Label Grid.ColumnSpan="2"
+                   Content="Монитор SpaceWire"
+                   Template="{DynamicResource FlatLabel}"/>
+            <Label Grid.Row="1"
+                   Content="Количество запросов квоты"
+                   Template="{DynamicResource FlatLabel}"/>
+            <Label Grid.Row="1"
+                   Grid.Column="1"   
+                   Content="{Binding Spacewire2Queue}"
                    Template="{DynamicResource FlatLabel}"/>
             <ListBox x:Name="Spacewire2Mon" 
-                     Grid.Row="1"
+                     Grid.Row="2"
+                     Grid.ColumnSpan="2"
                      Margin="1"
-                     BorderThickness="0"/>
+                     BorderThickness="0"/>                
         </Grid>
         <Button Grid.Column="2"                               
 				Grid.Row="5"  
                 Tag="{Binding IsBkpKbv, Converter={StaticResource boolToIndexConverter}}"
-				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_4"/>
+				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_4" Visibility="Hidden"/>
         <Button Grid.Column="2"                               
 				Grid.Row="6"  
                 Tag="{Binding IsBkpTrans, Converter={StaticResource boolToIndexConverter}}"
-				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_2"/>
+				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_2" Visibility="Hidden"/>
         <Button Grid.Column="1"                               
 				Grid.Row="5"  
+                Grid.ColumnSpan="2"
                 Tag="{Binding IsBukKbv, Converter={StaticResource boolToIndexConverter}}"
 				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_3"/>
         <Button Grid.Column="1"                               
 				Grid.Row="6"  
+                Grid.ColumnSpan="2"
                 Tag="{Binding IsBukTrans, Converter={StaticResource boolToIndexConverter}}"
 				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_1"/>
         <Button Grid.Column="1"                               
 				Grid.Row="7"  
+                Grid.ColumnSpan="2"
                 Tag="{Binding IsBukTransData, Converter={StaticResource boolToIndexConverter}}"
 				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_6"/>
         <Button Grid.Column="2"                               
 				Grid.Row="7"  
                 Tag="{Binding IsBkpTransData, Converter={StaticResource boolToIndexConverter}}"
-				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_7"/>
+				Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_7" Visibility="Hidden"/>
         <Label Grid.Row="5"
                Content="Выдавать КБВ прибору"
                Template="{DynamicResource FlatLabel}"/>
@@ -261,9 +276,10 @@
         <Label Grid.Row="3"
                Grid.Column="2"
                Content="{Binding ShowLogicBkp}"
-               Template="{DynamicResource FlatLabel}"/>
+               Template="{DynamicResource FlatLabel}" Visibility="Hidden"/>
         <Label Grid.Row="3"
-               Grid.Column="1"               
+               Grid.Column="1"   
+               Grid.ColumnSpan="2"
                Content="{Binding ShowLogicBuk}"
                Template="{DynamicResource FlatLabel}"/>
         <Label Grid.Row="3"

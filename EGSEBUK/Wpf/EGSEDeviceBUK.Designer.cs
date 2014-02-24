@@ -70,6 +70,24 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Скорость передачи по USB: {0}/с.
+        /// </summary>
+        internal static string stDeviceSpeed {
+            get {
+                return ResourceManager.GetString("stDeviceSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Трафик: {0}.
+        /// </summary>
+        internal static string stDeviceTrafic {
+            get {
+                return ResourceManager.GetString("stDeviceTrafic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to buk.
         /// </summary>
         internal static string stDevLogName {

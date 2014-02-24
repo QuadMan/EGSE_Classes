@@ -103,7 +103,6 @@
     </Compile>
     <Compile Include="EGSEDeviceBUK.cs" />
     <Compile Include="EGSEConstantsBUK.cs" />
-    <Compile Include="EGSETelemetryBUK.cs" />
     <Compile Include="EGSECyclogramCommandBUK.cs" />
     <Page Include="..\..\ConsoleApplication1\EGSECyclogramControl.xaml">
       <Link>EGSECyclogramControl.xaml</Link>

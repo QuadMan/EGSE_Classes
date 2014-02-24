@@ -14,6 +14,7 @@ namespace EGSE.Constants
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Data;
     using EGSE.Utilites;
 
     /// <summary>
@@ -21,6 +22,24 @@ namespace EGSE.Constants
     /// </summary>
     public static class Global
     {
+        /// <summary>
+        /// Расширяющий метод представления байт в формате: 0,00 байт/КБ/МБ/ГБ.
+        /// </summary>
+        /// <param name="IValueConverter">Поддерживающий интерфейс.</param>
+        /// <param name="value">Значение для преобразования.</param>
+        /// <returns>Строка в формате: 0,00 байт/КБ/МБ/ГБ.</returns>
+        public static string ReadableByte(this object IValueConverter, float value)
+        {
+            string[] sizes = { "байт", "КБ", "МБ", "ГБ" };
+            int order = 0;
+            while (value >= 1024 && order + 1 < sizes.Length)
+            {
+                order++;
+                value = value / 1024;
+            }
+            return string.Format("{0:0.##} {1}", value, sizes[order]);
+        }
+
         /// <summary>
         /// Логическиq адрес [БУСК ПК1] для подключения к БМ-4.
         /// </summary>
@@ -71,17 +90,11 @@ namespace EGSE.Constants
         /// </summary>
         static Global()
         {
-            Power = new CVPower();
             Telemetry = new CVTelemetry();
             ShowCaption = Resource.Get("stShowCaption");
             DeviceName = Resource.Get("stDeviceName");
             DeviceSerial = Resource.Get("stDeviceSerial");
         }
-
-        /// <summary>
-        /// Получает индекс объекта "Питание прибора" в массиве ControlValuesList.
-        /// </summary>
-        public static CVPower Power { get; private set; }
 
         /// <summary>
         /// Получает индекс объекта "Телеметрия" в массиве ControlValuesList.
@@ -689,6 +702,54 @@ namespace EGSE.Constants
         /// </summary>
         public class CVTelemetry 
         {
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Питание УФЕС (осн)].
+            /// </summary>
+            public readonly string UfesPower1 = "77847f912b2842fd954a53454b1283af";
+
+            public readonly string UfesPower2 = "eac13e31010a4639a7bb1a8eaa1e7059";
+            public readonly string VufesPower1 = "b0efec8196ff41a19193da4432342647";
+            public readonly string VufesPower2 = "94e0bcb218424ed9bd4d7c2365996aa9";
+            public readonly string SdchshPower1 = "b59d3528df6b4e9887aa3754e225758a";
+            public readonly string SdchshPower2 = "4c1443fda8bf48bdb019ef8e99325315";
+
+            public readonly string UfesLight1 = "8bd191047cd345759fd844f6c4b643ff";
+            public readonly string UfesLight2 = "cb102496daac44ffa4136b4c071df11f";
+            public readonly string VufesLight1 = "db83722ee76f43f8a8688ccdbac81ef8";
+            public readonly string VufesLight2 = "0ad388efb4b641688a4134e613a9437e";
+            public readonly string SdchshLight1 = "09033a4f5c064af58241ce7bff73198a";
+            public readonly string SdchshLight2 = "979aa9840c644636988aa7e96487a973";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Затвор УФЕС (осн)].
+            /// </summary>
+            public readonly string UfesLock1 = "33d4913434d045d69f8605894ad38b37";
+           
+            /// <summary>
+            /// Индекс свойства [Телеметрия:  Затвор УФЕС (рез)].
+            /// </summary>
+            public readonly string UfesLock2 = "c2b0b0bba8de4e94abbf7e6a9c8a8ee1";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия: Затвор ВУФЕС (осн)].
+            /// </summary>
+            public readonly string VufesLock1 = "add2a3069a9a436884e08e707b82a3ae";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия: Затвор ВУФЕС (рез)].
+            /// </summary>
+            public readonly string VufesLock2 = "a8bf2e88fd684430820e455b6f841df8";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия: Затвор СДЩ (осн)].
+            /// </summary>
+            public readonly string SdchshLock1 = "e4185fd13e764a90adfa76406eef91f8";
+
+            /// <summary>
+            /// Индекс свойства [Телеметрия: Затвор СДЩ (рез)].
+            /// </summary>
+            public readonly string SdchshLock2 = "1918b080cf9f4755b05e4e97dc8b4cca";
+                            
             /// <summary>
             /// Индекс свойства [Телеметрия: Запитан ПК1 от БУСК].
             /// </summary>

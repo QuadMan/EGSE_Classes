@@ -120,6 +120,12 @@
   <data name="eNotAssigned" xml:space="preserve">
     <value>ControlValuesList не должны быть равны null!</value>
   </data>
+  <data name="stDeviceSpeed" xml:space="preserve">
+    <value>Скорость передачи по USB: {0}/с</value>
+  </data>
+  <data name="stDeviceTrafic" xml:space="preserve">
+    <value>Трафик: {0}</value>
+  </data>
   <data name="stDevLogName" xml:space="preserve">
     <value>buk</value>
   </data>

@@ -129,7 +129,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!_intfEGSE.Tele.PowerBusk1));
+            _intfEGSE.TelemetryNotify.PowerBusk1 = !_intfEGSE.TelemetryNotify.PowerBusk1;
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!_intfEGSE.Tele.PowerBusk2));
+            _intfEGSE.TelemetryNotify.PowerBusk2 = !_intfEGSE.TelemetryNotify.PowerBusk2;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!_intfEGSE.Tele.PowerBund1));
+            _intfEGSE.TelemetryNotify.PowerBund1 = !_intfEGSE.TelemetryNotify.PowerBund1;
         }
 
         /// <summary>
@@ -159,7 +159,12 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!_intfEGSE.Tele.PowerBund2));
+            _intfEGSE.TelemetryNotify.PowerBund2 = !_intfEGSE.TelemetryNotify.PowerBund2;           
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.TelemetryNotify.UfesLock1 = !_intfEGSE.TelemetryNotify.UfesLock1;           
         }
     }
 }

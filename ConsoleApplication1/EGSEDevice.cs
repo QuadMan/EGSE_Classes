@@ -79,6 +79,17 @@ namespace EGSE
         }
 
         /// <summary>
+        /// Получает значение трафика данных.
+        /// </summary>
+        public long Trafic
+        {
+            get
+            {
+                return _readThread.Trafic;
+            }
+        }
+
+        /// <summary>
         /// Получает максимальный размер большого (глобального) буфера.
         /// </summary>
         public uint GlobalBufferSize

@@ -19,7 +19,10 @@
         <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
         <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
-        <l:BoolToIntConverter x:Key="boolToIndexConverter" />
+        <l:BoolToIntConverter x:Key="BoolToIndexConverter" />
+        <l:EgseTimeToStrConverter x:Key="EgseTimeToStrConverter" />
+        <l:DeviceSpeedToStrConverter x:Key="DeviceSpeedToStrConverter" />
+        <l:DeviceTraficToStrConverter x:Key="DeviceTraficToStrConverter" />        
         <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
             <Border x:Name="Border" 
                         Background="{DynamicResource ClickBrush}"
@@ -103,6 +106,24 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <ControlTemplate x:Key="FlatLabelCheck" TargetType="{x:Type Label}">
+            <Border x:Name="Border"
+                        Background="{DynamicResource UnSelectBrush}"                                          
+                        BorderThickness="0"
+                        Margin="1">
+                <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Tag" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter Property="Content" Value="ВКЛ"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="false">
+                    <Setter Property="Content" Value="ВЫКЛ"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         <ControlTemplate x:Key="FlatLabel" TargetType="{x:Type Label}">
             <Border x:Name="Border"
                         Background="{DynamicResource TextBrush}"                                          
@@ -168,25 +189,25 @@
                         <Button Grid.Column="2"
                                 Grid.Row="2" 
                                 Grid.RowSpan="2"                           
-                                Tag="{Binding PowerBusk1, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding PowerBusk1, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}" 
                                 Click="Button_Click"/>
                         <Button Grid.Column="3"
                                 Grid.Row="2"  
                                 Grid.RowSpan="2"
-                                Tag="{Binding PowerBusk2, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding PowerBusk2, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}" 
                                 Click="Button_Click_1"/>                        
                         <Button Grid.Column="2"
                                 Grid.Row="4"  
                                 Grid.RowSpan="2"
-                                Tag="{Binding PowerBund1, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding PowerBund1, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}" 
                                 Click="Button_Click_2"/>
                         <Button Grid.Column="3"
                                 Grid.Row="4" 
                                 Grid.RowSpan="2"
-                                Tag="{Binding PowerBund2, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding PowerBund2, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}" 
                                 Click="Button_Click_3"/>                                                
                         <Label Grid.Column="0"
@@ -279,77 +300,77 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="1"
-                                Grid.Row="2"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="1"
+                        <Label Grid.Column="1"
+                               Grid.Row="2"                            
+                               Tag="{Binding UfesPower1, Converter={StaticResource BoolToIndexConverter}}"
+                               Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="1"
                                 Grid.Row="3"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="1"
+                                Tag="{Binding VufesPower1, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="1"
                                 Grid.Row="4"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="2"
+                                Tag="{Binding SdchshPower1, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="2"
                                 Grid.Row="2"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="2"
+                                Tag="{Binding UfesPower2, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="2"
                                 Grid.Row="3"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="2"
+                                Tag="{Binding VufesPower2, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="2"
                                 Grid.Row="4"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="3"
+                                Tag="{Binding SdchshPower2, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="3"
                                 Grid.Row="2"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="3"
+                                Tag="{Binding UfesLight1, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="3"
                                 Grid.Row="3"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="3"
+                                Tag="{Binding VufesLight1, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="3"
                                 Grid.Row="4"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="4"
+                                Tag="{Binding SdchshLight1, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="4"
                                 Grid.Row="2"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="4"
+                                Tag="{Binding UfesLight2, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="4"
                                 Grid.Row="3"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="4"
+                                Tag="{Binding VufesLight2, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
+                        <Label Grid.Column="4"
                                 Grid.Row="4"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
+                                Tag="{Binding SdchshLight1, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatLabelCheck}"/>
                         <Button Grid.Column="5"
                                 Grid.Row="2"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
+                                Tag="{Binding UfesLock1, Converter={StaticResource BoolToIndexConverter}}"
+                                Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_4"/>
                         <Button Grid.Column="5"
                                 Grid.Row="3"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding VufesLock1, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="5"
                                 Grid.Row="4"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding SdchshLock1, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="6"
                                 Grid.Row="2"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding UfesLock2, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="6"
                                 Grid.Row="3"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding VufesLock2, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}"/>
                         <Button Grid.Column="6"
                                 Grid.Row="4"                            
-                                Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
+                                Tag="{Binding SdchshLock2, Converter={StaticResource BoolToIndexConverter}}"
                                 Template="{DynamicResource FlatButtonCheck}"/>
                         <Label Grid.Column="0"
                                Grid.Row="0"
@@ -455,9 +476,9 @@
             <StatusBarItem Padding="1" Grid.Column="1"
                            HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Скорость передачи по USB: 0.0 кБ/с" Template="{DynamicResource FlatLabel}"/>
-                    <Label Content="Трафик: 0.0 МБ" Template="{DynamicResource FlatLabel}"/>
-                    <Label Content="00:00:00.000.000" Template="{DynamicResource FlatLabel}"/> 
+                    <Label Content="{Binding DeviceSpeed, Converter={StaticResource DeviceSpeedToStrConverter}}" Template="{DynamicResource FlatLabel}"/>
+                    <Label Content="{Binding DeviceTrafic, Converter={StaticResource DeviceTraficToStrConverter}}" Template="{DynamicResource FlatLabel}"/>
+                    <Label Content="{Binding DeviceTime, Converter={StaticResource EgseTimeToStrConverter}}" Template="{DynamicResource FlatLabel}"/> 
                 </StackPanel>                
             </StatusBarItem>
         </StatusBar>
