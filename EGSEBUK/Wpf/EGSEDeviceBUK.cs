@@ -1141,20 +1141,6 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает заголовок окна имитатора БМ-4.
-        /// </summary>
-        /// <value>
-        /// Заголовок окна.
-        /// </value>
-        public string Caption
-        {
-            get
-            {
-                return Spacewire2Notify.ShowLogicBusk;
-            }
-        }
-
-        /// <summary>
         /// Получает значение текущей скорости по USB.
         /// </summary>
         /// <value>

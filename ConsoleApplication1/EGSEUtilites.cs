@@ -11,6 +11,7 @@ namespace EGSE.Utilites
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;   
     using System.Globalization;
     using System.IO;
     using System.Reflection;
@@ -153,20 +154,24 @@ namespace EGSE.Utilites
 
             return true;
         }
-
+        
         /// <summary>
-        /// Сохраняем параметры окна
+        /// Сохраняем параметры окна.
         /// </summary>
-        /// <param name="win">Экземпляр окна</param>
-        /// <returns>true, если функция выполнена успешно</returns>
+        /// <param name="win">Экземпляр окна.</param>
+        /// <returns>true, если функция выполнена успешно.</returns>
         public static bool SaveWindow(Window win)
         {
             try
             {
                 IniFile _ini = new IniFile();
-                _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
-                _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
-                _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
+                string sectionName = GetPropertyValue(win, Window.TitleProperty);
+                _ini.Write(@"Visibility", GetPropertyValue(win, Window.VisibilityProperty), sectionName);
+                _ini.Write(@"WindowState", GetPropertyValue(win, Window.WindowStateProperty), sectionName);
+                _ini.Write(@"Left", GetPropertyValue(win, Window.LeftProperty), sectionName);                
+                _ini.Write(@"Top", GetPropertyValue(win, Window.TopProperty), sectionName);
+                _ini.Write(@"Width", GetPropertyValue(win, Window.WidthProperty), sectionName);
+                _ini.Write(@"Height", GetPropertyValue(win, Window.HeightProperty), sectionName);   
                 return true;
             }
             catch (Exception e)
@@ -176,74 +181,174 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Загружаем сохраненные параметры окна
+        /// Загружаем сохраненные параметры окна.
         /// </summary>
-        /// <param name="win">Экземпляр окна</param>
-        /// <returns>true, если функция выполнена успешно</returns>
+        /// <param name="win">Экземпляр окна.</param>
+        /// <returns>true, если функция выполнена успешно.</returns>
         public static bool LoadWindow(Window win)
         {
             try
             {
                 IniFile _ini = new IniFile();
-                if (_ini.IsKeyExists("Bounds", win.Title))
+                string sectionName = GetPropertyValue(win, Window.TitleProperty);
+                
+                if (_ini.IsKeyExists(@"Visibility", sectionName))
                 {
-                    System.ComponentModel.TypeConverter _conv =
-                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
-                    Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
-
-                    // сделал проверки на NaN и 0, так как для окон, которые не открывались значения (Left,Top,RenderSize) не рассчитываются системой, нужно придумать другой способ сохранения
-                    if (_rect.Left != double.NaN)
-                    {
-                        win.Left = _rect.Left;
-                    }
-
-                    if (_rect.Top != double.NaN)
-                    {
-                        win.Top = _rect.Top;
-                    }
-
-                    if (_rect.Size.Height != 0)
-                    {
-                        win.Height = _rect.Size.Height;
-                    }
-
-                    if (_rect.Size.Width != 0)
-                    {
-                        win.Width = _rect.Size.Width;
-                    }
+                    SetPropertyValue(win, Window.VisibilityProperty, _ini.Read(@"Visibility", sectionName));
                 }
                 else
                 {
-                    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
+                    _ini.Write(@"Visibility", GetPropertyValue(win, Window.VisibilityProperty), sectionName);
                 }
 
-                if (_ini.IsKeyExists("WindowState", win.Title))
+                if (_ini.IsKeyExists(@"WindowState", sectionName))
                 {
-                    System.ComponentModel.TypeConverter _conv2 =
-                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
-                    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
+                    SetPropertyValue(win, Window.WindowStateProperty, _ini.Read(@"WindowState", sectionName));
                 }
                 else
                 {
-                    _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
+                    _ini.Write(@"WindowState", GetPropertyValue(win, Window.WindowStateProperty), sectionName);
                 }
 
-                if (_ini.IsKeyExists("Visibility", win.Title))
+                if (_ini.IsKeyExists(@"Left", sectionName))
                 {
-                    System.ComponentModel.TypeConverter _conv3 =
-                        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Visibility));
-                    win.Visibility = (Visibility)_conv3.ConvertFromString(_ini.Read("Visibility", win.Title));
+                    SetPropertyValue(win, Window.LeftProperty, _ini.Read(@"Left", sectionName));
                 }
                 else
                 {
-                    _ini.Write("Visibility", Convert.ToString(win.Visibility), win.Title);
+                    _ini.Write(@"Left", GetPropertyValue(win, Window.LeftProperty), sectionName);
                 }
+
+                if (_ini.IsKeyExists(@"Top", sectionName))
+                {
+                    SetPropertyValue(win, Window.TopProperty, _ini.Read(@"Top", sectionName));
+                }
+                else
+                {
+                    _ini.Write(@"Top", GetPropertyValue(win, Window.TopProperty), sectionName);
+                }
+
+                if (_ini.IsKeyExists(@"Width", sectionName))
+                {
+                    SetPropertyValue(win, Window.WidthProperty, _ini.Read(@"Width", sectionName));
+                }
+                else
+                {
+                    _ini.Write(@"Width", GetPropertyValue(win, Window.WidthProperty), sectionName);
+                }
+
+                if (_ini.IsKeyExists(@"Height", sectionName))
+                {
+                    SetPropertyValue(win, Window.HeightProperty, _ini.Read(@"Height", sectionName));
+                }
+                else
+                {
+                    _ini.Write(@"Height", GetPropertyValue(win, Window.HeightProperty), sectionName);
+                }
+
+                ////if (_ini.IsKeyExists("Bounds", win.Title))
+                ////{
+                ////    System.ComponentModel.TypeConverter _conv =
+                ////        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
+                ////    Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
+
+                ////    // сделал проверки на NaN и 0, так как для окон, которые не открывались значения (Left,Top,RenderSize) не рассчитываются системой, нужно придумать другой способ сохранения
+                ////    if (_rect.Left != double.NaN)
+                ////    {
+                ////        win.Left = _rect.Left;
+                ////    }
+
+                ////    if (_rect.Top != double.NaN)
+                ////    {
+                ////        win.Top = _rect.Top;
+                ////    }
+
+                ////    if (_rect.Size.Height != 0)
+                ////    {
+                ////        win.Height = _rect.Size.Height;
+                ////    }
+
+                ////    if (_rect.Size.Width != 0)
+                ////    {
+                ////        win.Width = _rect.Size.Width;
+                ////    }
+                ////}
+                ////else
+                ////{
+                ////    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
+                ////}
+
+                ////if (_ini.IsKeyExists("WindowState", win.Title))
+                ////{
+                ////    System.ComponentModel.TypeConverter _conv2 =
+                ////        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
+                ////    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
+                ////}
+                ////else
+                ////{
+                ////    _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
+                ////}         
 
                 return true;
             }
             catch (Exception e)
             {
                 throw e;
+            }
+        }
+
+        /// <summary>
+        /// Получает значение связанного свойства окна.
+        /// </summary>
+        /// <param name="win">Экземпляр окна.</param>
+        /// <param name="dp">Связанное свойство.</param>
+        /// <returns>Текущее значение.</returns>
+        private static string GetPropertyValue(Window win, DependencyProperty dp)
+        {
+            System.Windows.Data.Binding bindObj = System.Windows.Data.BindingOperations.GetBinding(win, dp);
+            if (null != bindObj)
+            {
+                return Convert.ToString(win.DataContext.GetType().GetProperty(bindObj.Path.Path).GetValue(win.DataContext, null));
+            }
+            else
+            {
+                return Convert.ToString(win.GetType().GetProperty(dp.Name).GetValue(win, null));
+            }
+        }
+
+        /// <summary>
+        /// Задает значение связанного свойства окна.
+        /// </summary>
+        /// <param name="win">Экземпляр окна.</param>
+        /// <param name="dp">Связанное свойство.</param>
+        /// <param name="value">Новое значение.</param>
+        private static void SetPropertyValue(Window win, DependencyProperty dp, string value)
+        {
+            try
+            {
+                System.ComponentModel.TypeConverter convertor = System.ComponentModel.TypeDescriptor.GetConverter(dp.PropertyType);
+                System.Windows.Data.Binding bindObj = System.Windows.Data.BindingOperations.GetBinding(win, dp);
+                if (null != bindObj)
+                {
+                    if (null != bindObj.Converter)
+                    {
+                        PropertyInfo prop = win.DataContext.GetType().GetProperty(bindObj.Path.Path);
+                        object obj = System.ComponentModel.TypeDescriptor.GetConverter(prop.PropertyType).ConvertFromString(value);
+                        win.DataContext.GetType().GetProperty(bindObj.Path.Path).SetValue(win.DataContext, obj, null);
+                    }
+                    else
+                    {
+                        win.DataContext.GetType().GetProperty(bindObj.Path.Path).SetValue(win.DataContext, convertor.ConvertFromString(value), null);
+                    }
+                }
+                else
+                {
+                    win.GetType().GetProperty(dp.Name).SetValue(win, convertor.ConvertFromString(value), null);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
         }
     }

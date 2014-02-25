@@ -138,9 +138,6 @@
   <data name="stShowLogicBuk" xml:space="preserve">
     <value>БУК (адрес: {0})</value>
   </data>
-  <data name="stShowLogicBusk" xml:space="preserve">
-    <value>Управление имитатором БМ-4(БУСК/БУНД) (адрес: {0})</value>
-  </data>
   <data name="stShowSimLogicBusk" xml:space="preserve">
     <value>Имитатор НП (адрес: {0})</value>
   </data>

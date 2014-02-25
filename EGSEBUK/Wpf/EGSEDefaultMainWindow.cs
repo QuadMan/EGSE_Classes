@@ -47,9 +47,9 @@ namespace EGSE.Defaults
             InitializeComponent();
             Application.Current.MainWindow = this;
             Title = Global.ShowCaption;            
-            
-            LoadWindows();
+                        
             InitModules();
+            LoadWindows();
             InitControlValues();
             LoadAppSettings();
 
