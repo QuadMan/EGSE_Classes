@@ -5,7 +5,7 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.WPF
+namespace EGSE.Defaults
 {
     using System;
     using System.Collections.Generic;
@@ -20,6 +20,7 @@ namespace EGSE.WPF
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
+    using EGSE.Devices;
 
     /// <summary>
     /// Interaction logic for HSIWindow.xaml
@@ -27,11 +28,38 @@ namespace EGSE.WPF
     public partial class HSIWindow : Window
     {
         /// <summary>
+        /// Интерфейс управления прибором.
+        /// </summary>
+        private EgseBukNotify _intfEGSE;
+
+        /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="HSIWindow" />.
         /// </summary>
         public HSIWindow()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Инициализирует интерфейс управления прибором.
+        /// </summary>
+        /// <param name="intfEGSE">Интерфейс управления прибором.</param>
+        public void Init(EgseBukNotify intfEGSE)
+        {
+            _intfEGSE = intfEGSE;
+            DataContext = _intfEGSE;
+            GridHSI.DataContext = _intfEGSE.HSINotify;
+        }
+
+        /// <summary>
+        /// Handles the Closing event of the Window control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="System.ComponentModel.CancelEventArgs"/> instance containing the event data.</param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Hide();
         }
     }
 }

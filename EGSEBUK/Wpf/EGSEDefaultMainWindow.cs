@@ -98,12 +98,12 @@ namespace EGSE.Defaults
             
             if (_intfEGSE.IsConnected)
             {
-                ConnectionLabel.Background = Brushes.LightGreen;
+                ConnectionLabel.Background = Brushes.PaleGreen;
                 ConnectionLabel.Content = Global.DeviceName + Resource.Get("stConnected");
             }
             else
             {
-                ConnectionLabel.Background = Brushes.Red;
+                ConnectionLabel.Background = Brushes.Tomato;
                 ConnectionLabel.Content = Global.DeviceName + Resource.Get("stDisconnected");
 
                 // инициализируем все экранные формы на значения по-умолчанию при отключении от устройства

@@ -1,140 +1,17 @@
 ﻿<Window x:Class="EGSE.Defaults.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:l="clr-namespace:EGSE.Defaults"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"       
         xmlns:local="clr-namespace:EGSE.Cyclogram"
         xmlns:local1="clr-namespace:EGSE.Devices"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        mc:Ignorable="d"        
         Title="КИА БУК" 
-        Width="1280"
-        Height="720"
         MinWidth="640"
         MinHeight="480"
-        FontFamily="Consolas"
-        FontSize="13" 
-        Closing="Window_Closing">
-    <Window.Resources>
-        <SolidColorBrush x:Key="TextBrush" Color="White"/>
-        <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
-        <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
-        <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
-        <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
-        <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
-        <l:BoolToIntConverter x:Key="BoolToIndexConverter" />
-        <l:EgseTimeToStrConverter x:Key="EgseTimeToStrConverter" />
-        <l:DeviceSpeedToStrConverter x:Key="DeviceSpeedToStrConverter" />
-        <l:DeviceTraficToStrConverter x:Key="DeviceTraficToStrConverter" />        
-        <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
-            <Border x:Name="Border" 
-                        Background="{DynamicResource ClickBrush}"
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"                                        
-                                      Content="{TemplateBinding Content}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-                <Trigger Property="IsChecked" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}" 
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="ВКЛ"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="ВЫКЛ"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatButtonClick" TargetType="{x:Type Button}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource ClickBrush}"   
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="Button.IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="Связь установлена"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="Связь не установлена"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabelCheck" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="ВКЛ"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="ВЫКЛ"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabel" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource TextBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Content="{TemplateBinding Content}"/>
-            </Border>
-        </ControlTemplate>
-    </Window.Resources>
+        FontFamily="{StaticResource BaseFontFamily}"
+        FontSize="{StaticResource BaseFontSize}"
+        Closing="Window_Closing">    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -146,31 +23,31 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <local:CyclogramControl Grid.Row="1" 
-                                Grid.Column="1" 
-                                x:Name="CycloGrid"/>
+			Grid.Column="1" 
+			x:Name="CycloGrid"/>
         <Grid Grid.Row="0" 
-              Grid.Column="1" 
-              Width="200" 
-              HorizontalAlignment="Right">
+			Grid.Column="1" 
+			Width="200" 
+			HorizontalAlignment="Right">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
-                    Content="О программе"
-                    Margin="5"/>
+				Content="О программе"
+				Margin="5"/>
             <Button Grid.Column="1" 
-                    Content="Выход"
-                    Margin="5" Click="CloseButton_Click"/>
-        </Grid>           
+				Content="Выход"
+				Margin="5" Click="CloseButton_Click"/>
+        </Grid>
         <StackPanel Grid.Row="1" 
-                    Grid.Column="0">
+			Grid.Column="0">
             <Grid x:Name="GridTelemetry"
-                  Margin="0"
-                  Background="{DynamicResource BackBrush}">                
+				Margin="0"
+				Background="{StaticResource BackBrush}">
                 <StackPanel>
-                    <Label Content="Телеметрия"
-                           Template="{DynamicResource FlatLabel}"/>
+                    <Label Content="Управление питанием"
+						Template="{StaticResource FlatLabel}"/>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -187,101 +64,172 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="2"
-                                Grid.Row="2" 
-                                Grid.RowSpan="2"                           
-                                Tag="{Binding PowerBusk1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}" 
-                                Click="Button_Click"/>
+							Grid.Row="2" 
+							Grid.RowSpan="2"                           
+							Tag="{Binding PowerBusk1, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}" 
+							Click="Button_Click"/>
                         <Button Grid.Column="3"
-                                Grid.Row="2"  
-                                Grid.RowSpan="2"
-                                Tag="{Binding PowerBusk2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}" 
-                                Click="Button_Click_1"/>                        
+							Grid.Row="2"  
+							Grid.RowSpan="2"
+							Tag="{Binding PowerBusk2, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}" 
+							Click="Button_Click_1"/>
                         <Button Grid.Column="2"
-                                Grid.Row="4"  
-                                Grid.RowSpan="2"
-                                Tag="{Binding PowerBund1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}" 
-                                Click="Button_Click_2"/>
+							Grid.Row="4"  
+							Grid.RowSpan="2"
+							Tag="{Binding PowerBund1, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}" 
+							Click="Button_Click_2"/>
                         <Button Grid.Column="3"
-                                Grid.Row="4" 
-                                Grid.RowSpan="2"
-                                Tag="{Binding PowerBund2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}" 
-                                Click="Button_Click_3"/>                                                
+							Grid.Row="4" 
+							Grid.RowSpan="2"
+							Tag="{Binding PowerBund2, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}" 
+							Click="Button_Click_3"/>
                         <Label Grid.Column="0"
-                               Grid.Row="0"
-                               Grid.RowSpan="2"
-                               Grid.ColumnSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="Блок"/>
+							Grid.Row="0"
+							Grid.RowSpan="2"
+							Grid.ColumnSpan="2"
+							Template="{StaticResource FlatLabel}"
+							Content="Прибор выдачи РК"/>
                         <Label Grid.Column="0"
-                               Grid.Row="2"
-                               Grid.RowSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="БУСК"/>
+							Grid.Row="2"
+							Grid.RowSpan="2"
+							Template="{StaticResource FlatLabel}"
+							Content="БУСК"/>
                         <Label Grid.Column="0"
-                               Grid.Row="4"
-                               Grid.RowSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="БУНД"/>
+							Grid.Row="4"
+							Grid.RowSpan="2"
+							Template="{StaticResource FlatLabel}"
+							Content="БУНД"/>
                         <Label Grid.Column="1"
-                               Grid.Row="2"
-                               Background="White"
-                               Margin="1"/>
+							Grid.Row="2"
+							Background="White"
+							Margin="1"/>
                         <CheckBox Grid.Column="1"
-                                  Grid.Row="2"   
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"
-                                  Content="А" 
-                                  IsChecked="{Binding IsBuskLineA, Mode=TwoWay}"/>
+							Grid.Row="2"   
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Content="А" 
+							IsChecked="{Binding IsBuskLineA, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
-                               Grid.Row="3"                               
-                               Background="White"
-                               Margin="1"/>
+							Grid.Row="3"                               
+							Background="White"
+							Margin="1"/>
                         <CheckBox Grid.Column="1"
-                                  Grid.Row="3"   
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"
-                                  Content="Б"
-                                  IsChecked="{Binding IsBuskLineB, Mode=TwoWay}"/>
+							Grid.Row="3"   
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Content="Б"
+							IsChecked="{Binding IsBuskLineB, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
-                               Grid.Row="4"
-                               Background="White"
-                               Margin="1"/>
+							Grid.Row="4"
+							Background="White"
+							Margin="1"/>
                         <CheckBox Grid.Column="1"
-                                  Grid.Row="4"   
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"
-                                  Content="А" 
-                                  IsChecked="{Binding IsBundLineA, Mode=TwoWay}"/>
+							Grid.Row="4"   
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Content="А" 
+							IsChecked="{Binding IsBundLineA, Mode=TwoWay}"/>
                         <Label Grid.Column="1"
-                               Grid.Row="5"                               
-                               Background="White"
-                               Margin="1"/>
+							Grid.Row="5"                               
+							Background="White"
+							Margin="1"/>
                         <CheckBox Grid.Column="1"
-                                  Grid.Row="5"   
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"
-                                  Content="Б"
-                                  IsChecked="{Binding IsBundLineB, Mode=TwoWay}"/>
+							Grid.Row="5"   
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Content="Б"
+							IsChecked="{Binding IsBundLineB, Mode=TwoWay}"/>
                         <Label Grid.Column="2"
-                               Grid.Row="0"
-                               Grid.ColumnSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="Питание"/>
+							Grid.Row="0"
+							Grid.ColumnSpan="2"
+							Template="{StaticResource FlatLabel}"
+							Content="БУК"/>
                         <Label Grid.Column="2"
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="ПК1"/>
+							Grid.Row="1"
+							Template="{StaticResource FlatLabel}"
+							Content="ПК1"/>
                         <Label Grid.Column="3"
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="ПК2"/>
+							Grid.Row="1"
+							Template="{StaticResource FlatLabel}"
+							Content="ПК2"/>
+                    </Grid>
+                    <Label Content="Управление НП"
+						Template="{StaticResource FlatLabel}"/>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="1"
+							Grid.Row="2"                            
+							Tag="{Binding UfesLock1, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}" Click="Button_Click_4"/>
+                        <Button Grid.Column="1"
+							Grid.Row="3"                            
+							Tag="{Binding VufesLock1, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}"/>
+                        <Button Grid.Column="1"
+							Grid.Row="4"                            
+							Tag="{Binding SdchshLock1, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}"/>
+                        <Button Grid.Column="2"
+							Grid.Row="2"                            
+							Tag="{Binding UfesLock2, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}"/>
+                        <Button Grid.Column="2"
+							Grid.Row="3"                            
+							Tag="{Binding VufesLock2, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}"/>
+                        <Button Grid.Column="2"
+							Grid.Row="4"                            
+							Tag="{Binding SdchshLock2, Converter={StaticResource BoolToIndexConverter}}"
+							Template="{StaticResource FlatButtonCheck}"/>
+                        <Label Grid.Column="0"
+							Grid.Row="0"
+							Grid.RowSpan="2"
+							Template="{StaticResource FlatLabel}"
+							Content="НП"/>
+                        <Label Grid.Column="0"
+							Grid.Row="2"
+							Template="{StaticResource FlatLabel}"
+							Content=" УФЕС "/>
+                        <Label Grid.Column="0"
+							Grid.Row="3"
+							Template="{StaticResource FlatLabel}"
+							Content=" ВУФЕС "/>
+                        <Label Grid.Column="0"
+							Grid.Row="4"
+							Template="{StaticResource FlatLabel}"
+							Content=" СДЩ "/>
+                        <Label Grid.Column="1"                               
+							Grid.Row="0"
+							Grid.ColumnSpan="2"
+							Template="{StaticResource FlatLabel}"
+							Content="Затворы"/>
+                        <Label Grid.Column="1"                               
+							Grid.Row="1"
+							Template="{StaticResource FlatLabel}"
+							Content=" ОСН "/>
+                        <Label Grid.Column="2"                               
+							Grid.Row="1"
+							Template="{StaticResource FlatLabel}"
+							Content=" РЕЗ "/>
                     </Grid>
                     <Label Content="Телеметрия НП"
-                           Template="{DynamicResource FlatLabel}"/>
+						Template="{StaticResource FlatLabel}"/>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -297,170 +245,138 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="1"
-                               Grid.Row="2"                            
-                               Tag="{Binding UfesPower1, Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="2"                            
+                    		Tag="{Binding UfesPower1, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="1"
-                                Grid.Row="3"                            
-                                Tag="{Binding VufesPower1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="3"                            
+                    		Tag="{Binding VufesPower1, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="1"
-                                Grid.Row="4"                            
-                                Tag="{Binding SdchshPower1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="4"                            
+                    		Tag="{Binding SdchshPower1, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="2"
-                                Grid.Row="2"                            
-                                Tag="{Binding UfesPower2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="2"                            
+                    		Tag="{Binding UfesPower2, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="2"
-                                Grid.Row="3"                            
-                                Tag="{Binding VufesPower2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="3"                            
+                    		Tag="{Binding VufesPower2, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="2"
-                                Grid.Row="4"                            
-                                Tag="{Binding SdchshPower2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="4"                            
+                    		Tag="{Binding SdchshPower2, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="3"
-                                Grid.Row="2"                            
-                                Tag="{Binding UfesLight1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="2"                            
+                    		Tag="{Binding UfesLight1, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="3"
-                                Grid.Row="3"                            
-                                Tag="{Binding VufesLight1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="3"                            
+                    		Tag="{Binding VufesLight1, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="3"
-                                Grid.Row="4"                            
-                                Tag="{Binding SdchshLight1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="4"                            
+                    		Tag="{Binding SdchshLight1, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="4"
-                                Grid.Row="2"                            
-                                Tag="{Binding UfesLight2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="2"                            
+                    		Tag="{Binding UfesLight2, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="4"
-                                Grid.Row="3"                            
-                                Tag="{Binding VufesLight2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
+                    		Grid.Row="3"                            
+                    		Tag="{Binding VufesLight2, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="4"
-                                Grid.Row="4"                            
-                                Tag="{Binding SdchshLight1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatLabelCheck}"/>
-                        <Button Grid.Column="5"
-                                Grid.Row="2"                            
-                                Tag="{Binding UfesLock1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_4"/>
-                        <Button Grid.Column="5"
-                                Grid.Row="3"                            
-                                Tag="{Binding VufesLock1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="5"
-                                Grid.Row="4"                            
-                                Tag="{Binding SdchshLock1, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="6"
-                                Grid.Row="2"                            
-                                Tag="{Binding UfesLock2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="6"
-                                Grid.Row="3"                            
-                                Tag="{Binding VufesLock2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
-                        <Button Grid.Column="6"
-                                Grid.Row="4"                            
-                                Tag="{Binding SdchshLock2, Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{DynamicResource FlatButtonCheck}"/>
+                    		Grid.Row="4"                            
+                    		Tag="{Binding SdchshLight1, Converter={StaticResource BoolToIndexConverter}}"
+                    		Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="0"
-                               Grid.Row="0"
-                               Grid.RowSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="НП"/>
+                    		Grid.Row="0"
+                    		Grid.RowSpan="2"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content="НП"/>
                         <Label Grid.Column="0"
-                               Grid.Row="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" УФЕС "/>
+                    		Grid.Row="2"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content=" УФЕС "/>
                         <Label Grid.Column="0"
-                               Grid.Row="3"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" ВУФЕС "/>
+                    		Grid.Row="3"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content=" ВУФЕС "/>
                         <Label Grid.Column="0"
-                               Grid.Row="4"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" СДЩ "/>
+                    		Grid.Row="4"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content=" СДЩ "/>
                         <Label Grid.Column="1"                               
-                               Grid.Row="0"
-                               Grid.ColumnSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="Питание"/>
+                    		Grid.Row="0"
+                    		Grid.ColumnSpan="2"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content="Питание"/>
                         <Label Grid.Column="3"                               
-                               Grid.Row="0"
-                               Grid.ColumnSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="Подсветка"/>
-                        <Label Grid.Column="5"                               
-                               Grid.Row="0"
-                               Grid.ColumnSpan="2"
-                               Template="{DynamicResource FlatLabel}"
-                               Content="Затворы"/>
+                    		Grid.Row="0"
+                    		Grid.ColumnSpan="2"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content="Подсветка"/>
                         <Label Grid.Column="1"                               
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" ОСН "/>
+                    		Grid.Row="1"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content=" ОСН "/>
                         <Label Grid.Column="2"                               
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" РЕЗ "/>
+                    		Grid.Row="1"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content=" РЕЗ "/>
                         <Label Grid.Column="3"                               
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" ОСН "/>
+                    		Grid.Row="1"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content=" ОСН "/>
                         <Label Grid.Column="4"                               
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" РЕЗ "/>
-                        <Label Grid.Column="5"                               
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" ОСН "/>
-                        <Label Grid.Column="6"                               
-                               Grid.Row="1"
-                               Template="{DynamicResource FlatLabel}"
-                               Content=" РЕЗ "/>                        
+                    		Grid.Row="1"
+                    		Template="{StaticResource FlatLabel}"
+                    		Content=" РЕЗ "/>
                     </Grid>
                 </StackPanel>
             </Grid>
-            <Grid Background="{DynamicResource BackBrush}"
-                  Margin="0">
+            <Grid Background="{StaticResource BackBrush}"
+				Margin="0">
                 <StackPanel Background="White"
-                            Margin="1">
+					Margin="1">
                     <Label Content="Окна управления"
-                           Template="{DynamicResource FlatLabel}"/>
-                    <CheckBox Content="Управление КВВ" 
-                              Margin="4"/>
-                    <CheckBox Content="Управление НП" 
-                              Margin="4"
-                              IsChecked="{Binding IsShowSimSD, Mode=TwoWay}"/>
-                    <CheckBox Content="Управление имитатором БМ-4" 
-                              Margin="4"
-                              IsChecked="{Binding IsShowSimRouter, Mode=TwoWay}"/>
-                    <CheckBox Content="Имитаторы Spacewire" 
-                              Margin="4"
-                              IsChecked="{Binding IsShowSimSpacewire, Mode=TwoWay}"/>
+						Template="{StaticResource FlatLabel}"/>
+                    <CheckBox Content="Имитатор ВСИ" 
+						Margin="4"
+						IsChecked="{Binding IsShowHSI, Mode=TwoWay}"/>
+                    <CheckBox Content="Имитатор БУСК" 
+						Margin="4"
+						IsChecked="{Binding IsShowSpacewire, Mode=TwoWay}"/>
+                    <CheckBox Content="Имитатор НП" 
+						Margin="4"
+						IsChecked="{Binding IsShowSD, Mode=TwoWay}"/>
+                    <CheckBox Content="Имитатор БУК (для ВСИ)" 
+						Margin="4"
+						IsChecked="{Binding IsShowSimHSI, Mode=TwoWay}"/>
+                    <CheckBox Content="Имитатор БУК (для БУСК)" 
+						Margin="4"
+						IsChecked="{Binding IsShowSimSpacewire, Mode=TwoWay}"/>
+                    <CheckBox Content="Имитатор БУК (для НП)" 
+						Margin="4"
+						IsChecked="{Binding IsShowSimSD, Mode=TwoWay}"/>
                 </StackPanel>
             </Grid>
         </StackPanel>
         <Label x:Name="ConnectionLabel" Margin="1" 
-               Background="Red"
-               BorderBrush="LightBlue" 
-               BorderThickness="1" 
-               VerticalContentAlignment="Center" 
-               Grid.Row="0" 
-               Grid.Column="0"/>
+			Background="Tomato"
+			BorderBrush="LightBlue" 
+			BorderThickness="1" 
+			VerticalContentAlignment="Center" 
+			Grid.Row="0" 
+			Grid.Column="0"/>
         <StatusBar Grid.Row="2" 
-                   Grid.ColumnSpan="2" 
-                   Background="{DynamicResource BackBrush}">        
+			Grid.ColumnSpan="2" 
+			Background="{StaticResource BackBrush}">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
@@ -472,15 +388,15 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Padding="1" Grid.Column="0">
-                <Label Visibility="Hidden" Content="Состояние: Ожидание подключения БИ КИА " Template="{DynamicResource FlatLabel}"/>
+                <Label Visibility="Hidden" Content="Состояние: Ожидание подключения БИ КИА " Template="{StaticResource FlatLabel}"/>
             </StatusBarItem>
             <StatusBarItem Padding="1" Grid.Column="1"
-                           HorizontalAlignment="Right">
+				HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="{Binding DeviceSpeed, Converter={StaticResource DeviceSpeedToStrConverter}}" Template="{DynamicResource FlatLabel}"/>
-                    <Label Content="{Binding DeviceTrafic, Converter={StaticResource DeviceTraficToStrConverter}}" Template="{DynamicResource FlatLabel}"/>
-                    <Label Content="{Binding DeviceTime, Converter={StaticResource EgseTimeToStrConverter}}" Template="{DynamicResource FlatLabel}"/> 
-                </StackPanel>                
+                    <Label Content="{Binding DeviceSpeed, Converter={StaticResource DeviceSpeedToStrConverter}}" Template="{StaticResource FlatLabel}"/>
+                    <Label Content="{Binding DeviceTrafic, Converter={StaticResource DeviceTraficToStrConverter}}" Template="{StaticResource FlatLabel}"/>
+                    <Label Content="{Binding DeviceTime, Converter={StaticResource EgseTimeToStrConverter}}" Template="{StaticResource FlatLabel}"/>
+                </StackPanel>
             </StatusBarItem>
         </StatusBar>
     </Grid>

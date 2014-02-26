@@ -1,236 +1,82 @@
 ﻿<Window x:Class="EGSE.Defaults.SDWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:l="clr-namespace:EGSE.Defaults"
-        Title="Управление НП" Closing="Window_Closing">
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <SolidColorBrush x:Key="TextBrush" Color="White"/>
-        <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
-        <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
-        <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
-        <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
-        <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
-        <l:BoolToIntConverter x:Key="boolToIndexConverter" />
-        <l:BytesToStrConverter x:Key="bytesToStrConverter" />
-        <ControlTemplate x:Key="DataSendInError" TargetType="{x:Type TextBox}">
-            <Border x:Name="Border"
-                    Margin="1"
-                    Background="{DynamicResource TextBrush}"
-                    BorderThickness="0">
-                <Grid>
-                    <ScrollViewer x:Name="PART_ContentHost"/>
-                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" Margin="3,1,0,0" Foreground="Gray" IsHitTestVisible="False" Text="Введите данные, например: AB 45 FF EE"/>
-                    <TextBlock Visibility="Hidden" x:Name="ErrorText" Margin="6,1,0,0" Foreground="Red" IsHitTestVisible="False" Text="Некорректный ввод данных! Повторите ввод."/>
-                </Grid>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Text" Value="">
-                    <Setter Property="Visibility" TargetName="WatermarkText" Value="Visible"/>
-                </Trigger>
-                <Trigger Property="Text" Value=" ">
-                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
-            <Setter Property="Validation.ErrorTemplate">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <DockPanel LastChildFill="True">
-                            <Border BorderBrush="Red" BorderThickness="2">
-                                <AdornedElementPlaceholder />
-                            </Border>
-                        </DockPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="ToolTip"
-                            Value="{Binding (Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
-            <Border x:Name="Border" 
-                        Background="{DynamicResource ClickBrush}"
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"                                        
-                                      Content="{TemplateBinding Content}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-                <Trigger Property="IsChecked" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}" 
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="ВКЛ"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="ВЫКЛ"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatButtonClick" TargetType="{x:Type Button}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource ClickBrush}"   
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="Связь установлена"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="Связь не установлена"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabelTransmission" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="Кадры передаются"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="Кадры не передаются"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabel" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource TextBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Content="{TemplateBinding Content}"/>
-            </Border>
-        </ControlTemplate>
-    </Window.Resources>
-    <Window.Visibility>
-        <Binding Converter="{StaticResource BooleanToVisibilityConverter}" Mode="TwoWay" Path="IsShowSimSD"/>
-    </Window.Visibility>
-    <Grid x:Name="GridSpacewire3"
-          Background="{DynamicResource BackBrush}"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        Title="Имитатор НП" 
+        FontFamily="{StaticResource BaseFontFamily}"
+        FontSize="{StaticResource BaseFontSize}"
+        Closing="Window_Closing"
+        Visibility="{Binding IsShowSD, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+    <Grid x:Name="GridSD"
+          Background="{StaticResource BackBrush}"
           Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Label Grid.Row="3" 
-               Grid.ColumnSpan="2"
-               Tag="{Binding IsTransmission, Converter={StaticResource boolToIndexConverter}}"   
-               Template="{DynamicResource FlatLabelTransmission}"/>
-        <Grid Background="{DynamicResource BackBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>            
-            <RadioButton Content="УФЕС"                         
-                         GroupName="WorkDevice"   
-                         Template="{DynamicResource FlatRadioButton}"
-                         IsChecked="{Binding IsUfesDevice}"/>
-            <RadioButton Grid.Column="1"
-                         Content="ВУФЕС"
-                         GroupName="WorkDevice"   
-                         Template="{DynamicResource FlatRadioButton}"
-                         IsChecked="{Binding IsVufesDevice}"/>
-            <RadioButton Grid.Column="2"
-                         Content="СДЩ"
-                         GroupName="WorkDevice"   
-                         Template="{DynamicResource FlatRadioButton}"
-                         IsChecked="{Binding IsSdchshDevice}"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+				Content="Управление"
+				Template="{StaticResource FlatLabel}"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <RadioButton Content="УФЕС"                         
+            		GroupName="WorkDevice"   
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding IsUfesDevice}"/>
+                <RadioButton Grid.Column="1"
+            		Content="ВУФЕС"
+            		GroupName="WorkDevice"   
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding IsVufesDevice}"/>
+                <RadioButton Grid.Column="2"
+            		Content="СДЩ"
+            		GroupName="WorkDevice"   
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding IsSdchshDevice}"/>
+            </Grid>
+            <StackPanel Grid.Row="1"
+            	Grid.Column="1">
+                <RadioButton Content="ПК1"
+            		GroupName="WorkHalfSet"   
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding IsFirstHalfSet}"/>
+                <RadioButton Content="ПК2"
+            		GroupName="WorkHalfSet"   
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding IsSecondHalfSet}"/>
+            </StackPanel>
+            <Label Grid.Row="2"
+            	Content="Интерфейс Spacewire"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Column="1"                               
+            	Grid.Row="2"  
+            	Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
+            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click"/>
+            <Label Grid.Row="3" 
+            	Grid.ColumnSpan="2"
+            	Tag="{Binding IsConnected, Converter={StaticResource boolToIndexConverter}}"     
+            	Template="{StaticResource FlatLabelConnected}"/>
+            <Label Grid.Row="4" 
+                Grid.ColumnSpan="2"
+                Tag="{Binding IsTransmission, Converter={StaticResource boolToIndexConverter}}"   
+                Template="{StaticResource FlatLabelTransmission}"/>
         </Grid>
-        <StackPanel Grid.Column="1"
-                    Background="{DynamicResource BackBrush}">
-            <RadioButton Content="ПК1"
-                         GroupName="WorkHalfSet"   
-                         Template="{DynamicResource FlatRadioButton}"
-                         IsChecked="{Binding IsFirstHalfSet}"/>
-            <RadioButton Content="ПК2"
-                         GroupName="WorkHalfSet"   
-                         Template="{DynamicResource FlatRadioButton}"
-                         IsChecked="{Binding IsSecondHalfSet}"/>
-        </StackPanel>
-        <Label Grid.Row="1"
-               Content="Интерфейс Spacewire"
-               Template="{DynamicResource FlatLabel}"/>
-        <Button Grid.Column="1"                               
-				Grid.Row="1"  
-                Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
-                Template="{DynamicResource FlatButtonCheck}" Click="Button_Click"/>
-        <Label Grid.Row="2" 
-			   Grid.ColumnSpan="2"
-               Tag="{Binding IsConnected, Converter={StaticResource boolToIndexConverter}}"     
-               Template="{DynamicResource FlatLabelConnected}"/>
-        <Grid Grid.Row="4"
-              Grid.ColumnSpan="2"
-              Background="{DynamicResource BackBrush}">
+        <Grid Grid.Row="4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -242,15 +88,15 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
                    Content="Монитор Spacewire"
-                   Template="{DynamicResource FlatLabel}"/>
+                   Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1"
                    Content="Количество запросов квоты"
-                   Template="{DynamicResource FlatLabel}"/>
+                   Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1"
                    Grid.Column="1"   
                    Content="{Binding Spacewire3Queue}"
-                   Template="{DynamicResource FlatLabel}"/>
-            <ListBox x:Name="Spacewire3Mon" 
+                   Template="{StaticResource FlatLabel}"/>
+            <ListBox x:Name="Monitor" 
                      Grid.Row="2"
                      Grid.ColumnSpan="2"
                      Margin="1"

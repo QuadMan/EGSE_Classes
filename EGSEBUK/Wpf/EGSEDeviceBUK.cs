@@ -725,6 +725,26 @@ namespace EGSE.Devices
                 _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk2;
             }
         }
+
+        internal void CmdHSILine1(int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CmdHSILine2(int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CmdSimHSIControl(int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CmdSimHSIRecord(int value)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -738,10 +758,15 @@ namespace EGSE.Devices
         private const int TimeDataAddr = 0x01;
 
         /// <summary>
+        /// Адресный байт "Данные интерфейса ВСИ".
+        /// </summary>
+        private const int HSIDataAddr = 0x14;
+
+        /// <summary>
         /// Адресный байт "Телеметрия".
         /// </summary>
         private const int TeleDataAddr = 0x15;
-       
+
         /// <summary>
         /// Экземпляр декодера протокола USB.
         /// </summary>
@@ -783,17 +808,32 @@ namespace EGSE.Devices
         private FileStream _devDataLogStream;
 
         /// <summary>
-        /// Отображать ли окно имитатора spacewire.
+        /// Отображать ли [окно "имитатор ВСИ"].
+        /// </summary>
+        private bool _isShowHSI;
+
+        /// <summary>
+        /// Отображать ли [окно "имитатор БУСК"].
+        /// </summary>
+        private bool _isShowSpacewire;
+
+        /// <summary>
+        /// Отображать ли [окно "имитатор НП"].
+        /// </summary>
+        private bool _isShowSD;
+
+        /// <summary>
+        /// Отображать ли [окно "имитатор БУК (для ВСИ)"].
+        /// </summary>
+        private bool _isShowSimHSI;
+
+        /// <summary>
+        /// Отображать ли [окно "имитатор БУК (для БУСК)"].
         /// </summary>
         private bool _isShowSimSpacewire;
 
         /// <summary>
-        /// Отображать ли окно имитатора БМ-4.
-        /// </summary>
-        private bool _isShowSimRouter;
-
-        /// <summary>
-        /// Отображать ли окно управление НП.
+        /// Отображать ли [окно "имитатор БУК (для НП)"].
         /// </summary>
         private bool _isShowSimSD;
 
@@ -819,6 +859,7 @@ namespace EGSE.Devices
 
             ControlValuesList = new Dictionary<string, ControlValue>();
 
+            HSINotify = new HSI(this);
             TelemetryNotify = new Telemetry(this);
             Spacewire1Notify = new Spacewire1(this);
             Spacewire2Notify = new Spacewire2(this);
@@ -881,6 +922,15 @@ namespace EGSE.Devices
             Sdchsh = 0x02
         }
 
+        public enum Line
+        {
+            Main = 0x02,
+
+            Resv = 0x01,
+
+            MainReserv = 0x00
+        }
+
         /// <summary>
         /// Полукомплекты рабочего прибора.
         /// </summary>
@@ -900,7 +950,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Список возможных каналов имитатора БМ-4.
         /// </summary>
-        public enum SimRouterChannel
+        public enum SpacewireChannel
         {
             /// <summary>
             /// Канал "БУК ПК1 - БМ-4 ПК1".
@@ -1024,6 +1074,14 @@ namespace EGSE.Devices
         public Telemetry TelemetryNotify { get; set; }
 
         /// <summary>
+        /// Получает или задает нотификатор ВСИ интерфейса.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public HSI HSINotify { get; set; }
+
+        /// <summary>
         /// Получает или задает нотификатор spacewire1.
         /// </summary>
         /// <value>
@@ -1078,13 +1136,93 @@ namespace EGSE.Devices
                 _isConnected = value;
                 FirePropertyChangedEvent("IsConnected");
             }
-        }                       
+        }
 
         /// <summary>
-        /// Получает значение, показывающее, видно ли [окно имитатора spacewire].
+        /// Получает значение, показывающее, открыто ли [окно "имитатор ВСИ"].
         /// </summary>
         /// <value>
-        ///   <c>true</c> если [окно имитатора spacewire] видно; иначе, <c>false</c>.
+        ///   <c>true</c> если [окно "имитатор ВСИ"] открыто; иначе, <c>false</c>.
+        /// </value>
+        public bool IsShowHSI
+        {
+            get
+            {
+                return _isShowHSI;
+            }
+
+            private set
+            {
+                _isShowHSI = value;
+                FirePropertyChangedEvent("IsShowHSI");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, открыто ли [окно "имитатор БУСК"].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [окно "имитатор БУСК"] открыто; иначе, <c>false</c>.
+        /// </value>
+        public bool IsShowSpacewire
+        {
+            get
+            {
+                return _isShowSpacewire;
+            }
+
+            private set
+            {
+                _isShowSpacewire = value;
+                FirePropertyChangedEvent("IsShowSpacewire");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, открыто ли [окно "имитатор НП"].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [окно "имитатор НП"] открыто; иначе, <c>false</c>.
+        /// </value>
+        public bool IsShowSD
+        {
+            get
+            {
+                return _isShowSD;
+            }
+
+            private set
+            {
+                _isShowSD = value;
+                FirePropertyChangedEvent("IsShowSD");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, открыто ли [окно "имитатор БУК (для ВСИ)"].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [окно "имитатор БУК (для ВСИ)"] открыто; иначе, <c>false</c>.
+        /// </value>
+        public bool IsShowSimHSI
+        {
+            get
+            {
+                return _isShowSimHSI;
+            }
+
+            private set
+            {
+                _isShowSimHSI = value;
+                FirePropertyChangedEvent("IsShowSimHSI");
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, открыто ли [окно "имитатор БУК (для БУСК)"].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [окно "имитатор БУК (для БУСК)"] открыто; иначе, <c>false</c>.
         /// </value>
         public bool IsShowSimSpacewire
         {
@@ -1101,30 +1239,10 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает значение, показывающее, видно ли [окно имитатора БМ-4].
+        /// Получает значение, показывающее, открыто ли [окно "имитатор БУК (для НП)"].
         /// </summary>
         /// <value>
-        ///   <c>true</c> если [окно имитатора БМ-4] видно; иначе, <c>false</c>.
-        /// </value>
-        public bool IsShowSimRouter
-        {
-            get
-            {
-                return _isShowSimRouter;
-            }
-
-            private set
-            {
-                _isShowSimRouter = value;
-                FirePropertyChangedEvent("IsShowSimRouter");
-            }
-        }
-
-        /// <summary>
-        /// Получает значение, показывающее, видно ли [окно управление НП].
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> если [окно управление НП] видно; иначе, <c>false</c>.
+        ///   <c>true</c> если [окно "имитатор БУК (для НП)"] открыто; иначе, <c>false</c>.
         /// </value>
         public bool IsShowSimSD
         {
@@ -1536,6 +1654,449 @@ namespace EGSE.Devices
             /// </summary>
             protected virtual void InitProperties()
             {
+            }
+        }
+
+        /// <summary>
+        /// Нотификатор ВСИ интерфейса.
+        /// </summary>
+        public class HSI : SubNotify, IDataErrorInfo
+        {
+            private bool _isLockResv1;
+            private bool _isLockMain1;
+            private bool _isOnOff1;
+            private bool _isLockResv2;
+            private bool _isLockMain2;
+            private bool _isOnOff2;
+            private int _stateCounter1;
+            private int _frameCounter1;
+            private int _stateCounter2;
+            private int _frameCounter2;
+            private bool _isRecordSend;
+            private bool _isRequest;
+            private int _lineOut;
+            private int _lineIn;
+            private bool _isLineMain1;
+            private bool _isLineMainResv1;
+            private bool _isLineResv1;
+            private bool _isLineMain2;
+            private bool _isLineResv2;
+            private bool _isLineMainResv2;
+
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="HSI" />.
+            /// </summary>
+            /// <param name="owner">The owner.</param>
+            public HSI(EgseBukNotify owner)
+                : base(owner)
+            {
+            }
+
+            /// <summary>
+            /// Получает сообщение об ошибке в объекте.
+            /// </summary>
+            /// <returns>An error message indicating what is wrong with this object. The default is an empty string ("").</returns>
+            public string Error
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="System.String"/> with the specified name.
+            /// </summary>
+            /// <value>
+            /// The <see cref="System.String"/>.
+            /// </value>
+            /// <param name="name">The name.</param>
+            /// <returns>Сообщение об ошибке.</returns>
+            public string this[string name]
+            {
+                get
+                {
+                    string result = null;
+
+                    return result;
+                }
+            }
+
+            /// <summary>
+            /// Initializes the control value.
+            /// </summary>
+            protected override void InitControlValue()
+            {
+                ControlValuesList.Add(Global.HSI.Line1, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line1StateCounter, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line1FrameCounter, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line2, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line2StateCounter, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line2FrameCounter, new ControlValue());
+                ControlValuesList.Add(Global.SimHSI.Control, new ControlValue());
+                ControlValuesList.Add(Global.SimHSI.Record, new ControlValue());                
+            }
+
+            /// <summary>
+            /// Initializes the properties.
+            /// </summary>
+            protected override void InitProperties()
+            {
+                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockMain, 1, 1, Device.CmdHSILine1, value => IsLockMain1 = 1 == value);
+                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockResv, 2, 1, Device.CmdHSILine1, value => IsLockResv1 = 1 == value);
+                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.OnOff, 0, 1, Device.CmdHSILine1, value => IsOnOff1 = 1 == value);
+                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockMain, 1, 1, Device.CmdHSILine2, value => IsLockMain2 = 1 == value);
+                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockResv, 2, 1, Device.CmdHSILine2, value => IsLockResv2 = 1 == value);
+                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.OnOff, 0, 1, Device.CmdHSILine2, value => IsOnOff2 = 1 == value);
+                ControlValuesList[Global.HSI.Line1StateCounter].AddProperty(Global.HSI.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value);
+                ControlValuesList[Global.HSI.Line1FrameCounter].AddProperty(Global.HSI.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value);
+                ControlValuesList[Global.HSI.Line2StateCounter].AddProperty(Global.HSI.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value);
+                ControlValuesList[Global.HSI.Line2FrameCounter].AddProperty(Global.HSI.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value);
+                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineIn, 2, 1, Device.CmdSimHSIControl, value => LineIn = value);
+                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineOut, 1, 1, Device.CmdSimHSIControl, value => LineOut = value);
+                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.Request, 0, 1, Device.CmdSimHSIControl, value => IsRequest = 1 == value);
+                ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.Send, 0, 1, Device.CmdSimHSIRecord, value => IsRecordSend = 1 == value);
+            }
+           
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [Запрет передачи по резервной линии КВВ ПК1].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [Запрет передачи по резервной линии КВВ ПК1]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsLockResv1 
+            {
+                get
+                {
+                    return _isLockResv1;
+                }
+
+                set
+                {
+                    _isLockResv1 = value;
+                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.LockResv, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsLockResv1");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [Запрет передачи по основной линии КВВ ПК1].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [Запрет передачи по основной линии КВВ ПК1]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsLockMain1
+            {
+                get
+                {
+                    return _isLockMain1;
+                }
+
+                set
+                {
+                    _isLockMain1 = value;
+                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.LockMain, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsLockMain1");
+                }
+            }
+
+            public bool IsLineMain1
+            {
+                get
+                {
+                    return _isLineMain1;
+                }
+
+                set
+                {
+                    IsLockResv1 = value;
+                    IsLockMain1 = !value;
+                    _isLineMain1 = value;
+                    FirePropertyChangedEvent("IsLineMain1");
+                }
+            }
+
+            public bool IsLineResv1
+            {
+                get
+                {
+                    return _isLineResv1;
+                }
+
+                set
+                {
+                    IsLockResv1 = !value;
+                    IsLockMain1 = value;
+                    _isLineResv1 = value;
+                    FirePropertyChangedEvent("IsLineResv1");
+                }
+            }
+
+            public bool IsLineMainResv1
+            {
+                get
+                {
+                    return _isLineMainResv1;
+                }
+
+                set
+                {
+                    IsLockResv1 = !value;
+                    IsLockMain1 = !value;
+                    _isLineMainResv1 = value;
+                    FirePropertyChangedEvent("IsLineMainResv1");
+                }
+            }
+
+            public bool IsLineMain2
+            {
+                get
+                {
+                    return _isLineMain2;
+                }
+
+                set
+                {
+                    IsLockResv2 = value;
+                    IsLockMain2 = !value;
+                    _isLineMain2 = value;
+                    FirePropertyChangedEvent("IsLineMain2");
+                }
+            }
+
+            public bool IsLineResv2
+            {
+                get
+                {
+                    return _isLineResv2;
+                }
+
+                set
+                {
+                    IsLockResv2 = !value;
+                    IsLockMain2 = value;
+                    _isLineResv2 = value;
+                    FirePropertyChangedEvent("IsLineResv2");
+                }
+            }
+
+            public bool IsLineMainResv2
+            {
+                get
+                {
+                    return _isLineMainResv2;
+                }
+
+                set
+                {
+                    IsLockResv2 = !value;
+                    IsLockMain2 = !value;
+                    _isLineMainResv2 = value;
+                    FirePropertyChangedEvent("IsLineMainResv2");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [Вкл/выкл КВВ ПК1].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [Вкл/выкл КВВ ПК1]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsOnOff1
+            {
+                get
+                {
+                    return _isOnOff1;
+                }
+
+                set
+                {
+                    _isOnOff1 = value;
+                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.OnOff, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsOnOff1");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [Запрет передачи по резервной линии КВВ ПК2].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [Запрет передачи по резервной линии КВВ ПК2]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsLockResv2
+            {
+                get
+                {
+                    return _isLockResv2;
+                }
+
+                set
+                {
+                    _isLockResv2 = value;
+                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.LockResv, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsLockResv2");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [Запрет передачи по основной линии КВВ ПК2].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [Запрет передачи по основной линии КВВ ПК2]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsLockMain2
+            {
+                get
+                {
+                    return _isLockMain2;
+                }
+
+                set
+                {
+                    _isLockMain2 = value;
+                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.LockMain, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsLockMain2");
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [Вкл/выкл КВВ ПК2].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [Вкл/выкл КВВ ПК2]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsOnOff2
+            {
+                get
+                {
+                    return _isOnOff2;
+                }
+
+                set
+                {
+                    _isOnOff2 = value;
+                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.OnOff, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsOnOff2");
+                }
+            }
+
+            public int StateCounter1
+            {
+                get
+                {
+                    return _stateCounter1;
+                }
+
+                set
+                {
+                    _stateCounter1 = value;
+                    ControlValuesList[Global.HSI.Line1StateCounter].SetProperty(Global.HSI.Line1StateCounter, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("StateCounter1");
+                }
+            }
+            public int FrameCounter1
+            {
+                get
+                {
+                    return _frameCounter1;
+                }
+
+                set
+                {
+                    _frameCounter1 = value;
+                    ControlValuesList[Global.HSI.Line1FrameCounter].SetProperty(Global.HSI.Line1FrameCounter, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("FrameCounter1");
+                }
+            }
+
+            public int StateCounter2
+            {
+                get
+                {
+                    return _stateCounter2;
+                }
+
+                set
+                {
+                    _stateCounter2 = value;
+                    ControlValuesList[Global.HSI.Line2StateCounter].SetProperty(Global.HSI.Line2StateCounter, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("StateCounter2");
+                }
+            }
+
+            public int FrameCounter2
+            {
+                get
+                {
+                    return _frameCounter2;
+                }
+
+                set
+                {
+                    _frameCounter2 = value;
+                    ControlValuesList[Global.HSI.Line2FrameCounter].SetProperty(Global.HSI.Line2FrameCounter, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("FrameCounter2");
+                }
+            }
+
+            public int LineIn
+            {
+                get
+                {
+                    return _lineIn;
+                }
+
+                set
+                {
+                    _lineIn = value;
+                    ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineIn, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("LineIn");
+                }
+            }
+
+            public int LineOut
+            {
+                get
+                {
+                    return _lineOut;
+                }
+
+                set
+                {
+                    _lineOut = value;
+                    ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineOut, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("LineOut");
+                }
+            }
+
+            public bool IsRequest
+            {
+                get
+                {
+                    return _isRequest;
+                }
+
+                set
+                {
+                    _isRequest = value;
+                    ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.Request, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsRequest");
+                }
+            }
+
+            public bool IsRecordSend
+            {
+                get
+                {
+                    return _isRecordSend;
+                }
+
+                set
+                {
+                    _isRecordSend = value;
+                    ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.Send, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsRecordSend");
+                }
             }
         }
 
@@ -2260,21 +2821,18 @@ namespace EGSE.Devices
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => PowerBusk2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => PowerBund1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => PowerBund2 = 1 == value);
-
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 6, 1, delegate { }, value => UfesLight1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 7, 1, delegate { }, value => UfesLight2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 9, 1, delegate { }, value => VufesLight2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 10, 1, delegate { }, value => SdchshLight1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value);
-
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower1, 20, 1, delegate { }, value => UfesPower1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower2, 21, 1, delegate { }, value => UfesPower2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower1, 19, 1, delegate { }, value => VufesPower1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower2, 18, 1, delegate { }, value => VufesPower2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower1, 17, 1, delegate { }, value => SdchshPower1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower2, 16, 1, delegate { }, value => SdchshPower2 = 1 == value);
-
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock1, 0, 1, Device.CmdUfesLock1, value => UfesLock1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock2, 1, 1, Device.CmdUfesLock2, value => UfesLock2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock1, 2, 1, Device.CmdVufesLock1, value => VufesLock1 = 1 == value);
@@ -2915,7 +3473,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Управление: Выбор канала.
             /// </summary>
-            private SimRouterChannel _simRouterChannel;
+            private SpacewireChannel _simRouterChannel;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
@@ -2964,12 +3522,12 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return SimRouterChannel.BUK1BM1 == SelectSimRouterChannel;
+                    return SpacewireChannel.BUK1BM1 == SelectSimRouterChannel;
                 }
 
                 set
                 {
-                    SelectSimRouterChannel = value ? SimRouterChannel.BUK1BM1 : SelectSimRouterChannel;
+                    SelectSimRouterChannel = value ? SpacewireChannel.BUK1BM1 : SelectSimRouterChannel;
                 }
             }
 
@@ -2983,12 +3541,12 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return SimRouterChannel.BUK1BM2 == SelectSimRouterChannel;
+                    return SpacewireChannel.BUK1BM2 == SelectSimRouterChannel;
                 }
 
                 set
                 {
-                    SelectSimRouterChannel = value ? SimRouterChannel.BUK1BM2 : SelectSimRouterChannel;
+                    SelectSimRouterChannel = value ? SpacewireChannel.BUK1BM2 : SelectSimRouterChannel;
                 }
             }
 
@@ -3002,12 +3560,12 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return SimRouterChannel.BUK2BM1 == SelectSimRouterChannel;
+                    return SpacewireChannel.BUK2BM1 == SelectSimRouterChannel;
                 }
 
                 set
                 {
-                    SelectSimRouterChannel = value ? SimRouterChannel.BUK2BM1 : SelectSimRouterChannel;
+                    SelectSimRouterChannel = value ? SpacewireChannel.BUK2BM1 : SelectSimRouterChannel;
                 }
             }
 
@@ -3021,12 +3579,12 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return SimRouterChannel.BUK2BM2 == SelectSimRouterChannel;
+                    return SpacewireChannel.BUK2BM2 == SelectSimRouterChannel;
                 }
 
                 set
                 {
-                    SelectSimRouterChannel = value ? SimRouterChannel.BUK2BM2 : SelectSimRouterChannel;
+                    SelectSimRouterChannel = value ? SpacewireChannel.BUK2BM2 : SelectSimRouterChannel;
                 }
             }
 
@@ -3036,7 +3594,7 @@ namespace EGSE.Devices
             /// <value>
             /// Канал имитатора БМ-4.
             /// </value>
-            public SimRouterChannel SelectSimRouterChannel
+            public SpacewireChannel SelectSimRouterChannel
             {
                 get
                 {
@@ -3487,7 +4045,7 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Channel, 1, 2, Device.CmdSpacewire2Control, value => SelectSimRouterChannel = (SimRouterChannel)value);
+                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Channel, 1, 2, Device.CmdSpacewire2Control, value => SelectSimRouterChannel = (SpacewireChannel)value);
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.IntfOn, 0, 1, Device.CmdSpacewire2Control, value => IsIntfOn = 1 == value);
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
                 ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendRMAP, 0, 1, Device.CmdSpacewire2Record, value => IsSendRMAP = 1 == value);

@@ -1,8 +1,98 @@
-﻿<Window x:Class="Wpf.SimHSI"
+﻿<Window x:Class="EGSE.Defaults.SimHSIWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SimHSI" Height="300" Width="300">
-    <Grid>
-        
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        Title="Имитатор БУК (для ВСИ)"
+        FontFamily="{StaticResource BaseFontFamily}"
+        FontSize="{StaticResource BaseFontSize}"
+        Closing="Window_Closing"
+        Visibility="{Binding IsShowSimHSI, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+    <Grid x:Name="GridSimHSI"
+          Background="{StaticResource BackBrush}"
+          Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="3"
+				Content="Управление"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1" 
+            	Content="Линия приема"		
+            	Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1" 
+            	Grid.Column="1"
+            	Content="Линия передач"
+            	Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1" 
+            	Grid.Column="2"
+            	Content="Опрос данных"
+            	Template="{StaticResource FlatLabel}"/>
+            <StackPanel Grid.Row="2"
+            	Margin="1">
+                <RadioButton Content="Основная" 
+            		GroupName="lineHalfSet3"           
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding XXX}"/>
+                <RadioButton Content="Резервная" 
+            		GroupName="lineHalfSet3"
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding XXX}"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2"
+                Grid.Column="1"                                           	
+            	Margin="1">
+                <RadioButton Content="Основная" 
+            		GroupName="lineHalfSet4"
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding XXX}"/>
+                <RadioButton Content="Резервная" 
+            		GroupName="lineHalfSet4"
+            		Template="{StaticResource FlatRadioButton}"
+            		IsChecked="{Binding XXX}"/>
+            </StackPanel>
+            <Button Grid.Row="2" 
+                Grid.Column="2"                                           	                                                           
+            	Tag="{Binding IsRequest, Converter={StaticResource boolToIndexConverter}}"
+            	Template="{StaticResource FlatButtonCheck}"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+        		Content="Передать УКС"
+        		Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Column="2"  
+        		Template="{StaticResource FlatButtonClick}"                       
+        		Content="из файла..."/>
+            <TextBox Grid.Row="1"
+        		Grid.ColumnSpan="3"
+        		Template="{StaticResource DataSendInError}"
+        		Style="{StaticResource TextBoxInError}"
+        		Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+            <Button Grid.Row="2"  
+        		Grid.ColumnSpan="3"
+        		Tag="{Binding IsRecordSend, Converter={StaticResource boolToIndexConverter}}"
+        		Template="{StaticResource FlatButtonClickBusy}"/>
+        </Grid>
+
     </Grid>
 </Window>

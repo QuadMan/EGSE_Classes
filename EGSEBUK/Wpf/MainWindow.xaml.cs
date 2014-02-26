@@ -30,24 +30,35 @@ namespace EGSE.Defaults
     /// </summary>
     public partial class MainWindow : Window
     {
-        /*private HSIWindow winHSI = new HSIWindow();
-        private SpaceWireWindow winSW = new SpaceWireWindow();
-        private SDWindow winSD = new SDWindow();*/
-
         /// <summary>
-        /// Окно "имитатор БМ-4"
+        /// Окно "Имитатор ВСИ".
         /// </summary>
-        private SimRouterWindow winSimRouter;
+        private HSIWindow winHSI;
 
         /// <summary>
-        /// Окно "имитаторы spacewire"
+        /// Окно "Имитатор БУК (для ВСИ)".
+        /// </summary>
+        private SimHSIWindow winSimHSI;
+
+        /// <summary>
+        /// Окно "Имитатор БУСК".
+        /// </summary>
+        private SpacewireWindow winSpacewire;
+
+        /// <summary>
+        /// Окно "Имитатор БУК (для БУСК)".
         /// </summary>
         private SimSpacewireWindow winSimSpacewire;
 
         /// <summary>
-        /// Окно "управление НП"
+        /// Окно "Имитатор НП".
         /// </summary>
-        private SDWindow winSimSD;
+        private SDWindow winSD;
+
+        /// <summary>
+        /// Окно "Имитатор БУК (для НП)".
+        /// </summary>
+        private SimSDWindow winSimSD;
 
         /// <summary>
         /// Экземпляр для работы с командами циклограммы.
@@ -119,13 +130,19 @@ namespace EGSE.Defaults
         private void InitModules()
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
-            winSimRouter = new SimRouterWindow();
-            winSimRouter.Init(_intfEGSE);
-            winSimSpacewire = new SimSpacewireWindow();            
-            winSimSpacewire.Init(_intfEGSE);
-            winSimSD = new SDWindow();
-            winSimSD.Init(_intfEGSE);
             DataContext = _intfEGSE;
+            winHSI = new HSIWindow();
+            winHSI.Init(_intfEGSE);
+            winSpacewire = new SpacewireWindow();
+            winSpacewire.Init(_intfEGSE);
+            winSD = new SDWindow();
+            winSD.Init(_intfEGSE);
+            winSimHSI = new SimHSIWindow();
+            winSimHSI.Init(_intfEGSE);
+            winSimSpacewire = new SimSpacewireWindow();
+            winSimSpacewire.Init(_intfEGSE);
+            winSimSD = new SimSDWindow();
+            winSimSD.Init(_intfEGSE);
             GridTelemetry.DataContext = _intfEGSE.TelemetryNotify;
         }
 

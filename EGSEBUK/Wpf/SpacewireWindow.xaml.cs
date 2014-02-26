@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SimRouterWindow.xaml.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="SpacewireWindow.xaml.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Коробейщиков Иван</author>
@@ -28,7 +28,7 @@ namespace EGSE.Defaults
     /// <summary>
     /// Interaction logic for SimRouterWindow.xaml
     /// </summary>
-    public partial class SimRouterWindow : Window
+    public partial class SpacewireWindow : Window
     {
         /// <summary>
         /// Интерфейс управления прибором.
@@ -36,9 +36,9 @@ namespace EGSE.Defaults
         private EgseBukNotify _intfEGSE;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SimRouterWindow" />.
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireWindow" />.
         /// </summary>
-        public SimRouterWindow()
+        public SpacewireWindow()
         {
             InitializeComponent();
         }
@@ -52,7 +52,7 @@ namespace EGSE.Defaults
             _intfEGSE = intfEGSE;
             _intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
             DataContext = _intfEGSE;
-            GridSpacewire2.DataContext = _intfEGSE.Spacewire2Notify;
+            GridSpacewire.DataContext = _intfEGSE.Spacewire2Notify;
         }
 
         /// <summary>
@@ -65,12 +65,12 @@ namespace EGSE.Defaults
             if (msg != null)
             {
                 string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data);
-                if (null != Spacewire2Mon && Visibility.Visible == this.Visibility)
+                if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
-                    Spacewire2Mon.Dispatcher.Invoke(new Action(delegate
+                    Monitor.Dispatcher.Invoke(new Action(delegate
                         {
-                            Spacewire2Mon.Items.Add(spacewireMsg);
-                            Spacewire2Mon.ScrollIntoView(spacewireMsg);
+                            Monitor.Items.Add(spacewireMsg);
+                            Monitor.ScrollIntoView(spacewireMsg);
                         }));
                 }           
             }

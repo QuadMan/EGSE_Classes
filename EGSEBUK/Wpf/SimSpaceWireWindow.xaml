@@ -1,216 +1,19 @@
-﻿<Window x:Class="EGSE.Defaults.SimSpacewireWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:l="clr-namespace:EGSE.Defaults"
-        Title="Имитаторы Spacewire" 
-        Closing="Window_Closing">
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <ControlTemplate x:Key="NumberInError" TargetType="{x:Type TextBox}">
-            <Border x:Name="Border"
-                    Margin="1"
-                    Background="{DynamicResource TextBrush}"
-                    BorderThickness="0">
-                <Grid>
-                    <ScrollViewer x:Name="PART_ContentHost"/>
-                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" Margin="3,1,0,0" Foreground="Gray" IsHitTestVisible="False" Text=""/>
-                    <TextBlock Visibility="Hidden" x:Name="ErrorText" Margin="6,1,0,0" Foreground="Red" IsHitTestVisible="False" Text="Некорректный ввод данных!"/>
-                </Grid>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Text" Value="">
-                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
-                </Trigger>
-                <Trigger Property="Text" Value=" ">
-                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="DataSendInError" TargetType="{x:Type TextBox}">
-            <Border x:Name="Border"
-                    Margin="1"
-                                Background="{DynamicResource TextBrush}"
-                                BorderThickness="0">
-                <Grid>
-                    <ScrollViewer x:Name="PART_ContentHost"/>
-                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" Margin="3,1,0,0" Foreground="Gray" IsHitTestVisible="False" Text="Введите данные, например: AB 45 FF EE"/>
-                    <TextBlock Visibility="Hidden" x:Name="ErrorText" Margin="6,1,0,0" Foreground="Red" IsHitTestVisible="False" Text="Некорректный ввод данных! Повторите ввод."/>
-                </Grid>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Text" Value="">
-                    <Setter Property="Visibility" TargetName="WatermarkText" Value="Visible"/>
-                </Trigger>
-                <Trigger Property="Text" Value=" ">
-                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
-            <Setter Property="Validation.ErrorTemplate">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <DockPanel LastChildFill="True">
-                            <Border BorderBrush="Red" BorderThickness="2">
-                                <AdornedElementPlaceholder />
-                            </Border>
-                        </DockPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="ToolTip"
-                            Value="{Binding (Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <SolidColorBrush x:Key="TextBrush" Color="White"/>
-        <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
-        <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
-        <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
-        <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
-        <SolidColorBrush x:Key="UnCheckedBrush" Color="Red"/>
-        <SolidColorBrush x:Key="CheckedBrush" Color="LightGreen"/>
-        <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>
-        <l:BoolToIntConverter x:Key="boolToIndexConverter" />
-        <l:BytesToStrConverter x:Key="bytesToStrConverter" />
-        <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
-            <Border x:Name="Border" 
-                        Background="{DynamicResource ClickBrush}"
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"                                        
-                                      Content="{TemplateBinding Content}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-                <Trigger Property="IsChecked" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}" 
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="ВКЛ"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="ВЫКЛ"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatButtonClickBusy" TargetType="{x:Type Button}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource ClickBrush}"   
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="false">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource ClickBrush}"/>
-                    <Setter Property="Content" Value="Выдать посылку"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource UnSelectBrush}"/>
-                    <Setter Property="Content" Value="Нельзя выдать посылку (занят)"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatButtonClick" TargetType="{x:Type Button}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource ClickBrush}"   
-                        Focusable="False" 
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                    <Setter Property="Content" Value="Связь установлена"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="false">
-                    <Setter Property="Content" Value="Связь не установлена"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="FlatLabel" TargetType="{x:Type Label}">
-            <Border x:Name="Border"
-                        Background="{DynamicResource TextBrush}"                                          
-                        BorderThickness="0"
-                        Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Content="{TemplateBinding Content}"/>
-            </Border>
-        </ControlTemplate>
-    </Window.Resources>
-    <Window.Visibility>
-        <Binding Converter="{StaticResource BooleanToVisibilityConverter}" Mode="TwoWay" Path="IsShowSimSpacewire"/>
-    </Window.Visibility>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid Background="LightBlue"
-              Margin="4"
-              x:Name="GridSpacewire1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+﻿<Window x:Class="EGSE.Defaults.SimSpacewireWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"        
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"                           
+        Title="Имитатор БУК (для БУСК)" 
+        FontFamily="{StaticResource BaseFontFamily}"
+        FontSize="{StaticResource BaseFontSize}"
+        Closing="Window_Closing"
+        Visibility="{Binding IsShowSimSpacewire, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+    <Grid x:Name="GridSimSpacewire"
+		Background="{StaticResource BackBrush}"
+		Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -219,202 +22,97 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="7"
-                  Grid.ColumnSpan="3"
-                  Background="{DynamicResource BackBrush}"
-                  Margin="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition />
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.ColumnSpan="2"
-                       Content="Передать данные"
-                       Template="{DynamicResource FlatLabel}"/>
-                <TextBox Grid.Row="1"
-                         Grid.ColumnSpan="3"   
-                         Template="{DynamicResource DataSendInError}"
-                         Style="{StaticResource TextBoxInError}"
-                         Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}">
-                </TextBox>
-                <Button Grid.Column="2"  
-                        Template="{DynamicResource FlatButtonClick}"                       
-                        Content="из файла..."/>
-                <Button Grid.Row="2"  
-                        Grid.ColumnSpan="3"
-                        Tag="{Binding IsRecordBusy, Converter={StaticResource boolToIndexConverter}}"
-                        Template="{DynamicResource FlatButtonClickBusy}" Click="Button_Click_10"/>                     
-            </Grid>
-            <Button Grid.Column="2"                               
-                    Grid.Row="3"    
-                    Tag="{Binding IsNP2Trans, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_1" Visibility="Hidden"/>
-            <Button Grid.Column="1"                               
-                    Grid.Row="3"   
-                    Grid.ColumnSpan="2"
-                    Tag="{Binding IsNP1Trans, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click"/>
-            <Button Grid.Column="1"                               
-                    Grid.Row="4"
-                    Grid.ColumnSpan="2"
-                    Tag="{Binding IsNP1TransData, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_2"/>
-            <TextBox Grid.Column="1"                               
-                     Grid.Row="5"   
-                     Grid.ColumnSpan="2"
-                     Template="{DynamicResource NumberInError}"
-                     Style="{StaticResource TextBoxInError}"
-                     Text="{Binding SD1SendTime}"/>
-            <TextBox Grid.Column="2"                               
-                     Grid.Row="5"                      
-                     Text="{Binding SD2SendTime}"
-                     Template="{DynamicResource NumberInError}"
-                     Style="{StaticResource TextBoxInError}" Visibility="Hidden"/>
-            <TextBox Grid.Column="1"                               
-                     Grid.Row="6"  
-                     Grid.ColumnSpan="2"
-                     Template="{DynamicResource NumberInError}"
-                     Style="{StaticResource TextBoxInError}"
-                     Text="{Binding SD1DataSize}"/>
-            <TextBox Grid.Column="2"                               
-                     Grid.Row="6"                      
-                     Template="{DynamicResource NumberInError}"
-                     Style="{StaticResource TextBoxInError}"
-                     Text="{Binding SD2DataSize}" Visibility="Hidden"/>
-            <Button Grid.Column="2"                               
-                    Grid.Row="4"    
-                    Tag="{Binding IsNP2TransData, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_3" Visibility="Hidden"/>
-            <Label Grid.Row="4"
-                   Content="Выдавать пакеты данных в прибор"
-                   Template="{DynamicResource FlatLabel}"/>
-            <Label Grid.Row="5"
-                   Content="Счетчик миллисекунд (готовность данных)"
-                   Template="{DynamicResource FlatLabel}"/>
-            <Label Grid.Row="6"
-                   Content="Количество байт в пакете данных"
-                   Template="{DynamicResource FlatLabel}"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="3"
+				Content="Управление"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1" 
+            	Content="{Binding ShowLogicBusk}"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Row="1"
+            	Grid.Column="1"                               
+            	Grid.ColumnSpan="2"	
+            	Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
+            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_4"/>
+            <Label Grid.Row="2" 
+            	Grid.ColumnSpan="3"
+            	Tag="{Binding IsConnected, Converter={StaticResource boolToIndexConverter}}"     
+            	Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="3" 
-                   Content="Включить обмен прибора"
-                   Template="{DynamicResource FlatLabel}"/>
-            <Label Grid.Row="2" 
-                   Grid.Column="1"
-                   Grid.ColumnSpan="2"
-                   Content="{Binding ShowLogicSD1}"
-                   Template="{DynamicResource FlatLabel}"/>
-            <Label Grid.Row="2" 
-                   Grid.Column="2"
-                   Content="{Binding ShowLogicSD2}"
-                   Template="{DynamicResource FlatLabel}" Visibility="Hidden"/>
-            <Label Grid.Row="2" 
-                   Content="Прибор"
-                   Template="{DynamicResource FlatLabel}"/>
-            <Label Content="{Binding ShowLogicBusk}"
-                   Template="{DynamicResource FlatLabel}"/>
-            <Button Grid.Column="1"                               
-                    Grid.ColumnSpan="2"	
-                    Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_4"/>
-            <Label Grid.Row="1" 
-                   Grid.ColumnSpan="3"
-                   Tag="{Binding IsConnected, Converter={StaticResource boolToIndexConverter}}"     
-                   Template="{DynamicResource FlatLabelConnected}"/>
+            	Content="Прибор"
+            	Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3" 
+            	Grid.Column="1"
+            	Grid.ColumnSpan="2"
+            	Content="{Binding ShowLogicSD1}"
+            	Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="4" 
+            	Content="Обмен с прибором"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Row="4"   
+                Grid.Column="1"                                           	 
+            	Grid.ColumnSpan="2"
+            	Tag="{Binding IsNP1Trans, Converter={StaticResource boolToIndexConverter}}"
+            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click"/>
+            <Label Grid.Row="5"
+            	Content="Выдавать пакеты данных в прибор"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Row="5" 
+                Grid.Column="1"                               			    
+			    Grid.ColumnSpan="2"
+			    Tag="{Binding IsNP1TransData, Converter={StaticResource boolToIndexConverter}}"
+			    Template="{StaticResource FlatButtonCheck}" Click="Button_Click_2"/>
+            <Label Grid.Row="6"
+            	Content="Счетчик миллисекунд (готовность данных)"
+            	Template="{StaticResource FlatLabel}"/>
+            <TextBox Grid.Row="6"  
+                Grid.Column="1"
+			    Grid.ColumnSpan="2"
+			    Template="{StaticResource NumberInError}"
+			    Style="{StaticResource TextBoxInError}"
+			    Text="{Binding SD1SendTime}"/>
+            <Label Grid.Row="7"
+            	Content="Количество байт в пакете данных"
+            	Template="{StaticResource FlatLabel}"/>
+            <TextBox Grid.Column="1"                               
+            	Grid.Row="7"  
+            	Grid.ColumnSpan="2"
+            	Template="{StaticResource NumberInError}"
+            	Style="{StaticResource TextBoxInError}"
+            	Text="{Binding SD1DataSize}"/>
         </Grid>
-        <Grid Grid.Column="1" 
-              Background="LightBlue"
-              Margin="4"
-              Name="GridSpacewire4">
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="3"
-                  Grid.ColumnSpan="2"
-                  Background="{DynamicResource BackBrush}"
-                  Margin="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition />
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.ColumnSpan="2"
-                       Content="Передать данные"
-                       Template="{DynamicResource FlatLabel}"/>
-                <TextBox Grid.Row="1"
-                         Grid.ColumnSpan="3"
-                         Template="{DynamicResource DataSendInError}"
-                         Style="{StaticResource TextBoxInError}"
-                         Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
-                <Button Grid.Column="2"  
-                        Template="{DynamicResource FlatButtonClick}"                       
-                        Content="из файла..."/>
-                <Label Grid.Row="2"   
-                       Grid.ColumnSpan="2"	
-                       Content="Выдавать ошибку EEP"
-                       Template="{DynamicResource FlatLabel}"/>
-                <Button Grid.Row="2"   
-                        Grid.Column="2"                         
-                        Tag="{Binding IsEEPSend, Converter={StaticResource boolToIndexConverter}}"
-                        Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_9"/>
-                <Label Grid.Row="3"   
-                       Grid.ColumnSpan="2"	
-                       Content="Выдавать в конце посылки EOP или EEP"
-                       Template="{DynamicResource FlatLabel}"/>
-                <Button Grid.Row="3"   
-                        Grid.Column="2"                         
-                        Tag="{Binding IsEOPSend, Converter={StaticResource boolToIndexConverter}}"
-                        Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_7"/>
-                <Button Grid.Row="4"  
-                        Grid.ColumnSpan="3"
-                        Tag="{Binding IsRecordBusy, Converter={StaticResource boolToIndexConverter}}"
-                        Template="{DynamicResource FlatButtonClickBusy}" Click="Button_Click_11"/>
-                <Button Grid.Row="5"   
-                        Grid.Column="2"                         
-                        Tag="{Binding IsAutoSend, Converter={StaticResource boolToIndexConverter}}"
-                        Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_8"/>
-                <Label Grid.Row="5"   
-                       Grid.ColumnSpan="2"	
-                       Content="Автоматическая выдача посылки"
-                       Template="{DynamicResource FlatLabel}"/>
-            </Grid>
-            <Button Grid.Column="1"                               
-                    Grid.Row="2"    
-                    Tag="{Binding IsTimeMark, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_6"/>
-            <Label Grid.Row="2" 
-                   Content="Выдача секундных меток"
-                   Template="{DynamicResource FlatLabel}"/>
-            <Label Content="Имитатор БУК"
-				   Template="{DynamicResource FlatLabel}"/>
-            <Button Grid.Column="1"                               
-                    Grid.Row="0"    
-                    Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
-                    Template="{DynamicResource FlatButtonCheck}" Click="Button_Click_5"/>
-            <Label Grid.Row="1" 
-                   Grid.ColumnSpan="2"
-                   Tag="{Binding IsConnected, Converter={StaticResource boolToIndexConverter}}"     
-                   Template="{DynamicResource FlatLabelConnected}"/>
+            <Label Grid.ColumnSpan="2"
+        		Content="Передать данные"
+        		Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Column="2"  
+            	Template="{StaticResource FlatButtonClick}"                       
+            	Content="из файла..."/>
+            <TextBox Grid.Row="1"
+        		Grid.ColumnSpan="3"   
+        		Template="{StaticResource DataSendInError}"
+        		Style="{StaticResource TextBoxInError}"
+        		Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+            <Button Grid.Row="2"  
+        		Grid.ColumnSpan="3"
+        		Tag="{Binding IsRecordBusy, Converter={StaticResource boolToIndexConverter}}"
+        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click_10"/>
         </Grid>
     </Grid>
 </Window>

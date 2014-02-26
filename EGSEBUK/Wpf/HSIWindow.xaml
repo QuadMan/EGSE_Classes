@@ -1,169 +1,21 @@
-﻿<Window
+﻿<Window x:Class="EGSE.Defaults.HSIWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="EGSE.WPF.HSIWindow"
-        Title="Управление КВВ"
-        FontFamily="Consolas"
-        FontSize="13">
-    <DockPanel>
-        <Grid Background="LightBlue"
-              DockPanel.Dock="Top"
-			  Margin="4"
-              MinHeight="197">
+        Title="Имитатор ВСИ"
+        FontFamily="{StaticResource BaseFontFamily}"
+        FontSize="{StaticResource BaseFontSize}"
+        Closing="Window_Closing"
+        Visibility="{Binding IsShowHSI, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+    <Grid x:Name="GridHSI"
+		Background="{StaticResource BackBrush}"
+		Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>              
-            </Grid.ColumnDefinitions>
-            <Label Grid.Row="3"
-                   Grid.Column="3"
-                   Content="0"
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   Background="White"
-                   Margin="0,0,1,1"/>
-            <Label Grid.Row="3"
-                   Grid.Column="4"
-                   Content="0"
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   Background="White"
-                   Margin="0,0,1,1"/>
-            <Label Grid.Row="4"
-                   Grid.Column="3"
-                   Content="0"				
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   Background="White"
-                   Margin="0,0,1,1"/>
-            <Label Grid.Row="4"
-                   Grid.Column="4"
-                   Content="0"
-                   HorizontalContentAlignment="Center"
-                   VerticalContentAlignment="Center"
-                   Background="White"
-                   Margin="0,0,1,1"/>
-            <StackPanel Grid.Column="2"                               
-                        Grid.Row="3"
-                        Background="White"
-                        Margin="0,0,1,1">
-                <RadioButton Content="Основная" 
-					GroupName="lineHalfSet1"
-					Margin="2"/>
-                <RadioButton Content="Резервная" 
-					GroupName="lineHalfSet1"
-					Margin="2"/>
-                <RadioButton Content="Осн + Рез" 
-					GroupName="lineHalfSet1"
-					Margin="2"/>
-            </StackPanel>
-            <StackPanel Grid.Column="2"                               
-                        Grid.Row="4"
-                        Background="White"
-                        Margin="0,0,1,1">
-                <RadioButton Content="Основная" 
-					GroupName="lineHalfSet2"
-					Margin="2"/>
-                <RadioButton Content="Резервная" 
-					GroupName="lineHalfSet2"
-					Margin="2"/>
-                <RadioButton Content="Осн + Рез" 
-					GroupName="lineHalfSet2"
-					Margin="2"/>
-            </StackPanel>
-            <Button Grid.Column="1"                               
-				Grid.Row="3"                                                            
-				Content="ВЫКЛ"
-				Background="Red"
-				Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-				Focusable="False" 
-				BorderThickness="0" 
-				HorizontalAlignment="Stretch" 
-				VerticalAlignment="Stretch" 
-				Margin="0,0,1,1"/>
-            <Button Grid.Column="1"                               
-				Grid.Row="4"                                                            
-				Content="ВЫКЛ"
-				Background="Red"
-				Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-				Focusable="False" 
-				BorderThickness="0" 
-				HorizontalAlignment="Stretch" 
-				VerticalAlignment="Stretch" 
-				Margin="0,0,1,1"/>
-            <Label Grid.Row="0" 
-				Grid.ColumnSpan="6"
-				Content="Имитатор КВВ"
-				HorizontalContentAlignment="Center"
-				Background="White"
-				Margin="1,1,1,1"/>
-            <Label Grid.Row="1" 
-				Grid.Column="1"
-				Grid.RowSpan="2"
-				Content="Вкл/Выкл"
-				VerticalContentAlignment="Center"
-				Background="White"
-				Margin="0,0,1,1"/>
-            <Label Grid.Row="1" 
-				Grid.Column="0"
-				Grid.RowSpan="2"
-				Content="П/К"
-				VerticalContentAlignment="Center"
-				Background="White"
-				Margin="1,0,1,1"/>
-            <Label Grid.Row="1" 
-				Grid.Column="2"
-				Grid.RowSpan="2"
-				Content="Линии передач"
-				VerticalContentAlignment="Center"
-				Background="White"
-				Margin="0,0,1,1"/>
-            <Label Grid.Row="1" 
-				Grid.Column="3"
-				Grid.ColumnSpan="2"
-				Content="Счетчики"
-				HorizontalContentAlignment="Center"
-				Background="White"
-				Margin="0,0,1,1"/>
-            <Label Grid.Row="2" 
-				Grid.Column="3"
-				Content="Выданных статусов"
-				Background="White"
-				Margin="0,0,1,1"/>
-            <Label Grid.Row="2" 
-				Grid.Column="4"
-				Content="Выданных кадров"
-				Background="White"
-				Margin="0,0,1,1"/>
-            <Label Grid.Row="3" 
-				Content="ПК 1"
-				VerticalContentAlignment="Center" 
-				Background="White"
-				Margin="1,0,1,1"/>
-            <Label Grid.Row="4" 
-				Content="ПК 2"
-				VerticalContentAlignment="Center"                   
-				Background="White"
-				Margin="1,0,1,1"/>
-        </Grid>
-        <Expander DockPanel.Dock="Bottom"
-                  Header="Имитатор БУК" 
-                       BorderBrush="LightBlue" 
-                       BorderThickness="2" 
-                       Margin="5"
-                  IsExpanded="True">
-            <Grid Background="LightBlue">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -175,87 +27,137 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Row="6" 
-                     Grid.Column="0"
-                     Grid.ColumnSpan="3"
-                     BorderBrush="LightBlue"/>
-            <Label Grid.Row="5" 
-                   Grid.Column="0"
-                   Grid.ColumnSpan="3"
-                   Content="Монитор УКС"
-                   HorizontalContentAlignment="Center"
-                   Background="White"                   
-                   Margin="1,0,1,0"/>
-            <ComboBox Grid.Column="0"                               
-                      Grid.Row="4" 
-                      Grid.ColumnSpan="2"
-                      IsEditable="True"
-                      Background="White"
-                      BorderBrush="LightBlue"/>
-            <Button Grid.Column="2"                               
-				Grid.Row="4"                                                            
-				Content="Выдать"				
-				Focusable="False" 
-				BorderThickness="0" 
-				HorizontalAlignment="Stretch" 
-				VerticalAlignment="Stretch"
-                BorderBrush="LightBlue"/>
-            <Label Grid.Row="3" 
-                   Grid.Column="0"
-                   Grid.ColumnSpan="3"
-                   Content="Выдача УКС"
-                   HorizontalContentAlignment="Center"
-                   Background="White"                   
-                   Margin="1,0,1,0"/>
-            <Button Grid.Column="2"                               
-				Grid.Row="2"                                                            
-				Content="ВЫКЛ"
-				Background="Red"
-				Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-				Focusable="False" 
-				BorderThickness="0" 
-				HorizontalAlignment="Stretch" 
-				VerticalAlignment="Stretch" 
-				Margin="0,0,1,1"/>
-            <StackPanel Grid.Column="0"                               
-                        Grid.Row="2"
-                        Background="White"
-                        Margin="1,0,1,1">
-                <RadioButton Content="Основная" 
-					GroupName="lineHalfSet3"
-					Margin="2"/>
-                <RadioButton Content="Резервная" 
-					GroupName="lineHalfSet3"
-					Margin="2"/>
-            </StackPanel>
-            <StackPanel Grid.Column="1"                               
-                        Grid.Row="2"
-                        Background="White"
-                        Margin="0,0,1,1">
-                <RadioButton Content="Основная" 
-					GroupName="lineHalfSet4"
-					Margin="2"/>
-                <RadioButton Content="Резервная" 
-					GroupName="lineHalfSet4"
-					Margin="2"/>
-            </StackPanel>
-            <Label Grid.Row="1" 
-				Grid.Column="0"
-				Content="Линия приема"
-				Background="White"
-				Margin="1,1,1,1"/>
+            <Label Grid.ColumnSpan="6"
+				Content="Управление"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1"             	
+				Grid.RowSpan="2"
+				Content="П/К"
+				Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1" 
 				Grid.Column="1"
-				Content="Линия передач"
-				Background="White"
-				Margin="0,1,1,1"/>
-                <Label Grid.Row="1" 
+				Grid.RowSpan="2"
+				Content="Вкл/Выкл"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1" 
 				Grid.Column="2"
-				Content="Опрос данных"
-				Background="White"
-				Margin="0,1,1,1"/>
-            </Grid>
-        </Expander>
-    </DockPanel>
+				Grid.RowSpan="2"
+				Content="Линии передач"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1" 
+				Grid.Column="3"
+				Grid.ColumnSpan="2"
+				Content="Счетчики"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="2" 
+				Grid.Column="3"
+				Content="Выданных статусов"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="2" 
+                Grid.Column="4"
+                Content="Выданных кадров"
+                Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3" 
+            	Content="ПК 1"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Column="1"                               
+				Grid.Row="3"                                                            
+				Tag="{Binding IsOnOff1, Converter={StaticResource boolToIndexConverter}}"
+                Template="{StaticResource FlatButtonCheck}"/>
+            <StackPanel Grid.Column="2"                               
+				Grid.Row="3"		
+				Margin="1">
+                <RadioButton Content="Основная" 
+            		GroupName="lineHalfSet1"            		
+                    Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IsLineMain1}"/>
+                <RadioButton Content="Резервная" 
+            		GroupName="lineHalfSet1"
+            		Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IsLineResv1}"/>
+                <RadioButton Content="Осн + Рез" 
+            		GroupName="lineHalfSet1"
+            		Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IsLineMainResv1}"/>
+            </StackPanel>
+            <Label Grid.Row="3"
+            	Grid.Column="3"
+            	Content="{Binding StateCounter1}"
+            	Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3"
+				Grid.Column="4"
+				Content="{Binding FrameCounter1}"
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="4" 
+            	Content="ПК 2"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Column="1"                               
+            	Grid.Row="4"                                                            		
+            	Tag="{Binding IsOnOff2, Converter={StaticResource boolToIndexConverter}}"
+            	Template="{StaticResource FlatButtonCheck}"/>
+            <StackPanel Grid.Column="2"                               
+				Grid.Row="4"
+		  	    Margin="1">
+                <RadioButton Content="Основная" 
+            		GroupName="lineHalfSet2"
+            		Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IsLineMain2}"/>
+                <RadioButton Content="Резервная" 
+            		GroupName="lineHalfSet2"
+            		Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IsLineResv2}"/>
+                <RadioButton Content="Осн + Рез" 
+            		GroupName="lineHalfSet2"
+            		Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IsLineMainResv2}"/>
+            </StackPanel>
+            <Label Grid.Row="4"
+				Grid.Column="3"
+				Content="{Binding StateCounter2}"				
+				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="4"
+				Grid.Column="4"
+				Content="{Binding FrameCounter2}"
+				Template="{StaticResource FlatLabel}"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+				Content="Монитор ВСИ"
+				Template="{StaticResource FlatLabel}"/>
+            <ListBox x:Name="Monitor" 
+				Grid.Row="1"
+				Grid.ColumnSpan="2"
+				Margin="1"
+				BorderThickness="0"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+        		Content="Монитор УКС"
+        		Template="{StaticResource FlatLabel}"/>
+            <ListBox x:Name="MonitorCmd" 
+        		Grid.Row="1"
+        		Grid.ColumnSpan="2"
+        		Margin="1"
+        		BorderThickness="0"/>
+        </Grid>
+    </Grid>
 </Window>

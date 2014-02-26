@@ -105,6 +105,258 @@ namespace EGSE.Constants
         }
 
         /// <summary>
+        /// Индексы свойств [ВСИ (ИМИТАТОР КВВ)]
+        /// </summary>
+        public static class HSI
+        {
+            /// <summary>
+            /// Инициализирует статические поля класса <see cref="HSI" />.
+            /// </summary>
+            static HSI()
+            {
+                Line1 = new CVLine1();
+                Line1StateCounter = new CVLine1StateCounter();
+                Line1FrameCounter = new CVLine1FrameCounter();
+                Line2 = new CVLine2();
+                Line2StateCounter = new CVLine2StateCounter();
+                Line2FrameCounter = new CVLine2FrameCounter();
+            }
+
+            /// <summary>
+            /// Получает индекс объекта "КВВ ПК1" в массиве ControlValuesList.
+            /// </summary>
+            public static CVLine1 Line1 { get; private set; }
+
+            /// <summary>
+            /// Получает индекс объекта "КВВ ПК1 : Счетчик выданных статусов" в массиве ControlValuesList.
+            /// </summary>
+            public static CVLine1StateCounter Line1StateCounter { get; private set; }
+
+            /// <summary>
+            /// Получает индекс объекта "КВВ ПК1 : Счетчик выданных кадров" в массиве ControlValuesList.
+            /// </summary>
+            public static CVLine1FrameCounter Line1FrameCounter { get; private set; }
+
+            /// <summary>
+            /// Получает индекс объекта "КВВ ПК2" в массиве ControlValuesList.
+            /// </summary>
+            public static CVLine2 Line2 { get; private set; }
+
+            /// <summary>
+            /// Получает индекс объекта "КВВ ПК2 : Счетчик выданных статусов" в массиве ControlValuesList.
+            /// </summary>
+            public static CVLine2StateCounter Line2StateCounter { get; private set; }
+
+            /// <summary>
+            /// Получает индекс объекта "КВВ ПК2 : Счетчик выданных кадров" в массиве ControlValuesList.
+            /// </summary>
+            public static CVLine2FrameCounter Line2FrameCounter { get; private set; }
+
+            /// <summary>
+            /// Индексы свойств [КВВ ПК1].
+            /// </summary>
+            public class CVLine1
+            {
+                /// <summary>
+                /// Индекс свойства [Вкл/выкл].
+                /// </summary>
+                public readonly string OnOff = "29de114f373d4db9a52a90c91c840902";
+
+                /// <summary>
+                /// Индекс свойства [Запрет передачи по резервной линии].
+                /// </summary>
+                public readonly string LockResv = "3cbe73537ddb4cb9a7af999eff3e6324";
+
+                /// <summary>
+                /// Индекс свойства [Запрет передачи по основной линии].
+                /// </summary>
+                public readonly string LockMain = "c3f337c342d644b0a7c265cee331d07b";
+
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVLine1 obj)
+                {
+                    return "e8ae7f4e0d5d40a38a5351f963b4c523";
+                }
+            }
+
+            /// <summary>
+            /// Индексы свойств [КВВ ПК2].
+            /// </summary>
+            public class CVLine2
+            {
+                /// <summary>
+                /// Индекс свойства [Вкл/выкл].
+                /// </summary>
+                public readonly string OnOff = "c7837417edd743eabe09ff6733c333e3";
+
+                /// <summary>
+                /// Индекс свойства [Запрет передачи по резервной линии].
+                /// </summary>
+                public readonly string LockResv = "cf351176e276489dac1248af4fb043ec";
+
+                /// <summary>
+                /// Индекс свойства [Запрет передачи по основной линии].
+                /// </summary>
+                public readonly string LockMain = "7003785f7708490e9c58c82d76e9401d";
+
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVLine2 obj)
+                {
+                    return "b458476250d543579d41f34c182370c3";
+                }
+            }
+
+            /// <summary>
+            /// Индексы свойств [КВВ ПК1 : Счетчик выданных статусов].
+            /// </summary>
+            public class CVLine1StateCounter
+            {
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVLine1StateCounter obj)
+                {
+                    return "bdfde378fe9c4bc9aec31e57bbcc3188";
+                }
+            }
+
+            /// <summary>
+            /// Индексы свойств [КВВ ПК2 : Счетчик выданных статусов].
+            /// </summary>
+            public class CVLine2StateCounter
+            {
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVLine2StateCounter obj)
+                {
+                    return "33e8be5ae11e447aa272b0424bab86b5";
+                }
+            }
+
+            /// <summary>
+            /// Индексы свойств [КВВ ПК1 : Счетчик выданных кадров].
+            /// </summary>
+            public class CVLine1FrameCounter
+            {
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVLine1FrameCounter obj)
+                {
+                    return "286c652151b0421b810819824660b0b1";
+                }
+            }
+
+            /// <summary>
+            /// Индексы свойств [КВВ ПК2 : Счетчик выданных кадров].
+            /// </summary>
+            public class CVLine2FrameCounter
+            {
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVLine2FrameCounter obj)
+                {
+                    return "ac7a515827874052869d942b698bc968";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Индексы свойств [ВСИ (ИМИТАТОР БУК)]
+        /// </summary>
+        public static class SimHSI
+        {
+            /// <summary>
+            /// Инициализирует статические поля класса <see cref="SimHSI" />.
+            /// </summary>
+            static SimHSI()
+            {
+                Control = new CVControl();
+                Record = new CVRecord();
+            }
+
+            /// <summary>
+            /// Получает индекс объекта "Управление" в массиве ControlValuesList.
+            /// </summary>
+            public static CVControl Control { get; private set; }
+
+            /// <summary>
+            /// Получает индекс объекта "Выдача УКС" в массиве ControlValuesList.
+            /// </summary>
+            public static CVRecord Record { get; private set; }
+
+            /// <summary>
+            /// Индексы свойств [Управление].
+            /// </summary>
+            public class CVControl
+            {
+                /// <summary>
+                /// Индекс свойства [Линия приема].
+                /// </summary>
+                public readonly string LineIn = "47dd05f1b4ef4954885f28a2bda3ed0f";
+
+                /// <summary>
+                /// Индекс свойства [Линия передачи].
+                /// </summary>
+                public readonly string LineOut = "1ff03a21678340b2bf270d98c51dfae4";
+
+                /// <summary>
+                /// Индекс свойства [Опрос данных].
+                /// </summary>
+                public readonly string Request = "e7864f46ec024878919567582b165b12";
+
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVControl obj)
+                {
+                    return "0e4d597a2a8f4cdf95b45b273581e246";
+                }
+            }
+
+            /// <summary>
+            /// Индексы свойств [Выдача УКС].
+            /// </summary>
+            public class CVRecord
+            {
+                /// <summary>
+                /// Индекс свойства [Выдача УКС].
+                /// </summary>
+                public readonly string Send = "d10b58d4d0f14ae995a8f79631ceb894";
+
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
+                public static implicit operator string(CVRecord obj)
+                {
+                    return "98524df893b84c47b6e0d61fa7766c75";
+                }
+            }
+        }
+
+        /// <summary>
         /// Индексы свойств [SPACEWIRE 1 (ИМИТАТОР НП (БУК))]
         /// </summary>
         public static class Spacewire1

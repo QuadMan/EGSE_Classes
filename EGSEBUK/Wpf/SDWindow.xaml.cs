@@ -51,7 +51,7 @@ namespace EGSE.Defaults
             _intfEGSE = intfEGSE;
             DataContext = _intfEGSE;
             _intfEGSE.GotSpacewire3Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
-            GridSpacewire3.DataContext = _intfEGSE.Spacewire3Notify;
+            GridSD.DataContext = _intfEGSE.Spacewire3Notify;
         }
 
         /// <summary>
@@ -64,12 +64,12 @@ namespace EGSE.Defaults
             if (msg != null)
             {
                 string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data);
-                if (null != Spacewire3Mon && Visibility.Visible == this.Visibility)
+                if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
-                    Spacewire3Mon.Dispatcher.Invoke(new Action(delegate
+                    Monitor.Dispatcher.Invoke(new Action(delegate
                     {
-                        Spacewire3Mon.Items.Add(spacewireMsg);
-                        Spacewire3Mon.ScrollIntoView(spacewireMsg);
+                        Monitor.Items.Add(spacewireMsg);
+                        Monitor.ScrollIntoView(spacewireMsg);
                     }));
                 }
             }
