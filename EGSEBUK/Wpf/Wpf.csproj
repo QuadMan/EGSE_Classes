@@ -95,8 +95,14 @@
     <Compile Include="SDWindow.xaml.cs">
       <DependentUpon>SDWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SimRouterWindow.xaml.cs">
-      <DependentUpon>SimRouterWindow.xaml</DependentUpon>
+    <Compile Include="SimHSIWindow.xaml.cs">
+      <DependentUpon>SimHSIWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SimSDWindow.xaml.cs">
+      <DependentUpon>SimSDWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SpacewireWindow.xaml.cs">
+      <DependentUpon>SpacewireWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SimSpacewireWindow.xaml.cs">
       <DependentUpon>SimSpacewireWindow.xaml</DependentUpon>
@@ -199,7 +205,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SimRouterWindow.xaml">
+    <Page Include="SimHSIWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SimSDWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SpacewireWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -253,6 +267,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="ToDo.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
