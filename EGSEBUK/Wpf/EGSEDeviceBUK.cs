@@ -122,7 +122,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Адресный байт "Управление обменом с приборами по SPTP".
         /// </summary>
-        private const int Spacewire1SPTPControlAddr = 0x21;
+        private const int Spacewire1SPTPControlAddr = 0x16; //0x21;
 
         /// <summary>
         /// Адресный байт "Счетчик миллисекунд для НП1 (через сколько готовы данные)".
@@ -3372,10 +3372,12 @@ namespace EGSE.Devices
                 ControlValuesList[Global.Spacewire1.SPTPLogicBusk].AddProperty(Global.Spacewire1.SPTPLogicBusk, 0, 8, Device.CmdSpacewire1LogicBusk, value => _logicBusk = value);
                 ControlValuesList[Global.Spacewire1.SPTPLogicSD1].AddProperty(Global.Spacewire1.SPTPLogicSD1, 0, 8, Device.CmdSpacewire1LogicSD1, value => _logicSD1 = value);
                 ControlValuesList[Global.Spacewire1.SPTPLogicSD2].AddProperty(Global.Spacewire1.SPTPLogicSD2, 0, 8, delegate { }, value => _logicSD2 = value);
+
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP1Trans, 0, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP1Trans = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP2Trans, 2, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP2Trans = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP1TransData, 1, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP1TransData = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.SD2TransData, 3, 1, Device.CmdSpacewire1ControlSPTP, value => IsSD2TransData = 1 == value);
+
                 ControlValuesList[Global.Spacewire1.SD1SendTime].AddProperty(Global.Spacewire1.SD1SendTime, 0, 16, Device.CmdSpacewire1SPTPControlSD1SendTime, value => SD1SendTime = value);
                 ControlValuesList[Global.Spacewire1.SD2SendTime].AddProperty(Global.Spacewire1.SD2SendTime, 0, 16, Device.CmdSpacewire1SPTPControlSD2SendTime, value => SD2SendTime = value);
                 ControlValuesList[Global.Spacewire1.SD1DataSize].AddProperty(Global.Spacewire1.SD1DataSize, 0, 16, Device.CmdSpacewire1SPTPControlSD1DataSize, value => SD1DataSize = value);
