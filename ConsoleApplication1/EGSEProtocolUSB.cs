@@ -69,6 +69,8 @@ namespace EGSE.Protocols
     /// </summary>
     public class SpacewireSptpMsgEventArgs : MsgBase
     {
+        public SpacewireSptpMsgEventArgs()
+        { }
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
         /// </summary>
@@ -154,6 +156,9 @@ namespace EGSE.Protocols
 
     public class SpacewireIcdMsgEventArgs : SpacewireSptpMsgEventArgs
     {
+        public SpacewireIcdMsgEventArgs()
+        { }
+
         public SpacewireIcdMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
@@ -169,11 +174,11 @@ namespace EGSE.Protocols
             }
         }
 
-        private int ConvertToInt(byte[] array)
+        public int ConvertToInt(byte[] array)
         {
             int pos = 0;
             int result = 0;
-            foreach (byte by in array)
+            foreach (byte by in array.Reverse<byte>().ToArray())
             {
                 result |= (int)(by << pos);
                 pos += 8;
@@ -194,11 +199,28 @@ namespace EGSE.Protocols
     {
         public SpacewireKbvMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
-        {}
+        {
+            if (6 <= DataLen)
+            {
+                FieldPNormal = Data[0];
+                FieldPExtended = Data[1];
+                Kbv = ConvertToInt(Data.Skip(2).ToArray());
+            }
+        }
+        public SpacewireKbvMsgEventArgs()          
+        {
+
+        }
         protected override byte[] ToArray()
         {
             throw new NotImplementedException();
         }
+
+        public byte FieldPNormal { get; set; }
+
+        public byte FieldPExtended { get; set; }
+
+        public int Kbv { get; set; }
     }
 
     public class SpacewireTmMsgEventArgs : SpacewireIcdMsgEventArgs
@@ -229,6 +251,17 @@ namespace EGSE.Protocols
         {
             throw new NotImplementedException();
         }
+
+        public static SpacewireKbvMsgEventArgs AsKbv(this SpacewireIcdMsgEventArgs obj)
+        {
+
+            SpacewireKbvMsgEventArgs newObj = new SpacewireKbvMsgEventArgs(new byte[] { }, obj.Time1, obj.Time2, obj.Error);
+            newObj.FieldPNormal = obj.Data[0];
+            newObj.FieldPExtended = obj.Data[1];
+            newObj.Kbv = obj.ConvertToInt(obj.Data.Skip(2).ToArray());
+            return newObj;
+        }
+
         public static SpacewireKbvMsgEventArgs ToKbv(this Array obj)
         {
             throw new NotImplementedException();
@@ -238,12 +271,22 @@ namespace EGSE.Protocols
         {
             throw new NotImplementedException();
         }
+
+        public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
+        {
+            throw new NotImplementedException();
+        }
         public static SpacewireTmMsgEventArgs ToTm(this Array obj)
         {
             throw new NotImplementedException();
         }
 
         public static SpacewireTkMsgEventArgs AsTk(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTkMsgEventArgs AsTk(this SpacewireIcdMsgEventArgs obj)
         {
             throw new NotImplementedException();
         }

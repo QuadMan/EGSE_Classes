@@ -1507,6 +1507,10 @@ namespace EGSE.Devices
                         this.GotSpacewire2Msg(sender, e);
                     }
                 }
+                else if (IsKbvSpacewireMsg(e))
+                {
+                    Spacewire2Notify.Spacewire2Kbv = (e as SpacewireIcdMsgEventArgs).AsKbv().Kbv;
+                }
                 else
                 {
                     this.GotSpacewire2Msg(sender, e);
@@ -1542,6 +1546,11 @@ namespace EGSE.Devices
         private bool IsRequestSpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
             return (SpacewireSptpMsgEventArgs.Type.Request == msg.MsgType);
+        }
+
+        private bool IsKbvSpacewireMsg(SpacewireSptpMsgEventArgs msg)
+        {
+            return 6 == msg.DataLen;
         }
         private bool IsReplySpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {

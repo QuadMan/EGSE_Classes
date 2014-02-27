@@ -64,7 +64,8 @@ namespace EGSE.Defaults
         {
             if (msg != null)
             {
-                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(20).ToArray());
+
+                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
                 if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
                     Monitor.Dispatcher.Invoke(new Action(delegate
