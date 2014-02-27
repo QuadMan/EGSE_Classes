@@ -593,11 +593,6 @@ namespace EGSE.Utilites
         private const int DefaultTimeSize = 6;
 
         /// <summary>
-        /// Строка со временем.
-        /// </summary>
-        private StringBuilder sb;
-
-        /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseTime" />.
         /// </summary>
         public EgseTime()
@@ -609,7 +604,6 @@ namespace EGSE.Utilites
             Sec = 0;
             Msec = 0;
             Mcsec = 0;
-            sb = new StringBuilder();
         }
 
         /// <summary>
@@ -684,6 +678,7 @@ namespace EGSE.Utilites
         public new string ToString()
         {
             Decode();
+            StringBuilder sb = new StringBuilder();
             sb.Clear();
             sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}.{3:D3}.{4:D3}", Hour, Min, Sec, Msec, Mcsec);
 
