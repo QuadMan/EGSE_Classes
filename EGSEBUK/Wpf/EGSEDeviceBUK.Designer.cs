@@ -124,6 +124,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Имитатор БУСК (адрес: {0}).
+        /// </summary>
+        internal static string stShowLogicBusk {
+            get {
+                return ResourceManager.GetString("stShowLogicBusk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Имитатор НП (адрес: {0}).
         /// </summary>
         internal static string stShowSimLogicBusk {

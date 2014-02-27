@@ -74,8 +74,8 @@ namespace EGSE.Protocols
         /// Объявление делегата обработки сообщений протокола spacewire.
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
-        public delegate void SpacewireMsgEventHandler(object sender, SpacewireMsgEventArgs e);
+        /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        public delegate void SpacewireMsgEventHandler(object sender, SpacewireSptpMsgEventArgs e);
 
         /// <summary>
         /// Происходит, когда [сформировано сообщение spacewire].
@@ -100,8 +100,7 @@ namespace EGSE.Protocols
                 }
                 else if (_eop == msg.Addr)
                 {
-                    SpacewireMsgEventArgs _msg = new SpacewireMsgEventArgs((uint)_buf.Count, _currentTime1, _currentTime2, msg.Data[0]);
-                    _msg.Data = _buf.ToArray();
+                    SpacewireSptpMsgEventArgs _msg = new SpacewireIcdMsgEventArgs(_buf.ToArray(), _currentTime1, _currentTime2, msg.Data[0]);
                     OnSpacewireMsg(this, _msg);
                     _buf.Clear();
                 }
@@ -121,7 +120,7 @@ namespace EGSE.Protocols
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">Класс описывающий сообщение протокола.</param>
-        protected virtual void OnSpacewireMsg(object sender, SpacewireMsgEventArgs e)
+        protected virtual void OnSpacewireMsg(object sender, SpacewireSptpMsgEventArgs e)
         {
             if (this.GotSpacewireMsg != null)
             {

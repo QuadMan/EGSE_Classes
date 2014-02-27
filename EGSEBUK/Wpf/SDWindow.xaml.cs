@@ -58,8 +58,8 @@ namespace EGSE.Defaults
         /// Вызывается когда [пришло сообщение по протоколу spacewire].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="msg">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
-        public void OnSpacewireMsg(object sender, SpacewireMsgEventArgs msg)
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        public void OnSpacewireMsg(object sender, SpacewireSptpMsgEventArgs msg)
         {
             if (msg != null)
             {

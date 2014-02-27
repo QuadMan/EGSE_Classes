@@ -11,10 +11,12 @@
           Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Grid>
+        <Button Content="Инит" Click="Button_Click_11"/>
+        <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -35,7 +37,7 @@
 				Content="Управление"
 				Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1"
-                Content="Выбор канала"
+                Content="{Binding ShowLogicBusk}"
             	Template="{StaticResource FlatLabel}"/>
             <StackPanel Grid.Row="1"
             	Grid.Column="1">
@@ -105,18 +107,17 @@
             	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_1"/>
             <Label Grid.Row="8"
             	Content="Выдавать пакеты данных в прибор"
-            	Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Row="8"  
+            	Template="{StaticResource FlatLabel}"/>            
+            <Label Grid.Row="8"  
             	Grid.Column="1"                               				    
             	Grid.ColumnSpan="2"
-            	Tag="{Binding IsBukTransData, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_6"/>
+            	Tag="{Binding IsBukTransData, Converter={StaticResource BoolToIndexConverter}}"
+                Template="{StaticResource FlatLabelCheck}"/>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition/>
-                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
@@ -138,53 +139,86 @@
                      Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
             <Label Grid.Row="2"
                    Grid.ColumnSpan="2"
-            	Content="APID (используется для телекоманды)"
+            	Content="APID"
             	Template="{StaticResource FlatLabel}"/>
             <TextBox Grid.Row="2"  
                 Grid.Column="2"
 			    Template="{StaticResource NumberInError}"
 			    Style="{StaticResource TextBoxInError}"
 			    Text="{Binding XXX}"/>
-            <Label Grid.Row="3"
-                   Grid.ColumnSpan="2"
-            	Content="Передавать как телекоманду"
-            	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="3"  
-                Grid.Column="2"                                           	
-            	Tag="{Binding XXX, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}"/>
-            <Button Grid.Row="4"  
-                    Grid.ColumnSpan="2"
                     Template="{StaticResource FlatButtonClick}"                       
                     Content="Передать в БУК" Click="Button_Click_9"/>
-            <Button Grid.Row="4"  
+            <Button Grid.Row="3"  
+                    Grid.Column="1"
+                    Template="{StaticResource FlatButtonClick}"                       
+                    Content="Передать телекоманду"/>
+            <Button Grid.Row="3"  
                     Grid.Column="2"
                     Template="{StaticResource FlatButtonClick}"                       
                     Content="RMAP" Click="Button_Click_10"/>
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>                        
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="2"
+            <Label Grid.ColumnSpan="3"
                    Content="Монитор Spacewire"
                    Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1"
-                   Content="Количество запросов квоты"
+                   Content="Прибор"
                    Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1"
+                   Grid.Column="1"
+                   Content="Количество запросов кредита"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1"
+                   Grid.Column="2"
+                   Content="Количество предоставления кредита"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="2"
+                   Content="БУСК"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="2"
                    Grid.Column="1"   
-                   Content="{Binding Spacewire2Queue}"
+                   Content="{Binding Spacewire2RequestQueueFromBusk}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="2"
+                   Grid.Column="2"   
+                   Content="{Binding Spacewire2ReplyQueueFromBusk}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3"
+                   Content="БУК"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3"
+                   Grid.Column="1"   
+                   Content="{Binding Spacewire2RequestQueueFromBuk}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3"
+                   Grid.Column="2"   
+                   Content="{Binding Spacewire2ReplyQueueFromBuk}"
+                   Template="{StaticResource FlatLabel}"/>                
+            <Label Grid.Row="4"
+                   Grid.ColumnSpan="2"
+                   Content="КБВ"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="4"
+                   Grid.Column="2" 
+                   Content="{Binding Spacewire2Kbv}"
                    Template="{StaticResource FlatLabel}"/>
             <ListBox x:Name="Monitor" 
-                     Grid.Row="2"
-                     Grid.ColumnSpan="2"
+                     Grid.Row="5"
+                     Grid.ColumnSpan="3"
                      Margin="1"
                      BorderThickness="0"/>
         </Grid>

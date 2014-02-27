@@ -59,12 +59,12 @@ namespace EGSE.Defaults
         /// Вызывается когда [пришло сообщение по протоколу spacewire].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="msg">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
-        public void OnSpacewireMsg(object sender, SpacewireMsgEventArgs msg)
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        public void OnSpacewireMsg(object sender, SpacewireSptpMsgEventArgs msg)
         {
             if (msg != null)
             {
-                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data);
+                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(20).ToArray());
                 if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
                     Monitor.Dispatcher.Invoke(new Action(delegate
@@ -147,15 +147,15 @@ namespace EGSE.Defaults
             _intfEGSE.Spacewire2Notify.IsIntfOn = !_intfEGSE.Spacewire2Notify.IsIntfOn;
         }
 
-        /// <summary>
-        /// Handles the Click event of the Button control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_6(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire2Notify.IsBukTransData = !_intfEGSE.Spacewire2Notify.IsBukTransData;
-        }
+        ///// <summary>
+        ///// Handles the Click event of the Button control.
+        ///// </summary>
+        ///// <param name="sender">The source of the event.</param>
+        ///// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        //private void Button_Click_6(object sender, RoutedEventArgs e)
+        //{
+        //    _intfEGSE.Spacewire2Notify.IsBukTransData = !_intfEGSE.Spacewire2Notify.IsBukTransData;
+        //}
 
         /// <summary>
         /// Handles the Click event of the Button control.
@@ -195,6 +195,11 @@ namespace EGSE.Defaults
         private void Button_Click_10(object sender, RoutedEventArgs e)
         {
             _intfEGSE.Spacewire2Notify.IsSendRMAP = true;       
+        }
+
+        private void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            //_intfEGSE.Device.CmdSetDeviceLogicAddr();
         }
     }
 }

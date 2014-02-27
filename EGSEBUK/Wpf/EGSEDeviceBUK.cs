@@ -708,22 +708,21 @@ namespace EGSE.Devices
                 _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk1;
                 _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk1;
             }
-            else            
+            else
             {
                 _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk2;
                 _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk2;
             }
-
             if (_intfBUK.Spacewire2Notify.IsBUK1BM1Channel || _intfBUK.Spacewire2Notify.IsBUK2BM1Channel)
             {
-                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk1;
                 _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk1;
+                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk1;
             }
             else
             {
-                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk2;
                 _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk2;
-            }
+                _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk2;
+            }                        
         }
 
         internal void CmdHSILine1(int value)
@@ -900,6 +899,7 @@ namespace EGSE.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
+        private int _waitForTimer = 100;
 
         /// <summary>
         /// Возможные рабочие приборы.
@@ -1405,6 +1405,10 @@ namespace EGSE.Devices
         /// </summary>
         public void TickAllControlsValues()
         {
+            if(++_waitForTimer == 4)
+            {
+                Device.CmdSetDeviceLogicAddr();   
+            }
             Debug.Assert(ControlValuesList != null, "ControlValuesList не должны быть равны null!");
             foreach (var cv in ControlValuesList)
             {
@@ -1422,8 +1426,8 @@ namespace EGSE.Devices
             if (IsConnected)
             {
                 Device.CmdSetDeviceTime();
-                Device.CmdSetDeviceLogicAddr();
-                RefreshAllControlsValues();
+                _waitForTimer = 0;                                  
+                RefreshAllControlsValues();  
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
             else
@@ -1468,14 +1472,40 @@ namespace EGSE.Devices
         /// Called when [spacewire2 MSG].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnSpacewire2Msg(object sender, SpacewireMsgEventArgs e)
+        /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnSpacewire2Msg(object sender, SpacewireSptpMsgEventArgs e)
         {
             if (this.GotSpacewire2Msg != null)
             {
-                if (IsQueueSpacewireMsg(e))
+                if (IsRequestSpacewireMsg(e))
                 {
-                    Spacewire2Notify.Spacewire2Queue++;
+                    if (Spacewire2Notify.LogicBusk == e.From)
+                    {
+                        Spacewire2Notify.Spacewire2RequestQueueFromBusk++;
+                    }
+                    else if (Spacewire2Notify.LogicBuk == e.From)
+                    {
+                        Spacewire2Notify.Spacewire2RequestQueueFromBuk++;
+                    }
+                    else
+                    {
+                        this.GotSpacewire2Msg(sender, e);
+                    }
+                }
+                else if (IsReplySpacewireMsg(e))
+                {
+                    if (Spacewire2Notify.LogicBusk == e.From)
+                    {
+                        Spacewire2Notify.Spacewire2ReplyQueueFromBusk++;
+                    }
+                    else if (Spacewire2Notify.LogicBuk == e.From)
+                    {
+                        Spacewire2Notify.Spacewire2ReplyQueueFromBuk++;
+                    }
+                    else
+                    {
+                        this.GotSpacewire2Msg(sender, e);
+                    }
                 }
                 else
                 {
@@ -1488,12 +1518,12 @@ namespace EGSE.Devices
         /// Called when [spacewire3 MSG].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnSpacewire3Msg(object sender, SpacewireMsgEventArgs e)
+        /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnSpacewire3Msg(object sender, SpacewireSptpMsgEventArgs e)
         {
             if (this.GotSpacewire3Msg != null)
             {
-                if (IsQueueSpacewireMsg(e))
+                if (IsRequestSpacewireMsg(e))
                 {
                     Spacewire3Notify.Spacewire3Queue++;
                 }
@@ -1507,11 +1537,16 @@ namespace EGSE.Devices
         /// <summary>
         /// Определяет когда [сообщение по spacewire] [является запросом квоты].
         /// </summary>
-        /// <param name="msg">The <see cref="SpacewireMsgEventArgs"/> instance containing the event data.</param>
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         /// <returns>true если сообщение "запрос квоты"</returns>
-        private bool IsQueueSpacewireMsg(SpacewireMsgEventArgs msg)
+        private bool IsRequestSpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
-            return (4 == msg.Data.Length) && (0x26 == msg.Data[0]) && (0xF2 == msg.Data[1]) && (0x80 == msg.Data[2]) && (0x00 == msg.Data[3]);
+            return (SpacewireSptpMsgEventArgs.Type.Request == msg.MsgType);
+        }
+        private bool IsReplySpacewireMsg(SpacewireSptpMsgEventArgs msg)
+        {
+
+            return (SpacewireSptpMsgEventArgs.Type.Reply == msg.MsgType);
         }
 
         /// <summary>
@@ -2968,11 +3003,6 @@ namespace EGSE.Devices
 
                 set
                 {
-                    if (value == _logicBusk)
-                    {
-                        return;
-                    }
-
                     _logicBusk = value;
                     ControlValuesList[Global.Spacewire1.SPTPLogicBusk].SetProperty(Global.Spacewire1.SPTPLogicBusk, value);
                     FirePropertyChangedEvent("ShowLogicBusk");
@@ -3009,11 +3039,6 @@ namespace EGSE.Devices
 
                 set
                 {
-                    if (value == _logicSD1)
-                    {
-                        return;
-                    }
-
                     _logicSD1 = value;
                     ControlValuesList[Global.Spacewire1.SPTPLogicSD1].SetProperty(Global.Spacewire1.SPTPLogicSD1, value);
                     FirePropertyChangedEvent("ShowLogicSD1");
@@ -3369,9 +3394,9 @@ namespace EGSE.Devices
             {
                 ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.IntfOn, 0, 1, Device.CmdSpacewire1Control, value => IsIntfOn = 1 == value);
                 ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
-                ControlValuesList[Global.Spacewire1.SPTPLogicBusk].AddProperty(Global.Spacewire1.SPTPLogicBusk, 0, 8, Device.CmdSpacewire1LogicBusk, value => _logicBusk = value);
-                ControlValuesList[Global.Spacewire1.SPTPLogicSD1].AddProperty(Global.Spacewire1.SPTPLogicSD1, 0, 8, Device.CmdSpacewire1LogicSD1, value => _logicSD1 = value);
-                ControlValuesList[Global.Spacewire1.SPTPLogicSD2].AddProperty(Global.Spacewire1.SPTPLogicSD2, 0, 8, delegate { }, value => _logicSD2 = value);
+                ControlValuesList[Global.Spacewire1.SPTPLogicBusk].AddProperty(Global.Spacewire1.SPTPLogicBusk, 0, 8, Device.CmdSpacewire1LogicBusk, value => LogicBusk = value);
+                ControlValuesList[Global.Spacewire1.SPTPLogicSD1].AddProperty(Global.Spacewire1.SPTPLogicSD1, 0, 8, Device.CmdSpacewire1LogicSD1, value => LogicSD1 = value);
+                ControlValuesList[Global.Spacewire1.SPTPLogicSD2].AddProperty(Global.Spacewire1.SPTPLogicSD2, 0, 8, delegate { }, value => LogicSD2 = value);
 
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP1Trans, 0, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP1Trans = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.NP2Trans, 2, 1, Device.CmdSpacewire1ControlSPTP, value => IsNP2Trans = 1 == value);
@@ -3395,7 +3420,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Количество запросов квот по spacewire.
             /// </summary>
-            private long _spacewire2Queue;
+            private long _spacewire2RequestQueueFromBusk;
 
             /// <summary>
             /// SPTP: Адрес ИМИТАТОРА БУСКа.
@@ -3476,6 +3501,10 @@ namespace EGSE.Devices
             /// Управление: Выбор канала.
             /// </summary>
             private SpacewireChannel _simRouterChannel;
+            private long _spacewire2ReplyQueueFromBusk;
+            private long _spacewire2ReplyQueueFromBuk;
+            private long _spacewire2RequestQueueFromBuk;
+            private long _spacewire2Kbv;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
@@ -3500,17 +3529,73 @@ namespace EGSE.Devices
             /// <value>
             /// Количство запросов квот.
             /// </value>
-            public long Spacewire2Queue
+            public long Spacewire2RequestQueueFromBusk
             {
                 get
                 {
-                    return _spacewire2Queue;
+                    return _spacewire2RequestQueueFromBusk;
                 }
 
                 set
                 {
-                    _spacewire2Queue = value;
-                    FirePropertyChangedEvent("Spacewire2Queue");
+                    _spacewire2RequestQueueFromBusk = value;
+                    FirePropertyChangedEvent("Spacewire2RequestQueueFromBusk");
+                }
+            }
+
+            public long Spacewire2ReplyQueueFromBusk
+            {
+                get
+                {
+                    return _spacewire2ReplyQueueFromBusk;
+                }
+
+                set
+                {
+                    _spacewire2ReplyQueueFromBusk = value;
+                    FirePropertyChangedEvent("Spacewire2ReplyQueueFromBusk");
+                }
+            }
+
+            public long Spacewire2RequestQueueFromBuk
+            {
+                get
+                {
+                    return _spacewire2RequestQueueFromBuk;
+                }
+
+                set
+                {
+                    _spacewire2RequestQueueFromBuk = value;
+                    FirePropertyChangedEvent("Spacewire2RequestQueueFromBuk");
+                }
+            }
+
+            public long Spacewire2ReplyQueueFromBuk
+            {
+                get
+                {
+                    return _spacewire2ReplyQueueFromBuk;
+                }
+
+                set
+                {
+                    _spacewire2ReplyQueueFromBuk = value;
+                    FirePropertyChangedEvent("Spacewire2ReplyQueueFromBuk");
+                }
+            }
+
+            public long Spacewire2Kbv
+            {
+                get
+                {
+                    return _spacewire2Kbv;
+                }
+
+                set
+                {
+                    _spacewire2Kbv = value;
+                    FirePropertyChangedEvent("Spacewire2Kbv");
                 }
             }
 
@@ -3617,7 +3702,7 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent("IsBUK1BM1Channel");
                     FirePropertyChangedEvent("IsBUK1BM2Channel");
                     FirePropertyChangedEvent("IsBUK2BM1Channel");                    
-                    Device.CmdSetDeviceLogicAddr();
+                    //Device.CmdSetDeviceLogicAddr();
                     Owner.FirePropertyChangedEvent("Caption");
                 }
             }
@@ -3651,11 +3736,6 @@ namespace EGSE.Devices
 
                 set
                 {
-                    if (value == _logicBusk)
-                    {
-                        return;
-                    }
-
                     _logicBusk = value;
                     ControlValuesList[Global.Spacewire2.SPTPLogicBusk].SetProperty(Global.Spacewire2.SPTPLogicBusk, value);
                     FirePropertyChangedEvent("ShowLogicBusk");
@@ -3692,11 +3772,6 @@ namespace EGSE.Devices
 
                 set
                 {
-                    if (value == _logicBuk)
-                    {
-                        return;
-                    }
-
                     _logicBuk = value;
                     ControlValuesList[Global.Spacewire2.SPTPLogicBuk].SetProperty(Global.Spacewire2.SPTPLogicBuk, value);
                     FirePropertyChangedEvent("ShowLogicBuk");

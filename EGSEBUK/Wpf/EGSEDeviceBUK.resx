@@ -147,4 +147,7 @@
   <data name="stShowSimLogicSD2" xml:space="preserve">
     <value>НП2 (адрес: {0})</value>
   </data>
+  <data name="stShowLogicBusk" xml:space="preserve">
+    <value>Имитатор БУСК (адрес: {0})</value>
+  </data>
 </root>
