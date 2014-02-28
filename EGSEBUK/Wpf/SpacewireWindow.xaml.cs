@@ -65,7 +65,7 @@ namespace EGSE.Defaults
             if (msg != null)
             {
 
-                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ")[" + msg.Time1.ToString() + "-" + msg.Time2.ToString() + "] " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
                 if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
                     Monitor.Dispatcher.Invoke(new Action(delegate
@@ -145,7 +145,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.Spacewire2Notify.IsIntfOn = !_intfEGSE.Spacewire2Notify.IsIntfOn;
+            _intfEGSE.Spacewire2Notify.IsEnable = !_intfEGSE.Spacewire2Notify.IsEnable;
         }
 
         ///// <summary>

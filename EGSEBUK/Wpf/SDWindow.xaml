@@ -65,42 +65,36 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="2"  
-            	Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click"/>
+            	Tag="{Binding IsEnable, Converter={StaticResource boolToIndexConverter}}"
+                Command="{Binding EnableCommand}"
+            	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="3" 
             	Grid.ColumnSpan="2"
-            	Tag="{Binding IsConnected, Converter={StaticResource boolToIndexConverter}}"     
+            	Tag="{Binding IsConnect, Converter={StaticResource boolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="4" 
                 Grid.ColumnSpan="2"
                 Tag="{Binding IsTransmission, Converter={StaticResource boolToIndexConverter}}"   
                 Template="{StaticResource FlatLabelTransmission}"/>
         </Grid>
-        <Grid Grid.Row="4">
+        <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="2"
-                   Content="Монитор Spacewire"
-                   Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="1"
-                   Content="Количество запросов квоты"
-                   Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="1"
-                   Grid.Column="1"   
-                   Content="{Binding Spacewire3Queue}"
-                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.ColumnSpan="3"
+        		Content="Монитор Spacewire"
+        		Template="{StaticResource FlatLabel}"/>          
             <ListBox x:Name="Monitor" 
-                     Grid.Row="2"
-                     Grid.ColumnSpan="2"
-                     Margin="1"
-                     BorderThickness="0"/>
+        		Grid.Row="1"
+        		Grid.ColumnSpan="3"
+        		Margin="1"
+        		BorderThickness="0"/>
         </Grid>
     </Grid>
 </Window>

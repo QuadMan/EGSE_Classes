@@ -33,19 +33,21 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="1"    
-            	Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_5"/>
+            	Tag="{Binding IsEnable, Converter={StaticResource boolToIndexConverter}}"
+                Command="{Binding EnableCommand}"
+            	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="2" 
             	Grid.ColumnSpan="2"
-            	Tag="{Binding IsConnected, Converter={StaticResource boolToIndexConverter}}"     
+            	Tag="{Binding IsConnect, Converter={StaticResource boolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="3" 
             	Content="Выдавать секундные метки"
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
     			Grid.Row="3"    
-    			Tag="{Binding IsTimeMark, Converter={StaticResource boolToIndexConverter}}"
-    			Template="{StaticResource FlatButtonCheck}" Click="Button_Click_6"/>
+    			Tag="{Binding IsIssueTimeMark, Converter={StaticResource boolToIndexConverter}}"
+                Command="{Binding IssueTimeMarkCommand}"
+    			Template="{StaticResource FlatButtonCheck}"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -78,28 +80,32 @@
     			Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="2"   
     			Grid.Column="2"                         
-    			Tag="{Binding IsEEPSend, Converter={StaticResource boolToIndexConverter}}"
-    			Template="{StaticResource FlatButtonCheck}" Click="Button_Click_9"/>
+    			Tag="{Binding IsIssueEEP, Converter={StaticResource boolToIndexConverter}}"
+                Command="{Binding IssueEEPCommand}"
+    			Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="3"   
     			Grid.ColumnSpan="2"	
     			Content="Выдавать в конце посылки EOP или EEP"
     			Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="3"   
     			Grid.Column="2"                         
-    			Tag="{Binding IsEOPSend, Converter={StaticResource boolToIndexConverter}}"
-    			Template="{StaticResource FlatButtonCheck}" Click="Button_Click_7"/>
+    			Tag="{Binding IsIssueEOP, Converter={StaticResource boolToIndexConverter}}"
+                Command="{Binding IssueEOPCommand}"
+    			Template="{StaticResource FlatButtonCheck}"/>
             <Button Grid.Row="4"  
-    			Grid.ColumnSpan="3"
-    			Tag="{Binding IsRecordBusy, Converter={StaticResource boolToIndexConverter}}"
-    			Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click_11"/>
+    			Grid.ColumnSpan="3"    	
+                Content="Передать посылку"
+                Command="{Binding IssuePackageCommand}"
+    			Template="{StaticResource FlatButtonClickBusy}"/>
             <Label Grid.Row="5"   
     			Grid.ColumnSpan="2"	
     			Content="Автоматическая выдача посылки"
     			Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="5"   
-    			Grid.Column="2"                         
-    			Tag="{Binding IsAutoSend, Converter={StaticResource boolToIndexConverter}}"
-    			Template="{StaticResource FlatButtonCheck}" Click="Button_Click_8"/>
+    			Grid.Column="2"                        
+    			Tag="{Binding IsIssueAuto, Converter={StaticResource boolToIndexConverter}}"
+                Command="{Binding IssueAutoCommand}"
+    			Template="{StaticResource FlatButtonCheck}"/>
         </Grid>
 
     </Grid>

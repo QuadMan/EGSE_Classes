@@ -770,4 +770,44 @@ namespace EGSE.Utilites
         [DllImport("kernel32")]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
     }
+
+    public class RelayCommand : System.Windows.Input.ICommand
+    {
+
+        private readonly Action<object> _execute;
+        private readonly Predicate<object> _canExecute;
+
+        public RelayCommand(Action<object> execute)
+            : this(execute, null)
+        {
+        }
+
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+        {
+            if (execute == null)
+            {
+                throw new ArgumentNullException("execute");
+            }
+
+            _execute = execute;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameters)
+        {
+            return _canExecute == null ? true : _canExecute(parameters);
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { System.Windows.Input.CommandManager.RequerySuggested += value; }
+            remove { System.Windows.Input.CommandManager.RequerySuggested -= value; }
+        }
+
+        public void Execute(object parameters)
+        {
+            _execute(parameters);
+        }
+    }
+
 }

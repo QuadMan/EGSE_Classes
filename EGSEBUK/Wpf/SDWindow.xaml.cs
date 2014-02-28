@@ -63,7 +63,7 @@ namespace EGSE.Defaults
         {
             if (msg != null)
             {
-                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": " + Converter.ByteArrayToHexStr(msg.Data);
+                string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ")[" + msg.Time1.ToString() + "-" + msg.Time2.ToString() + "] " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
                 if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
                     Monitor.Dispatcher.Invoke(new Action(delegate
@@ -84,16 +84,6 @@ namespace EGSE.Defaults
         {
             e.Cancel = true;
             Hide();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the Button control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire3Notify.IsIntfOn = !_intfEGSE.Spacewire3Notify.IsIntfOn;
         }
     }
 }

@@ -690,12 +690,12 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string IntfOn = "64d3be4806ce45b28bcc57cc66a4cea1";
+                public readonly string Enable = "64d3be4806ce45b28bcc57cc66a4cea1";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].
                 /// </summary>
-                public readonly string Connected = "d0abb25baaf048e18e5d4e0c1c0eb38b";
+                public readonly string Connect = "d0abb25baaf048e18e5d4e0c1c0eb38b";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
@@ -865,12 +865,12 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string IntfOn = "a93332e69940441ba93247b7c962eff9";
+                public readonly string Enable = "a93332e69940441ba93247b7c962eff9";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].
                 /// </summary>
-                public readonly string Connected = "f86f7cff64444b89941375109b499a71";
+                public readonly string Connect = "f86f7cff64444b89941375109b499a71";
 
                 /// <summary>
                 /// Индекс свойства [Выбор рабочего прибора].
@@ -972,12 +972,12 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string IntfOn = "fcf9489c447d435189e3d2fb71ada618";
+                public readonly string Enable = "fcf9489c447d435189e3d2fb71ada618";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].
                 /// </summary>
-                public readonly string Connected = "18842e59a45e4e7b807878cd05726858";
+                public readonly string Connect = "18842e59a45e4e7b807878cd05726858";
 
                 /// <summary>
                 /// Индекс свойства [Включение метки времени (1 Гц)].
@@ -1003,7 +1003,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [EEP или EOP].
                 /// </summary>
-                public readonly string EEPSend = "2dc3af5bdee944879a5ac25dd6a45e92";
+                public readonly string IssueEEP = "2dc3af5bdee944879a5ac25dd6a45e92";
 
                 /// <summary>
                 /// Индекс свойства [Выдача в конце посылки EOP или EEP].
@@ -1013,7 +1013,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Автоматическая выдача].
                 /// </summary>
-                public readonly string AutoSend = "99538c248ef244aaa03885d1853caafe";
+                public readonly string IssueAuto = "99538c248ef244aaa03885d1853caafe";
 
                 /// <summary>
                 /// Индекс свойства [Бит занятости].
@@ -1023,7 +1023,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Бит выдачи посылки].
                 /// </summary>
-                public readonly string RecordSend = "66facd91e95048308f194e726113804a";
+                public readonly string IssuePackage = "66facd91e95048308f194e726113804a";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 

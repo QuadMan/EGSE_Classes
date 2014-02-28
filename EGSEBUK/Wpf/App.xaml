@@ -16,6 +16,7 @@
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
         <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
         <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
+        <SolidColorBrush x:Key="GrayBrush" Color="Gray"/>        
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
         <SolidColorBrush x:Key="UnConnectedBrush" Color="Tomato"/>
         <SolidColorBrush x:Key="ConnectedBrush" Color="PaleGreen"/>
@@ -85,6 +86,10 @@
                 </Trigger>
                 <Trigger Property="IsPressed" Value="true">
                     <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush}"/>
+                    <Setter Property="Content" Value="[отключено]"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -174,7 +179,7 @@
         </ControlTemplate>            
         <ControlTemplate x:Key="FlatLabelTransmission" TargetType="{x:Type Label}">
             <Border x:Name="Border"
-                        Background="{DynamicResource UnSelectBrush}"                                          
+                        Background="{DynamicResource UnConnectedBrush}"                                          
                         BorderThickness="0"
                         Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
@@ -182,7 +187,7 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource ConnectedBrush}"/>
                     <Setter Property="Content" Value="Кадры передаются"/>
                 </Trigger>
                 <Trigger Property="Tag" Value="false">
@@ -213,26 +218,24 @@
         <ControlTemplate x:Key="FlatButtonClickBusy" TargetType="{x:Type Button}">
             <Border x:Name="Border"
                         Background="{DynamicResource ClickBrush}"   
-                        Focusable="False" 
-                        BorderThickness="0"
+                        Focusable="True" 
+                        BorderThickness="0" 
                         Margin="1">
-                <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
+                <ContentPresenter x:Name="ContentPresenter"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Content="{TemplateBinding Content}"/>
             </Border>
             <ControlTemplate.Triggers>
-                <Trigger Property="Tag" Value="false">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource ClickBrush}"/>
-                    <Setter Property="Content" Value="Передать посылку"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush}"/>
+                    <Setter TargetName="ContentPresenter" Property="Content" Value="Нельзя передать посылку (занят)"/>
+                </Trigger>                
+                <Trigger Property="IsMouseOver" Value="True">
                     <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
                 </Trigger>
-                <Trigger Property="IsPressed" Value="true">
+                <Trigger Property="IsPressed" Value="True">
                     <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
-                </Trigger>
-                <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource UnSelectBrush}"/>
-                    <Setter Property="Content" Value="Нельзя передать посылку (занят)"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>

@@ -60,58 +60,8 @@ namespace EGSE.Defaults
         {
             if ("false" == (string)(sender as Button).Tag)
             {
-                _intfEGSE.Spacewire4Notify.IsRecordSend = true;
+                _intfEGSE.Spacewire4Notify.IsIssuePackage = true;
             }
-        }
-
-        /// <summary>
-        /// Handles the 5 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire4Notify.IsIntfOn = !_intfEGSE.Spacewire4Notify.IsIntfOn;
-        }
-
-        /// <summary>
-        /// Handles the 6 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_6(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire4Notify.IsTimeMark = !_intfEGSE.Spacewire4Notify.IsTimeMark;
-        }
-
-        /// <summary>
-        /// Handles the 7 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_7(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire4Notify.IsEOPSend = !_intfEGSE.Spacewire4Notify.IsEOPSend;
-        }
-
-        /// <summary>
-        /// Handles the 8 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_8(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire4Notify.IsAutoSend = !_intfEGSE.Spacewire4Notify.IsAutoSend;
-        }
-
-        /// <summary>
-        /// Handles the 9 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_9(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire4Notify.IsEEPSend = !_intfEGSE.Spacewire4Notify.IsEEPSend;
         }
 
         /// <summary>

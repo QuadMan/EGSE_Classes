@@ -16,6 +16,7 @@ namespace EGSE.Devices
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Input;
     using EGSE;
     using EGSE.Constants;
     using EGSE.Defaults;
@@ -217,7 +218,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Адресный байт "Запись данных(до 1 Кбайт)".
         /// </summary>
-        private const int Spacewire4RecordSendAddr = 0x32;
+        private const int Spacewire4RecordSendAddr = 0x27;
 
         /// <summary>
         /// Адресный байт "Выбор имитатора Spacewire".
@@ -525,7 +526,7 @@ namespace EGSE.Devices
         /// <param name="value">Параметры управления.</param>
         public void CmdSpacewire1Control(int value)
         {
-            if (_intfBUK.Spacewire4Notify.IsIntfOn)
+            if (_intfBUK.Spacewire4Notify.IsEnable)
             {
                 SendToUSB(Spacewire4ControlAddr, new byte[1] { 0 });
             }
@@ -644,9 +645,9 @@ namespace EGSE.Devices
             if ((null != _intfBUK.Spacewire4Notify.Data) && (0 < _intfBUK.Spacewire4Notify.Data.Length))
             {
                 SendToUSB(Spacewire4RecordFlushAddr, new byte[1] { 1 });
-                SendToUSB(Spacewire4RecordDataAddr, _intfBUK.Spacewire4Notify.Data);
-                SendToUSB(Spacewire4RecordSendAddr, new byte[1] { (byte)value });
-            }            
+                SendToUSB(Spacewire4RecordDataAddr, _intfBUK.Spacewire4Notify.Data);                
+            }
+            SendToUSB(Spacewire4RecordSendAddr, new byte[1] { (byte)value });
         }
 
         /// <summary>
@@ -1525,13 +1526,9 @@ namespace EGSE.Devices
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         protected virtual void OnSpacewire3Msg(object sender, SpacewireSptpMsgEventArgs e)
         {
+            ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Transmission, Convert.ToInt32(Spacewire3Notify.IsTransmission));
             if (this.GotSpacewire3Msg != null)
             {
-                if (IsRequestSpacewireMsg(e))
-                {
-                    Spacewire3Notify.Spacewire3Queue++;
-                }
-                else
                 {
                     this.GotSpacewire3Msg(sender, e);
                 }
@@ -1683,6 +1680,7 @@ namespace EGSE.Devices
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                    System.Windows.Input.CommandManager.InvalidateRequerySuggested();
                 }
             }
 
@@ -2383,8 +2381,7 @@ namespace EGSE.Devices
 
                 set
                 {
-                    _powerBusk1 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(value));
+                    _powerBusk1 = value;                   
                     FirePropertyChangedEvent("PowerBusk1");
                 }
             }
@@ -2405,7 +2402,6 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBusk2 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(value));
                     FirePropertyChangedEvent("PowerBusk2");
                 }
             }
@@ -2426,7 +2422,6 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBund1 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(value));
                     FirePropertyChangedEvent("PowerBund1");
                 }
             }
@@ -2447,7 +2442,6 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBund2 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(value));
                     FirePropertyChangedEvent("PowerBund2");
                 }
             }
@@ -3449,12 +3443,12 @@ namespace EGSE.Devices
             /// <summary>
             /// Управление: вкл/выкл интерфейса Spacewire.
             /// </summary>
-            private bool _isIntfOn;
+            private bool _isEnable;
 
             /// <summary>
             /// Управление: Установлена связь.
             /// </summary>
-            private bool _isConnected;
+            private bool _isConnect;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Выдача посылки RMAP (самосбр.).
@@ -3514,6 +3508,7 @@ namespace EGSE.Devices
             private long _spacewire2ReplyQueueFromBuk;
             private long _spacewire2RequestQueueFromBuk;
             private long _spacewire2Kbv;
+            private int _curApid;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
@@ -3532,12 +3527,6 @@ namespace EGSE.Devices
             /// </value>
             public byte[] Data { get; set; }
 
-            /// <summary>
-            /// Получает или задает значение количества запросов квот по spacewire2.
-            /// </summary>
-            /// <value>
-            /// Количство запросов квот.
-            /// </value>
             public long Spacewire2RequestQueueFromBusk
             {
                 get
@@ -3711,8 +3700,6 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent("IsBUK1BM1Channel");
                     FirePropertyChangedEvent("IsBUK1BM2Channel");
                     FirePropertyChangedEvent("IsBUK2BM1Channel");                    
-                    //Device.CmdSetDeviceLogicAddr();
-                    Owner.FirePropertyChangedEvent("Caption");
                 }
             }
 
@@ -3825,43 +3812,44 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [интерфейс SpaceWire2 включен].
+            /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [интерфейс SpaceWire2 включен]; иначе, <c>false</c>.
+            /// <c>true</c> если [интерфейс Spacewire включен]; иначе, <c>false</c>.
             /// </value>
-            public bool IsIntfOn
+            public bool IsEnable
             {
                 get
                 {
-                    return _isIntfOn;
+                    return _isEnable;
                 }
 
                 set
                 {
-                    _isIntfOn = value;
-                    ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.IntfOn, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsIntfOn");
+                    _isEnable = value;
+                    ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Enable, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsEnable");
                 }
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [связь по интерфейсу SpaceWire2 установлена].
+            /// Получает или задает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [связь по интерфейсу SpaceWire2 установлена]; иначе, <c>false</c>.
+            /// <c>true</c> если [связь по интерфейсу Spacewire установлена]; иначе, <c>false</c>.
             /// </value>
-            public bool IsConnected
+            public bool IsConnect
             {
                 get
                 {
-                    return _isConnected;
+                    return _isConnect;
                 }
 
                 set
                 {
-                    _isConnected = value;
-                    FirePropertyChangedEvent("IsConnected");
+                    _isConnect = value;
+                    ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsConnect");
                 }
             }
 
@@ -4075,6 +4063,20 @@ namespace EGSE.Devices
                 }
             }
 
+            public int CurApid
+            {
+                get
+                {
+                    return _curApid;
+                }
+
+                set
+                {
+                    _curApid = value;
+                    FirePropertyChangedEvent("CurApid");
+                }
+            }
+
             /// <summary>
             /// Получает сообщение об ошибке в объекте.
             /// </summary>
@@ -4132,8 +4134,8 @@ namespace EGSE.Devices
             protected override void InitProperties()
             {
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Channel, 1, 2, Device.CmdSpacewire2Control, value => SelectSimRouterChannel = (SpacewireChannel)value);
-                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.IntfOn, 0, 1, Device.CmdSpacewire2Control, value => IsIntfOn = 1 == value);
-                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
+                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Enable, 0, 1, Device.CmdSpacewire2Control, value => IsEnable = 1 == value);
+                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value);
                 ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendRMAP, 0, 1, Device.CmdSpacewire2Record, value => IsSendRMAP = 1 == value);
                 ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendBuk, 1, 1, Device.CmdSpacewire2Record, value => IsSendBuk = 1 == value);
                 ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendBkp, 2, 1, Device.CmdSpacewire2Record, value => IsSendBkp = 1 == value);
@@ -4163,12 +4165,12 @@ namespace EGSE.Devices
             /// <summary>
             /// Управление: вкл/выкл интерфейса Spacewire.
             /// </summary>
-            private bool _isIntfOn;
+            private bool _isEnable;
 
             /// <summary>
             /// Управление: Установлена связь.
             /// </summary>
-            private bool _isConnected;
+            private bool _isConnect;
 
             /// <summary>
             /// Управление: Сигнал передачи кадров.
@@ -4176,14 +4178,10 @@ namespace EGSE.Devices
             private bool _isTransmission;
 
             /// <summary>
-            /// Количество запросов квот по spacewire.
-            /// </summary>
-            private long _spacewire3Queue;
-
-            /// <summary>
             /// Полукомплект рабочего прибора.
             /// </summary>
             private HalfSet _workDeviceHalfSet;
+            private ICommand _enableCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
@@ -4195,44 +4193,50 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение количества запросов квот по spacewire3.
-            /// </summary>
-            /// <value>
-            /// Количство запросов квот.
-            /// </value>
-            public long Spacewire3Queue
-            {
-                get
-                {
-                    return _spacewire3Queue;
-                }
-
-                set
-                {
-                    _spacewire3Queue = value;
-                    FirePropertyChangedEvent("Spacewire3Queue");
-                }
-            }
-
-            /// <summary>
             /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
             /// </summary>
             /// <value>
             /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
             /// </value>
-            public bool IsIntfOn
+            public bool IsEnable
             {
                 get
                 {
-                    return _isIntfOn;
+                    return _isEnable;
                 }
 
                 set
                 {
-                    _isIntfOn = value;
-                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.IntfOn, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsIntfOn");
+                    _isEnable = value;
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Enable, Convert.ToInt32(value));
+                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(0));
+                    FirePropertyChangedEvent("IsEnable");
                 }
+            }
+
+            public ICommand EnableCommand
+            {
+                get
+                {
+                    if (_enableCommand == null)
+                    {
+                        _enableCommand = new RelayCommand(
+                            param => this.Enable(),
+                            param => this.CanEnable()
+                        );
+                    }
+                    return _enableCommand;
+                }
+            }
+
+            private bool CanEnable()
+            {
+                return true;
+            }
+
+            private void Enable()
+            {
+                IsEnable = !IsEnable;
             }
 
             /// <summary>
@@ -4241,17 +4245,18 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [связь по интерфейсу SpaceWire установлена]; иначе, <c>false</c>.
             /// </value>
-            public bool IsConnected
+            public bool IsConnect
             {
                 get
                 {
-                    return _isConnected;
+                    return _isConnect;
                 }
 
                 set
                 {
-                    _isConnected = value;
-                    FirePropertyChangedEvent("IsConnected");
+                    _isConnect = value;
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsConnect");
                 }
             }
 
@@ -4321,7 +4326,7 @@ namespace EGSE.Devices
             public bool IsTransmission
             {
                 get
-                {
+                {                  
                     return _isTransmission;
                 }
 
@@ -4385,11 +4390,6 @@ namespace EGSE.Devices
 
                 set
                 {
-                    if (value == _workDeviceHalfSet)
-                    {
-                        return;
-                    }
-
                     _workDeviceHalfSet = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.HalfSet, (int)value);
                     FirePropertyChangedEvent("SelectHalfSet");
@@ -4413,11 +4413,6 @@ namespace EGSE.Devices
 
                 set
                 {
-                    if (value == _workDevice)
-                    {
-                        return;
-                    }
-
                     _workDevice = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.WorkDevice, (int)value);
                     FirePropertyChangedEvent("SelectWorkDevice");
@@ -4470,8 +4465,8 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {                
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.IntfOn, 0, 1, Device.CmdSpacewire3Control, value => IsIntfOn = 1 == value);
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Enable, 0, 1, Device.CmdSpacewire3Control, value => IsEnable = 1 == value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value);
                 ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Transmission, 5, 1, delegate { }, value => IsTransmission = 1 == value);
                 ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.HalfSet, 4, 1, Device.CmdSpacewire3Control, value => SelectHalfSet = (HalfSet)value);
                 ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.WorkDevice, 1, 2, Device.CmdSpacewire3Control, value => SelectWorkDevice = (WorkDevice)value);
@@ -4486,32 +4481,32 @@ namespace EGSE.Devices
             /// <summary>
             /// Управление: вкл/выкл интерфейса Spacewire.
             /// </summary>
-            private bool _isIntfOn;
+            private bool _isEnable;
 
             /// <summary>
             /// Управление: Установлена связь.
             /// </summary>
-            private bool _isConnected;
+            private bool _isConnect;
 
             /// <summary>
             /// Управление: Включение метки времени (1 Гц).
             /// </summary>
-            private bool _isTimeMark;
+            private bool _isIssueTimeMark;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): EEP или EOP.
             /// </summary>
-            private bool _isEEPSend;
+            private bool _isIssueEEP;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Выдача в конце посылки EOP или EEP.
             /// </summary>
-            private bool _isEOPSend;
+            private bool _isIssueEOP;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Автоматическая выдача.
             /// </summary>
-            private bool _isAutoSend;
+            private bool _isIssueAuto;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Бит занятости.
@@ -4521,7 +4516,14 @@ namespace EGSE.Devices
             /// <summary>
             /// Запись данных(до 1 Кбайт): Бит занятости.
             /// </summary>
-            private bool _isRecordSend;
+            private bool _isIssuePackage;
+
+            private ICommand _enableCommand;
+            private ICommand _issueTimeMarkCommand;
+            private ICommand _issueEEPCommand;
+            private ICommand _issueEOPCommand;
+            private ICommand _issuePackageCommand;
+            private ICommand _issueAutoCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire4" />.
@@ -4546,18 +4548,31 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
             /// </value>
-            public bool IsIntfOn
+            public bool IsEnable
             {
                 get
                 {
-                    return _isIntfOn;
+                    return _isEnable;
                 }
 
                 set
                 {
-                    _isIntfOn = value;
-                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.IntfOn, Convert.ToInt32(_isIntfOn));
-                    FirePropertyChangedEvent("IsIntfOn");
+                    _isEnable = value;
+                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Enable, Convert.ToInt32(value));
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(0));
+                    FirePropertyChangedEvent("IsEnable");
+                }
+            }
+
+            public ICommand EnableCommand
+            {
+                get
+                {
+                    if (null == _enableCommand)
+                    {
+                        _enableCommand = new RelayCommand(obj => { IsEnable = !IsEnable; }, obj => { return true; });
+                    }
+                    return _enableCommand;
                 }
             }
 
@@ -4567,17 +4582,18 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [связь по интерфейсу SpaceWire установлена]; иначе, <c>false</c>.
             /// </value>
-            public bool IsConnected
+            public bool IsConnect
             {
                 get
                 {
-                    return _isConnected;
+                    return _isConnect;
                 }
 
                 set
                 {
-                    _isConnected = value;
-                    FirePropertyChangedEvent("IsConnected");
+                    _isConnect = value;
+                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsConnect");
                 }
             }
 
@@ -4587,39 +4603,63 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [выдается метка времени]; иначе, <c>false</c>.
             /// </value>
-            public bool IsTimeMark
+            public bool IsIssueTimeMark
             {
                 get
                 {
-                    return _isTimeMark;
+                    return _isIssueTimeMark;
                 }
 
                 set
                 {
-                    _isTimeMark = value;
-                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.TimeMark, Convert.ToInt32(_isTimeMark));
-                    FirePropertyChangedEvent("IsTimeMark");
+                    _isIssueTimeMark = value;
+                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.TimeMark, Convert.ToInt32(_isIssueTimeMark));
+                    FirePropertyChangedEvent("IsIssueTimeMark");
                 }
             }
 
+            public ICommand IssueTimeMarkCommand
+            {
+                get
+                {
+                    if (_issueTimeMarkCommand == null)
+                    {
+                        _issueTimeMarkCommand = new RelayCommand(obj => { IsIssueTimeMark = !IsIssueTimeMark; }, obj => { return true; });
+                    }
+                    return _issueTimeMarkCommand;
+                }
+            }
+            
             /// <summary>
             /// Получает или задает значение, показывающее, что [выдается EEP].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдается EEP]; иначе, <c>false</c>.
             /// </value>
-            public bool IsEEPSend
+            public bool IsIssueEEP
             {
                 get
                 {
-                    return _isEEPSend;
+                    return _isIssueEEP;
                 }
 
                 set
                 {
-                    _isEEPSend = value;
-                    ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.EEPSend, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsEEPSend");
+                    _isIssueEEP = value;
+                    ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueEEP, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsIssueEEP");
+                }
+            }
+
+            public ICommand IssueEEPCommand
+            {
+                get
+                {
+                    if (_issueEEPCommand == null)
+                    {
+                        _issueEEPCommand = new RelayCommand(obj => { IsIssueEEP = !IsIssueEEP; }, obj => { return true; });
+                    }
+                    return _issueEEPCommand;
                 }
             }
 
@@ -4629,18 +4669,30 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [выдается EOP]; иначе, <c>false</c>.
             /// </value>
-            public bool IsEOPSend
+            public bool IsIssueEOP
             {
                 get
                 {
-                    return _isEOPSend;
+                    return _isIssueEOP;
                 }
 
                 set
                 {
-                    _isEOPSend = value;
+                    _isIssueEOP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.EOPSend, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsEOPSend");
+                    FirePropertyChangedEvent("IsIssueEOP");
+                }
+            }
+
+            public ICommand IssueEOPCommand
+            {
+                get
+                {
+                    if (_issueEOPCommand == null)
+                    {
+                        _issueEOPCommand = new RelayCommand(obj => { IsIssueEOP = !IsIssueEOP; }, obj => { return true; });
+                    }
+                    return _issueEOPCommand;
                 }
             }
 
@@ -4650,18 +4702,30 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [включена автоматическая выдача посылки]; иначе, <c>false</c>.
             /// </value>
-            public bool IsAutoSend
+            public bool IsIssueAuto
             {
                 get
                 {
-                    return _isAutoSend;
+                    return _isIssueAuto;
                 }
 
                 set
                 {
-                    _isAutoSend = value;
-                    ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.AutoSend, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsAutoSend");
+                    _isIssueAuto = value;
+                    ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueAuto, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsIssueAuto");
+                }
+            }
+
+            public ICommand IssueAutoCommand
+            {
+                get
+                {
+                    if (_issueAutoCommand == null)
+                    {
+                        _issueAutoCommand = new RelayCommand(obj => { IsIssueAuto = !IsIssueAuto; }, obj => { return true; });
+                    }
+                    return _issueAutoCommand;
                 }
             }
 
@@ -4675,13 +4739,13 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return _isRecordBusy || IsRecordSend;
+                    return _isRecordBusy || IsIssuePackage;
                 }
 
                 set
                 {
                     _isRecordBusy = value;
-                    FirePropertyChangedEvent("IsRecordBusy");
+                    FirePropertyChangedEvent("IsRecordBusy");                    
                 }
             }
 
@@ -4691,18 +4755,29 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [Бит выдачи посылки - 1]; иначе, <c>false</c>.
             /// </value>
-            public bool IsRecordSend
+            public bool IsIssuePackage
             {
                 get
                 {
-                    return _isRecordSend;
+                    return _isIssuePackage;
                 }
 
                 set
                 {
-                    _isRecordSend = value;
-                    ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.RecordSend, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsRecordSend");
+                    _isIssuePackage = value;
+                    ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssuePackage, Convert.ToInt32(value));
+                    FirePropertyChangedEvent("IsIssuePackage");                   
+                }
+            }
+            public ICommand IssuePackageCommand
+            {
+                get
+                {
+                    if (_issuePackageCommand == null)
+                    {
+                        _issuePackageCommand = new RelayCommand(obj => { IsIssuePackage = true; }, obj => { return !IsRecordBusy; });
+                    }
+                    return _issuePackageCommand;
                 }
             }
 
@@ -4758,14 +4833,14 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.Spacewire4.Control].AddProperty(Global.Spacewire4.Control.IntfOn, 0, 1, Device.CmdSpacewire4Control, value => IsIntfOn = 1 == value);
-                ControlValuesList[Global.Spacewire4.Control].AddProperty(Global.Spacewire4.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
-                ControlValuesList[Global.Spacewire4.Control].AddProperty(Global.Spacewire4.Control.TimeMark, 4, 1, Device.CmdSpacewire4Control, value => IsTimeMark = 1 == value);
-                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.EOPSend, 1, 1, Device.CmdSpacewire4Record, value => IsEOPSend = 1 == value);
-                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.AutoSend, 4, 1, Device.CmdSpacewire4Record, value => IsAutoSend = 1 == value);
-                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.EEPSend, 2, 1, Device.CmdSpacewire4Record, value => IsEEPSend = 1 == value);
+                ControlValuesList[Global.Spacewire4.Control].AddProperty(Global.Spacewire4.Control.Enable, 0, 1, Device.CmdSpacewire4Control, value => IsEnable = 1 == value);
+                ControlValuesList[Global.Spacewire4.Control].AddProperty(Global.Spacewire4.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value);
+                ControlValuesList[Global.Spacewire4.Control].AddProperty(Global.Spacewire4.Control.TimeMark, 4, 1, Device.CmdSpacewire4Control, value => IsIssueTimeMark = 1 == value);
+                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.EOPSend, 1, 1, Device.CmdSpacewire4Record, value => IsIssueEOP = 1 == value);
+                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.IssueAuto, 4, 1, Device.CmdSpacewire4Record, value => IsIssueAuto = 1 == value);
+                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.IssueEEP, 2, 1, Device.CmdSpacewire4Record, value => IsIssueEEP = 1 == value);
                 ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.RecordBusy, 3, 1, delegate { }, value => IsRecordBusy = 1 == value);
-                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.RecordSend, 0, 1, Device.CmdSpacewire4Record, value => IsRecordSend = 1 == value);
+                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.IssuePackage, 0, 1, Device.CmdSpacewire4Record, value => IsIssuePackage = 1 == value);
             }
         }
     }
