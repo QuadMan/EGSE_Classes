@@ -342,7 +342,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Выдача УКС].
                 /// </summary>
-                public readonly string Send = "d10b58d4d0f14ae995a8f79631ceb894";
+                public readonly string Issue = "d10b58d4d0f14ae995a8f79631ceb894";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 

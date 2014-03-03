@@ -64,7 +64,6 @@ namespace EGSE.Defaults
         {
             if (msg != null)
             {
-
                 string spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ")[" + msg.Time1.ToString() + "-" + msg.Time2.ToString() + "] " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
                 if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
@@ -148,16 +147,6 @@ namespace EGSE.Defaults
             _intfEGSE.Spacewire2Notify.IsEnable = !_intfEGSE.Spacewire2Notify.IsEnable;
         }
 
-        ///// <summary>
-        ///// Handles the Click event of the Button control.
-        ///// </summary>
-        ///// <param name="sender">The source of the event.</param>
-        ///// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        //private void Button_Click_6(object sender, RoutedEventArgs e)
-        //{
-        //    _intfEGSE.Spacewire2Notify.IsBukTransData = !_intfEGSE.Spacewire2Notify.IsBukTransData;
-        //}
-
         /// <summary>
         /// Handles the Click event of the Button control.
         /// </summary>
@@ -196,11 +185,6 @@ namespace EGSE.Defaults
         private void Button_Click_10(object sender, RoutedEventArgs e)
         {
             _intfEGSE.Spacewire2Notify.IsSendRMAP = true;       
-        }
-
-        private void Button_Click_11(object sender, RoutedEventArgs e)
-        {
-            //_intfEGSE.Device.CmdSetDeviceLogicAddr();
         }
     }
 }

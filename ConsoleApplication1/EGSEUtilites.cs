@@ -771,17 +771,36 @@ namespace EGSE.Utilites
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
     }
 
+    /// <summary>
+    /// Класс обработки команд для wpf в сценарии mvvm.
+    /// </summary>
     public class RelayCommand : System.Windows.Input.ICommand
     {
-
+        /// <summary>
+        /// Делегат для выполнения команды.
+        /// </summary>
         private readonly Action<object> _execute;
+
+        /// <summary>
+        /// Делегат для проверки выполняемости команды (т.е. можно ли выполнить команду).
+        /// </summary>
         private readonly Predicate<object> _canExecute;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="RelayCommand" />.
+        /// </summary>
+        /// <param name="execute">Метод для выполнения команды.</param>
         public RelayCommand(Action<object> execute)
             : this(execute, null)
         {
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="RelayCommand" />.
+        /// </summary>
+        /// <param name="execute">Метод для выполнения команды.</param>
+        /// <param name="canExecute">Метод для проверки выполняемости команды.</param>
+        /// <exception cref="System.ArgumentNullException">Отсутствует метод для команды.</exception>
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null)
@@ -793,21 +812,32 @@ namespace EGSE.Utilites
             _canExecute = canExecute;
         }
 
-        public bool CanExecute(object parameters)
-        {
-            return _canExecute == null ? true : _canExecute(parameters);
-        }
-
+        /// <summary>
+        /// Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
         public event EventHandler CanExecuteChanged
         {
             add { System.Windows.Input.CommandManager.RequerySuggested += value; }
             remove { System.Windows.Input.CommandManager.RequerySuggested -= value; }
         }
 
+        /// <summary>
+        /// Determines whether this instance can execute the specified parameters.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>Можно ли выполнить команду сейчас.</returns>
+        public bool CanExecute(object parameters)
+        {
+            return _canExecute == null ? true : _canExecute(parameters);
+        }
+
+        /// <summary>
+        /// Executes the specified parameters.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
         public void Execute(object parameters)
         {
             _execute(parameters);
         }
     }
-
 }

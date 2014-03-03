@@ -9,15 +9,15 @@ namespace EGSE.Devices
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Diagnostics;
+    using System.ComponentModel;    
+    using System.Diagnostics;    
     using System.IO;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using System.Runtime.CompilerServices;
     using EGSE;
     using EGSE.Constants;
     using EGSE.Defaults;
@@ -124,7 +124,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Адресный байт "Управление обменом с приборами по SPTP".
         /// </summary>
-        private const int Spacewire1SPTPControlAddr = 0x16; //0x21;
+        private const int Spacewire1SPTPControlAddr = 0x16;
 
         /// <summary>
         /// Адресный байт "Счетчик миллисекунд для НП1 (через сколько готовы данные)".
@@ -648,6 +648,7 @@ namespace EGSE.Devices
                 SendToUSB(Spacewire4RecordFlushAddr, new byte[1] { 1 });
                 SendToUSB(Spacewire4RecordDataAddr, _intfBUK.Spacewire4Notify.Data);                
             }
+
             SendToUSB(Spacewire4RecordSendAddr, new byte[1] { (byte)value });
         }
 
@@ -715,6 +716,7 @@ namespace EGSE.Devices
                 _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk2;
                 _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk2;
             }
+
             if (_intfBUK.Spacewire2Notify.IsChannelBuskFirst)
             {
                 _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk1;
@@ -753,8 +755,6 @@ namespace EGSE.Devices
     /// </summary>
     public class EgseBukNotify : INotifyPropertyChanged, IDataErrorInfo
     {
-
-
         /// <summary>
         /// Адресный байт "Статус".
         /// </summary>
@@ -846,6 +846,11 @@ namespace EGSE.Devices
         private EgseTime _deviceTime;
 
         /// <summary>
+        /// TODO Временно используется для отложенной установки времени прибора.
+        /// </summary>
+        private int _waitForTimer = 100;
+
+        /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseBukNotify" />.
         /// </summary>
         public EgseBukNotify()
@@ -904,8 +909,6 @@ namespace EGSE.Devices
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
 
-        private int _waitForTimer = 100;
-
         /// <summary>
         /// Получает или задает нотификатор телеметрии.
         /// </summary>
@@ -960,10 +963,10 @@ namespace EGSE.Devices
         public EgseBuk Device { get; set; }
 
         /// <summary>
-        /// Получает значение, показывающее, [подключен] ли прибор.
+        /// Получает значение, показывающее, что [подключен прибор].
         /// </summary>
         /// <value>
-        ///   <c>true</c> если [подключен]; иначе, <c>false</c>.
+        ///   <c>true</c> если [подключен прибор]; иначе, <c>false</c>.
         /// </value>
         public bool IsConnected
         {
@@ -1246,10 +1249,11 @@ namespace EGSE.Devices
         /// </summary>
         public void TickAllControlsValues()
         {
-            if(++_waitForTimer == 4)
+            if (++_waitForTimer == 4)
             {
                 Device.CmdSetDeviceLogicAddr();   
             }
+
             Debug.Assert(ControlValuesList != null, @"ControlValuesList не должны быть равны null!");
             foreach (var cv in ControlValuesList)
             {
@@ -1322,11 +1326,11 @@ namespace EGSE.Devices
                 {
                     if (Spacewire2Notify.LogicBusk == e.From)
                     {
-                        Spacewire2Notify.Spacewire2RequestQueueFromBusk++;
+                        Spacewire2Notify.RequestQueueFromBusk++;
                     }
                     else if (Spacewire2Notify.LogicBuk == e.From)
                     {
-                        Spacewire2Notify.Spacewire2RequestQueueFromBuk++;
+                        Spacewire2Notify.RequestQueueFromBuk++;
                     }
                     else
                     {
@@ -1337,11 +1341,11 @@ namespace EGSE.Devices
                 {
                     if (Spacewire2Notify.LogicBusk == e.From)
                     {
-                        Spacewire2Notify.Spacewire2ReplyQueueFromBusk++;
+                        Spacewire2Notify.ReplyQueueFromBusk++;
                     }
                     else if (Spacewire2Notify.LogicBuk == e.From)
                     {
-                        Spacewire2Notify.Spacewire2ReplyQueueFromBuk++;
+                        Spacewire2Notify.ReplyQueueFromBuk++;
                     }
                     else
                     {
@@ -1350,7 +1354,7 @@ namespace EGSE.Devices
                 }
                 else if (IsKbvSpacewireMsg(e))
                 {
-                    Spacewire2Notify.Spacewire2Kbv = (e as SpacewireIcdMsgEventArgs).AsKbv().Kbv;
+                    Spacewire2Notify.CodeOnboardTime = (e as SpacewireIcdMsgEventArgs).AsKbv().Kbv;
                 }
                 else
                 {
@@ -1382,17 +1386,17 @@ namespace EGSE.Devices
         /// <returns>true если сообщение "запрос квоты"</returns>
         private bool IsRequestSpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
-            return (SpacewireSptpMsgEventArgs.Type.Request == msg.MsgType);
+            return SpacewireSptpMsgEventArgs.Type.Request == msg.MsgType;
         }
 
         private bool IsKbvSpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
             return 6 == msg.DataLen;
         }
+
         private bool IsReplySpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
-
-            return (SpacewireSptpMsgEventArgs.Type.Reply == msg.MsgType);
+            return SpacewireSptpMsgEventArgs.Type.Reply == msg.MsgType;
         }
 
         /// <summary>
@@ -1464,6 +1468,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Fires the property changed event.
         /// </summary>
+        /// <param name="sender">The sender.</param>
         /// <param name="propertyName">Имя свойства.</param>
         private void FirePropertyChangedEvent(INotifyPropertyChanged sender = null, [CallerMemberName] string propertyName = null)
         {
@@ -1554,7 +1559,7 @@ namespace EGSE.Devices
             private int _frameCounter1;
             private int _stateCounter2;
             private int _frameCounter2;
-            private bool _isRecordSend;
+            private bool _isIssueCmd;
             private bool _isRequest;
             private int _lineOut;
             private int _lineIn;
@@ -1572,72 +1577,6 @@ namespace EGSE.Devices
             public HSI(EgseBukNotify owner)
                 : base(owner)
             {
-            }
-
-            /// <summary>
-            /// Получает сообщение об ошибке в объекте.
-            /// </summary>
-            /// <returns>An error message indicating what is wrong with this object. The default is an empty string ("").</returns>
-            public string Error
-            {
-                get
-                {
-                    return null;
-                }
-            }
-
-            /// <summary>
-            /// Gets the <see cref="System.String"/> with the specified name.
-            /// </summary>
-            /// <value>
-            /// The <see cref="System.String"/>.
-            /// </value>
-            /// <param name="name">The name.</param>
-            /// <returns>Сообщение об ошибке.</returns>
-            public string this[string name]
-            {
-                get
-                {
-                    string result = null;
-
-                    return result;
-                }
-            }
-
-            /// <summary>
-            /// Initializes the control value.
-            /// </summary>
-            protected override void InitControlValue()
-            {
-                ControlValuesList.Add(Global.HSI.Line1, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line1StateCounter, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line1FrameCounter, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line2, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line2StateCounter, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line2FrameCounter, new ControlValue());
-                ControlValuesList.Add(Global.SimHSI.Control, new ControlValue());
-                ControlValuesList.Add(Global.SimHSI.Record, new ControlValue());                
-            }
-
-            /// <summary>
-            /// Initializes the properties.
-            /// </summary>
-            protected override void InitProperties()
-            {
-                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockMain, 1, 1, Device.CmdHSILine1, value => IsLockMain1 = 1 == value);
-                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockResv, 2, 1, Device.CmdHSILine1, value => IsLockResv1 = 1 == value);
-                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.Enable, 0, 1, Device.CmdHSILine1, value => IsEnableHalfSet1 = 1 == value);
-                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockMain, 1, 1, Device.CmdHSILine2, value => IsLockMain2 = 1 == value);
-                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockResv, 2, 1, Device.CmdHSILine2, value => IsLockResv2 = 1 == value);
-                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.Enable, 0, 1, Device.CmdHSILine2, value => IsEnableHalfSet2 = 1 == value);
-                ControlValuesList[Global.HSI.Line1StateCounter].AddProperty(Global.HSI.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value);
-                ControlValuesList[Global.HSI.Line1FrameCounter].AddProperty(Global.HSI.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value);
-                ControlValuesList[Global.HSI.Line2StateCounter].AddProperty(Global.HSI.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value);
-                ControlValuesList[Global.HSI.Line2FrameCounter].AddProperty(Global.HSI.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value);
-                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineIn, 2, 1, Device.CmdSimHSIControl, value => LineIn = value);
-                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineOut, 1, 1, Device.CmdSimHSIControl, value => LineOut = value);
-                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.Request, 0, 1, Device.CmdSimHSIControl, value => IsRequest = 1 == value);
-                ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.Send, 0, 1, Device.CmdSimHSIRecord, value => IsRecordSend = 1 == value);
             }
            
             /// <summary>
@@ -1682,6 +1621,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [передача идет по основной линии первого полукомплекта].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [передача идет по основной линии первого полукомплекта]; иначе, <c>false</c>.
+            /// </value>
             public bool IsLineMain1
             {
                 get
@@ -1698,6 +1643,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [передача идет по резервной линии первого полукомплекта].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [передача идет по резервной линии первого полукомплекта]; иначе, <c>false</c>.
+            /// </value>
             public bool IsLineResv1
             {
                 get
@@ -1714,6 +1665,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [передача идет по основной и резервной линии первого полукомплекта].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [передача идет по основной и резервной линии первого полукомплекта]; иначе, <c>false</c>.
+            /// </value>
             public bool IsLineMainResv1
             {
                 get
@@ -1730,6 +1687,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [передача идет по основной линии второго полукомплекта].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [передача идет по основной линии второго полукомплекта]; иначе, <c>false</c>.
+            /// </value>
             public bool IsLineMain2
             {
                 get
@@ -1746,6 +1709,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [передача идет по резервной линии второго полукомплекта].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [передача идет по резервной линии второго полукомплекта]; иначе, <c>false</c>.
+            /// </value>
             public bool IsLineResv2
             {
                 get
@@ -1762,6 +1731,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [передача идет по основной и резервной линии второго полукомплекта].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [передача идет по основной и резервной линии второго полукомплекта]; иначе, <c>false</c>.
+            /// </value>
             public bool IsLineMainResv2
             {
                 get
@@ -1782,7 +1757,7 @@ namespace EGSE.Devices
             /// Получает или задает значение, показывающее, что [Вкл/выкл КВВ ПК1].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [Вкл/выкл КВВ ПК1]; иначе, <c>false</c>.
+            ///   <c>true</c> если [Вкл/выкл КВВ ПК1]; иначе, <c>false</c>.
             /// </value>
             public bool IsEnableHalfSet1
             {
@@ -1803,7 +1778,7 @@ namespace EGSE.Devices
             /// Получает или задает значение, показывающее, что [Запрет передачи по резервной линии КВВ ПК2].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [Запрет передачи по резервной линии КВВ ПК2]; иначе, <c>false</c>.
+            ///   <c>true</c> если [Запрет передачи по резервной линии КВВ ПК2]; иначе, <c>false</c>.
             /// </value>
             public bool IsLockResv2
             {
@@ -1862,6 +1837,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает количество выданных статусов по первому полукомплекту.
+            /// </summary>
+            /// <value>
+            /// Количество выданных статусов.
+            /// </value>
             public int StateCounter1
             {
                 get
@@ -1876,6 +1857,13 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent();
                 }
             }
+
+            /// <summary>
+            /// Получает или задает количество выданных кадров по первому полукомплекту.
+            /// </summary>
+            /// <value>
+            /// Количество выданных кадров.
+            /// </value>
             public int FrameCounter1
             {
                 get
@@ -1891,6 +1879,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает количество выданных статусов по второму полукомплекту.
+            /// </summary>
+            /// <value>
+            /// Количество выданных статусов.
+            /// </value>
             public int StateCounter2
             {
                 get
@@ -1906,6 +1900,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает количество выданных кадров по второму полукомплекту.
+            /// </summary>
+            /// <value>
+            /// Количество выданных кадров.
+            /// </value>
             public int FrameCounter2
             {
                 get
@@ -1921,6 +1921,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает линию приема.
+            /// </summary>
+            /// <value>
+            /// Линия приема.
+            /// </value>
             public int LineIn
             {
                 get
@@ -1936,6 +1942,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает линию передачи.
+            /// </summary>
+            /// <value>
+            /// Линия передачи.
+            /// </value>
             public int LineOut
             {
                 get
@@ -1951,6 +1963,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [включен опрос данных].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [включен опрос данных]; иначе, <c>false</c>.
+            /// </value>
             public bool IsRequest
             {
                 get
@@ -1966,19 +1984,91 @@ namespace EGSE.Devices
                 }
             }
 
-            public bool IsRecordSend
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [выдан УКС].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выдан УКС]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsIssueCmd
             {
                 get
                 {
-                    return _isRecordSend;
+                    return _isIssueCmd;
                 }
 
                 set
                 {
-                    _isRecordSend = value;
-                    ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.Send, Convert.ToInt32(value));
+                    _isIssueCmd = value;
+                    ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.Issue, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
+            }
+
+            /// <summary>
+            /// Получает сообщение об ошибке в объекте.
+            /// </summary>
+            /// <returns>An error message indicating what is wrong with this object. The default is an empty string ("").</returns>
+            public string Error
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="System.String"/> with the specified name.
+            /// </summary>
+            /// <value>
+            /// The <see cref="System.String"/>.
+            /// </value>
+            /// <param name="name">The name.</param>
+            /// <returns>Сообщение об ошибке.</returns>
+            public string this[string name]
+            {
+                get
+                {
+                    string result = null;
+
+                    return result;
+                }
+            }
+
+            /// <summary>
+            /// Initializes the control value.
+            /// </summary>
+            protected override void InitControlValue()
+            {
+                ControlValuesList.Add(Global.HSI.Line1, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line1StateCounter, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line1FrameCounter, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line2, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line2StateCounter, new ControlValue());
+                ControlValuesList.Add(Global.HSI.Line2FrameCounter, new ControlValue());
+                ControlValuesList.Add(Global.SimHSI.Control, new ControlValue());
+                ControlValuesList.Add(Global.SimHSI.Record, new ControlValue());
+            }
+
+            /// <summary>
+            /// Initializes the properties.
+            /// </summary>
+            protected override void InitProperties()
+            {
+                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockMain, 1, 1, Device.CmdHSILine1, value => IsLockMain1 = 1 == value);
+                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockResv, 2, 1, Device.CmdHSILine1, value => IsLockResv1 = 1 == value);
+                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.Enable, 0, 1, Device.CmdHSILine1, value => IsEnableHalfSet1 = 1 == value);
+                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockMain, 1, 1, Device.CmdHSILine2, value => IsLockMain2 = 1 == value);
+                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockResv, 2, 1, Device.CmdHSILine2, value => IsLockResv2 = 1 == value);
+                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.Enable, 0, 1, Device.CmdHSILine2, value => IsEnableHalfSet2 = 1 == value);
+                ControlValuesList[Global.HSI.Line1StateCounter].AddProperty(Global.HSI.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value);
+                ControlValuesList[Global.HSI.Line1FrameCounter].AddProperty(Global.HSI.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value);
+                ControlValuesList[Global.HSI.Line2StateCounter].AddProperty(Global.HSI.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value);
+                ControlValuesList[Global.HSI.Line2FrameCounter].AddProperty(Global.HSI.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value);
+                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineIn, 2, 1, Device.CmdSimHSIControl, value => LineIn = value);
+                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineOut, 1, 1, Device.CmdSimHSIControl, value => LineOut = value);
+                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.Request, 0, 1, Device.CmdSimHSIControl, value => IsRequest = 1 == value);
+                ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.Issue, 0, 1, Device.CmdSimHSIRecord, value => IsIssueCmd = 1 == value);
             }
         }
 
@@ -2835,7 +2925,6 @@ namespace EGSE.Devices
                 {
                     FirePropertyChangedEvent();
                 }
-
             }
 
             /// <summary>
@@ -2964,6 +3053,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на включение интерфейса spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на включение интерфейса spacewire.
+            /// </value>
             public ICommand EnableCommand
             {
                 get
@@ -2972,6 +3067,7 @@ namespace EGSE.Devices
                     {
                         _enableCommand = new RelayCommand(obj => { IsEnable = !IsEnable; }, obj => { return true; });
                     }
+
                     return _enableCommand;
                 }
             }
@@ -3290,57 +3386,11 @@ namespace EGSE.Devices
         /// Нотификатор spacewire2.
         /// </summary>
         public class Spacewire2 : SubNotify, IDataErrorInfo
-        {
-            /// <summary>
-            /// Описывает адресные байты Spacewire.
-            /// </summary>
-            public enum Addr : uint
-            {
-                /// <summary>
-                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): Данные Spacewire".
-                /// </summary>
-                Data = 0x04,
-
-                /// <summary>
-                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): EOP или EEP".
-                /// </summary>
-                End = 0x05,
-
-                /// <summary>
-                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
-                /// </summary>
-                Time1 = 0x06,
-
-                /// <summary>
-                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
-                /// </summary>
-                Time2 = 0x07,
-
-                /// <summary>
-                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): Данные Spacewire".
-                /// </summary>
-                BukData = 0x08,
-
-                /// <summary>
-                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): EOP или EEP".
-                /// </summary>
-                BukEnd = 0x09,
-
-                /// <summary>
-                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
-                /// </summary>
-                BukTime1 = 0x0a,
-
-                /// <summary>
-                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
-                /// </summary>
-                BukTime2 = 0x0b
-            }       
-
+        {           
             /// <summary>
             /// Количество запросов квот по spacewire.
             /// </summary>
-            private long _spacewire2RequestQueueFromBusk;
+            private long _requestQueueFromBusk;
 
             /// <summary>
             /// SPTP: Адрес ИМИТАТОРА БУСКа.
@@ -3421,10 +3471,10 @@ namespace EGSE.Devices
             /// Управление: Выбор канала.
             /// </summary>
             private SpacewireChannel _spacewireChannel;
-            private long _spacewire2ReplyQueueFromBusk;
-            private long _spacewire2ReplyQueueFromBuk;
-            private long _spacewire2RequestQueueFromBuk;
-            private long _spacewire2Kbv;
+            private long _replyQueueFromBusk;
+            private long _replyQueueFromBuk;
+            private long _requestQueueFromBuk;
+            private long _codeOnboardTime;
             private int _curApid;
 
             /// <summary>
@@ -3435,101 +3485,6 @@ namespace EGSE.Devices
                 : base(owner)
             {
             }
-
-            /// <summary>
-            /// Получает или задает буфер данных для передачи в USB.
-            /// </summary>
-            /// <value>
-            /// Буфер данных.
-            /// </value>
-            public byte[] Data { get; set; }
-
-            public long Spacewire2RequestQueueFromBusk
-            {
-                get
-                {
-                    return _spacewire2RequestQueueFromBusk;
-                }
-
-                set
-                {
-                    _spacewire2RequestQueueFromBusk = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            
-            public bool IsChannelBukFirst
-            {
-                get
-                {
-                    return (SpacewireChannel.BUK1BM1 == IssueSpacewireChannel) || (SpacewireChannel.BUK1BM2 == IssueSpacewireChannel);
-                }
-            }
-
-            public bool IsChannelBuskFirst
-            {
-                get
-                {
-                    return (SpacewireChannel.BUK1BM1 == IssueSpacewireChannel) || (SpacewireChannel.BUK2BM1 == IssueSpacewireChannel);
-                }
-            }
-
-            public long Spacewire2ReplyQueueFromBusk
-            {
-                get
-                {
-                    return _spacewire2ReplyQueueFromBusk;
-                }
-
-                set
-                {
-                    _spacewire2ReplyQueueFromBusk = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            public long Spacewire2RequestQueueFromBuk
-            {
-                get
-                {
-                    return _spacewire2RequestQueueFromBuk;
-                }
-
-                set
-                {
-                    _spacewire2RequestQueueFromBuk = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            public long Spacewire2ReplyQueueFromBuk
-            {
-                get
-                {
-                    return _spacewire2ReplyQueueFromBuk;
-                }
-
-                set
-                {
-                    _spacewire2ReplyQueueFromBuk = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            public long Spacewire2Kbv
-            {
-                get
-                {
-                    return _spacewire2Kbv;
-                }
-
-                set
-                {
-                    _spacewire2Kbv = value;
-                    FirePropertyChangedEvent();
-                }
-            }        
 
             /// <summary>
             /// Список возможных каналов имитатора БМ-4.
@@ -3557,6 +3512,187 @@ namespace EGSE.Devices
                 BUK2BM2 = 0x03
             }
 
+            /// <summary>
+            /// Описывает адресные байты Spacewire.
+            /// </summary>
+            public enum Addr : uint
+            {
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): Данные Spacewire".
+                /// </summary>
+                Data = 0x04,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): EOP или EEP".
+                /// </summary>
+                End = 0x05,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
+                /// </summary>
+                Time1 = 0x06,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
+                /// </summary>
+                Time2 = 0x07,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): Данные Spacewire".
+                /// </summary>
+                BukData = 0x08,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): EOP или EEP".
+                /// </summary>
+                BukEnd = 0x09,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
+                /// </summary>
+                BukTime1 = 0x0a,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
+                /// </summary>
+                BukTime2 = 0x0b
+            }       
+
+            /// <summary>
+            /// Получает или задает буфер данных для передачи в USB.
+            /// </summary>
+            /// <value>
+            /// Буфер данных.
+            /// </value>
+            public byte[] Data { get; set; }
+
+            /// <summary>
+            /// Получает или задает количество запросов кредита от БУСК.
+            /// </summary>
+            /// <value>
+            /// Количество запросов кредита от БУСК.
+            /// </value>
+            public long RequestQueueFromBusk
+            {
+                get
+                {
+                    return _requestQueueFromBusk;
+                }
+
+                set
+                {
+                    _requestQueueFromBusk = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает значение, показывающее, что [выбран первый полукомплект БУК].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выбран первый полукомплект БУК]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsChannelBukFirst
+            {
+                get
+                {
+                    return (SpacewireChannel.BUK1BM1 == IssueSpacewireChannel) || (SpacewireChannel.BUK1BM2 == IssueSpacewireChannel);
+                }
+            }
+
+            /// <summary>
+            /// Получает значение, показывающее, что [выбран первый полукомплект БУСК].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [выбран первый полукомплект БУСК]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsChannelBuskFirst
+            {
+                get
+                {
+                    return (SpacewireChannel.BUK1BM1 == IssueSpacewireChannel) || (SpacewireChannel.BUK2BM1 == IssueSpacewireChannel);
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество предоставлений кредита от БУСК.
+            /// </summary>
+            /// <value>
+            /// Количество предоставлений кредита от БУСК.
+            /// </value>
+            public long ReplyQueueFromBusk
+            {
+                get
+                {
+                    return _replyQueueFromBusk;
+                }
+
+                set
+                {
+                    _replyQueueFromBusk = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество запросов кредита от БУК.
+            /// </summary>
+            /// <value>
+            /// Количество запросов кредита от БУК.
+            /// </value>
+            public long RequestQueueFromBuk
+            {
+                get
+                {
+                    return _requestQueueFromBuk;
+                }
+
+                set
+                {
+                    _requestQueueFromBuk = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество предоставлений кредита от БУК.
+            /// </summary>
+            /// <value>
+            /// Количество предоставлений кредита от БУК.
+            /// </value>
+            public long ReplyQueueFromBuk
+            {
+                get
+                {
+                    return _replyQueueFromBuk;
+                }
+
+                set
+                {
+                    _replyQueueFromBuk = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает текущий КБВ по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Текущий КБВ по интерфейсу spacewire.
+            /// </value>
+            public long CodeOnboardTime
+            {
+                get
+                {
+                    return _codeOnboardTime;
+                }
+
+                set
+                {
+                    _codeOnboardTime = value;
+                    FirePropertyChangedEvent();
+                }
+            }        
 
             /// <summary>
             /// Получает или задает канал имитатора БМ-4.
@@ -3955,6 +4091,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает текущий APID для формирования посылки.
+            /// </summary>
+            /// <value>
+            /// Текущий APID для формирования посылки.
+            /// </value>
             public int CurApid
             {
                 get
@@ -4050,6 +4192,57 @@ namespace EGSE.Devices
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
             /// <summary>
+            /// Рабочий прибор.
+            /// </summary>
+            private WorkDevice _workDevice;
+
+            /// <summary>
+            /// Управление: вкл/выкл интерфейса Spacewire.
+            /// </summary>
+            private bool _isEnable;
+
+            /// <summary>
+            /// Управление: Установлена связь.
+            /// </summary>
+            private bool _isConnect;
+
+            /// <summary>
+            /// Управление: Сигнал передачи кадров.
+            /// </summary>
+            private bool _isIssueTransmission;
+
+            /// <summary>
+            /// Полукомплект рабочего прибора.
+            /// </summary>
+            private HalfSet _workDeviceHalfSet;
+            private ICommand _enableCommand;
+
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
+            /// </summary>
+            /// <param name="owner">The owner.</param>
+            public Spacewire3(EgseBukNotify owner)
+                : base(owner)
+            {
+            }
+
+            /// <summary>
+            /// Полукомплекты рабочего прибора.
+            /// </summary>
+            public enum HalfSet
+            {
+                /// <summary>
+                /// Первый полукомплект.
+                /// </summary>
+                First = 0x00,
+
+                /// <summary>
+                /// Второй полукомплект.
+                /// </summary>
+                Second = 0x01
+            }
+
+            /// <summary>
             /// Возможные рабочие приборы.
             /// </summary>
             public enum WorkDevice
@@ -4069,6 +4262,7 @@ namespace EGSE.Devices
                 /// </summary>
                 Sdchsh = 0x02
             }
+
             /// <summary>
             /// Описывает адресные байты Spacewire.
             /// </summary>
@@ -4114,40 +4308,6 @@ namespace EGSE.Devices
                 /// </summary>
                 InTime2 = 0x13
             }
-            /// <summary>
-            /// Рабочий прибор.
-            /// </summary>
-            private WorkDevice _workDevice;
-
-            /// <summary>
-            /// Управление: вкл/выкл интерфейса Spacewire.
-            /// </summary>
-            private bool _isEnable;
-
-            /// <summary>
-            /// Управление: Установлена связь.
-            /// </summary>
-            private bool _isConnect;
-
-            /// <summary>
-            /// Управление: Сигнал передачи кадров.
-            /// </summary>
-            private bool _isIssueTransmission;
-
-            /// <summary>
-            /// Полукомплект рабочего прибора.
-            /// </summary>
-            private HalfSet _workDeviceHalfSet;
-            private ICommand _enableCommand;
-
-            /// <summary>
-            /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
-            /// </summary>
-            /// <param name="owner">The owner.</param>
-            public Spacewire3(EgseBukNotify owner)
-                : base(owner)
-            {
-            }
 
             /// <summary>
             /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
@@ -4171,6 +4331,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на включение интерфейса spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на включение интерфейса spacewire.
+            /// </value>
             public ICommand EnableCommand
             {
                 get
@@ -4179,6 +4345,7 @@ namespace EGSE.Devices
                     {
                         _enableCommand = new RelayCommand(obj => { IsEnable = !IsEnable; }, obj => { return true; });
                     }
+
                     return _enableCommand;
                 }
             }
@@ -4222,22 +4389,6 @@ namespace EGSE.Devices
                     _isIssueTransmission = value;
                     FirePropertyChangedEvent();
                 }
-            }
-
-            /// <summary>
-            /// Полукомплекты рабочего прибора.
-            /// </summary>
-            public enum HalfSet
-            {
-                /// <summary>
-                /// Первый полукомплект.
-                /// </summary>
-                First = 0x00,
-
-                /// <summary>
-                /// Второй полукомплект.
-                /// </summary>
-                Second = 0x01
             }
 
             /// <summary>
@@ -4424,6 +4575,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на включение интерфейса spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на включение интерфейса spacewire.
+            /// </value>
             public ICommand EnableCommand
             {
                 get
@@ -4432,6 +4589,7 @@ namespace EGSE.Devices
                     {
                         _enableCommand = new RelayCommand(obj => { IsEnable = !IsEnable; }, obj => { return true; });
                     }
+
                     return _enableCommand;
                 }
             }
@@ -4478,6 +4636,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на включение передачи метки времени по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на включение передачи метки времени по интерфейсу spacewire.
+            /// </value>
             public ICommand IssueTimeMarkCommand
             {
                 get
@@ -4486,6 +4650,7 @@ namespace EGSE.Devices
                     {
                         _issueTimeMarkCommand = new RelayCommand(obj => { IsIssueTimeMark = !IsIssueTimeMark; }, obj => { return true; });
                     }
+
                     return _issueTimeMarkCommand;
                 }
             }
@@ -4511,6 +4676,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на выдачу ошибки EEP по интерфейсу spacewire, при формировании посылки.
+            /// </summary>
+            /// <value>
+            /// Команда на выдачу ошибки EEP по интерфейсу spacewire, при формировании посылки.
+            /// </value>
             public ICommand IssueEEPCommand
             {
                 get
@@ -4519,6 +4690,7 @@ namespace EGSE.Devices
                     {
                         _issueEEPCommand = new RelayCommand(obj => { IsIssueEEP = !IsIssueEEP; }, obj => { return true; });
                     }
+
                     return _issueEEPCommand;
                 }
             }
@@ -4544,6 +4716,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на выдачу EOP по интерфейсу spacewire, при формировании посылки.
+            /// </summary>
+            /// <value>
+            /// Команда на выдачу EOP по интерфейсу spacewire, при формировании посылки.
+            /// </value>
             public ICommand IssueEOPCommand
             {
                 get
@@ -4552,6 +4730,7 @@ namespace EGSE.Devices
                     {
                         _issueEOPCommand = new RelayCommand(obj => { IsIssueEOP = !IsIssueEOP; }, obj => { return true; });
                     }
+
                     return _issueEOPCommand;
                 }
             }
@@ -4577,6 +4756,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на включение автоматической выдачи посылки по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на включение автоматической выдачи посылки по интерфейсу spacewire.
+            /// </value>
             public ICommand IssueAutoCommand
             {
                 get
@@ -4585,6 +4770,7 @@ namespace EGSE.Devices
                     {
                         _issueAutoCommand = new RelayCommand(obj => { IsIssueAuto = !IsIssueAuto; }, obj => { return true; });
                     }
+
                     return _issueAutoCommand;
                 }
             }
@@ -4629,6 +4815,13 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent();                   
                 }
             }
+
+            /// <summary>
+            /// Получает команду на выдачу посылки по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на выдачу посылки по интерфейсу spacewire.
+            /// </value>
             public ICommand IssuePackageCommand
             {
                 get
@@ -4637,6 +4830,7 @@ namespace EGSE.Devices
                     {
                         _issuePackageCommand = new RelayCommand(obj => { IsIssuePackage = true; }, obj => { return !IsRecordBusy; });
                     }
+
                     return _issuePackageCommand;
                 }
             }

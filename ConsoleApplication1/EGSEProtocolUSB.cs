@@ -8,8 +8,63 @@
 namespace EGSE.Protocols
 {
     using System;
-    using System.Linq;
     using System.Collections.Specialized;
+    using System.Linq;
+
+    /// <summary>
+    /// Для преобразования сообщений spacewire к сообщениям верхнего уровня.
+    /// </summary>
+    public static class MsgWorker
+    {
+        public static SpacewireKbvMsgEventArgs AsKbv(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireKbvMsgEventArgs AsKbv(this SpacewireIcdMsgEventArgs obj)
+        {
+            SpacewireKbvMsgEventArgs newObj = new SpacewireKbvMsgEventArgs(new byte[] { }, obj.Time1, obj.Time2, obj.Error);
+            newObj.FieldPNormal = obj.Data[0];
+            newObj.FieldPExtended = obj.Data[1];
+            newObj.Kbv = obj.ConvertToInt(obj.Data.Skip(2).ToArray());
+            return newObj;
+        }
+
+        public static SpacewireKbvMsgEventArgs ToKbv(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTmMsgEventArgs AsTm(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTmMsgEventArgs ToTm(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTkMsgEventArgs AsTk(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTkMsgEventArgs AsTk(this SpacewireIcdMsgEventArgs obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTkMsgEventArgs ToTk(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     /// <summary>
     /// Базовый класс сообщения.
@@ -58,6 +113,7 @@ namespace EGSE.Protocols
                 _dataLen = value;
             }
         }
+
         protected virtual byte[] ToArray()
         {
             throw new NotImplementedException();
@@ -69,12 +125,17 @@ namespace EGSE.Protocols
     /// </summary>
     public class SpacewireSptpMsgEventArgs : MsgBase
     {
-        public SpacewireSptpMsgEventArgs()
-        { }
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
         /// </summary>
-        /// <param name="msgDataLen">Длина текущего сообщения spacewire.</param>
+        public SpacewireSptpMsgEventArgs()
+        { 
+        }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
         /// <param name="time1">Time tick 1</param>
         /// <param name="time2">Time tick 2</param>
         /// <param name="error">Ошибка в сообщении.</param>
@@ -108,20 +169,62 @@ namespace EGSE.Protocols
             }
         }
 
-        public byte From { get; set; }
-
-        public byte To { get; set; }
-
-        public byte ProtocolID { get; set; }
-
+        /// <summary>
+        /// Тип Spacewire SPTP сообщения. 
+        /// </summary>
         public enum Type
         {
+            /// <summary>
+            /// Сообщение не декодируемо.
+            /// </summary>
             Error = 0xFF,
+
+            /// <summary>
+            /// Сообщение "Запрос кредита".
+            /// </summary>
             Request = 0x80,
+
+            /// <summary>
+            /// Сообщение "Предоставления кредита".
+            /// </summary>
             Reply = 0xC0,
+
+            /// <summary>
+            /// Сообщение "Данные".
+            /// </summary>
             Data = 0x00
         }
 
+        /// <summary>
+        /// Получает или задает поле spacewire "Устройство передачи".
+        /// </summary>
+        /// <value>
+        /// Идентификатор устройства передачи сообщения.
+        /// </value>
+        public byte From { get; set; }
+
+        /// <summary>
+        /// Получает или задает поле spacewire "Устройство получения".
+        /// </summary>
+        /// <value>
+        /// Идентификатор устройства приема сообщения.
+        /// </value>
+        public byte To { get; set; }
+
+        /// <summary>
+        /// Получает или задает идентификатор протокола.
+        /// </summary>
+        /// <value>
+        /// Идентификатор протокола.
+        /// </value>
+        public byte ProtocolID { get; set; }
+
+        /// <summary>
+        /// Получает или задает тип сообщения spacewire SPTP.
+        /// </summary>
+        /// <value>
+        /// Тип сообщения spacewire SPTP.
+        /// </value>
         public Type MsgType { get; set; } 
 
         /// <summary>
@@ -156,9 +259,20 @@ namespace EGSE.Protocols
 
     public class SpacewireIcdMsgEventArgs : SpacewireSptpMsgEventArgs
     {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
+        /// </summary>
         public SpacewireIcdMsgEventArgs()
-        { }
+        { 
+        }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="time1">Time tick 1</param>
+        /// <param name="time2">Time tick 2</param>
+        /// <param name="error">Ошибка в сообщении.</param>
         public SpacewireIcdMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
@@ -174,6 +288,12 @@ namespace EGSE.Protocols
             }
         }
 
+        public BitVector32 Id { get; set; }
+
+        public BitVector32 Control { get; set; }
+
+        public BitVector32 Size { get; set; }
+
         public int ConvertToInt(byte[] array)
         {
             int pos = 0;
@@ -183,12 +303,10 @@ namespace EGSE.Protocols
                 result |= (int)(by << pos);
                 pos += 8;
             }
+
             return result;
         }
 
-        public BitVector32 Id { get; set; }
-        public BitVector32 Control { get; set; }
-        public BitVector32 Size { get; set; }
         protected override byte[] ToArray()
         {
             throw new NotImplementedException();
@@ -197,6 +315,13 @@ namespace EGSE.Protocols
 
     public class SpacewireKbvMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireKbvMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="time1">Time tick 1</param>
+        /// <param name="time2">Time tick 2</param>
+        /// <param name="error">Ошибка в сообщении.</param>
         public SpacewireKbvMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
@@ -207,13 +332,12 @@ namespace EGSE.Protocols
                 Kbv = ConvertToInt(Data.Skip(2).ToArray());
             }
         }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireKbvMsgEventArgs" />.
+        /// </summary>
         public SpacewireKbvMsgEventArgs()          
         {
-
-        }
-        protected override byte[] ToArray()
-        {
-            throw new NotImplementedException();
         }
 
         public byte FieldPNormal { get; set; }
@@ -221,13 +345,27 @@ namespace EGSE.Protocols
         public byte FieldPExtended { get; set; }
 
         public int Kbv { get; set; }
+
+        protected override byte[] ToArray()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class SpacewireTmMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTmMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="time1">Time tick 1</param>
+        /// <param name="time2">Time tick 2</param>
+        /// <param name="error">Ошибка в сообщении.</param>
         public SpacewireTmMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
-        {}
+        {
+        }
+
         protected override byte[] ToArray()
         {
             throw new NotImplementedException();
@@ -236,61 +374,19 @@ namespace EGSE.Protocols
 
     public class SpacewireTkMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTkMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="time1">Time tick 1</param>
+        /// <param name="time2">Time tick 2</param>
+        /// <param name="error">Ошибка в сообщении.</param>
         public SpacewireTkMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
-        {}
+        {
+        }
+
         protected override byte[] ToArray()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public static class MsgWorker
-    {
-        public static SpacewireKbvMsgEventArgs AsKbv(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static SpacewireKbvMsgEventArgs AsKbv(this SpacewireIcdMsgEventArgs obj)
-        {
-
-            SpacewireKbvMsgEventArgs newObj = new SpacewireKbvMsgEventArgs(new byte[] { }, obj.Time1, obj.Time2, obj.Error);
-            newObj.FieldPNormal = obj.Data[0];
-            newObj.FieldPExtended = obj.Data[1];
-            newObj.Kbv = obj.ConvertToInt(obj.Data.Skip(2).ToArray());
-            return newObj;
-        }
-
-        public static SpacewireKbvMsgEventArgs ToKbv(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static SpacewireTmMsgEventArgs AsTm(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
-        {
-            throw new NotImplementedException();
-        }
-        public static SpacewireTmMsgEventArgs ToTm(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static SpacewireTkMsgEventArgs AsTk(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static SpacewireTkMsgEventArgs AsTk(this SpacewireIcdMsgEventArgs obj)
-        {
-            throw new NotImplementedException();
-        }
-        public static SpacewireTkMsgEventArgs ToTk(this Array obj)
         {
             throw new NotImplementedException();
         }
