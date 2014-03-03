@@ -112,7 +112,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.Spacewire1Notify.IsIntfOn = !_intfEGSE.Spacewire1Notify.IsIntfOn;
+            _intfEGSE.Spacewire1Notify.IsEnable = !_intfEGSE.Spacewire1Notify.IsEnable;
         }      
 
         /// <summary>

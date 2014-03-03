@@ -160,7 +160,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Вкл/выкл].
                 /// </summary>
-                public readonly string OnOff = "29de114f373d4db9a52a90c91c840902";
+                public readonly string Enable = "29de114f373d4db9a52a90c91c840902";
 
                 /// <summary>
                 /// Индекс свойства [Запрет передачи по резервной линии].
@@ -191,7 +191,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Вкл/выкл].
                 /// </summary>
-                public readonly string OnOff = "c7837417edd743eabe09ff6733c333e3";
+                public readonly string Enable = "c7837417edd743eabe09ff6733c333e3";
 
                 /// <summary>
                 /// Индекс свойства [Запрет передачи по резервной линии].
@@ -436,12 +436,12 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string IntfOn = "c1c63372d0464a7581628acbb8e2f5f2";
+                public readonly string Enable = "c1c63372d0464a7581628acbb8e2f5f2";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].
                 /// </summary>
-                public readonly string Connected = "feba0ba15e3040c89ff40f76ce5265ed";
+                public readonly string Connect = "feba0ba15e3040c89ff40f76ce5265ed";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 

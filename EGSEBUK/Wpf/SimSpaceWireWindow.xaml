@@ -38,7 +38,7 @@
             <Button Grid.Row="1"
             	Grid.Column="1"                               
             	Grid.ColumnSpan="2"	
-            	Tag="{Binding IsIntfOn, Converter={StaticResource boolToIndexConverter}}"
+            	Tag="{Binding IsEnable, Converter={StaticResource boolToIndexConverter}}"
             	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_4"/>
             <Label Grid.Row="2" 
             	Grid.ColumnSpan="3"

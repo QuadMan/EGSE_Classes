@@ -339,6 +339,34 @@ namespace EGSE.Defaults
         }
     }
    
+    public class EnumToBoolConverter : IValueConverter 
+    {
+        public object Convert(object value, Type targetType, object parameter,CultureInfo culture) 
+        { 
+            if (parameter.Equals(value)) 
+            {
+                return true; 
+            }
+            else 
+            {
+                return false; 
+            }
+        } 
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) 
+        { 
+        
+            if (((bool)value) == true)
+            {
+                return parameter;
+            }
+            else
+            {
+                return DependencyProperty.UnsetValue;
+            }
+        } 
+    } 
+
     /// <summary>
     /// Конвертор array to string для wpf.
     /// </summary>
@@ -416,4 +444,5 @@ namespace EGSE.Defaults
             return ms.ToArray().Take<byte>((int)(ms.Length - ObjEnderSysBytesCount)).ToArray().Skip<byte>(ObjHeaderSysBytesCount).ToArray();
         }
     }
+
 }

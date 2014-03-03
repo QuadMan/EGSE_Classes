@@ -17,6 +17,7 @@ namespace EGSE.Devices
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
+    using System.Runtime.CompilerServices;
     using EGSE;
     using EGSE.Constants;
     using EGSE.Defaults;
@@ -618,7 +619,7 @@ namespace EGSE.Devices
         /// <param name="value">Параметры управления.</param>
         public void CmdSpacewire4Control(int value)
         {
-            if (_intfBUK.Spacewire1Notify.IsIntfOn)
+            if (_intfBUK.Spacewire1Notify.IsEnable)
             {
                 SendToUSB(Spacewire1ControlAddr, new byte[1] { 0 });
             }
@@ -704,7 +705,7 @@ namespace EGSE.Devices
         /// </summary>
         public void CmdSetDeviceLogicAddr()
         {
-            if (_intfBUK.Spacewire2Notify.IsBUK1BM1Channel || _intfBUK.Spacewire2Notify.IsBUK1BM2Channel)
+            if (_intfBUK.Spacewire2Notify.IsChannelBukFirst) 
             {
                 _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk1;
                 _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk1;
@@ -714,7 +715,7 @@ namespace EGSE.Devices
                 _intfBUK.Spacewire2Notify.LogicBuk = Global.LogicAddrBuk2;
                 _intfBUK.Spacewire1Notify.LogicSD1 = Global.LogicAddrBuk2;
             }
-            if (_intfBUK.Spacewire2Notify.IsBUK1BM1Channel || _intfBUK.Spacewire2Notify.IsBUK2BM1Channel)
+            if (_intfBUK.Spacewire2Notify.IsChannelBuskFirst)
             {
                 _intfBUK.Spacewire1Notify.LogicBusk = Global.LogicAddrBusk1;
                 _intfBUK.Spacewire2Notify.LogicBusk = Global.LogicAddrBusk1;
@@ -752,6 +753,8 @@ namespace EGSE.Devices
     /// </summary>
     public class EgseBukNotify : INotifyPropertyChanged, IDataErrorInfo
     {
+
+
         /// <summary>
         /// Адресный байт "Статус".
         /// </summary>
@@ -866,19 +869,19 @@ namespace EGSE.Devices
             Spacewire3Notify = new Spacewire3(this);
             Spacewire4Notify = new Spacewire4(this);
             
-            _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2Addr.Data, (uint)Spacewire2Addr.End, (uint)Spacewire2Addr.Time1, (uint)Spacewire2Addr.Time2);
+            _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBusk.OnMessageFunc);
 
-            _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2Addr.BukData, (uint)Spacewire2Addr.BukEnd, (uint)Spacewire2Addr.BukTime1, (uint)Spacewire2Addr.BukTime2);
+            _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
 
-            _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3Addr.InData, (uint)Spacewire3Addr.InEnd, (uint)Spacewire3Addr.InTime1, (uint)Spacewire3Addr.InTime2);
+            _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2);
             _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDIn.OnMessageFunc);
 
-            _decoderSpacewireSDOut = new ProtocolSpacewire((uint)Spacewire3Addr.OutData, (uint)Spacewire3Addr.OutEnd, (uint)Spacewire3Addr.OutTime1, (uint)Spacewire3Addr.OutTime2);
+            _decoderSpacewireSDOut = new ProtocolSpacewire((uint)Spacewire3.Addr.OutData, (uint)Spacewire3.Addr.OutEnd, (uint)Spacewire3.Addr.OutTime1, (uint)Spacewire3.Addr.OutTime2);
             _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDOut.OnMessageFunc);  
 
@@ -900,171 +903,8 @@ namespace EGSE.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
+
         private int _waitForTimer = 100;
-
-        /// <summary>
-        /// Возможные рабочие приборы.
-        /// </summary>
-        public enum WorkDevice
-        {
-            /// <summary>
-            /// Рабочий прибор "УФЕС".
-            /// </summary>
-            Ufes = 0x00,
-
-            /// <summary>
-            /// Рабочий прибор "ВУФЕС".
-            /// </summary>
-            Vufes = 0x01,
-
-            /// <summary>
-            /// Рабочий прибор "СДЩ".
-            /// </summary>
-            Sdchsh = 0x02
-        }
-
-        public enum Line
-        {
-            Main = 0x02,
-
-            Resv = 0x01,
-
-            MainReserv = 0x00
-        }
-
-        /// <summary>
-        /// Полукомплекты рабочего прибора.
-        /// </summary>
-        public enum HalfSet
-        {
-            /// <summary>
-            /// Первый полукомплект.
-            /// </summary>
-            First = 0x00,
-
-            /// <summary>
-            /// Второй полукомплект.
-            /// </summary>
-            Second = 0x01
-        }
-
-        /// <summary>
-        /// Список возможных каналов имитатора БМ-4.
-        /// </summary>
-        public enum SpacewireChannel
-        {
-            /// <summary>
-            /// Канал "БУК ПК1 - БМ-4 ПК1".
-            /// </summary>
-            BUK1BM1 = 0x00,
-
-            /// <summary>
-            /// Канал "БУК ПК1 - БМ-4 ПК2".
-            /// </summary>
-            BUK1BM2 = 0x01,
-
-            /// <summary>
-            /// Канал "БУК ПК2 - БМ-4 ПК1".
-            /// </summary>
-            BUK2BM1 = 0x02,
-
-            /// <summary>
-            /// Канал "БУК ПК2 - БМ-4 ПК2".
-            /// </summary>
-            BUK2BM2 = 0x03
-        }
-
-        /// <summary>
-        /// Описывает адресные байты Spacewire2.
-        /// </summary>
-        public enum Spacewire2Addr : uint
-        {
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): Данные Spacewire".
-            /// </summary>
-            Data = 0x04,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): EOP или EEP".
-            /// </summary>
-            End = 0x05,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
-            /// </summary>
-            Time1 = 0x06,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
-            /// </summary>
-            Time2 = 0x07,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): Данные Spacewire".
-            /// </summary>
-            BukData = 0x08,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): EOP или EEP".
-            /// </summary>
-            BukEnd = 0x09,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
-            /// </summary>
-            BukTime1 = 0x0a,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
-            /// </summary>
-            BukTime2 = 0x0b
-        }
-
-        /// <summary>
-        /// Описывает адресные байты Spacewire2.
-        /// </summary>
-        public enum Spacewire3Addr : uint
-        {
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: Данные Spacewire".
-            /// </summary>
-            OutData = 0x0c,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: EOP или EEP".
-            /// </summary>
-            OutEnd = 0x0d,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: TIME TICK".
-            /// </summary>
-            OutTime1 = 0x0e,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 3: ВЫХОДНЫЕ ДАННЫЕ: TIME TICK".
-            /// </summary>
-            OutTime2 = 0x0f,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 3: ВХОДНЫЕ ДАННЫЕ: Данные Spacewire".
-            /// </summary>
-            InData = 0x10,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 3: ВХОДНЫЕ ДАННЫЕ: EOP или EEP".
-            /// </summary>
-            InEnd = 0x11,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 2: ВХОДНЫЕ ДАННЫЕ: TIME TICK".
-            /// </summary>
-            InTime1 = 0x12,
-
-            /// <summary>
-            /// Адресный байт "SPACEWIRE 3: ВХОДНЫЕ ДАННЫЕ: TIME TICK".
-            /// </summary>
-            InTime2 = 0x13
-        }
 
         /// <summary>
         /// Получает или задает нотификатор телеметрии.
@@ -1135,7 +975,7 @@ namespace EGSE.Devices
             private set
             {
                 _isConnected = value;
-                FirePropertyChangedEvent("IsConnected");
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1155,7 +995,7 @@ namespace EGSE.Devices
             private set
             {
                 _isShowHSI = value;
-                FirePropertyChangedEvent("IsShowHSI");
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1175,7 +1015,7 @@ namespace EGSE.Devices
             private set
             {
                 _isShowSpacewire = value;
-                FirePropertyChangedEvent("IsShowSpacewire");
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1195,7 +1035,7 @@ namespace EGSE.Devices
             private set
             {
                 _isShowSD = value;
-                FirePropertyChangedEvent("IsShowSD");
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1215,7 +1055,7 @@ namespace EGSE.Devices
             private set
             {
                 _isShowSimHSI = value;
-                FirePropertyChangedEvent("IsShowSimHSI");
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1235,7 +1075,7 @@ namespace EGSE.Devices
             private set
             {
                 _isShowSimSpacewire = value;
-                FirePropertyChangedEvent("IsShowSimSpacewire");
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1255,7 +1095,7 @@ namespace EGSE.Devices
             private set
             {
                 _isShowSimSD = value;
-                FirePropertyChangedEvent("IsShowSimSD");
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1304,7 +1144,7 @@ namespace EGSE.Devices
             {
                 _isWriteDevDataToFile = value;
                 WriteDevData(value);
-                FirePropertyChangedEvent("IsWriteDevDataToFile");
+                FirePropertyChangedEvent();
             }
         }
              
@@ -1410,7 +1250,7 @@ namespace EGSE.Devices
             {
                 Device.CmdSetDeviceLogicAddr();   
             }
-            Debug.Assert(ControlValuesList != null, "ControlValuesList не должны быть равны null!");
+            Debug.Assert(ControlValuesList != null, @"ControlValuesList не должны быть равны null!");
             foreach (var cv in ControlValuesList)
             {
                 (cv.Value as ControlValue).TimerTick(); 
@@ -1454,9 +1294,9 @@ namespace EGSE.Devices
         {
             if (startWrite)
             {
-                string dataLogDir = Directory.GetCurrentDirectory().ToString() + "\\DATA\\";
+                string dataLogDir = Directory.GetCurrentDirectory().ToString() + @"\\DATA\\";
                 Directory.CreateDirectory(dataLogDir);
-                string fileName = dataLogDir + Resource.Get(@"stDevLogName") + "_" + DateTime.Now.ToString("yyMMdd_HHmmss") + ".dat";
+                string fileName = dataLogDir + Resource.Get(@"stDevLogName") + "_" + DateTime.Now.ToString(@"yyMMdd_HHmmss") + @".dat";
                 _devDataLogStream = new FileStream(fileName, System.IO.FileMode.Create);
             }
             else 
@@ -1526,7 +1366,7 @@ namespace EGSE.Devices
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         protected virtual void OnSpacewire3Msg(object sender, SpacewireSptpMsgEventArgs e)
         {
-            ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Transmission, Convert.ToInt32(Spacewire3Notify.IsTransmission));
+            ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Transmission, Convert.ToInt32(Spacewire3Notify.IsIssueTransmission));
             if (this.GotSpacewire3Msg != null)
             {
                 {
@@ -1580,9 +1420,9 @@ namespace EGSE.Devices
                 {
                     case TimeDataAddr:
                         Array.Copy(msg.Data, 1, DeviceTime.Data, 0, 6);
-                        FirePropertyChangedEvent("DeviceTime");
-                        FirePropertyChangedEvent("DeviceSpeed");
-                        FirePropertyChangedEvent("DeviceTrafic");
+                        FirePropertyChangedEvent(null, @"DeviceTime");
+                        FirePropertyChangedEvent(null, @"DeviceSpeed");
+                        FirePropertyChangedEvent(null, @"DeviceTrafic");
                         ControlValuesList[Global.Spacewire2.Control].UsbValue = msg.Data[7];
                         ControlValuesList[Global.Spacewire2.Record].UsbValue = msg.Data[10]; 
                         ControlValuesList[Global.Spacewire2.SPTPLogicBusk].UsbValue = msg.Data[11];
@@ -1625,11 +1465,12 @@ namespace EGSE.Devices
         /// Fires the property changed event.
         /// </summary>
         /// <param name="propertyName">Имя свойства.</param>
-        private void FirePropertyChangedEvent(string propertyName)
+        private void FirePropertyChangedEvent(INotifyPropertyChanged sender = null, [CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
+            if ((null != PropertyChanged) && (null != propertyName))
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(null == sender ? this : sender, new PropertyChangedEventArgs(propertyName));
+                System.Windows.Input.CommandManager.InvalidateRequerySuggested();
             }
         }
 
@@ -1675,12 +1516,11 @@ namespace EGSE.Devices
             /// Fires the property changed event.
             /// </summary>
             /// <param name="propertyName">Name of the property.</param>
-            protected void FirePropertyChangedEvent(string propertyName)
+            protected void FirePropertyChangedEvent([CallerMemberName] string propertyName = null)
             {
-                if (PropertyChanged != null)
+                if ((null != Owner) && (null != PropertyChanged))
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-                    System.Windows.Input.CommandManager.InvalidateRequerySuggested();
+                    Owner.FirePropertyChangedEvent(this, propertyName);
                 }
             }
 
@@ -1706,10 +1546,10 @@ namespace EGSE.Devices
         {
             private bool _isLockResv1;
             private bool _isLockMain1;
-            private bool _isOnOff1;
+            private bool _isEnableHalfSet1;
             private bool _isLockResv2;
             private bool _isLockMain2;
-            private bool _isOnOff2;
+            private bool _isEnableHalfSet2;
             private int _stateCounter1;
             private int _frameCounter1;
             private int _stateCounter2;
@@ -1786,10 +1626,10 @@ namespace EGSE.Devices
             {
                 ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockMain, 1, 1, Device.CmdHSILine1, value => IsLockMain1 = 1 == value);
                 ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.LockResv, 2, 1, Device.CmdHSILine1, value => IsLockResv1 = 1 == value);
-                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.OnOff, 0, 1, Device.CmdHSILine1, value => IsOnOff1 = 1 == value);
+                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.Enable, 0, 1, Device.CmdHSILine1, value => IsEnableHalfSet1 = 1 == value);
                 ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockMain, 1, 1, Device.CmdHSILine2, value => IsLockMain2 = 1 == value);
                 ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.LockResv, 2, 1, Device.CmdHSILine2, value => IsLockResv2 = 1 == value);
-                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.OnOff, 0, 1, Device.CmdHSILine2, value => IsOnOff2 = 1 == value);
+                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.Enable, 0, 1, Device.CmdHSILine2, value => IsEnableHalfSet2 = 1 == value);
                 ControlValuesList[Global.HSI.Line1StateCounter].AddProperty(Global.HSI.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value);
                 ControlValuesList[Global.HSI.Line1FrameCounter].AddProperty(Global.HSI.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value);
                 ControlValuesList[Global.HSI.Line2StateCounter].AddProperty(Global.HSI.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value);
@@ -1817,7 +1657,7 @@ namespace EGSE.Devices
                 {
                     _isLockResv1 = value;
                     ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.LockResv, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsLockResv1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1838,7 +1678,7 @@ namespace EGSE.Devices
                 {
                     _isLockMain1 = value;
                     ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.LockMain, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsLockMain1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1854,7 +1694,7 @@ namespace EGSE.Devices
                     IsLockResv1 = value;
                     IsLockMain1 = !value;
                     _isLineMain1 = value;
-                    FirePropertyChangedEvent("IsLineMain1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1870,7 +1710,7 @@ namespace EGSE.Devices
                     IsLockResv1 = !value;
                     IsLockMain1 = value;
                     _isLineResv1 = value;
-                    FirePropertyChangedEvent("IsLineResv1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1886,7 +1726,7 @@ namespace EGSE.Devices
                     IsLockResv1 = !value;
                     IsLockMain1 = !value;
                     _isLineMainResv1 = value;
-                    FirePropertyChangedEvent("IsLineMainResv1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1902,7 +1742,7 @@ namespace EGSE.Devices
                     IsLockResv2 = value;
                     IsLockMain2 = !value;
                     _isLineMain2 = value;
-                    FirePropertyChangedEvent("IsLineMain2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1918,7 +1758,7 @@ namespace EGSE.Devices
                     IsLockResv2 = !value;
                     IsLockMain2 = value;
                     _isLineResv2 = value;
-                    FirePropertyChangedEvent("IsLineResv2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1934,7 +1774,7 @@ namespace EGSE.Devices
                     IsLockResv2 = !value;
                     IsLockMain2 = !value;
                     _isLineMainResv2 = value;
-                    FirePropertyChangedEvent("IsLineMainResv2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1944,18 +1784,18 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [Вкл/выкл КВВ ПК1]; иначе, <c>false</c>.
             /// </value>
-            public bool IsOnOff1
+            public bool IsEnableHalfSet1
             {
                 get
                 {
-                    return _isOnOff1;
+                    return _isEnableHalfSet1;
                 }
 
                 set
                 {
-                    _isOnOff1 = value;
-                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.OnOff, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsOnOff1");
+                    _isEnableHalfSet1 = value;
+                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.Enable, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1976,7 +1816,7 @@ namespace EGSE.Devices
                 {
                     _isLockResv2 = value;
                     ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.LockResv, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsLockResv2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -1997,7 +1837,7 @@ namespace EGSE.Devices
                 {
                     _isLockMain2 = value;
                     ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.LockMain, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsLockMain2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2007,18 +1847,18 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [Вкл/выкл КВВ ПК2]; иначе, <c>false</c>.
             /// </value>
-            public bool IsOnOff2
+            public bool IsEnableHalfSet2
             {
                 get
                 {
-                    return _isOnOff2;
+                    return _isEnableHalfSet2;
                 }
 
                 set
                 {
-                    _isOnOff2 = value;
-                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.OnOff, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsOnOff2");
+                    _isEnableHalfSet2 = value;
+                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.Enable, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2033,7 +1873,7 @@ namespace EGSE.Devices
                 {
                     _stateCounter1 = value;
                     ControlValuesList[Global.HSI.Line1StateCounter].SetProperty(Global.HSI.Line1StateCounter, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("StateCounter1");
+                    FirePropertyChangedEvent();
                 }
             }
             public int FrameCounter1
@@ -2047,7 +1887,7 @@ namespace EGSE.Devices
                 {
                     _frameCounter1 = value;
                     ControlValuesList[Global.HSI.Line1FrameCounter].SetProperty(Global.HSI.Line1FrameCounter, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("FrameCounter1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2062,7 +1902,7 @@ namespace EGSE.Devices
                 {
                     _stateCounter2 = value;
                     ControlValuesList[Global.HSI.Line2StateCounter].SetProperty(Global.HSI.Line2StateCounter, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("StateCounter2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2077,7 +1917,7 @@ namespace EGSE.Devices
                 {
                     _frameCounter2 = value;
                     ControlValuesList[Global.HSI.Line2FrameCounter].SetProperty(Global.HSI.Line2FrameCounter, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("FrameCounter2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2092,7 +1932,7 @@ namespace EGSE.Devices
                 {
                     _lineIn = value;
                     ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineIn, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("LineIn");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2107,7 +1947,7 @@ namespace EGSE.Devices
                 {
                     _lineOut = value;
                     ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineOut, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("LineOut");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2122,7 +1962,7 @@ namespace EGSE.Devices
                 {
                     _isRequest = value;
                     ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.Request, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsRequest");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2137,7 +1977,7 @@ namespace EGSE.Devices
                 {
                     _isRecordSend = value;
                     ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.Send, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsRecordSend");
+                    FirePropertyChangedEvent();
                 }
             }
         }
@@ -2302,7 +2142,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _isBuskLineA = value;
-                    FirePropertyChangedEvent("IsBuskLineA");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2322,7 +2162,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _isBuskLineB = value;
-                    FirePropertyChangedEvent("IsBuskLineB");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2342,7 +2182,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _isBundLineA = value;
-                    FirePropertyChangedEvent("IsBundLineA");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2362,7 +2202,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _isBundLineB = value;
-                    FirePropertyChangedEvent("IsBundLineB");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2382,7 +2222,7 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBusk1 = value;                   
-                    FirePropertyChangedEvent("PowerBusk1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2402,7 +2242,7 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBusk2 = value;
-                    FirePropertyChangedEvent("PowerBusk2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2422,7 +2262,7 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBund1 = value;
-                    FirePropertyChangedEvent("PowerBund1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2442,7 +2282,7 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBund2 = value;
-                    FirePropertyChangedEvent("PowerBund2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2463,7 +2303,7 @@ namespace EGSE.Devices
                 {
                     _ufesLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("UfesLock1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2484,7 +2324,7 @@ namespace EGSE.Devices
                 {
                     _ufesLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("UfesLock2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2505,7 +2345,7 @@ namespace EGSE.Devices
                 {
                     _vufesLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("VufesLock1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2526,7 +2366,7 @@ namespace EGSE.Devices
                 {
                     _vufesLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("VufesLock2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2547,7 +2387,7 @@ namespace EGSE.Devices
                 {
                     _sdchshLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("SdchshLock1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2568,7 +2408,7 @@ namespace EGSE.Devices
                 {
                     _sdchshLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("SdchshLock2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2588,7 +2428,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _ufesPower1 = value;
-                    FirePropertyChangedEvent("UfesPower1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2608,7 +2448,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _ufesPower2 = value;
-                    FirePropertyChangedEvent("UfesPower2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2628,7 +2468,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _vufesPower1 = value;
-                    FirePropertyChangedEvent("VufesPower1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2648,7 +2488,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _vufesPower2 = value;
-                    FirePropertyChangedEvent("VufesPower2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2668,7 +2508,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _sdchshPower1 = value;
-                    FirePropertyChangedEvent("SdchshPower1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2688,7 +2528,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _sdchshPower2 = value;
-                    FirePropertyChangedEvent("SdchshPower2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2708,7 +2548,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _ufesLight1 = value;
-                    FirePropertyChangedEvent("UfesLight1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2728,7 +2568,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _ufesLight2 = value;
-                    FirePropertyChangedEvent("UfesLight2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2748,7 +2588,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _vufesLight1 = value;
-                    FirePropertyChangedEvent("VufesLight1");
+                    FirePropertyChangedEvent();
                 }
             }
             
@@ -2768,7 +2608,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _vufesLight2 = value;
-                    FirePropertyChangedEvent("VufesLight2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2788,7 +2628,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _sdchshLight1 = value;
-                    FirePropertyChangedEvent("SdchshLight1");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2808,7 +2648,7 @@ namespace EGSE.Devices
                 private set
                 {
                     _sdchshLight2 = value;
-                    FirePropertyChangedEvent("SdchshLight2");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2888,12 +2728,12 @@ namespace EGSE.Devices
             /// <summary>
             /// Управление: вкл/выкл интерфейса Spacewire.
             /// </summary>
-            private bool _isIntfOn;
+            private bool _isEnable;
 
             /// <summary>
             /// Управление: Установлена связь.
             /// </summary>
-            private bool _isConnected;
+            private bool _isConnect;
 
             /// <summary>
             /// SPTP: включение обмена прибора НП1.
@@ -2959,6 +2799,7 @@ namespace EGSE.Devices
             /// Запись данных(до 1 Кбайт): Бит выдачи посылки.
             /// </summary>
             private bool _isRecordSend;
+            private ICommand _enableCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire1" />.
@@ -2989,6 +2830,12 @@ namespace EGSE.Devices
                 {
                     return string.Format(Resource.Get(@"stShowSimLogicBusk"), LogicBusk);
                 }
+
+                private set
+                {
+                    FirePropertyChangedEvent();
+                }
+
             }
 
             /// <summary>
@@ -3007,9 +2854,9 @@ namespace EGSE.Devices
                 set
                 {
                     _logicBusk = value;
-                    ControlValuesList[Global.Spacewire1.SPTPLogicBusk].SetProperty(Global.Spacewire1.SPTPLogicBusk, value);
-                    FirePropertyChangedEvent("ShowLogicBusk");
-                    FirePropertyChangedEvent("LogicBusk");
+                    ControlValuesList[Global.Spacewire1.SPTPLogicBusk].SetProperty(Global.Spacewire1.SPTPLogicBusk, value);                    
+                    FirePropertyChangedEvent();
+                    ShowLogicBusk = string.Empty;
                 }
             }
 
@@ -3024,6 +2871,11 @@ namespace EGSE.Devices
                 get
                 {
                     return string.Format(Resource.Get(@"stShowSimLogicSD1"), LogicSD1);
+                }
+
+                private set
+                { 
+                    FirePropertyChangedEvent(); 
                 }
             }
 
@@ -3044,8 +2896,8 @@ namespace EGSE.Devices
                 {
                     _logicSD1 = value;
                     ControlValuesList[Global.Spacewire1.SPTPLogicSD1].SetProperty(Global.Spacewire1.SPTPLogicSD1, value);
-                    FirePropertyChangedEvent("ShowLogicSD1");
-                    FirePropertyChangedEvent("LogicSD1");
+                    FirePropertyChangedEvent();
+                    ShowLogicSD1 = string.Empty;                    
                 }
             }
 
@@ -3060,6 +2912,11 @@ namespace EGSE.Devices
                 get
                 {
                     return string.Format(Resource.Get(@"stShowSimLogicSD2"), LogicSD2);
+                }
+
+                private set
+                {
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3080,8 +2937,8 @@ namespace EGSE.Devices
                 {
                     _logicSD2 = value;
                     ControlValuesList[Global.Spacewire1.SPTPLogicSD2].SetProperty(Global.Spacewire1.SPTPLogicSD2, value);
-                    FirePropertyChangedEvent("ShowLogicSD2");
-                    FirePropertyChangedEvent("LogicSD2");
+                    FirePropertyChangedEvent();                    
+                    ShowLogicSD2 = string.Empty;
                 }
             }
 
@@ -3091,38 +2948,52 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [интерфейс SpaceWire1 включен]; иначе, <c>false</c>.
             /// </value>
-            public bool IsIntfOn
+            public bool IsEnable
             {
                 get
                 {
-                    return _isIntfOn;
+                    return _isEnable;
                 }
 
                 set
                 {
-                    _isIntfOn = value;
-                    ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.IntfOn, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsIntfOn");
+                    _isEnable = value;
+                    ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.Enable, Convert.ToInt32(value));
+                    ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(0));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand EnableCommand
+            {
+                get
+                {
+                    if (null == _enableCommand)
+                    {
+                        _enableCommand = new RelayCommand(obj => { IsEnable = !IsEnable; }, obj => { return true; });
+                    }
+                    return _enableCommand;
                 }
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [связь по интерфейсу SpaceWire1 установлена].
+            /// Получает или задает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [связь по интерфейсу SpaceWire1 установлена]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлена связь по интерфейсу Spacewire]; иначе, <c>false</c>.
             /// </value>
-            public bool IsConnected
+            public bool IsConnect
             {
                 get
                 {
-                    return _isConnected;
+                    return _isConnect;
                 }
 
                 set
                 {
-                    _isConnected = value;
-                    FirePropertyChangedEvent("IsConnected");
+                    _isConnect = value;
+                    ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.Connect, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3143,7 +3014,7 @@ namespace EGSE.Devices
                 {
                     _isNP1Trans = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.NP1Trans, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsNP1Trans");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3164,7 +3035,7 @@ namespace EGSE.Devices
                 {
                     _isNP2Trans = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.NP2Trans, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsNP2Trans");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3185,7 +3056,7 @@ namespace EGSE.Devices
                 {
                     _isNP1TransData = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.NP1TransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsNP1TransData");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3206,7 +3077,7 @@ namespace EGSE.Devices
                 {
                     _isSD2TransData = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD2TransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsSD2TransData");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3227,7 +3098,7 @@ namespace EGSE.Devices
                 {
                     _sd1SendTime = value;
                     ControlValuesList[Global.Spacewire1.SD1SendTime].SetProperty(Global.Spacewire1.SD1SendTime, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("SD1SendTime");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3248,7 +3119,7 @@ namespace EGSE.Devices
                 {
                     _sd2SendTime = value;
                     ControlValuesList[Global.Spacewire1.SD2SendTime].SetProperty(Global.Spacewire1.SD2SendTime, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("SD2SendTime");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3269,7 +3140,7 @@ namespace EGSE.Devices
                 {
                     _sd1DataSize = value;
                     ControlValuesList[Global.Spacewire1.SD1DataSize].SetProperty(Global.Spacewire1.SD1DataSize, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("SD1DataSize");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3290,7 +3161,7 @@ namespace EGSE.Devices
                 {
                     _sd2DataSize = value;
                     ControlValuesList[Global.Spacewire1.SD2DataSize].SetProperty(Global.Spacewire1.SD2DataSize, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("SD2DataSize");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3310,7 +3181,7 @@ namespace EGSE.Devices
                 set
                 {
                     _isRecordBusy = value;
-                    FirePropertyChangedEvent("IsRecordBusy");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3331,7 +3202,7 @@ namespace EGSE.Devices
                 {
                     _isRecordSend = value;
                     ControlValuesList[Global.Spacewire1.Record].SetProperty(Global.Spacewire1.Record.Send, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsRecordSend");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3395,8 +3266,8 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.IntfOn, 0, 1, Device.CmdSpacewire1Control, value => IsIntfOn = 1 == value);
-                ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.Connected, 3, 1, delegate { }, value => IsConnected = 1 == value);
+                ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.Enable, 0, 1, Device.CmdSpacewire1Control, value => IsEnable = 1 == value);
+                ControlValuesList[Global.Spacewire1.Control].AddProperty(Global.Spacewire1.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPLogicBusk].AddProperty(Global.Spacewire1.SPTPLogicBusk, 0, 8, Device.CmdSpacewire1LogicBusk, value => LogicBusk = value);
                 ControlValuesList[Global.Spacewire1.SPTPLogicSD1].AddProperty(Global.Spacewire1.SPTPLogicSD1, 0, 8, Device.CmdSpacewire1LogicSD1, value => LogicSD1 = value);
                 ControlValuesList[Global.Spacewire1.SPTPLogicSD2].AddProperty(Global.Spacewire1.SPTPLogicSD2, 0, 8, delegate { }, value => LogicSD2 = value);
@@ -3420,6 +3291,52 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire2 : SubNotify, IDataErrorInfo
         {
+            /// <summary>
+            /// Описывает адресные байты Spacewire.
+            /// </summary>
+            public enum Addr : uint
+            {
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): Данные Spacewire".
+                /// </summary>
+                Data = 0x04,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): EOP или EEP".
+                /// </summary>
+                End = 0x05,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
+                /// </summary>
+                Time1 = 0x06,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ (ИМИТАТОР БУСК): TIME TICK".
+                /// </summary>
+                Time2 = 0x07,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): Данные Spacewire".
+                /// </summary>
+                BukData = 0x08,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): EOP или EEP".
+                /// </summary>
+                BukEnd = 0x09,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
+                /// </summary>
+                BukTime1 = 0x0a,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
+                /// </summary>
+                BukTime2 = 0x0b
+            }       
+
             /// <summary>
             /// Количество запросов квот по spacewire.
             /// </summary>
@@ -3503,7 +3420,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Управление: Выбор канала.
             /// </summary>
-            private SpacewireChannel _simRouterChannel;
+            private SpacewireChannel _spacewireChannel;
             private long _spacewire2ReplyQueueFromBusk;
             private long _spacewire2ReplyQueueFromBuk;
             private long _spacewire2RequestQueueFromBuk;
@@ -3537,7 +3454,24 @@ namespace EGSE.Devices
                 set
                 {
                     _spacewire2RequestQueueFromBusk = value;
-                    FirePropertyChangedEvent("Spacewire2RequestQueueFromBusk");
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            
+            public bool IsChannelBukFirst
+            {
+                get
+                {
+                    return (SpacewireChannel.BUK1BM1 == IssueSpacewireChannel) || (SpacewireChannel.BUK1BM2 == IssueSpacewireChannel);
+                }
+            }
+
+            public bool IsChannelBuskFirst
+            {
+                get
+                {
+                    return (SpacewireChannel.BUK1BM1 == IssueSpacewireChannel) || (SpacewireChannel.BUK2BM1 == IssueSpacewireChannel);
                 }
             }
 
@@ -3551,7 +3485,7 @@ namespace EGSE.Devices
                 set
                 {
                     _spacewire2ReplyQueueFromBusk = value;
-                    FirePropertyChangedEvent("Spacewire2ReplyQueueFromBusk");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3565,7 +3499,7 @@ namespace EGSE.Devices
                 set
                 {
                     _spacewire2RequestQueueFromBuk = value;
-                    FirePropertyChangedEvent("Spacewire2RequestQueueFromBuk");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3579,7 +3513,7 @@ namespace EGSE.Devices
                 set
                 {
                     _spacewire2ReplyQueueFromBuk = value;
-                    FirePropertyChangedEvent("Spacewire2ReplyQueueFromBuk");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3593,85 +3527,36 @@ namespace EGSE.Devices
                 set
                 {
                     _spacewire2Kbv = value;
-                    FirePropertyChangedEvent("Spacewire2Kbv");
+                    FirePropertyChangedEvent();
                 }
-            }
+            }        
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выбран канал БУК ПК1 - БМ-4 ПК1].
+            /// Список возможных каналов имитатора БМ-4.
             /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбран канал БУК ПК1 - БМ-4 ПК1]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsBUK1BM1Channel
+            public enum SpacewireChannel
             {
-                get
-                {
-                    return SpacewireChannel.BUK1BM1 == SelectSimRouterChannel;
-                }
+                /// <summary>
+                /// Канал "БУК ПК1 - БМ-4 ПК1".
+                /// </summary>
+                BUK1BM1 = 0x00,
 
-                set
-                {
-                    SelectSimRouterChannel = value ? SpacewireChannel.BUK1BM1 : SelectSimRouterChannel;
-                }
+                /// <summary>
+                /// Канал "БУК ПК1 - БМ-4 ПК2".
+                /// </summary>
+                BUK1BM2 = 0x01,
+
+                /// <summary>
+                /// Канал "БУК ПК2 - БМ-4 ПК1".
+                /// </summary>
+                BUK2BM1 = 0x02,
+
+                /// <summary>
+                /// Канал "БУК ПК2 - БМ-4 ПК2".
+                /// </summary>
+                BUK2BM2 = 0x03
             }
 
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выбран канал БУК ПК1 - БМ-4 ПК2].
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбран канал БУК ПК1 - БМ-4 ПК2]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsBUK1BM2Channel
-            {
-                get
-                {
-                    return SpacewireChannel.BUK1BM2 == SelectSimRouterChannel;
-                }
-
-                set
-                {
-                    SelectSimRouterChannel = value ? SpacewireChannel.BUK1BM2 : SelectSimRouterChannel;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выбран канал БУК ПК2 - БМ-4 ПК1].
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбран канал БУК ПК2 - БМ-4 ПК1]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsBUK2BM1Channel
-            {
-                get
-                {
-                    return SpacewireChannel.BUK2BM1 == SelectSimRouterChannel;
-                }
-
-                set
-                {
-                    SelectSimRouterChannel = value ? SpacewireChannel.BUK2BM1 : SelectSimRouterChannel;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выбран канал БУК ПК2 - БМ-4 ПК2].
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбран канал БУК ПК2 - БМ-4 ПК2]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsBUK2BM2Channel
-            {
-                get
-                {
-                    return SpacewireChannel.BUK2BM2 == SelectSimRouterChannel;
-                }
-
-                set
-                {
-                    SelectSimRouterChannel = value ? SpacewireChannel.BUK2BM2 : SelectSimRouterChannel;
-                }
-            }
 
             /// <summary>
             /// Получает или задает канал имитатора БМ-4.
@@ -3679,27 +3564,19 @@ namespace EGSE.Devices
             /// <value>
             /// Канал имитатора БМ-4.
             /// </value>
-            public SpacewireChannel SelectSimRouterChannel
+            public SpacewireChannel IssueSpacewireChannel
             {
                 get
                 {
-                    return _simRouterChannel;
+                    return _spacewireChannel;
                 }
 
                 set
                 {
-                    if (value == _simRouterChannel)
-                    {
-                        return;
-                    }
-
-                    _simRouterChannel = value;
+                    _spacewireChannel = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Channel, (int)value);
-                    FirePropertyChangedEvent("SelectSimRouterChannel");
-                    FirePropertyChangedEvent("IsBUK2BM2Channel");
-                    FirePropertyChangedEvent("IsBUK1BM1Channel");
-                    FirePropertyChangedEvent("IsBUK1BM2Channel");
-                    FirePropertyChangedEvent("IsBUK2BM1Channel");                    
+                    FirePropertyChangedEvent();
+                    Device.CmdSetDeviceLogicAddr();
                 }
             }
 
@@ -3714,6 +3591,11 @@ namespace EGSE.Devices
                 get
                 {
                     return string.Format(Resource.Get(@"stShowLogicBusk"), LogicBusk);
+                }
+
+                private set
+                {
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3734,8 +3616,8 @@ namespace EGSE.Devices
                 {
                     _logicBusk = value;
                     ControlValuesList[Global.Spacewire2.SPTPLogicBusk].SetProperty(Global.Spacewire2.SPTPLogicBusk, value);
-                    FirePropertyChangedEvent("ShowLogicBusk");
-                    FirePropertyChangedEvent("LogicBusk");
+                    FirePropertyChangedEvent();
+                    ShowLogicBusk = string.Empty;
                 }
             }
 
@@ -3750,6 +3632,11 @@ namespace EGSE.Devices
                 get
                 {
                     return string.Format(Resource.Get(@"stShowLogicBuk"), LogicBuk);
+                }
+
+                private set
+                {
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3770,8 +3657,8 @@ namespace EGSE.Devices
                 {
                     _logicBuk = value;
                     ControlValuesList[Global.Spacewire2.SPTPLogicBuk].SetProperty(Global.Spacewire2.SPTPLogicBuk, value);
-                    FirePropertyChangedEvent("ShowLogicBuk");
-                    FirePropertyChangedEvent("LogicBuk");
+                    FirePropertyChangedEvent();
+                    ShowLogicBuk = string.Empty;
                 }
             }
 
@@ -3786,6 +3673,11 @@ namespace EGSE.Devices
                 get
                 {
                     return string.Format(Resource.Get(@"stShowLogicBkp"), LogicBkp);
+                }
+
+                private set
+                {
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3806,8 +3698,8 @@ namespace EGSE.Devices
                 {
                     _logicBkp = value;
                     ControlValuesList[Global.Spacewire2.SPTPLogicBkp].SetProperty(Global.Spacewire2.SPTPLogicBkp, value);
-                    FirePropertyChangedEvent("ShowLogicBkp");
-                    FirePropertyChangedEvent("LogicBkp");
+                    FirePropertyChangedEvent();
+                    ShowLogicBkp = string.Empty;
                 }
             }
 
@@ -3828,7 +3720,7 @@ namespace EGSE.Devices
                 {
                     _isEnable = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Enable, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsEnable");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3849,7 +3741,7 @@ namespace EGSE.Devices
                 {
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsConnect");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3870,7 +3762,7 @@ namespace EGSE.Devices
                 {
                     _isSendRMAP = value;
                     ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.SendRMAP, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsSendRMAP");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3891,7 +3783,7 @@ namespace EGSE.Devices
                 {
                     _isSendBuk = value;
                     ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.SendBuk, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsSendBuk");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3912,7 +3804,7 @@ namespace EGSE.Devices
                 {
                     _isSendBkp = value;
                     ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.SendBkp, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsSendBkp");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3933,7 +3825,7 @@ namespace EGSE.Devices
                 {
                     _isTimeMark = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.TimeMark, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsTimeMark");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3954,7 +3846,7 @@ namespace EGSE.Devices
                 {
                     _isBukTrans = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BukTrans, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsBukTrans");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3975,7 +3867,7 @@ namespace EGSE.Devices
                 {
                     _isBkpTrans = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BkpTrans, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsBkpTrans");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -3996,7 +3888,7 @@ namespace EGSE.Devices
                 {
                     _isBukKbv = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BukKbv, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsBukKbv");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4017,7 +3909,7 @@ namespace EGSE.Devices
                 {
                     _isBkpKbv = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BkpKbv, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsBkpKbv");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4038,7 +3930,7 @@ namespace EGSE.Devices
                 {
                     _isBukTransData = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BukTransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsBukTransData");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4059,7 +3951,7 @@ namespace EGSE.Devices
                 {
                     _isBkpTransData = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BkpTransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsBkpTransData");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4073,7 +3965,7 @@ namespace EGSE.Devices
                 set
                 {
                     _curApid = value;
-                    FirePropertyChangedEvent("CurApid");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4133,7 +4025,7 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Channel, 1, 2, Device.CmdSpacewire2Control, value => SelectSimRouterChannel = (SpacewireChannel)value);
+                ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Channel, 1, 2, Device.CmdSpacewire2Control, value => IssueSpacewireChannel = (SpacewireChannel)value);
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Enable, 0, 1, Device.CmdSpacewire2Control, value => IsEnable = 1 == value);
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value);
                 ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendRMAP, 0, 1, Device.CmdSpacewire2Record, value => IsSendRMAP = 1 == value);
@@ -4158,6 +4050,71 @@ namespace EGSE.Devices
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
             /// <summary>
+            /// Возможные рабочие приборы.
+            /// </summary>
+            public enum WorkDevice
+            {
+                /// <summary>
+                /// Рабочий прибор "УФЕС".
+                /// </summary>
+                Ufes = 0x00,
+
+                /// <summary>
+                /// Рабочий прибор "ВУФЕС".
+                /// </summary>
+                Vufes = 0x01,
+
+                /// <summary>
+                /// Рабочий прибор "СДЩ".
+                /// </summary>
+                Sdchsh = 0x02
+            }
+            /// <summary>
+            /// Описывает адресные байты Spacewire.
+            /// </summary>
+            public enum Addr : uint
+            {
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ: Данные Spacewire".
+                /// </summary>
+                OutData = 0x0c,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ: EOP или EEP".
+                /// </summary>
+                OutEnd = 0x0d,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ: TIME TICK".
+                /// </summary>
+                OutTime1 = 0x0e,
+
+                /// <summary>
+                /// Адресный байт "ВЫХОДНЫЕ ДАННЫЕ: TIME TICK".
+                /// </summary>
+                OutTime2 = 0x0f,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ: Данные Spacewire".
+                /// </summary>
+                InData = 0x10,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ: EOP или EEP".
+                /// </summary>
+                InEnd = 0x11,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ: TIME TICK".
+                /// </summary>
+                InTime1 = 0x12,
+
+                /// <summary>
+                /// Адресный байт "ВХОДНЫЕ ДАННЫЕ: TIME TICK".
+                /// </summary>
+                InTime2 = 0x13
+            }
+            /// <summary>
             /// Рабочий прибор.
             /// </summary>
             private WorkDevice _workDevice;
@@ -4175,7 +4132,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Управление: Сигнал передачи кадров.
             /// </summary>
-            private bool _isTransmission;
+            private bool _isIssueTransmission;
 
             /// <summary>
             /// Полукомплект рабочего прибора.
@@ -4210,7 +4167,7 @@ namespace EGSE.Devices
                     _isEnable = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Enable, Convert.ToInt32(value));
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(0));
-                    FirePropertyChangedEvent("IsEnable");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4218,25 +4175,12 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    if (_enableCommand == null)
+                    if (null == _enableCommand)
                     {
-                        _enableCommand = new RelayCommand(
-                            param => this.Enable(),
-                            param => this.CanEnable()
-                        );
+                        _enableCommand = new RelayCommand(obj => { IsEnable = !IsEnable; }, obj => { return true; });
                     }
                     return _enableCommand;
                 }
-            }
-
-            private bool CanEnable()
-            {
-                return true;
-            }
-
-            private void Enable()
-            {
-                IsEnable = !IsEnable;
             }
 
             /// <summary>
@@ -4256,64 +4200,7 @@ namespace EGSE.Devices
                 {
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsConnect");
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выбрано рабочее устройство УФЕС].
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбрано рабочее устройство УФЕС]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsUfesDevice
-            {
-                get
-                {
-                    return WorkDevice.Ufes == SelectWorkDevice;
-                }
-
-                set
-                {
-                    SelectWorkDevice = value ? WorkDevice.Ufes : SelectWorkDevice;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выбрано рабочее устройство ВУФЕС].
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбрано рабочее устройство ВУФЕС]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsVufesDevice
-            {
-                get
-                {
-                    return WorkDevice.Vufes == SelectWorkDevice;
-                }
-
-                set
-                {
-                    SelectWorkDevice = value ? WorkDevice.Vufes : SelectWorkDevice;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выбрано рабочее устройство СДЩ].
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбрано рабочее устройство СДЩ]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsSdchshDevice
-            {
-                get
-                {
-                    return WorkDevice.Sdchsh == SelectWorkDevice;
-                }
-
-                set
-                {
-                    SelectWorkDevice = value ? WorkDevice.Sdchsh : SelectWorkDevice;
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4323,56 +4210,34 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [передаются кадры данных]; иначе, <c>false</c>.
             /// </value>
-            public bool IsTransmission
+            public bool IsIssueTransmission
             {
                 get
-                {                  
-                    return _isTransmission;
+                {
+                    return _isIssueTransmission;
                 }
 
                 set
                 {
-                    _isTransmission = value;
-                    FirePropertyChangedEvent("IsTransmission");
+                    _isIssueTransmission = value;
+                    FirePropertyChangedEvent();
                 }
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выбран первый полукомплект].
+            /// Полукомплекты рабочего прибора.
             /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбран первый полукомплект]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsFirstHalfSet
+            public enum HalfSet
             {
-                get
-                {
-                    return HalfSet.First == SelectHalfSet;
-                }
+                /// <summary>
+                /// Первый полукомплект.
+                /// </summary>
+                First = 0x00,
 
-                set
-                {
-                    SelectHalfSet = value ? HalfSet.First : SelectHalfSet;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выбран второй полукомплект].
-            /// </summary>
-            /// <value>
-            ///   <c>true</c> если [выбран второй полукомплект]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsSecondHalfSet
-            {
-                get
-                {
-                    return HalfSet.Second == SelectHalfSet;
-                }
-
-                set
-                {
-                    SelectHalfSet = value ? HalfSet.Second : SelectHalfSet;
-                }
+                /// <summary>
+                /// Второй полукомплект.
+                /// </summary>
+                Second = 0x01
             }
 
             /// <summary>
@@ -4381,7 +4246,7 @@ namespace EGSE.Devices
             /// <value>
             /// Полукомплект прибора.
             /// </value>
-            public HalfSet SelectHalfSet
+            public HalfSet IssueHalfSet
             {
                 get
                 {
@@ -4392,9 +4257,7 @@ namespace EGSE.Devices
                 {
                     _workDeviceHalfSet = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.HalfSet, (int)value);
-                    FirePropertyChangedEvent("SelectHalfSet");
-                    FirePropertyChangedEvent("IsFirstHalfSet");
-                    FirePropertyChangedEvent("IsSecondHalfSet");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4404,7 +4267,7 @@ namespace EGSE.Devices
             /// <value>
             /// Рабочий прибор.
             /// </value>
-            public WorkDevice SelectWorkDevice
+            public WorkDevice IssueWorkDevice
             {
                 get
                 {
@@ -4415,10 +4278,7 @@ namespace EGSE.Devices
                 {
                     _workDevice = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.WorkDevice, (int)value);
-                    FirePropertyChangedEvent("SelectWorkDevice");
-                    FirePropertyChangedEvent("IsUfesDevice");
-                    FirePropertyChangedEvent("IsVufesDevice");
-                    FirePropertyChangedEvent("IsSdchshDevice");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4467,9 +4327,9 @@ namespace EGSE.Devices
             {                
                 ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Enable, 0, 1, Device.CmdSpacewire3Control, value => IsEnable = 1 == value);
                 ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value);
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Transmission, 5, 1, delegate { }, value => IsTransmission = 1 == value);
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.HalfSet, 4, 1, Device.CmdSpacewire3Control, value => SelectHalfSet = (HalfSet)value);
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.WorkDevice, 1, 2, Device.CmdSpacewire3Control, value => SelectWorkDevice = (WorkDevice)value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Transmission, 5, 1, delegate { }, value => IsIssueTransmission = 1 == value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.HalfSet, 4, 1, Device.CmdSpacewire3Control, value => IssueHalfSet = (HalfSet)value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.WorkDevice, 1, 2, Device.CmdSpacewire3Control, value => IssueWorkDevice = (WorkDevice)value);
             }
         }
 
@@ -4560,7 +4420,7 @@ namespace EGSE.Devices
                     _isEnable = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Enable, Convert.ToInt32(value));
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(0));
-                    FirePropertyChangedEvent("IsEnable");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4577,10 +4437,10 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
+            /// Получает или задает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [связь по интерфейсу SpaceWire установлена]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлена связь по интерфейсу Spacewire]; иначе, <c>false</c>.
             /// </value>
             public bool IsConnect
             {
@@ -4593,7 +4453,7 @@ namespace EGSE.Devices
                 {
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsConnect");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4614,7 +4474,7 @@ namespace EGSE.Devices
                 {
                     _isIssueTimeMark = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.TimeMark, Convert.ToInt32(_isIssueTimeMark));
-                    FirePropertyChangedEvent("IsIssueTimeMark");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4647,7 +4507,7 @@ namespace EGSE.Devices
                 {
                     _isIssueEEP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueEEP, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsIssueEEP");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4680,7 +4540,7 @@ namespace EGSE.Devices
                 {
                     _isIssueEOP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.EOPSend, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsIssueEOP");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4713,7 +4573,7 @@ namespace EGSE.Devices
                 {
                     _isIssueAuto = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueAuto, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsIssueAuto");
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -4745,7 +4605,7 @@ namespace EGSE.Devices
                 set
                 {
                     _isRecordBusy = value;
-                    FirePropertyChangedEvent("IsRecordBusy");                    
+                    FirePropertyChangedEvent();                    
                 }
             }
 
@@ -4766,7 +4626,7 @@ namespace EGSE.Devices
                 {
                     _isIssuePackage = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssuePackage, Convert.ToInt32(value));
-                    FirePropertyChangedEvent("IsIssuePackage");                   
+                    FirePropertyChangedEvent();                   
                 }
             }
             public ICommand IssuePackageCommand
