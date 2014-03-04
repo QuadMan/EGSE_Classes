@@ -51,7 +51,7 @@ namespace EGSE
         {
             _dec = dec;
             _cfg = cfg;
-            _readThread = new FTDIThread(serial, _cfg);
+            _readThread = new FTDIThread(serial, _cfg);            
             _readThread.StateChangeEvent = OnDevStateChanged;
             _decodeThread = new ProtocolThread(_dec, _readThread);
         }
@@ -99,6 +99,20 @@ namespace EGSE
                 uint res = _decodeThread.MaxBufferSize;
                 _decodeThread.MaxBufferSize = 0;
                 return res;
+            }
+        }
+
+        /// <summary>
+        /// Получает количество байт доступных для приема из USB.
+        /// </summary>
+        /// <value>
+        /// Количество байт доступных для приема из USB.
+        /// </value>
+        public int BytesAvailable
+        {
+            get
+            {
+                return _readThread.BigBuf.BytesAvailable;
             }
         }
 

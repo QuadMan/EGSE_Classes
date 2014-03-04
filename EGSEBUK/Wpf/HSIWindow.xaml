@@ -65,7 +65,7 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
 				Grid.Row="3"                                                            
-				Tag="{Binding IsOnOff1, Converter={StaticResource boolToIndexConverter}}"
+				Tag="{Binding IsOnOff1, Converter={StaticResource BoolToIndexConverter}}"
                 Template="{StaticResource FlatButtonCheck}"/>
             <StackPanel Grid.Column="2"                               
 				Grid.Row="3"		
@@ -96,7 +96,7 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="4"                                                            		
-            	Tag="{Binding IsOnOff2, Converter={StaticResource boolToIndexConverter}}"
+            	Tag="{Binding IsOnOff2, Converter={StaticResource BoolToIndexConverter}}"
             	Template="{StaticResource FlatButtonCheck}"/>
             <StackPanel Grid.Column="2"                               
 				Grid.Row="4"

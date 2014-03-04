@@ -716,12 +716,12 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Выдача посылки RMAP (самосбр.)].
                 /// </summary>
-                public readonly string SendRMAP = "2eb72401c6f5496dbf74ad944446ad13";
+                public readonly string IssueRMap = "2eb72401c6f5496dbf74ad944446ad13";
 
                 /// <summary>
                 /// Индекс свойства [1 – выдача посылки в прибор БС (самосбр.)].
                 /// </summary>
-                public readonly string SendBuk = "26f797306bda451e82abf3dee854071f";
+                public readonly string IssuePackage = "26f797306bda451e82abf3dee854071f";
 
                 /// <summary>
                 /// Индекс свойства [1 – выдача посылки в прибор БКП (самосбр.)].
@@ -810,22 +810,22 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [можно выдавать пакет в БС].
                 /// </summary>
-                public readonly string BukTransData = "738ad555b28c4f8b83754699aaad66de";
+                public readonly string TransData = "738ad555b28c4f8b83754699aaad66de";
 
                 /// <summary>
                 /// Индекс свойства [выдача КБВ прибору БС (только при «1 PPS» == 1)].
                 /// </summary>
-                public readonly string BukKbv = "dedd64001ded40678a1706e91b3ecf61";
+                public readonly string IssueKbv = "dedd64001ded40678a1706e91b3ecf61";
 
                 /// <summary>
                 /// Индекс свойства [включение обмена прибора БС].
                 /// </summary>
-                public readonly string BukTrans = "c227d91e647f4b90a1f69cd5e18638e5";
+                public readonly string IssueTrans = "c227d91e647f4b90a1f69cd5e18638e5";
 
                 /// <summary>
                 /// Индекс свойства [включить выдачу секундных меток (1PPS)].
                 /// </summary>
-                public readonly string TimeMark = "01967fc75d7e4c9380a00fc1a08abee9";
+                public readonly string IssueTimeMark = "01967fc75d7e4c9380a00fc1a08abee9";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 

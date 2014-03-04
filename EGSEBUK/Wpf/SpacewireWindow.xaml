@@ -12,9 +12,9 @@
           Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>        
+        </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -66,11 +66,12 @@
             <Button Grid.Row="2"  
             	Grid.Column="1"                               				    
             	Grid.ColumnSpan="2"	
-            	Tag="{Binding IsEnable, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_5"/>
+            	Tag="{Binding IsEnable, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding EnableCommand}"
+            	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="3" 
             	Grid.ColumnSpan="3"
-            	Tag="{Binding IsConnect, Converter={StaticResource boolToIndexConverter}}"     
+            	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="4"
             	Content="Прибор"
@@ -80,33 +81,36 @@
             	Grid.ColumnSpan="2"
             	Content="{Binding ShowLogicBuk}"
             	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="5"
+            <Label Grid.Row="6"
             	Content="Выдавать метки времени"
             	Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Row="5"
+            <Button Grid.Row="6"
                 Grid.Column="1"                                           	  
             	Grid.ColumnSpan="2"	
-            	Tag="{Binding IsTimeMark, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click"/>
-            <Label Grid.Row="6"
-            	Content="Выдавать КБВ прибору"
-            	Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Row="6"  
-                Grid.Column="1"                                           	
-            	Grid.ColumnSpan="2"
-            	Tag="{Binding IsBukKbv, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_3"/>
+            	Tag="{Binding IsIssueTimeMark, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueTimeMarkCommand}"
+            	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="7"
-            	Content="Обмен с прибором"
+            	Content="Выдавать КБВ прибору"
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="7"  
                 Grid.Column="1"                                           	
             	Grid.ColumnSpan="2"
-            	Tag="{Binding IsBukTrans, Converter={StaticResource boolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_1"/>          
+            	Tag="{Binding IsIssueKbv, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueKbvCommand}"
+            	Template="{StaticResource FlatButtonCheck}"/>
+            <Label Grid.Row="5"
+            	Content="Обмен с прибором"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Row="5"  
+                Grid.Column="1"                                           	
+            	Grid.ColumnSpan="2"
+            	Tag="{Binding IsIssueTrans, Converter={StaticResource BoolToIndexConverter}}"                    
+                Command="{Binding IssueTransCommand}"
+            	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="8"                                				    
             	Grid.ColumnSpan="3"
-            	Tag="{Binding IsBukTransData, Converter={StaticResource BoolToIndexConverter}}"
+            	Tag="{Binding IsTransData, Converter={StaticResource BoolToIndexConverter}}"
                 Template="{StaticResource FlatLabelTransmission}"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -121,37 +125,57 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="2"
+            <Grid Grid.ColumnSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.ColumnSpan="4"
                    Content="Передать данные прибору"
-                   Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Column="2"  
-                    Content="из файла..."
-                    Template="{StaticResource FlatButtonClick}"/>
-            <TextBox Grid.Row="1"
-                     Grid.ColumnSpan="3"
-                     Template="{StaticResource DataSendInError}"
-                     Style="{StaticResource TextBoxInError}"
-                     Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
-            <Label Grid.Row="2"
-                   Grid.ColumnSpan="2"
+                   Style="{StaticResource FlatHeader}"/>
+                <Label Grid.Row="1"
+            	Content="Формировать телекоманду"
+            	Template="{StaticResource FlatLabel}"/>
+                <Button Grid.Row="1"  
+                Grid.Column="1"                                           	
+            	Tag="{Binding IsMakeTK, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueMakeTKCommand}"
+            	Template="{StaticResource FlatButtonCheck}"/>
+                <Label Grid.Row="1"
+                   Grid.Column="2"
             	Content="APID"
             	Template="{StaticResource FlatLabel}"/>
-            <TextBox Grid.Row="2"  
-                Grid.Column="2"
+                <TextBox Grid.Row="1"  
+                Grid.Column="3"
 			    Template="{StaticResource NumberInError}"
 			    Style="{StaticResource TextBoxInError}"
 			    Text="{Binding CurApid}"/>
-            <Button Grid.Row="3"  
-                    Template="{StaticResource FlatButtonClick}"                       
-                    Content="Передать в БУК" Click="Button_Click_9"/>
-            <Button Grid.Row="3"  
-                    Grid.Column="1"
-                    Template="{StaticResource FlatButtonClick}"                       
-                    Content="Передать телекоманду"/>
+            </Grid>           
+            <Button Grid.Column="2"  
+                    Content="из файла..."
+                    Template="{StaticResource FlatButtonClick}"
+                    Command="{Binding FromFileCommand}"/>
+            <TextBox Grid.Row="1"
+                     Grid.ColumnSpan="3"                     
+                     Template="{StaticResource DataSendInError}"
+                     Style="{StaticResource TextBoxInError}"
+                     Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>            
+            <Button Grid.Row="3" 
+                    Grid.ColumnSpan="2"
+                    Template="{StaticResource FlatButtonClickBusy}"  
+                    Command="{Binding IssuePackageCommand}"
+                    Content="Передать в БУК"/>
             <Button Grid.Row="3"  
                     Grid.Column="2"
-                    Template="{StaticResource FlatButtonClick}"                       
-                    Content="RMAP" Click="Button_Click_10"/>
+                    Template="{StaticResource FlatButtonClickBusy}"  
+                    Command="{Binding IssueRMapCommand}"
+                    Content="RMap"/>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
@@ -159,61 +183,104 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>                        
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="3"
-                   Content="Монитор Spacewire"
+            <Label Grid.ColumnSpan="6"
+                   Style="{StaticResource FlatHeader}"
+                   Content="Монитор Spacewire"/>
+            <Label Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   Content="TIME TICK 1"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="2"
+                   Grid.Column="2" 
+                   Grid.ColumnSpan="2"
+                   Content="{Binding BuskTickTime1}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="2"
+                   Grid.Column="4" 
+                   Grid.ColumnSpan="2"
+                   Content="{Binding BukTickTime1}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3"
+                   Grid.ColumnSpan="2"
+                   Content="TIME TICK 2"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3"
+                   Grid.Column="2" 
+                   Grid.ColumnSpan="2"
+                   Content="{Binding BuskTickTime2}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="3"
+                   Grid.Column="4" 
+                   Grid.ColumnSpan="2"
+                   Content="{Binding BukTickTime2}"
                    Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1"
+                   Grid.ColumnSpan="2"
                    Content="Прибор"
                    Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1"
-                   Grid.Column="1"
-                   Content="Количество запросов кредита"
-                   Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="1"
                    Grid.Column="2"
-                   Content="Количество предоставления кредита"
-                   Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="2"
+                   Grid.ColumnSpan="2"
                    Content="БУСК"
                    Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="2"
-                   Grid.Column="1"   
-                   Content="{Binding Spacewire2RequestQueueFromBusk}"
-                   Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="2"
-                   Grid.Column="2"   
-                   Content="{Binding Spacewire2ReplyQueueFromBusk}"
-                   Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="3"
+            <Label Grid.Row="1"
+                   Grid.Column="4"
+                   Grid.ColumnSpan="2"
                    Content="БУК"
                    Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="3"
-                   Grid.Column="1"   
-                   Content="{Binding Spacewire2RequestQueueFromBuk}"
-                   Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="3"
-                   Grid.Column="2"   
-                   Content="{Binding Spacewire2ReplyQueueFromBuk}"
-                   Template="{StaticResource FlatLabel}"/>                
             <Label Grid.Row="4"
                    Grid.ColumnSpan="2"
-                   Content="КБВ"
+                   Content="Количество запросов кредита"
                    Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="4"
                    Grid.Column="2" 
-                   Content="{Binding Spacewire2Kbv}"
+                   Grid.ColumnSpan="2"
+                   Content="{Binding RequestQueueFromBusk}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="4"
+                   Grid.Column="4"  
+                   Grid.ColumnSpan="2"
+                   Content="{Binding RequestQueueFromBuk}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="5"
+                   Grid.ColumnSpan="2"
+                   Content="Количество предоставления кредита"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="5"
+                   Grid.Column="2" 
+                   Grid.ColumnSpan="2"
+                   Content="{Binding ReplyQueueFromBusk}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="5"
+                   Grid.Column="4"  
+                   Grid.ColumnSpan="2"
+                   Content="{Binding ReplyQueueFromBuk}"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="6"
+                   Grid.ColumnSpan="2"
+                   Content="КБВ"
+                   Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="6"
+                   Grid.Column="2" 
+                   Grid.ColumnSpan="4"
+                   Content="{Binding CodeOnboardTime}"
                    Template="{StaticResource FlatLabel}"/>
             <ListBox x:Name="Monitor" 
-                     Grid.Row="5"
-                     Grid.ColumnSpan="3"
+                     Grid.Row="7"
+                     Grid.ColumnSpan="6"
                      Margin="1"
                      BorderThickness="0"/>
         </Grid>

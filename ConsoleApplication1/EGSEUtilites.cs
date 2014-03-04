@@ -441,7 +441,7 @@ namespace EGSE.Utilites
                 return null;
             }
 
-            string[] hexValuesSplit = hexStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] hexValuesSplit = hexStr.Split(new string[] { " ", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             byte[] outBuf = new byte[hexValuesSplit.Length];
             int i = 0;
             foreach (string hex in hexValuesSplit)
@@ -769,6 +769,22 @@ namespace EGSE.Utilites
         private static extern long WritePrivateProfileString(string section, string key, string value, string filePath);
         [DllImport("kernel32")]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+    }
+
+    public class AutoCounter
+    {
+        private short _counter = 0;
+        public short Counter
+        {
+            get
+            {
+                return _counter++;
+            }
+        }
+        public static implicit operator short(AutoCounter obj)
+        {
+            return obj.Counter;
+        }
     }
 
     /// <summary>

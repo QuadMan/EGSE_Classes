@@ -24,6 +24,7 @@ namespace EGSE.Devices
     using EGSE.Protocols;
     using EGSE.USB;
     using EGSE.Utilites;
+    using Microsoft.Win32;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -114,7 +115,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Адресный байт "Управление обменом с приборами по SPTP".
         /// </summary>
-        private const int SpaceWire2SPTPControlAddr = 0x0B;
+        private const int Spacewire2SPTPControlAddr = 0x0B;
 
         /// <summary>
         /// Адресный байт "Управление".
@@ -518,7 +519,7 @@ namespace EGSE.Devices
         /// <param name="value">Параметры управления SPTP.</param>
         public void CmdSpacewire2SPTPControl(int value)
         {
-            SendToUSB(SpaceWire2SPTPControlAddr, new byte[1] { (byte)value }); 
+            SendToUSB(Spacewire2SPTPControlAddr, new byte[1] { (byte)value }); 
         }
 
         /// <summary>
@@ -604,13 +605,20 @@ namespace EGSE.Devices
         /// </summary>
         /// <param name="value">Данные для записи.</param>
         public void CmdSpacewire2Record(int value)
-        {          
+        {
+            SendToUSB(Spacewire2RecordFlushAddr, new byte[1] { 1 });
             if ((null != _intfBUK.Spacewire2Notify.Data) && (0 < _intfBUK.Spacewire2Notify.Data.Length))
             {
-                SendToUSB(Spacewire2RecordFlushAddr, new byte[1] { 1 });
-                SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data);
-                SendToUSB(Spacewire2RecordSendAddr, new byte[1] { (byte)value });
-            }            
+                if (_intfBUK.Spacewire2Notify.IsMakeTK)
+                {
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk(_intfBUK.Spacewire2Notify.CurApid, _intfBUK.Spacewire2Notify.CounterIcd).ToArray());
+                }
+                else
+                {
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data);
+                }
+            }
+            SendToUSB(Spacewire2RecordSendAddr, new byte[1] { (byte)value });
         }
 
         /// <summary>
@@ -876,10 +884,14 @@ namespace EGSE.Devices
             
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = e.Data[0]; });
+            _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime2 = e.Data[0]; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBusk.OnMessageFunc);
 
             _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = e.Data[0]; });
+            _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.Data[0]; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
 
             _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2);
@@ -961,6 +973,14 @@ namespace EGSE.Devices
         /// Получает или задает доступ к USB прибора.
         /// </summary>
         public EgseBuk Device { get; set; }
+
+        public int BytesAvailable
+        {
+            get
+            {
+                return Device.BytesAvailable;
+            }
+        }
 
         /// <summary>
         /// Получает значение, показывающее, что [подключен прибор].
@@ -1427,6 +1447,7 @@ namespace EGSE.Devices
                         FirePropertyChangedEvent(null, @"DeviceTime");
                         FirePropertyChangedEvent(null, @"DeviceSpeed");
                         FirePropertyChangedEvent(null, @"DeviceTrafic");
+                        FirePropertyChangedEvent(null, @"BytesAvailable");                        
                         ControlValuesList[Global.Spacewire2.Control].UsbValue = msg.Data[7];
                         ControlValuesList[Global.Spacewire2.Record].UsbValue = msg.Data[10]; 
                         ControlValuesList[Global.Spacewire2.SPTPLogicBusk].UsbValue = msg.Data[11];
@@ -1441,9 +1462,7 @@ namespace EGSE.Devices
                         ControlValuesList[Global.Spacewire1.SPTPLogicSD1].UsbValue = msg.Data[23];
                         ControlValuesList[Global.Spacewire1.SPTPLogicSD2].UsbValue = msg.Data[24];
                         ControlValuesList[Global.Spacewire1.SD1SendTime].UsbValue = (msg.Data[26] << 8) | msg.Data[25];
-                        ControlValuesList[Global.Spacewire1.SD2SendTime].UsbValue = (msg.Data[28] << 8) | msg.Data[27];
-                        ////ControlValuesList[Global.Spacewire1.SD1DataSize].UsbValue = (msg.Data[30] << 8) | msg.Data[29]; // XXX
-                        ////ControlValuesList[Global.Spacewire1.SD2DataSize].UsbValue = (msg.Data[32] << 8) | msg.Data[31]; // XXX
+                        ControlValuesList[Global.Spacewire1.SD1DataSize].UsbValue = (msg.Data[28] << 8) | msg.Data[27]; 
                         ControlValuesList[Global.Spacewire4.Control].UsbValue = msg.Data[29];
                         ControlValuesList[Global.Spacewire4.Record].UsbValue = msg.Data[32];
                         break;
@@ -3420,52 +3439,32 @@ namespace EGSE.Devices
             /// <summary>
             /// Запись данных(до 1 Кбайт): Выдача посылки RMAP (самосбр.).
             /// </summary>
-            private bool _isSendRMAP;
+            private bool _isIssueRMap;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): 1 – выдача посылки в прибор БС (самосбр.).
             /// </summary>
-            private bool _isSendBuk;
-
-            /// <summary>
-            /// Запись данных(до 1 Кбайт): 1 – выдача посылки в прибор БКП (самосбр.).
-            /// </summary>
-            private bool _isSendBkp;
+            private bool _isIssuePackage;
 
             /// <summary>
             /// Управление обменом с приборами по SPTP: включить выдачу секундных меток (1PPS).
             /// </summary>
-            private bool _isTimeMark;
+            private bool _isIssueTimeMark;
 
             /// <summary>
             /// Управление обменом с приборами по SPTP: включение обмена прибора БС.
             /// </summary>
-            private bool _isBukTrans;
-
-            /// <summary>
-            /// Управление обменом с приборами по SPTP: включение обмена прибора БКП.
-            /// </summary>
-            private bool _isBkpTrans;
+            private bool _isIssueTrans;
 
             /// <summary>
             /// Управление обменом с приборами по SPTP: можно выдавать пакет в БС.
             /// </summary>
-            private bool _isBukTransData;
-
-            /// <summary>
-            /// Управление обменом с приборами по SPTP: можно выдавать пакет в БКП.
-            /// </summary>
-            private bool _isBkpTransData;
+            private bool _isTransData;
 
             /// <summary>
             /// Управление обменом с приборами по SPTP: выдача КБВ прибору БС (только при «1 PPS» == 1).
             /// </summary>
-            private bool _isBukKbv;
-
-            /// <summary>
-            /// Управление обменом с приборами по SPTP: выдача КБВ прибору БКП (только при «1 PPS» == 1).
-            /// </summary>
-            private bool _isBkpKbv;
+            private bool _isIssueKbv;
 
             /// <summary>
             /// Управление: Выбор канала.
@@ -3475,7 +3474,22 @@ namespace EGSE.Devices
             private long _replyQueueFromBuk;
             private long _requestQueueFromBuk;
             private long _codeOnboardTime;
-            private int _curApid;
+            private byte _curApid;
+            private byte _buskTickTime1;
+            private byte _buskTickTime2;
+            private byte _bukTickTime1;
+            private byte _bukTickTime2;
+
+            private bool _isMakeTK;
+
+            private ICommand _issuePackageCommand;
+            private ICommand _issueRMapCommand;            
+            private ICommand _issueMakeTKCommand;
+            private ICommand _fromFileCommand;
+            private ICommand _issueTimeMarkCommand;
+            private ICommand _enableCommand;
+            private ICommand _issueTransCommand;
+            private ICommand _issueKbvCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
@@ -3484,6 +3498,7 @@ namespace EGSE.Devices
             public Spacewire2(EgseBukNotify owner)
                 : base(owner)
             {
+                CounterIcd = new Dictionary<byte, AutoCounter>();
             }
 
             /// <summary>
@@ -3585,6 +3600,64 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent();
                 }
             }
+
+            public byte BuskTickTime1 
+            {
+                get
+                {
+                    return _buskTickTime1;
+                }
+
+                set
+                {
+                    _buskTickTime1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte BuskTickTime2
+            {
+                get
+                {
+                    return _buskTickTime2;
+                }
+
+                set
+                {
+                    _buskTickTime2 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte BukTickTime1
+            {
+                get
+                {
+                    return _bukTickTime1;
+                }
+
+                set
+                {
+                    _bukTickTime1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte BukTickTime2
+            {
+                get
+                {
+                    return _bukTickTime2;
+                }
+
+                set
+                {
+                    _bukTickTime2 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public Dictionary<byte, AutoCounter> CounterIcd { get; set; }
 
             /// <summary>
             /// Получает значение, показывающее, что [выбран первый полукомплект БУК].
@@ -3861,6 +3934,24 @@ namespace EGSE.Devices
             }
 
             /// <summary>
+            /// Получает команду на включение интерфейса spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на включение интерфейса spacewire.
+            /// </value>
+            public ICommand EnableCommand
+            {
+                get
+                {
+                    if (null == _enableCommand)
+                    {
+                        _enableCommand = new RelayCommand(obj => { IsEnable = !IsEnable; }, obj => { return true; });
+                    }
+
+                    return _enableCommand;
+                }
+            }
+            /// <summary>
             /// Получает или задает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
             /// </summary>
             /// <value>
@@ -3887,20 +3978,108 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [Бит отправки RMAP посылки - 1]; иначе, <c>false</c>.
             /// </value>
-            public bool IsSendRMAP
+            public bool IsIssueRMap
             {
                 get
                 {
-                    return _isSendRMAP;
+                    return _isIssueRMap;
                 }
 
                 set
                 {
-                    _isSendRMAP = value;
-                    ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.SendRMAP, Convert.ToInt32(value));
+                    _isIssueRMap = value;                    
                     FirePropertyChangedEvent();
                 }
             }
+
+            /// <summary>
+            /// Получает команду на выдачу посылки RMAP по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на выдачу посылки RMAP по интерфейсу spacewire.
+            /// </value>
+            public ICommand IssueRMapCommand
+            {
+                get
+                {
+                    if (_issueRMapCommand == null)
+                    {
+                        _issueRMapCommand = new RelayCommand(obj => { IsIssueRMap = true; ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.IssueRMap, 1); }, obj => { return !IsRecordBusy; });
+                    }
+
+                    return _issueRMapCommand;
+                }
+            }
+
+            public ICommand FromFileCommand
+            {
+                get
+                {
+                    if (_fromFileCommand == null)
+                    {
+                        _fromFileCommand = new RelayCommand(OpenFromFile, obj => { return true; });
+                    }
+
+                    return _fromFileCommand;
+                }
+            }
+
+            public void OpenFromFile(object obj)
+            {
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.DefaultExt = ".dat";
+                dlg.Filter = "Bin data (.dat)|*.dat|All files (*.*)|*.*"; 
+
+                Nullable<bool> result = dlg.ShowDialog();
+
+                if (result == true)
+                {
+                    Data = File.ReadAllBytes(dlg.FileName);
+                    FirePropertyChangedEvent("Data");
+                }                
+            }
+
+            public bool IsRecordBusy
+            {
+                get
+                {
+                    return IsIssueRMap || IsIssuePackage;
+                }
+            }
+
+            public bool IsMakeTK
+            {
+                get
+                {
+                    return _isMakeTK;
+                }
+
+                set
+                {
+                    _isMakeTK = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает команду на формирование посылки телекоманды по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на формирование посылки телекоманды по интерфейсу spacewire.
+            /// </value>
+            public ICommand IssueMakeTKCommand
+            {
+                get
+                {
+                    if (_issueMakeTKCommand == null)
+                    {
+                        _issueMakeTKCommand = new RelayCommand(obj => { IsMakeTK = !IsMakeTK; }, obj => { return true; });
+                    }
+
+                    return _issueMakeTKCommand;
+                }
+            }
+            
 
             /// <summary>
             /// Получает или задает значение, показывающее, что [Бит отправки посылки в БУК - 1].
@@ -3908,39 +4087,36 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [Бит отправки посылки в БУК - 1]; иначе, <c>false</c>.
             /// </value>
-            public bool IsSendBuk
+            public bool IsIssuePackage
             {
                 get
                 {
-                    return _isSendBuk;
+                    return _isIssuePackage;
                 }
 
                 set
                 {
-                    _isSendBuk = value;
-                    ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.SendBuk, Convert.ToInt32(value));
+                    _isIssuePackage = value;                    
                     FirePropertyChangedEvent();
                 }
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Бит отправки посылки в БКП - 1].
+            /// Получает команду на выдачу посылки по интерфейсу spacewire.
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [Бит отправки посылки в БКП - 1]; иначе, <c>false</c>.
+            /// Команда на выдачу посылки по интерфейсу spacewire.
             /// </value>
-            public bool IsSendBkp
+            public ICommand IssuePackageCommand
             {
                 get
                 {
-                    return _isSendBkp;
-                }
+                    if (_issuePackageCommand == null)
+                    {
+                        _issuePackageCommand = new RelayCommand(obj => { IsIssuePackage = true; ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.IssuePackage, 1); }, obj => { return !IsRecordBusy; });
+                    }
 
-                set
-                {
-                    _isSendBkp = value;
-                    ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.SendBkp, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    return _issuePackageCommand;
                 }
             }
 
@@ -3950,18 +4126,37 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [выдаются метки времени приборам]; иначе, <c>false</c>.
             /// </value>
-            public bool IsTimeMark
+            public bool IsIssueTimeMark
             {
                 get
                 {
-                    return _isTimeMark;
+                    return _isIssueTimeMark;
                 }
 
                 set
                 {
-                    _isTimeMark = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.TimeMark, Convert.ToInt32(value));
+                    _isIssueTimeMark = value;
+                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueTimeMark, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает команду на включение передачи метки времени по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на включение передачи метки времени по интерфейсу spacewire.
+            /// </value>
+            public ICommand IssueTimeMarkCommand
+            {
+                get
+                {
+                    if (_issueTimeMarkCommand == null)
+                    {
+                        _issueTimeMarkCommand = new RelayCommand(obj => { IsIssueTimeMark = !IsIssueTimeMark; }, obj => { return true; });
+                    }
+
+                    return _issueTimeMarkCommand;
                 }
             }
 
@@ -3971,39 +4166,31 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [включен обмен для прибора БУК]; иначе, <c>false</c>.
             /// </value>
-            public bool IsBukTrans
+            public bool IsIssueTrans
             {
                 get
                 {
-                    return _isBukTrans;
+                    return _isIssueTrans;
                 }
 
                 set
                 {
-                    _isBukTrans = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BukTrans, Convert.ToInt32(value));
+                    _isIssueTrans = value;
+                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueTrans, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
 
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [включен обмен для прибора БКП].
-            /// </summary>
-            /// <value>
-            /// <c>true</c> если [включен обмен для прибора БКП]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsBkpTrans
+            public ICommand IssueTransCommand
             {
                 get
                 {
-                    return _isBkpTrans;
-                }
+                    if (_issueTransCommand == null)
+                    {
+                        _issueTransCommand = new RelayCommand(obj => { IsIssueTrans = !IsIssueTrans; }, obj => { return true; });
+                    }
 
-                set
-                {
-                    _isBkpTrans = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BkpTrans, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    return _issueTransCommand;
                 }
             }
 
@@ -4013,80 +4200,51 @@ namespace EGSE.Devices
             /// <value>
             /// <c>true</c> если [выдается КБВ для прибора БУК]; иначе, <c>false</c>.
             /// </value>
-            public bool IsBukKbv
+            public bool IsIssueKbv
             {
                 get
                 {
-                    return _isBukKbv;
+                    return _isIssueKbv;
                 }
 
                 set
                 {
-                    _isBukKbv = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BukKbv, Convert.ToInt32(value));
+                    _isIssueKbv = value;
+                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueKbv, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
 
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [выдается КБВ для прибора БКП].
-            /// </summary>
-            /// <value>
-            /// <c>true</c> если [выдается КБВ для прибора БКП]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsBkpKbv
+            public ICommand IssueKbvCommand
             {
                 get
                 {
-                    return _isBkpKbv;
-                }
+                    if (_issueKbvCommand == null)
+                    {
+                        _issueKbvCommand = new RelayCommand(obj => { IsIssueKbv = !IsIssueKbv; }, obj => { return true; });
+                    }
 
-                set
-                {
-                    _isBkpKbv = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BkpKbv, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    return _issueKbvCommand;
                 }
             }
-
+            
             /// <summary>
             /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в БУК].
             /// </summary>
             /// <value>
             /// <c>true</c> если [можно выдавать пакеты данных в БУК]; иначе, <c>false</c>.
             /// </value>
-            public bool IsBukTransData
+            public bool IsTransData
             {
                 get
                 {
-                    return _isBukTransData;
+                    return _isTransData;
                 }
 
                 set
                 {
-                    _isBukTransData = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BukTransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в БКП].
-            /// </summary>
-            /// <value>
-            /// <c>true</c> если [можно выдавать пакеты данных в БКП]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsBkpTransData
-            {
-                get
-                {
-                    return _isBkpTransData;
-                }
-
-                set
-                {
-                    _isBkpTransData = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.BkpTransData, Convert.ToInt32(value));
+                    _isTransData = value;
+                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.TransData, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -4097,7 +4255,7 @@ namespace EGSE.Devices
             /// <value>
             /// Текущий APID для формирования посылки.
             /// </value>
-            public int CurApid
+            public byte CurApid
             {
                 get
                 {
@@ -4170,19 +4328,15 @@ namespace EGSE.Devices
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Channel, 1, 2, Device.CmdSpacewire2Control, value => IssueSpacewireChannel = (SpacewireChannel)value);
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Enable, 0, 1, Device.CmdSpacewire2Control, value => IsEnable = 1 == value);
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value);
-                ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendRMAP, 0, 1, Device.CmdSpacewire2Record, value => IsSendRMAP = 1 == value);
-                ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendBuk, 1, 1, Device.CmdSpacewire2Record, value => IsSendBuk = 1 == value);
-                ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.SendBkp, 2, 1, Device.CmdSpacewire2Record, value => IsSendBkp = 1 == value);
+                ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.IssueRMap, 0, 1, Device.CmdSpacewire2Record, value => IsIssueRMap = 1 == value);
+                ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.IssuePackage, 1, 1, Device.CmdSpacewire2Record, value => IsIssuePackage = 1 == value);
                 ControlValuesList[Global.Spacewire2.SPTPLogicBusk].AddProperty(Global.Spacewire2.SPTPLogicBusk, 0, 8, Device.CmdSpacewire2LogicBusk, value => LogicBusk = value);
                 ControlValuesList[Global.Spacewire2.SPTPLogicBuk].AddProperty(Global.Spacewire2.SPTPLogicBuk, 0, 8, Device.CmdSpacewire2LogicBuk, value => LogicBuk = value);
                 ControlValuesList[Global.Spacewire2.SPTPLogicBkp].AddProperty(Global.Spacewire2.SPTPLogicBkp, 0, 8, delegate { }, value => LogicBkp = value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.TimeMark, 0, 1, Device.CmdSpacewire2SPTPControl, value => IsTimeMark = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.BukTrans, 1, 1, Device.CmdSpacewire2SPTPControl, value => IsBukTrans = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.BkpTrans, 4, 1, Device.CmdSpacewire2SPTPControl, value => IsBkpTrans = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.BukKbv, 2, 1, Device.CmdSpacewire2SPTPControl, value => IsBukKbv = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.BkpKbv, 5, 1, Device.CmdSpacewire2SPTPControl, value => IsBkpKbv = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.BukTransData, 3, 1, Device.CmdSpacewire2SPTPControl, value => IsBukTransData = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.BkpTransData, 6, 1, Device.CmdSpacewire2SPTPControl, value => IsBkpTransData = 1 == value);
+                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.IssueTimeMark, 0, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueTimeMark = 1 == value);
+                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.IssueTrans, 1, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueTrans = 1 == value);
+                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.IssueKbv, 2, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueKbv = 1 == value);               
+                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.TransData, 3, 1, Device.CmdSpacewire2SPTPControl, value => IsTransData = 1 == value);
             }
         }
 

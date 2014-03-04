@@ -66,16 +66,16 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="2"  
-            	Tag="{Binding IsEnable, Converter={StaticResource boolToIndexConverter}}"
+            	Tag="{Binding IsEnable, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding EnableCommand}"
             	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="3" 
             	Grid.ColumnSpan="2"
-            	Tag="{Binding IsConnect, Converter={StaticResource boolToIndexConverter}}"     
+            	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="4" 
                 Grid.ColumnSpan="2"
-                Tag="{Binding IsTransmission, Converter={StaticResource boolToIndexConverter}}"   
+                Tag="{Binding IsIssueTransmission, Converter={StaticResource BoolToIndexConverter}}"   
                 Template="{StaticResource FlatLabelTransmission}"/>
         </Grid>
         <Grid Grid.Row="1">

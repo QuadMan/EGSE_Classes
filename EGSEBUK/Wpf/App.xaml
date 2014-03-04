@@ -10,8 +10,7 @@
         <l:EgseTimeToStrConverter x:Key="EgseTimeToStrConverter" />
         <l:DeviceSpeedToStrConverter x:Key="DeviceSpeedToStrConverter" />
         <l:DeviceTraficToStrConverter x:Key="DeviceTraficToStrConverter" />        
-        <l:BoolToIntConverter x:Key="boolToIndexConverter" />
-        <l:BytesToStrConverter x:Key="bytesToStrConverter" />
+        <l:BytesToStrConverter x:Key="BytesToStrConverter" />
         <l:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         <SolidColorBrush x:Key="TextBrush" Color="White"/>
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
@@ -24,7 +23,10 @@
         <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>          
         <FontFamily x:Key="BaseFontFamily">Consolas</FontFamily>
         <s:Double x:Key="BaseFontSize">13</s:Double>
+        <s:Double x:Key="HeaderFontSize">16</s:Double>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
             <Setter Property="Validation.ErrorTemplate">
                 <Setter.Value>
                     <ControlTemplate>
@@ -45,7 +47,7 @@
         </Style>
         <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
                 <Border x:Name="Border" 
-        		Background="{DynamicResource ClickBrush}"
+        		Background="{StaticResource ClickBrush}"
         		Focusable="False" 
         		BorderThickness="0"
         		Margin="1">
@@ -55,19 +57,19 @@
                 </Border>
                 <ControlTemplate.Triggers>
                     <Trigger Property="IsMouseOver" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                        <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
                     </Trigger>
                     <Trigger Property="IsPressed" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
                     </Trigger>
                     <Trigger Property="IsChecked" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
         <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
             <Border x:Name="Border"
-        	Background="{DynamicResource UnSelectBrush}" 
+        	Background="{StaticResource UnSelectBrush}" 
         	Focusable="False" 
         	BorderThickness="0"
         	Margin="1">
@@ -76,27 +78,27 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
                     <Setter Property="Content" Value="ВКЛ"/>
                 </Trigger>
                 <Trigger Property="Tag" Value="false">
                     <Setter Property="Content" Value="ВЫКЛ"/>
                 </Trigger>
                 <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource GrayBrush}"/>
                     <Setter Property="Content" Value="[отключено]"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
         <ControlTemplate x:Key="FlatButtonClick" TargetType="{x:Type Button}">
             <Border x:Name="Border"
-        	Background="{DynamicResource ClickBrush}"   
+        	Background="{StaticResource ClickBrush}"   
         	Focusable="False" 
         	BorderThickness="0"
         	Margin="1">
@@ -105,16 +107,16 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
         <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
             <Border x:Name="Border"
-        	Background="{DynamicResource UnConnectedBrush}"                                          
+        	Background="{StaticResource UnConnectedBrush}"                                          
         	BorderThickness="0"
         	Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
@@ -122,7 +124,7 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource ConnectedBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource ConnectedBrush}"/>
                     <Setter Property="Content" Value="Связь установлена"/>
                 </Trigger>
                 <Trigger Property="Tag" Value="false">
@@ -132,7 +134,7 @@
         </ControlTemplate>
         <ControlTemplate x:Key="FlatLabelCheck" TargetType="{x:Type Label}">
             <Border x:Name="Border"
-        	Background="{DynamicResource UnConnectedBrush}"                                          
+        	Background="{StaticResource UnConnectedBrush}"                                          
         	BorderThickness="0"
         	Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
@@ -140,7 +142,7 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource ConnectedBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource ConnectedBrush}"/>
                     <Setter Property="Content" Value="ВКЛ"/>
                 </Trigger>
                 <Trigger Property="Tag" Value="false">
@@ -150,18 +152,36 @@
         </ControlTemplate>
         <ControlTemplate x:Key="FlatLabel" TargetType="{x:Type Label}">
             <Border x:Name="Border"
-        		Background="{DynamicResource TextBrush}"                                          
+        		Background="{StaticResource TextBrush}"                                          
         		BorderThickness="0"
         		Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
         			VerticalAlignment="Center"
         			Content="{TemplateBinding Content}"/>
             </Border>
-        </ControlTemplate>        
+        </ControlTemplate>
+        <Style x:Key="FlatHeader" TargetType="Label">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="{StaticResource HeaderFontSize}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Border x:Name="Border"
+                                Background="{StaticResource TextBrush}"                                          
+                                BorderThickness="0"                   
+        		                Margin="1">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding Content}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <ControlTemplate x:Key="DataSendInError" TargetType="{x:Type TextBox}">
             <Border x:Name="Border"
                 Margin="1"
-                Background="{DynamicResource TextBrush}"
+                Background="{StaticResource TextBrush}"
                 BorderThickness="0">
                 <Grid>
                     <ScrollViewer x:Name="PART_ContentHost"/>
@@ -180,7 +200,7 @@
         </ControlTemplate>            
         <ControlTemplate x:Key="FlatLabelTransmission" TargetType="{x:Type Label}">
             <Border x:Name="Border"
-                        Background="{DynamicResource UnConnectedBrush}"                                          
+                        Background="{StaticResource UnConnectedBrush}"                                          
                         BorderThickness="0"
                         Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
@@ -188,7 +208,7 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="Tag" Value="true">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource ConnectedBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource ConnectedBrush}"/>
                     <Setter Property="Content" Value="Кадры передаются"/>
                 </Trigger>
                 <Trigger Property="Tag" Value="false">
@@ -199,7 +219,7 @@
         <ControlTemplate x:Key="NumberInError" TargetType="{x:Type TextBox}">
             <Border x:Name="Border"
                 Margin="1"
-                Background="{DynamicResource TextBrush}"
+                Background="{StaticResource TextBrush}"
                 BorderThickness="0">
                 <Grid>
                     <ScrollViewer x:Name="PART_ContentHost"/>
@@ -218,7 +238,7 @@
         </ControlTemplate>
         <ControlTemplate x:Key="FlatButtonClickBusy" TargetType="{x:Type Button}">
             <Border x:Name="Border"
-                        Background="{DynamicResource ClickBrush}"   
+                        Background="{StaticResource ClickBrush}"   
                         Focusable="True" 
                         BorderThickness="0" 
                         Margin="1">
@@ -229,14 +249,14 @@
             </Border>
             <ControlTemplate.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource GrayBrush}"/>
                     <Setter TargetName="ContentPresenter" Property="Content" Value="Нельзя передать посылку (занят)"/>
                 </Trigger>                
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource OverBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
                 </Trigger>
                 <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectBrush}"/>
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>

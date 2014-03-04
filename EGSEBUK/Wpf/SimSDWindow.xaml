@@ -33,19 +33,19 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="1"    
-            	Tag="{Binding IsEnable, Converter={StaticResource boolToIndexConverter}}"
+            	Tag="{Binding IsEnable, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding EnableCommand}"
             	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="2" 
             	Grid.ColumnSpan="2"
-            	Tag="{Binding IsConnect, Converter={StaticResource boolToIndexConverter}}"     
+            	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="3" 
             	Content="Выдавать секундные метки"
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
     			Grid.Row="3"    
-    			Tag="{Binding IsIssueTimeMark, Converter={StaticResource boolToIndexConverter}}"
+    			Tag="{Binding IsIssueTimeMark, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueTimeMarkCommand}"
     			Template="{StaticResource FlatButtonCheck}"/>
         </Grid>
@@ -73,14 +73,14 @@
     			Grid.ColumnSpan="3"
     			Template="{StaticResource DataSendInError}"
     			Style="{StaticResource TextBoxInError}"
-    			Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+    			Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
             <Label Grid.Row="2"   
     			Grid.ColumnSpan="2"	
     			Content="Выдавать ошибку EEP"
     			Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="2"   
     			Grid.Column="2"                         
-    			Tag="{Binding IsIssueEEP, Converter={StaticResource boolToIndexConverter}}"
+    			Tag="{Binding IsIssueEEP, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEEPCommand}"
     			Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="3"   
@@ -89,7 +89,7 @@
     			Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="3"   
     			Grid.Column="2"                         
-    			Tag="{Binding IsIssueEOP, Converter={StaticResource boolToIndexConverter}}"
+    			Tag="{Binding IsIssueEOP, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEOPCommand}"
     			Template="{StaticResource FlatButtonCheck}"/>
             <Button Grid.Row="4"  
@@ -103,7 +103,7 @@
     			Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="5"   
     			Grid.Column="2"                        
-    			Tag="{Binding IsIssueAuto, Converter={StaticResource boolToIndexConverter}}"
+    			Tag="{Binding IsIssueAuto, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueAutoCommand}"
     			Template="{StaticResource FlatButtonCheck}"/>
         </Grid>

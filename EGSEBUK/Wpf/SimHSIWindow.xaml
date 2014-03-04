@@ -63,7 +63,7 @@
             </StackPanel>
             <Button Grid.Row="2" 
                 Grid.Column="2"                                           	                                                           
-            	Tag="{Binding IsRequest, Converter={StaticResource boolToIndexConverter}}"
+            	Tag="{Binding IsRequest, Converter={StaticResource BoolToIndexConverter}}"
             	Template="{StaticResource FlatButtonCheck}"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -87,10 +87,10 @@
         		Grid.ColumnSpan="3"
         		Template="{StaticResource DataSendInError}"
         		Style="{StaticResource TextBoxInError}"
-        		Text="{Binding Data, Converter={StaticResource bytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+        		Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="3"
-        		Tag="{Binding IsRecordSend, Converter={StaticResource boolToIndexConverter}}"
+        		Tag="{Binding IsRecordSend, Converter={StaticResource BoolToIndexConverter}}"
         		Template="{StaticResource FlatButtonClickBusy}"/>
         </Grid>
 

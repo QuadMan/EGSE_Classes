@@ -77,10 +77,16 @@ namespace EGSE.Protocols
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         public delegate void SpacewireMsgEventHandler(object sender, SpacewireSptpMsgEventArgs e);
 
+        public delegate void SpacewireTimeTickMsgEventHandler(object sender, SpacewireTimeTickMsgEventArgs e);
+
         /// <summary>
         /// Происходит, когда [сформировано сообщение spacewire].
         /// </summary>
         public event SpacewireMsgEventHandler GotSpacewireMsg;
+
+        public event SpacewireTimeTickMsgEventHandler GotSpacewireTimeTick1Msg;
+
+        public event SpacewireTimeTickMsgEventHandler GotSpacewireTimeTick2Msg;
 
         /// <summary>
         /// Метод, обрабатывающий сообщения от декодера USB.
@@ -107,10 +113,12 @@ namespace EGSE.Protocols
                 else if (_time1 == msg.Addr)
                 {
                     _currentTime1 = msg.Data[0];
+                    OnTimeTick1Msg(this, new SpacewireTimeTickMsgEventArgs(_currentTime1));
                 }
                 else if (_time2 == msg.Addr)
                 {
                     _currentTime2 = msg.Data[0];
+                    OnTimeTick2Msg(this, new SpacewireTimeTickMsgEventArgs(_currentTime2));
                 }
             }
         }
@@ -125,6 +133,22 @@ namespace EGSE.Protocols
             if (this.GotSpacewireMsg != null)
             {
                 this.GotSpacewireMsg(sender, e);
+            }
+        }
+
+        protected virtual void OnTimeTick1Msg(object sender, SpacewireTimeTickMsgEventArgs e)
+        {
+            if (this.GotSpacewireTimeTick1Msg != null)
+            {
+                this.GotSpacewireTimeTick1Msg(sender, e);
+            }
+        }
+
+        protected virtual void OnTimeTick2Msg(object sender, SpacewireTimeTickMsgEventArgs e)
+        {
+            if (this.GotSpacewireTimeTick2Msg != null)
+            {
+                this.GotSpacewireTimeTick2Msg(sender, e);
             }
         }
     }
