@@ -133,21 +133,21 @@
     <value>{0} ({1}, на позиции: {2})</value>
   </data>
   <data name="stShowLogicBkp" xml:space="preserve">
-    <value>БКП (адрес: {0})</value>
+    <value>БКП (адрес: {0}h)</value>
   </data>
   <data name="stShowLogicBuk" xml:space="preserve">
-    <value>БУК (адрес: {0})</value>
+    <value>БУК (адрес: {0}h)</value>
   </data>
   <data name="stShowSimLogicBusk" xml:space="preserve">
-    <value>Имитатор НП (адрес: {0})</value>
+    <value>БУСК (адрес: {0}h)</value>
   </data>
   <data name="stShowSimLogicSD1" xml:space="preserve">
-    <value>НП1 (адрес: {0})</value>
+    <value>БУК (адрес: {0}h)</value>
   </data>
   <data name="stShowSimLogicSD2" xml:space="preserve">
-    <value>НП2 (адрес: {0})</value>
+    <value>НП2 (адрес: {0}h)</value>
   </data>
   <data name="stShowLogicBusk" xml:space="preserve">
-    <value>Имитатор БУСК (адрес: {0})</value>
+    <value>Имитатор БУСК (адрес: {0}h)</value>
   </data>
 </root>

@@ -68,6 +68,13 @@ namespace EGSE.Protocols
             Array.Copy(obj, buf, buf.Length);
             return new SpacewireTkMsgEventArgs(apid, dict, buf);
         }
+
+        public static SpacewireSptpMsgEventArgs ToSptp(this Array obj, byte to, byte from)
+        {
+            byte[] buf = new byte[obj.Length];
+            Array.Copy(obj, buf, buf.Length);
+            return new SpacewireSptpMsgEventArgs(buf, to, from);
+        }
     }
 
     /// <summary>
@@ -157,10 +164,18 @@ namespace EGSE.Protocols
             MsgType = Type.Data;
             To = 0x00;
             From = 0x00;
-            ProtocolID = 0x00;
+            ProtocolID = 0xF2;
             Error = 0x00;
             Time1 = 0x00;
             Time2 = 0x00;
+        }
+
+        public SpacewireSptpMsgEventArgs(byte[] data, byte to, byte from)
+            : this(data)
+        {
+            MsgType = Type.Data;
+            To = to;
+            From = from;
         }
 
         /// <summary>
@@ -284,7 +299,13 @@ namespace EGSE.Protocols
 
         public override byte[] ToArray()
         {
-            throw new NotImplementedException();
+            byte[] buf = new byte[DataLen + 4];
+            buf[0] = (byte)To;
+            buf[1] = (byte)ProtocolID;
+            buf[2] = (byte)MsgType;
+            buf[3] = (byte)From;
+            Array.Copy(Data, 0, buf, 4, Data.Length);
+            return buf;
         }
     }
 

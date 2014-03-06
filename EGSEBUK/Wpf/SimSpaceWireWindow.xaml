@@ -11,7 +11,7 @@
 		Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="0"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
@@ -22,7 +22,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="0"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -79,15 +79,15 @@
 			    Text="{Binding SD1SendTime}"/>
             <Label Grid.Row="7"
             	Content="Количество байт в пакете данных"
-            	Template="{StaticResource FlatLabel}"/>
+            	Template="{StaticResource FlatLabel}" Visibility="Hidden"/>
             <TextBox Grid.Column="1"                               
             	Grid.Row="7"  
             	Grid.ColumnSpan="2"
             	Template="{StaticResource NumberInError}"
             	Style="{StaticResource TextBoxInError}"
-            	Text="{Binding SD1DataSize}"/>
+            	Text="{Binding SD1DataSize}" Visibility="Hidden"/>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition />
@@ -111,9 +111,9 @@
         		Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="3"
-        		Tag="{Binding IsRecordBusy, Converter={StaticResource BoolToIndexConverter}}"
                 Content="Передать посылку"
-        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click_10"/>
+                Command="{Binding IssuePackageCommand}"
+        		Template="{StaticResource FlatButtonClickBusy}"/>
         </Grid>
     </Grid>
 </Window>

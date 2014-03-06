@@ -467,7 +467,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Бит выдачи посылки].
                 /// </summary>
-                public readonly string Send = "08283fd972724eaea196ca125fd1f0d4";
+                public readonly string IssuePackage = "08283fd972724eaea196ca125fd1f0d4";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 

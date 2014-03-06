@@ -106,7 +106,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to БКП (адрес: {0}).
+        ///   Looks up a localized string similar to БКП (адрес: {0}h).
         /// </summary>
         internal static string stShowLogicBkp {
             get {
@@ -115,7 +115,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to БУК (адрес: {0}).
+        ///   Looks up a localized string similar to БУК (адрес: {0}h).
         /// </summary>
         internal static string stShowLogicBuk {
             get {
@@ -124,7 +124,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Имитатор БУСК (адрес: {0}).
+        ///   Looks up a localized string similar to Имитатор БУСК (адрес: {0}h).
         /// </summary>
         internal static string stShowLogicBusk {
             get {
@@ -133,7 +133,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Имитатор НП (адрес: {0}).
+        ///   Looks up a localized string similar to БУСК (адрес: {0}h).
         /// </summary>
         internal static string stShowSimLogicBusk {
             get {
@@ -142,7 +142,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to НП1 (адрес: {0}).
+        ///   Looks up a localized string similar to БУК (адрес: {0}h).
         /// </summary>
         internal static string stShowSimLogicSD1 {
             get {
@@ -151,7 +151,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to НП2 (адрес: {0}).
+        ///   Looks up a localized string similar to НП2 (адрес: {0}h).
         /// </summary>
         internal static string stShowSimLogicSD2 {
             get {

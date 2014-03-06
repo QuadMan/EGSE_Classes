@@ -114,18 +114,5 @@ namespace EGSE.Defaults
         {
             _intfEGSE.Spacewire1Notify.IsEnable = !_intfEGSE.Spacewire1Notify.IsEnable;
         }      
-
-        /// <summary>
-        /// Handles the 10 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_10(object sender, RoutedEventArgs e)
-        {
-            if ("false" == (string)(sender as Button).Tag)
-            {
-                _intfEGSE.Spacewire1Notify.IsRecordSend = true;
-            }
-        }
     }
 }

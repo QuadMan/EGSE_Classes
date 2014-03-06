@@ -170,7 +170,7 @@ namespace EGSE.Devices
         /// <summary>
         /// Адресный байт "Сброс адреса записи данных".
         /// </summary>
-        private const int Spacewire1RecordFlushAddr = 0x12;
+        private const int Spacewire1RecordFlushAddr = 0x13;
 
         /// <summary>
         /// Адресный байт "Запись данных".
@@ -591,13 +591,13 @@ namespace EGSE.Devices
         /// </summary>
         /// <param name="value">Данные для записи.</param>
         public void CmdSpacewire1Record(int value)
-        {                       
+        {
+            SendToUSB(Spacewire1RecordFlushAddr, new byte[1] { 1 });        
             if ((null != _intfBUK.Spacewire1Notify.Data) && (0 < _intfBUK.Spacewire1Notify.Data.Length))
-            {
-                SendToUSB(Spacewire1RecordFlushAddr, new byte[1] { 1 });
-                SendToUSB(Spacewire1RecordDataAddr, _intfBUK.Spacewire1Notify.Data);
-                SendToUSB(Spacewire1RecordSendAddr, new byte[1] { (byte)value });
-            }            
+            {               
+                SendToUSB(Spacewire1RecordDataAddr, _intfBUK.Spacewire1Notify.Data);                
+            }
+            SendToUSB(Spacewire1RecordSendAddr, new byte[1] { (byte)value });
         }
 
         /// <summary>
@@ -611,11 +611,11 @@ namespace EGSE.Devices
             {
                 if (_intfBUK.Spacewire2Notify.IsMakeTK)
                 {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk(_intfBUK.Spacewire2Notify.CurApid, _intfBUK.Spacewire2Notify.CounterIcd).ToArray());
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk(_intfBUK.Spacewire2Notify.CurApid, _intfBUK.Spacewire2Notify.CounterIcd).ToArray().ToSptp((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk).ToArray());
                 }
                 else
                 {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data);
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToSptp((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk).ToArray());
                 }
             }
             SendToUSB(Spacewire2RecordSendAddr, new byte[1] { (byte)value });
@@ -2909,6 +2909,7 @@ namespace EGSE.Devices
             /// </summary>
             private bool _isRecordSend;
             private ICommand _enableCommand;
+            private ICommand _issuePackageCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire1" />.
@@ -2937,7 +2938,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowSimLogicBusk"), LogicBusk);
+                    return string.Format(Resource.Get(@"stShowSimLogicBusk"), LogicBusk.ToString("X2"));
                 }
 
                 private set
@@ -2978,7 +2979,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowSimLogicSD1"), LogicSD1);
+                    return string.Format(Resource.Get(@"stShowSimLogicSD1"), LogicSD1.ToString("X2"));
                 }
 
                 private set
@@ -3019,7 +3020,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowSimLogicSD2"), LogicSD2);
+                    return string.Format(Resource.Get(@"stShowSimLogicSD2"), LogicSD2.ToString("X2"));
                 }
 
                 private set
@@ -3290,7 +3291,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return _isRecordBusy || IsRecordSend;
+                    return _isRecordBusy || IsIssuePackage;
                 }
 
                 set
@@ -3306,7 +3307,7 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [Бит выдачи посылки - 1]; иначе, <c>false</c>.
             /// </value>
-            public bool IsRecordSend
+            public bool IsIssuePackage
             {
                 get
                 {
@@ -3316,8 +3317,26 @@ namespace EGSE.Devices
                 set
                 {
                     _isRecordSend = value;
-                    ControlValuesList[Global.Spacewire1.Record].SetProperty(Global.Spacewire1.Record.Send, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает команду на выдачу посылки по интерфейсу spacewire.
+            /// </summary>
+            /// <value>
+            /// Команда на выдачу посылки по интерфейсу spacewire.
+            /// </value>
+            public ICommand IssuePackageCommand
+            {
+                get
+                {
+                    if (_issuePackageCommand == null)
+                    {
+                        _issuePackageCommand = new RelayCommand(obj => { IsIssuePackage = true; ControlValuesList[Global.Spacewire1.Record].SetProperty(Global.Spacewire1.Record.IssuePackage, 1); }, obj => { return !IsRecordBusy; });
+                    }
+
+                    return _issuePackageCommand;
                 }
             }
 
@@ -3397,7 +3416,7 @@ namespace EGSE.Devices
                 ControlValuesList[Global.Spacewire1.SD1DataSize].AddProperty(Global.Spacewire1.SD1DataSize, 0, 16, Device.CmdSpacewire1SPTPControlSD1DataSize, value => SD1DataSize = value);
                 ControlValuesList[Global.Spacewire1.SD2DataSize].AddProperty(Global.Spacewire1.SD2DataSize, 0, 16, Device.CmdSpacewire1SPTPControlSD2DataSize, value => SD2DataSize = value);
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.Busy, 3, 1, delegate { }, value => IsRecordBusy = 1 == value);
-                ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.Send, 0, 1, Device.CmdSpacewire1Record, value => IsRecordSend = 1 == value);
+                ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.IssuePackage, 0, 1, Device.CmdSpacewire1Record, value => IsIssuePackage = 1 == value);
             }
         }
 
@@ -3799,7 +3818,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowLogicBusk"), LogicBusk);
+                    return string.Format(Resource.Get(@"stShowLogicBusk"), LogicBusk.ToString("X2"));
                 }
 
                 private set
@@ -3840,7 +3859,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowLogicBuk"), LogicBuk);
+                    return string.Format(Resource.Get(@"stShowLogicBuk"), LogicBuk.ToString("X2"));
                 }
 
                 private set
@@ -3881,7 +3900,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowLogicBkp"), LogicBkp);
+                    return string.Format(Resource.Get(@"stShowLogicBkp"), LogicBkp.ToString("X2"));
                 }
 
                 private set
