@@ -839,9 +839,23 @@ namespace EGSE.Utilites
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
     }
 
+    /// <summary>
+    /// Для поддержки счетчика последовательности протокола ICD.
+    /// </summary>
     public class AutoCounter
     {
+        /// <summary>
+        /// Счетчик (автоинкременируемый)
+        /// </summary>
         private short _counter = 0;
+        /// <summary>
+        /// Получает [значение счетчика].
+        /// Примечание:
+        /// После считывания автоматически увеличивается на единицу.
+        /// </summary>
+        /// <value>
+        /// [значение счетчика].
+        /// </value>
         public short Counter
         {
             get

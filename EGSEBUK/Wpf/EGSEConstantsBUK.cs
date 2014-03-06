@@ -216,7 +216,7 @@ namespace EGSE.Constants
                 /// <returns>Возвращает строковое представления объекта.</returns>
                 public static implicit operator string(CVLine1StateCounter obj)
                 {
-                    return "bdfde378fe9c4bc9aec31e57bbcc3188";
+                    return "990d7e0b260142478b16edec23c7b831";
                 }
             }
 
@@ -232,7 +232,7 @@ namespace EGSE.Constants
                 /// <returns>Возвращает строковое представления объекта.</returns>
                 public static implicit operator string(CVLine2StateCounter obj)
                 {
-                    return "33e8be5ae11e447aa272b0424bab86b5";
+                    return "d1ca6e9f89734002a6c4fb94f6b32083";
                 }
             }
 
@@ -248,7 +248,7 @@ namespace EGSE.Constants
                 /// <returns>Возвращает строковое представления объекта.</returns>
                 public static implicit operator string(CVLine1FrameCounter obj)
                 {
-                    return "286c652151b0421b810819824660b0b1";
+                    return "b4061364e1df44ae92f1f8ab54f99e24";
                 }
             }
 

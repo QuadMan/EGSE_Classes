@@ -190,16 +190,26 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [версию пакета протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [версия пакета протокола ICD].
+        /// </value>
         public BitVector32.Section VersionNumber
         {
             get
             {
                 return BitVector32.CreateSection(7, TypeId);
             }
-            set
-            { }
         }
 
+        /// <summary>
+        /// Получает [тип протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [тип протокола ICD].
+        /// </value>
         public BitVector32.Section TypeId
         {
             get
@@ -208,6 +218,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [флаг заголовка данных протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [флаг заголовка данных протокола ICD].
+        /// </value>
         public BitVector32.Section Flag
         {
             get
@@ -216,6 +232,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [APID протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [APID протокола ICD].
+        /// </value>
         public BitVector32.Section Apid
         {
             get
@@ -224,6 +246,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [флаги сегментации протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [флаги сегментации протокола ICD].
+        /// </value>
         public BitVector32.Section SegmentFlag
         {
             get
@@ -232,6 +260,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [счетчик последовательности протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [счетчик последовательности протокола ICD].
+        /// </value>
         public BitVector32.Section Counter
         {
             get
@@ -240,10 +274,28 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает или задает [идентификатор пакета протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [идентификатор пакета протокола ICD].
+        /// </value>
         public BitVector32 Id { get; set; }
 
+        /// <summary>
+        /// Получает или задает [поле контроля последовательности протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [поле контроля последовательности протокола ICD].
+        /// </value>
         public BitVector32 Control { get; set; }
 
+        /// <summary>
+        /// Получает или задает [длина поля данных протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [длина поля данных протокола ICD].
+        /// </value>
         public BitVector32 Size { get; set; }
 
         public int ConvertToInt(byte[] array)
@@ -292,10 +344,28 @@ namespace EGSE.Protocols
         {
         }
 
+        /// <summary>
+        /// Получает или задает [поле Р нормальное протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [поле Р нормальное протокола ICD].
+        /// </value>
         public byte FieldPNormal { get; set; }
 
+        /// <summary>
+        /// Получает или задает [поле Р расширенное протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [поле Р расширенное протокола ICD].
+        /// </value>
         public byte FieldPExtended { get; set; }
 
+        /// <summary>
+        /// Получает или задает [поле Т КБВ протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [поле Т КБВ протокола ICD].
+        /// </value>
         public int Kbv { get; set; }
 
         public override byte[] ToArray()
@@ -367,8 +437,20 @@ namespace EGSE.Protocols
             Header = new BitVector32(header);
         }
 
+        /// <summary>
+        /// Получает или задает [заголовок поля данных протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [заголовок поля данных протокола ICD].
+        /// </value>
         public BitVector32 Header { get; set; }
 
+        /// <summary>
+        /// Получает [флаг вторичного заголовка CCSDS протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [флаг вторичного заголовка CCSDS протокола ICD].
+        /// </value>
         public BitVector32.Section Ccsds
         {
             get
@@ -377,6 +459,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [номер версии ТМ-пакета PUS протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [номер версии ТМ-пакета PUS протокола ICD].
+        /// </value>
         public BitVector32.Section Version
         {
             get
@@ -385,6 +473,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [тип квитирования протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [тип квитирования протокола ICD].
+        /// </value>
         public BitVector32.Section Acknowledgment
         {
             get
@@ -393,6 +487,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [тип сервиса протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [тип сервиса протокола ICD].
+        /// </value>
         public BitVector32.Section ServiceType
         {
             get
@@ -401,6 +501,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [подтип сервиса протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [подтип сервиса протокола ICD].
+        /// </value>
         public BitVector32.Section ServiceSubType
         {
             get
@@ -409,6 +515,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [резерв протокола ICD].
+        /// </summary>
+        /// <value>
+        /// [резерв протокола ICD].
+        /// </value>
         public BitVector32.Section Reserve
         {
             get
@@ -417,6 +529,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [CRC для телекоманды].
+        /// </summary>
+        /// <value>
+        /// [CRC для пакета].
+        /// </value>
         public ushort Crc
         {
             get
@@ -425,6 +543,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает [пакет телекоманды без CRC].
+        /// </summary>
+        /// <value>
+        /// [пакет телекоманды без CRC].
+        /// </value>
         public byte[] PackWithoutCrc
         {
             get

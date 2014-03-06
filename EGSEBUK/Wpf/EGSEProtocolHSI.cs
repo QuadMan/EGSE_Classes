@@ -1,4 +1,11 @@
-﻿namespace EGSE.Protocols
+﻿//-----------------------------------------------------------------------
+// <copyright file="EGSEProtocolHsi.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Коробейщиков Иван</author>
+//-----------------------------------------------------------------------
+
+namespace EGSE.Protocols
 {
     using System;
     using System.Collections.Generic;

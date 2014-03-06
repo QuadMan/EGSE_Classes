@@ -67,6 +67,8 @@ namespace EGSE.Utilites
         /// </summary>
         private bool _refreshFlag;
 
+        private bool _hasIndicate = false;
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="ControlValue" />.
         /// </summary>
@@ -97,7 +99,11 @@ namespace EGSE.Utilites
 
             set
             {
-                _usbValue = value;
+                _usbValue = value;   
+                if (_hasIndicate)
+                {
+                    CheckPropertiesForChanging();
+                }
             }
         }
 
@@ -135,6 +141,18 @@ namespace EGSE.Utilites
             }
 
             _dictionaryCV.Add(idx, new CVProperty(bitIdx, bitLen, setUsbEvent, changeEvent));
+            return true;
+        }
+
+        public bool AddProperty(string idx, ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent, bool IsIndicate)
+        {
+            if (_dictionaryCV.ContainsKey(idx) || (bitLen == 0))
+            {
+                return false;
+            }
+
+            _dictionaryCV.Add(idx, new CVProperty(bitIdx, bitLen, setUsbEvent, changeEvent, IsIndicate));
+            _hasIndicate = true;
             return true;
         }
 
@@ -259,16 +277,17 @@ namespace EGSE.Utilites
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="CVProperty" />.
             /// </summary>
-            /// <param name="_bitIdx">Позиция первого бита.</param>
-            /// <param name="_bitLen">Длина свойства(в битах).</param>
-            /// <param name="_setUsbEvent">Делегат, вызывается принеобходимости ищменить свойство.</param>
-            /// <param name="_changeEvent">Если через 2 TickTime значения от USB не совпадают, вызывается этот делегат.</param>
-            public CVProperty(ushort _bitIdx, ushort _bitLen, ControlValueEventHandler _setUsbEvent, ControlValueEventHandler _changeEvent)
+            /// <param name="bitIdx">Позиция первого бита.</param>
+            /// <param name="bitLen">Длина свойства(в битах).</param>
+            /// <param name="setUsbEvent">Делегат, вызывается принеобходимости ищменить свойство.</param>
+            /// <param name="changeEvent">Если через 2 TickTime значения от USB не совпадают, вызывается этот делегат.</param>
+            public CVProperty(ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent, bool indicate = false)
             {
-                BitIdx = _bitIdx;
-                BitLen = _bitLen;
-                SetUsbEvent = _setUsbEvent;
-                ChangeEvent = _changeEvent;
+                BitIdx = bitIdx;
+                BitLen = bitLen;
+                SetUsbEvent = setUsbEvent;
+                ChangeEvent = changeEvent;
+                IsIndicate = indicate;
             }
 
             /// <summary>
@@ -290,6 +309,14 @@ namespace EGSE.Utilites
             /// Получает или задает делегат, вызываемый, когда значения из USB и заданные пользователем несовпадают.
             /// </summary>
             public ControlValueEventHandler ChangeEvent { get; set; }
+
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [свойство индикаторное] (не нуждается в отправке в USB, автоматически обновляется).
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> если [свойство индикаторное]; иначе, <c>false</c>.
+            /// </value>
+            public bool IsIndicate { get; set; }
         }
     }
 }
