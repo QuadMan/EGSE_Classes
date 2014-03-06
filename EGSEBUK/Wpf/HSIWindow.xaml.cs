@@ -21,6 +21,8 @@ namespace EGSE.Defaults
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
     using EGSE.Devices;
+    using EGSE.Utilites;
+    using EGSE.Protocols;
 
     /// <summary>
     /// Interaction logic for HSIWindow.xaml
@@ -47,9 +49,35 @@ namespace EGSE.Defaults
         public void Init(EgseBukNotify intfEGSE)
         {
             _intfEGSE = intfEGSE;
+            _intfEGSE.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
             DataContext = _intfEGSE;
             GridHSI.DataContext = _intfEGSE.HSINotify;
         }
+
+        public void OnHsiMsg(object sender, HsiMsgEventArgs msg)
+        {
+            if (msg != null)
+            {
+                string hsiMsg;
+                if (msg.Data.Length > 30)
+                {
+                    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+                }
+                else
+                {
+                    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                }
+
+                if (null != Monitor && Visibility.Visible == this.Visibility)
+                {
+                    Monitor.Dispatcher.Invoke(new Action(delegate
+                    {
+                        Monitor.Items.Add(hsiMsg);
+                        Monitor.ScrollIntoView(hsiMsg);
+                    }));
+                }
+            }
+        } 
 
         /// <summary>
         /// Handles the Closing event of the Window control.

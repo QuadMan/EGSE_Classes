@@ -1,6 +1,7 @@
 ﻿<Window x:Class="EGSE.Defaults.SimHSIWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
+        xmlns:d="clr-namespace:EGSE.Devices" 
         Title="Имитатор БУК (для ВСИ)"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
@@ -43,11 +44,11 @@
                 <RadioButton Content="Основная" 
             		GroupName="lineHalfSet3"           
             		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding XXX}"/>
+                    IsChecked="{Binding IssueLineIn, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+SimLine.Main}}"/>            		
                 <RadioButton Content="Резервная" 
             		GroupName="lineHalfSet3"
             		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding XXX}"/>
+                    IsChecked="{Binding IssueLineIn, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+SimLine.Resv}}"/>
             </StackPanel>
             <StackPanel Grid.Row="2"
                 Grid.Column="1"                                           	
@@ -55,15 +56,16 @@
                 <RadioButton Content="Основная" 
             		GroupName="lineHalfSet4"
             		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding XXX}"/>
+                    IsChecked="{Binding IssueLineOut, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+SimLine.Main}}"/>
                 <RadioButton Content="Резервная" 
             		GroupName="lineHalfSet4"
             		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding XXX}"/>
+            		IsChecked="{Binding IssueLineOut, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+SimLine.Resv}}"/>
             </StackPanel>
             <Button Grid.Row="2" 
                 Grid.Column="2"                                           	                                                           
-            	Tag="{Binding IsRequest, Converter={StaticResource BoolToIndexConverter}}"
+            	Tag="{Binding IsIssueRequest, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueRequestCommand}"
             	Template="{StaticResource FlatButtonCheck}"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -90,7 +92,9 @@
         		Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="3"
-        		Tag="{Binding IsRecordSend, Converter={StaticResource BoolToIndexConverter}}"
+                Content="Выдать УКС"
+        		Tag="{Binding IsIssueCmd, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueCmdCommand}"
         		Template="{StaticResource FlatButtonClickBusy}"/>
         </Grid>
 

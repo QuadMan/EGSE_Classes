@@ -163,14 +163,9 @@ namespace EGSE.Constants
                 public readonly string Enable = "29de114f373d4db9a52a90c91c840902";
 
                 /// <summary>
-                /// Индекс свойства [Запрет передачи по резервной линии].
+                /// Индекс свойства [Линия передачи].
                 /// </summary>
-                public readonly string LockResv = "3cbe73537ddb4cb9a7af999eff3e6324";
-
-                /// <summary>
-                /// Индекс свойства [Запрет передачи по основной линии].
-                /// </summary>
-                public readonly string LockMain = "c3f337c342d644b0a7c265cee331d07b";
+                public readonly string Line = "3cbe73537ddb4cb9a7af999eff3e6324";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
@@ -194,14 +189,9 @@ namespace EGSE.Constants
                 public readonly string Enable = "c7837417edd743eabe09ff6733c333e3";
 
                 /// <summary>
-                /// Индекс свойства [Запрет передачи по резервной линии].
+                /// Индекс свойства [Линия передачи].
                 /// </summary>
-                public readonly string LockResv = "cf351176e276489dac1248af4fb043ec";
-
-                /// <summary>
-                /// Индекс свойства [Запрет передачи по основной линии].
-                /// </summary>
-                public readonly string LockMain = "7003785f7708490e9c58c82d76e9401d";
+                public readonly string Line = "cf351176e276489dac1248af4fb043ec";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
@@ -321,7 +311,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Опрос данных].
                 /// </summary>
-                public readonly string Request = "e7864f46ec024878919567582b165b12";
+                public readonly string IssueRequest = "e7864f46ec024878919567582b165b12";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
@@ -342,7 +332,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Выдача УКС].
                 /// </summary>
-                public readonly string Issue = "d10b58d4d0f14ae995a8f79631ceb894";
+                public readonly string IssueCmd = "d10b58d4d0f14ae995a8f79631ceb894";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
@@ -369,8 +359,8 @@ namespace EGSE.Constants
                 Control = new CVControl();
                 Record = new CVRecord();
                 SPTPControl = new CVSPTP();
-                SPTPLogicBusk = new CVSPTPLogicBusk();
-                SPTPLogicSD1 = new CVSPTPLogicNP1();
+                BuskLogic = new CVSPTPLogicBusk();
+                SD1Logic = new CVSPTPLogicNP1();
                 SPTPLogicSD2 = new CVSPTPLogicNP2();
                 SD1SendTime = new CVNP1SendTime();
                 SD2SendTime = new CVNP2SendTime();
@@ -396,12 +386,12 @@ namespace EGSE.Constants
             /// <summary>
             /// Получает индекс объекта "SPTP Адрес БУСК" в массиве ControlValuesList.
             /// </summary>
-            public static CVSPTPLogicBusk SPTPLogicBusk { get; private set; }
+            public static CVSPTPLogicBusk BuskLogic { get; private set; }
 
             /// <summary>
             /// Получает индекс объекта "SPTP Адрес НП1" в массиве ControlValuesList.
             /// </summary>
-            public static CVSPTPLogicNP1 SPTPLogicSD1 { get; private set; }
+            public static CVSPTPLogicNP1 SD1Logic { get; private set; }
 
             /// <summary>
             /// Получает индекс объекта "SPTP Адрес НП2" в массиве ControlValuesList.
@@ -641,8 +631,8 @@ namespace EGSE.Constants
             {
                 Control = new CVControl();
                 Record = new CVRecord();
-                SPTPLogicBusk = new CVSPTPLogicBusk();
-                SPTPLogicBuk = new CVSPTPLogicBuk();
+                BuskLogic = new CVSPTPLogicBusk();
+                BukLogic = new CVSPTPLogicBuk();
                 SPTPLogicBkp = new CVSPTPLogicBkp();
                 SPTPControl = new CVSPTPControl();
             }
@@ -660,12 +650,12 @@ namespace EGSE.Constants
             /// <summary>
             /// Получает индекс объекта "Адрес ИМИТАТОРА БУСКа" в массиве ControlValuesList.
             /// </summary>
-            public static CVSPTPLogicBusk SPTPLogicBusk { get; private set; }
+            public static CVSPTPLogicBusk BuskLogic { get; private set; }
 
             /// <summary>
             /// Получает индекс объекта "Адрес БС" в массиве ControlValuesList.
             /// </summary>
-            public static CVSPTPLogicBuk SPTPLogicBuk { get; private set; }
+            public static CVSPTPLogicBuk BukLogic { get; private set; }
 
             /// <summary>
             /// Получает индекс объекта "Адрес БКП" в массиве ControlValuesList.

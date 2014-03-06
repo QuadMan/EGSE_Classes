@@ -8,17 +8,85 @@
 // TODO в bigBufferManager ввести признак переполнения буфера!
 // TODO в классе BigBuff попробовать уйти от lock(this) в сторону InterlockedIncrement
 namespace EGSE.Utilites
-{
+{    
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;   
+    using System.Collections.Specialized;
+    using System.ComponentModel;
     using System.Globalization;
+    using System.Linq;
     using System.IO;
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Windows;
+    using EGSE.Protocols;
+
+    /// <summary>
+    /// Для преобразования сообщений spacewire к сообщениям верхнего уровня.
+    /// </summary>
+    public static class MsgWorker
+    {
+        public static SpacewireKbvMsgEventArgs AsKbv(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireKbvMsgEventArgs AsKbv(this SpacewireIcdMsgEventArgs obj)
+        {
+            SpacewireKbvMsgEventArgs newObj = new SpacewireKbvMsgEventArgs(new byte[] { }, obj.Time1, obj.Time2, obj.Error);
+            newObj.FieldPNormal = obj.Data[0];
+            newObj.FieldPExtended = obj.Data[1];
+            newObj.Kbv = obj.ConvertToInt(obj.Data.Skip(2).ToArray());
+            return newObj;
+        }
+
+        public static SpacewireKbvMsgEventArgs ToKbv(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTmMsgEventArgs AsTm(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTmMsgEventArgs ToTm(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTkMsgEventArgs AsTk(this Array obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTkMsgEventArgs AsTk(this SpacewireIcdMsgEventArgs obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static SpacewireTkMsgEventArgs ToTk(this Array obj, byte apid, Dictionary<byte, AutoCounter> dict)
+        {
+            byte[] buf = new byte[obj.Length];
+            Array.Copy(obj, buf, buf.Length);
+            return new SpacewireTkMsgEventArgs(apid, dict, buf);
+        }
+
+        public static SpacewireSptpMsgEventArgs ToSptp(this Array obj, byte to, byte from)
+        {
+            byte[] buf = new byte[obj.Length];
+            Array.Copy(obj, buf, buf.Length);
+            return new SpacewireSptpMsgEventArgs(buf, to, from);
+        }
+    }
+
 
     /// <summary>
     /// Класс сохранения настроек приложения в Ini файл.

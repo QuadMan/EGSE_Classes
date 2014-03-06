@@ -11,7 +11,7 @@
 		Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="0"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
@@ -87,6 +87,7 @@
             	Style="{StaticResource TextBoxInError}"
             	Text="{Binding SD1DataSize}" Visibility="Hidden"/>
         </Grid>
+        
         <Grid Grid.Row="1" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -115,5 +116,7 @@
                 Command="{Binding IssuePackageCommand}"
         		Template="{StaticResource FlatButtonClickBusy}"/>
         </Grid>
+        <Label Grid.Row="1" 
+             	Template="{StaticResource FlatLabel}"/>
     </Grid>
 </Window>
