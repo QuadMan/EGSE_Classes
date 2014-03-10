@@ -66,8 +66,8 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="2"  
-            	Tag="{Binding IsEnable, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding EnableCommand}"
+            	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueEnableCommand}"
             	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="3" 
             	Grid.ColumnSpan="2"

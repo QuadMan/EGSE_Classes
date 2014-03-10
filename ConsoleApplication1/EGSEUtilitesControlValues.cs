@@ -67,6 +67,9 @@ namespace EGSE.Utilites
         /// </summary>
         private bool _refreshFlag;
 
+        /// <summary>
+        /// Флаг, сообщает что, экземпляр содержит индикаторные свойства.
+        /// </summary>
         private bool _hasIndicate = false;
 
         /// <summary>
@@ -125,14 +128,14 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Добавляем свойство.
+        /// Добавляет новое свойство.
         /// </summary>
-        /// <param name="idx">Индекс свойства, должно быть уникально</param>
-        /// <param name="bitIdx">Индекс бита, с которого свойство начинается</param>
-        /// <param name="bitLen">Длина в битах свойства</param>
-        /// <param name="setUsbEvent">Функция, которая должна вызываться при установке свойства</param>
-        /// <param name="changeEvent">Функция, которая должна вызываться при изменении свойства</param>
-        /// <returns>True - если выполнено успешно</returns>
+        /// <param name="idx">Индекс свойства (должно быть уникально).</param>
+        /// <param name="bitIdx">Индекс бита, с которого свойство начинается.</param>
+        /// <param name="bitLen">Длина в битах свойства.</param>
+        /// <param name="setUsbEvent">Функция, которая должна вызываться при установке свойства.</param>
+        /// <param name="changeEvent">Функция, которая должна вызываться при изменении свойства.</param>
+        /// <returns>Если <c>true</c> свойство добавлено успешно.</returns>
         public bool AddProperty(string idx, ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent)
         {
             if (_dictionaryCV.ContainsKey(idx) || (bitLen == 0))
@@ -144,14 +147,24 @@ namespace EGSE.Utilites
             return true;
         }
 
-        public bool AddProperty(string idx, ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent, bool IsIndicate)
+        /// <summary>
+        /// Добавляет новое свойство.
+        /// </summary>
+        /// <param name="idx">Индекс свойства (должно быть уникально).</param>
+        /// <param name="bitIdx">Индекс бита, с которого свойство начинается.</param>
+        /// <param name="bitLen">Длина в битах свойства.</param>
+        /// <param name="setUsbEvent">Функция, которая должна вызываться при установке свойства.</param>
+        /// <param name="changeEvent">Функция, которая должна вызываться при изменении свойства.</param>
+        /// <param name="isIndicate">Если установлено <c>true</c> [свойство является индикаторным].</param>
+        /// <returns>Если <c>true</c> свойство добавлено успешно.</returns>
+        public bool AddProperty(string idx, ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent, bool isIndicate)
         {
             if (_dictionaryCV.ContainsKey(idx) || (bitLen == 0))
             {
                 return false;
             }
 
-            _dictionaryCV.Add(idx, new CVProperty(bitIdx, bitLen, setUsbEvent, changeEvent, IsIndicate));
+            _dictionaryCV.Add(idx, new CVProperty(bitIdx, bitLen, setUsbEvent, changeEvent, isIndicate));
             _hasIndicate = true;
             return true;
         }
@@ -281,6 +294,7 @@ namespace EGSE.Utilites
             /// <param name="bitLen">Длина свойства(в битах).</param>
             /// <param name="setUsbEvent">Делегат, вызывается принеобходимости ищменить свойство.</param>
             /// <param name="changeEvent">Если через 2 TickTime значения от USB не совпадают, вызывается этот делегат.</param>
+            /// <param name="indicate">Если задан <c>true</c> [свойство является индикатором].</param>
             public CVProperty(ushort bitIdx, ushort bitLen, ControlValueEventHandler setUsbEvent, ControlValueEventHandler changeEvent, bool indicate = false)
             {
                 BitIdx = bitIdx;

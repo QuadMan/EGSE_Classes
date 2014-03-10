@@ -14,8 +14,9 @@ namespace EGSE.Utilites
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Globalization;
-    using System.Linq;
+   
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
@@ -28,11 +29,22 @@ namespace EGSE.Utilites
     /// </summary>
     public static class MsgWorker
     {
+        /// <summary>
+        /// Преобразует "сырые" данные массива к типу КБВ-кадра.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Экземпляр КБВ-кадра.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public static SpacewireKbvMsgEventArgs AsKbv(this Array obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Преобразует сообщение ICD-протокола к сообщению КБВ-кадра.
+        /// </summary>
+        /// <param name="obj">The <see cref="SpacewireIcdMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns>Экземпляр КБВ-кадра.</returns>
         public static SpacewireKbvMsgEventArgs AsKbv(this SpacewireIcdMsgEventArgs obj)
         {
             SpacewireKbvMsgEventArgs newObj = new SpacewireKbvMsgEventArgs(new byte[] { }, obj.Time1, obj.Time2, obj.Error);
@@ -42,36 +54,79 @@ namespace EGSE.Utilites
             return newObj;
         }
 
+        /// <summary>
+        /// Формирует тип КБВ-кадра, с данными представленными в массиве байт.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Экземпляр КБВ-кадра.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public static SpacewireKbvMsgEventArgs ToKbv(this Array obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Преобразует "сырые" данные массива к типу ТМ-кадра.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Экземпляр ТМ-кадра.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public static SpacewireTmMsgEventArgs AsTm(this Array obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Преобразует сообщение ICD-протокола к сообщению ТМ-кадра.
+        /// </summary>
+        /// <param name="obj">The <see cref="SpacewireIcdMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns>Экземпляр ТМ-кадра.</returns>
         public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Формирует тип ТМ-кадра, с данными представленными в массиве байт.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Экземпляр ТМ-кадра.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public static SpacewireTmMsgEventArgs ToTm(this Array obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Преобразует "сырые" данные массива к типу ТК-кадра.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Экземпляр ТК-кадра.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public static SpacewireTkMsgEventArgs AsTk(this Array obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Преобразует сообщение ICD-протокола к сообщению ТК-кадра.
+        /// </summary>
+        /// <param name="obj">The <see cref="SpacewireIcdMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns>Экземпляр ТК-кадра.</returns>
         public static SpacewireTkMsgEventArgs AsTk(this SpacewireIcdMsgEventArgs obj)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Формирует тип ТК-кадра, с данными представленными в массиве байт.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="apid">APID устройтсва.</param>
+        /// <param name="dict">Словарь контроля последовательности.</param>
+        /// <returns>
+        /// Экземпляр ТК-кадра.
+        /// </returns>
         public static SpacewireTkMsgEventArgs ToTk(this Array obj, byte apid, Dictionary<byte, AutoCounter> dict)
         {
             byte[] buf = new byte[obj.Length];
@@ -79,6 +134,13 @@ namespace EGSE.Utilites
             return new SpacewireTkMsgEventArgs(apid, dict, buf);
         }
 
+        /// <summary>
+        /// Формирует SPTP-сообщение.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="to">Адрес устройства получателя.</param>
+        /// <param name="from">Адрес устройства отправителя.</param>
+        /// <returns>Экземпляр SPTP-кадра.</returns>
         public static SpacewireSptpMsgEventArgs ToSptp(this Array obj, byte to, byte from)
         {
             byte[] buf = new byte[obj.Length];
@@ -86,7 +148,6 @@ namespace EGSE.Utilites
             return new SpacewireSptpMsgEventArgs(buf, to, from);
         }
     }
-
 
     /// <summary>
     /// Класс сохранения настроек приложения в Ini файл.
@@ -848,6 +909,7 @@ namespace EGSE.Utilites
         /// Счетчик (автоинкременируемый)
         /// </summary>
         private short _counter = 0;
+
         /// <summary>
         /// Получает [значение счетчика].
         /// Примечание:
@@ -863,6 +925,14 @@ namespace EGSE.Utilites
                 return _counter++;
             }
         }
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="AutoCounter"/> to <see cref="System.Int16"/>.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>
+        /// The result of the conversion.
+        /// </returns>
         public static implicit operator short(AutoCounter obj)
         {
             return obj.Counter;

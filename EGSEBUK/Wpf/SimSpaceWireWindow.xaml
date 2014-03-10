@@ -38,8 +38,9 @@
             <Button Grid.Row="1"
             	Grid.Column="1"                               
             	Grid.ColumnSpan="2"	
-            	Tag="{Binding IsEnable, Converter={StaticResource BoolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click_4"/>
+            	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueEnableCommand}"   
+            	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="2" 
             	Grid.ColumnSpan="3"
             	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
@@ -58,16 +59,18 @@
             <Button Grid.Row="4"   
                 Grid.Column="1"                                           	 
             	Grid.ColumnSpan="2"
-            	Tag="{Binding IsNP1Trans, Converter={StaticResource BoolToIndexConverter}}"
-            	Template="{StaticResource FlatButtonCheck}" Click="Button_Click"/>
+            	Tag="{Binding IsSD1Trans, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueSD1TransCommand}"  
+            	Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="5"
             	Content="Выдавать пакеты данных в прибор"
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="5" 
                 Grid.Column="1"                               			    
 			    Grid.ColumnSpan="2"
-			    Tag="{Binding IsNP1TransData, Converter={StaticResource BoolToIndexConverter}}"
-			    Template="{StaticResource FlatButtonCheck}" Click="Button_Click_2"/>
+			    Tag="{Binding IsSD1TransData, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueSD1TransDataCommand}"  
+			    Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="6"
             	Content="Счетчик миллисекунд (готовность данных)"
             	Template="{StaticResource FlatLabel}"/>

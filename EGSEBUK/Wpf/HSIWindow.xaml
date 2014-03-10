@@ -66,8 +66,8 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
 				Grid.Row="3"                                                            
-				Tag="{Binding IsEnable1, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding Enable1Command}"
+				Tag="{Binding IsIssueEnable1, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueEnable1Command}"
                 Template="{StaticResource FlatButtonCheck}"/>
             <StackPanel Grid.Column="2"                               
 				Grid.Row="3"		
@@ -102,8 +102,8 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="4"                                                            		
-            	Tag="{Binding IsEnable2, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding Enable2Command}"
+            	Tag="{Binding IsIssueEnable2, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueEnable2Command}"
             	Template="{StaticResource FlatButtonCheck}"/>
             <StackPanel Grid.Column="2"                               
 				Grid.Row="4"

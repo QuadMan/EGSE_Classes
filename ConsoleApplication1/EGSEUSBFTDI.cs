@@ -143,7 +143,7 @@ namespace EGSE.USB
 
             if (_isOpen)
             {
-                // TODO: SetConfigParameters
+                // TODO SetConfigParameters
             }
 
             return res;

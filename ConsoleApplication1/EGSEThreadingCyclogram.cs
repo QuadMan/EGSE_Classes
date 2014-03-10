@@ -219,7 +219,7 @@ namespace EGSE.Threading
 
         /// <summary>
         /// Запускаем циклограмму, если она успешно загружена
-        /// TODO: свести к Start(lineNum)
+        /// TODO свести к Start(lineNum)
         /// </summary>
         public void Start()
         {

@@ -160,7 +160,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Вкл/выкл].
                 /// </summary>
-                public readonly string Enable = "29de114f373d4db9a52a90c91c840902";
+                public readonly string IssueEnable = "29de114f373d4db9a52a90c91c840902";
 
                 /// <summary>
                 /// Индекс свойства [Линия передачи].
@@ -186,7 +186,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Вкл/выкл].
                 /// </summary>
-                public readonly string Enable = "c7837417edd743eabe09ff6733c333e3";
+                public readonly string IssueEnable = "c7837417edd743eabe09ff6733c333e3";
 
                 /// <summary>
                 /// Индекс свойства [Линия передачи].
@@ -426,7 +426,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string Enable = "c1c63372d0464a7581628acbb8e2f5f2";
+                public readonly string IssueEnable = "c1c63372d0464a7581628acbb8e2f5f2";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].
@@ -478,17 +478,17 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [Включение обмена SPTP (НП1)].
                 /// </summary>
-                public readonly string NP1Trans = "6612f20286a24221bda280ae3514af14";
+                public readonly string SD1Trans = "6612f20286a24221bda280ae3514af14";
 
                 /// <summary>
                 /// Индекс свойства [Включение обмена SPTP (НП2)].
                 /// </summary>
-                public readonly string NP2Trans = "a1fb6e2a1f5f43d88fbc17bd73655003";
+                public readonly string SD2Trans = "a1fb6e2a1f5f43d88fbc17bd73655003";
 
                 /// <summary>
                 /// Индекс свойства [Разрешение выдачи пакетов данных по SPTP(НП1)].
                 /// </summary>
-                public readonly string NP1TransData = "b7bf0378fbb744e7bf56df93937a11c0";
+                public readonly string SD1TransData = "b7bf0378fbb744e7bf56df93937a11c0";
 
                 /// <summary>
                 /// Индекс свойства [Разрешение выдачи пакетов данных по SPTP(НП2)].
@@ -680,7 +680,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string Enable = "64d3be4806ce45b28bcc57cc66a4cea1";
+                public readonly string IssueEnable = "64d3be4806ce45b28bcc57cc66a4cea1";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].
@@ -855,7 +855,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string Enable = "a93332e69940441ba93247b7c962eff9";
+                public readonly string IssueEnable = "a93332e69940441ba93247b7c962eff9";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].
@@ -962,7 +962,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [вкл/выкл интерфейса].
                 /// </summary>
-                public readonly string Enable = "fcf9489c447d435189e3d2fb71ada618";
+                public readonly string IssueEnable = "fcf9489c447d435189e3d2fb71ada618";
 
                 /// <summary>
                 /// Индекс свойства [Установлена связь].

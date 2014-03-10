@@ -63,56 +63,6 @@ namespace EGSE.Defaults
         {
             e.Cancel = true;
             Hide();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the Button control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire1Notify.IsNP1Trans = !_intfEGSE.Spacewire1Notify.IsNP1Trans;
-        }
-
-        /// <summary>
-        /// Handles the 1 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire1Notify.IsNP2Trans = !_intfEGSE.Spacewire1Notify.IsNP2Trans;
-        }
-
-        /// <summary>
-        /// Handles the 2 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire1Notify.IsNP1TransData = !_intfEGSE.Spacewire1Notify.IsNP1TransData;
-        }
-
-        /// <summary>
-        /// Handles the 3 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire1Notify.IsSD2TransData = !_intfEGSE.Spacewire1Notify.IsSD2TransData;
-        }
-
-        /// <summary>
-        /// Handles the 4 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.Spacewire1Notify.IsEnable = !_intfEGSE.Spacewire1Notify.IsEnable;
-        }      
+        }  
     }
 }

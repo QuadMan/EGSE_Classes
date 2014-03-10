@@ -16,7 +16,7 @@ namespace EGSE.Protocols
     using EGSE.Utilites;
 
     /// <summary>
-    /// Класс декодера по протоколу Spacewire.
+    /// Декодер протокола Spacewire.
     /// </summary>
     public class ProtocolSpacewire
     {
@@ -72,12 +72,17 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Объявление делегата обработки сообщений протокола spacewire.
+        /// Обслуживает [сообщения протокола spacewire].
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         public delegate void SpacewireMsgEventHandler(object sender, SpacewireSptpMsgEventArgs e);
 
+        /// <summary>
+        /// Обслуживает [сообщения timetick протокола spacewire].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SpacewireTimeTickMsgEventArgs"/> instance containing the event data.</param>
         public delegate void SpacewireTimeTickMsgEventHandler(object sender, SpacewireTimeTickMsgEventArgs e);
 
         /// <summary>
@@ -85,8 +90,14 @@ namespace EGSE.Protocols
         /// </summary>
         public event SpacewireMsgEventHandler GotSpacewireMsg;
 
+        /// <summary>
+        /// Происходит, когда [сформировано сообщение timetick 1 spacewire].
+        /// </summary>
         public event SpacewireTimeTickMsgEventHandler GotSpacewireTimeTick1Msg;
 
+        /// <summary>
+        /// Происходит, когда [сформировано сообщение timetick 2 spacewire].
+        /// </summary>
         public event SpacewireTimeTickMsgEventHandler GotSpacewireTimeTick2Msg;
 
         /// <summary>
@@ -137,6 +148,11 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Обертка события: возникновение TimeTick1-сообщения в декодере spacewire.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">Класс описывающий сообщение протокола.</param>
         protected virtual void OnTimeTick1Msg(object sender, SpacewireTimeTickMsgEventArgs e)
         {
             if (this.GotSpacewireTimeTick1Msg != null)
@@ -145,6 +161,11 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Обертка события: возникновение TimeTick2-сообщения в декодере spacewire.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">Класс описывающий сообщение протокола.</param>
         protected virtual void OnTimeTick2Msg(object sender, SpacewireTimeTickMsgEventArgs e)
         {
             if (this.GotSpacewireTimeTick2Msg != null)
@@ -154,6 +175,9 @@ namespace EGSE.Protocols
         }
     }
 
+    /// <summary>
+    /// Предоставляет аргументы icd-протокола для события, созданного полученным сообщением по протоколу spacewire.
+    /// </summary>
     public class SpacewireIcdMsgEventArgs : SpacewireSptpMsgEventArgs
     {
         /// <summary>
@@ -163,6 +187,10 @@ namespace EGSE.Protocols
         {
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
         public SpacewireIcdMsgEventArgs(byte[] data)
             : base(data)
         {
@@ -298,6 +326,11 @@ namespace EGSE.Protocols
         /// </value>
         public BitVector32 Size { get; set; }
 
+        /// <summary>
+        /// Преобразует массив байт (количеством от 1 до 4) к целому.
+        /// </summary>
+        /// <param name="array">Массив байт.</param>
+        /// <returns>Знаковое целое.</returns>
         public int ConvertToInt(byte[] array)
         {
             int pos = 0;
@@ -311,12 +344,20 @@ namespace EGSE.Protocols
             return result;
         }
 
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>Массив байт.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public override byte[] ToArray()
         {
             throw new NotImplementedException();
         }
     }
 
+    /// <summary>
+    /// Предоставляет аргументы КБВ-кадра для события, созданного полученным сообщением по протоколу spacewire.
+    /// </summary>
     public class SpacewireKbvMsgEventArgs : SpacewireIcdMsgEventArgs
     {
         /// <summary>
@@ -368,12 +409,22 @@ namespace EGSE.Protocols
         /// </value>
         public int Kbv { get; set; }
 
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public override byte[] ToArray()
         {
             throw new NotImplementedException();
         }
     }
 
+    /// <summary>
+    /// Предоставляет аргументы ТМ-кадра для события, созданного полученным сообщением по протоколу spacewire.
+    /// </summary>
     public class SpacewireTmMsgEventArgs : SpacewireIcdMsgEventArgs
     {
         /// <summary>
@@ -388,12 +439,22 @@ namespace EGSE.Protocols
         {
         }
 
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public override byte[] ToArray()
         {
             throw new NotImplementedException();
         }
     }
 
+    /// <summary>
+    /// Предоставляет аргументы ТК-кадра для события, созданного полученным сообщением по протоколу spacewire.
+    /// </summary>
     public class SpacewireTkMsgEventArgs : SpacewireIcdMsgEventArgs
     {
         /// <summary>
@@ -406,9 +467,14 @@ namespace EGSE.Protocols
         public SpacewireTkMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
-
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTkMsgEventArgs" />.
+        /// </summary>
+        /// <param name="apid">The apid.</param>
+        /// <param name="dict">The dictionary.</param>
+        /// <param name="data">The data.</param>
         public SpacewireTkMsgEventArgs(byte apid, Dictionary<byte, AutoCounter> dict, byte[] data)
             : base(data)
         {
@@ -424,6 +490,7 @@ namespace EGSE.Protocols
             {
                 dict.Add(apid, new AutoCounter());
             }
+
             control[Counter] = (int)dict[apid];
             header[Ccsds] = 0;
             header[Version] = 1;
@@ -433,7 +500,7 @@ namespace EGSE.Protocols
             header[Reserve] = 0;
             Id = new BitVector32(id);
             Control = new BitVector32(control);
-            Size = new BitVector32((DataLen - 1));
+            Size = new BitVector32(DataLen - 1);
             Header = new BitVector32(header);
         }
 
@@ -569,6 +636,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
         public override byte[] ToArray()
         {
             byte[] packWithoutCRC = PackWithoutCrc;
@@ -579,10 +652,17 @@ namespace EGSE.Protocols
             return buf;
         }
 
+        /// <summary>
+        /// Предоставляет проверку контроля CRC-16.
+        /// </summary>
         public static class Crc16
         {
             // старший и младший байты должны быть поменяны местами
-            static readonly ushort[] crc16Table = new ushort[]
+
+            /// <summary>
+            /// CRC16 таблица.
+            /// </summary>
+            private static readonly ushort[] Crc16Table = new ushort[]
             {
                 0x0000, 0xC1C0, 0x81C1, 0x4001, 0x01C3, 0xC003, 0x8002, 0x41C2,
                 0x01C6, 0xC006, 0x8007, 0x41C7, 0x0005, 0xC1C5, 0x81C4, 0x4004,
@@ -618,18 +698,27 @@ namespace EGSE.Protocols
                 0x0182, 0xC042, 0x8043, 0x4183, 0x0041, 0xC181, 0x8180, 0x4040 
             };
 
+            /// <summary>
+            /// Получает расчитанный CRC, для указанных данных.
+            /// </summary>
+            /// <param name="bytes">Массив данных.</param>
+            /// <param name="len">Сколько байт учавствует в расчете CRC.</param>
+            /// <returns>Значение CRC.</returns>
             public static ushort Get(byte[] bytes, int len)
             {
                 ushort crc = 0xFFFF;
                 for (var i = 0; i < len; i++)
-                    crc = (ushort)((crc << 8) ^ crc16Table[(crc >> 8) ^ bytes[i]]);
+                {
+                    crc = (ushort)((crc << 8) ^ Crc16Table[(crc >> 8) ^ bytes[i]]);
+                }
+
                 return crc;
             }
         }
     }
 
     /// <summary>
-    /// Класс обмена сообщениями по протоколу Spacewire.
+    /// Предоставляет аргументы sptp-протокола для события, созданного полученным сообщением по протоколу spacewire.
     /// </summary>
     public class SpacewireSptpMsgEventArgs : MsgBase
     {
@@ -640,6 +729,10 @@ namespace EGSE.Protocols
         {
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
         public SpacewireSptpMsgEventArgs(byte[] data)
         {
             Data = new byte[data.Length];
@@ -654,6 +747,12 @@ namespace EGSE.Protocols
             Time2 = 0x00;
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="to">Адрес устройства получатель.</param>
+        /// <param name="from">Адрес устройства отправитель.</param>
         public SpacewireSptpMsgEventArgs(byte[] data, byte to, byte from)
             : this(data)
         {
@@ -781,6 +880,10 @@ namespace EGSE.Protocols
         /// </value>
         public byte Time2 { get; set; }
 
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>Массив байт.</returns>
         public override byte[] ToArray()
         {
             byte[] buf = new byte[DataLen + 4];
@@ -793,13 +896,22 @@ namespace EGSE.Protocols
         }
     }
 
+    /// <summary>
+    /// Предоставляет аргументы TimeTick-кадра для события, созданного полученным сообщением по протоколу spacewire.
+    /// </summary>
     public class SpacewireTimeTickMsgEventArgs : MsgBase
     {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTimeTickMsgEventArgs" />.
+        /// </summary>
         public SpacewireTimeTickMsgEventArgs()
         {
-
         }
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTimeTickMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">The data.</param>
         public SpacewireTimeTickMsgEventArgs(byte data)
         {
             Data = new byte[1] { (byte)(data & 0x1F) };

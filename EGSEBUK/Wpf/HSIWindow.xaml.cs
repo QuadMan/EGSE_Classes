@@ -20,9 +20,9 @@ namespace EGSE.Defaults
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Shapes;
-    using EGSE.Devices;
-    using EGSE.Utilites;
+    using EGSE.Devices;    
     using EGSE.Protocols;
+    using EGSE.Utilites;
 
     /// <summary>
     /// Interaction logic for HSIWindow.xaml
@@ -54,6 +54,11 @@ namespace EGSE.Defaults
             GridHSI.DataContext = _intfEGSE.HSINotify;
         }
 
+        /// <summary>
+        /// Вызывается когда [пришло сообщение по протоколу ВСИ].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         public void OnHsiMsg(object sender, HsiMsgEventArgs msg)
         {
             if (msg != null)

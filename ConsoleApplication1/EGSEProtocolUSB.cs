@@ -14,7 +14,7 @@ namespace EGSE.Protocols
 
     /// <summary>
     /// Базовый класс сообщения.
-    /// TODO: возможно, его вывести выше в иерархии, и использовать как базу для всего.
+    /// TODO возможно, его вывести выше в иерархии, и использовать как базу для всего.
     /// </summary>
     public class MsgBase : EventArgs
     {
@@ -60,6 +60,11 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>Массив байт.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализациии.</exception>
         public virtual byte[] ToArray()
         {
             throw new NotImplementedException();

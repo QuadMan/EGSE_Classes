@@ -92,7 +92,7 @@ namespace EGSE.Threading
             // проверим, что поток может читать
             if (_fileStream.CanRead == false)
             {
-                // TODO
+                // TODO что тут должно быть?
             }
 
             _thread = new Thread(ExecutionStream);

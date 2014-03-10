@@ -52,19 +52,6 @@ namespace EGSE.Defaults
         }
 
         /// <summary>
-        /// Handles the 11 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_11(object sender, RoutedEventArgs e)
-        {
-            if ("false" == (string)(sender as Button).Tag)
-            {
-                _intfEGSE.Spacewire4Notify.IsIssuePackage = true;
-            }
-        }
-
-        /// <summary>
         /// Handles the Closing event of the Window control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
