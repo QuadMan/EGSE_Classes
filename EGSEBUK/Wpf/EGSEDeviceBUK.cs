@@ -284,6 +284,11 @@ namespace EGSE.Devices
             _intfBUK = intfBUK;
         }
 
+        bool IsBitSet(int b, int pos)
+        {
+            return (b & (1 << pos)) != 0;
+        }
+
         /// <summary>
         /// Отправляет команду включить/выключить питание ПК1 БУСК.
         /// </summary>
@@ -293,7 +298,7 @@ namespace EGSE.Devices
             byte buf = 0;
             if (_intfBUK.TelemetryNotify.IsBuskLineA)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 15))
                 {
                     buf |= 1 << 2;
                 }
@@ -305,7 +310,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.TelemetryNotify.IsBuskLineB)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 15))
                 {
                     buf |= 1 << 3;
                 }
@@ -328,7 +333,7 @@ namespace EGSE.Devices
             byte buf = 0;
             if (_intfBUK.TelemetryNotify.IsBuskLineA)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 14))
                 {
                     buf |= 1 << 6;
                 }
@@ -340,7 +345,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.TelemetryNotify.IsBuskLineB)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 14))
                 {
                     buf |= 1 << 7;
                 }
@@ -363,7 +368,7 @@ namespace EGSE.Devices
             byte buf = 0;
             if (_intfBUK.TelemetryNotify.IsBundLineA)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 12))
                 {
                     buf |= 1 << 1;
                 }
@@ -375,7 +380,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.TelemetryNotify.IsBundLineB)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 12))
                 {
                     buf |= 1 << 3;
                 }
@@ -398,7 +403,7 @@ namespace EGSE.Devices
             byte buf = 0;
             if (_intfBUK.TelemetryNotify.IsBundLineA)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 13))
                 {
                     buf |= 1 << 0;
                 }
@@ -410,7 +415,7 @@ namespace EGSE.Devices
 
             if (_intfBUK.TelemetryNotify.IsBundLineB)
             {
-                if (0 == value)
+                if (!IsBitSet(value, 13))
                 {
                     buf |= 1 << 2;
                 }
@@ -2218,12 +2223,12 @@ namespace EGSE.Devices
             /// <summary>
             /// Телеметрия: Запитан ПК1 от БУСК.
             /// </summary>
-            private bool _powerBusk1;
+            private bool _isPowerBusk1;
 
             /// <summary>
             /// Телеметрия: Запитан ПК2 от БУСК.
             /// </summary>
-            private bool _powerBusk2;
+            private bool _isPowerBusk2;
 
             /// <summary>
             /// Телеметрия: Запитан ПК1 от БУНД.
@@ -2233,7 +2238,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Телеметрия: Запитан ПК2 от БУНД.
             /// </summary>
-            private bool _powerBund2;
+            private bool _isPowerBund2;
 
             /// <summary>
             /// Телеметрия: Питание УФЕС ОСН.
@@ -2324,6 +2329,10 @@ namespace EGSE.Devices
             /// Телеметрия: Затвор СДЩ РЕЗ.
             /// </summary>
             private bool _sdchshLock2;
+            private ICommand _issuePowerBusk1Command;
+            private ICommand _issuePowerBusk2Command;
+            private ICommand _issuePowerBund1Command;
+            private ICommand _issuePowerBund2Command;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Telemetry" />.
@@ -2420,17 +2429,31 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [питание первого полукомплекта БУСК]; иначе, <c>false</c>.
             /// </value>
-            public bool PowerBusk1
+            public bool IsPowerBusk1
             {
                 get
                 {
-                    return _powerBusk1;
+                    return _isPowerBusk1;
                 }
 
                 set
                 {
-                    _powerBusk1 = value;                   
+                    _isPowerBusk1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssuePowerBusk1Command
+            {
+                get
+                {
+                    if (null == _issuePowerBusk1Command)
+                    {
+                        _issuePowerBusk1Command = new RelayCommand(obj => { IsPowerBusk1 = !IsPowerBusk1; }, obj => { return true; });
+                    }
+
+                    return _issuePowerBusk1Command;
                 }
             }
 
@@ -2440,17 +2463,31 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [питание второго полукомплекта БУСК]; иначе, <c>false</c>.
             /// </value>
-            public bool PowerBusk2
+            public bool IsPowerBusk2
             {
                 get
                 {
-                    return _powerBusk2;
+                    return _isPowerBusk2;
                 }
 
                 set
                 {
-                    _powerBusk2 = value;
+                    _isPowerBusk2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssuePowerBusk2Command
+            {
+                get
+                {
+                    if (null == _issuePowerBusk2Command)
+                    {
+                        _issuePowerBusk2Command = new RelayCommand(obj => { IsPowerBusk2 = !IsPowerBusk2; }, obj => { return true; });
+                    }
+
+                    return _issuePowerBusk2Command;
                 }
             }
 
@@ -2460,7 +2497,7 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [питание первого полукомплекта БУНД]; иначе, <c>false</c>.
             /// </value>
-            public bool PowerBund1
+            public bool IsPowerBund1
             {
                 get
                 {
@@ -2470,7 +2507,21 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBund1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssuePowerBund1Command
+            {
+                get
+                {
+                    if (null == _issuePowerBund1Command)
+                    {
+                        _issuePowerBund1Command = new RelayCommand(obj => { IsPowerBund1 = !IsPowerBund1; }, obj => { return true; });
+                    }
+
+                    return _issuePowerBund1Command;
                 }
             }
 
@@ -2480,17 +2531,32 @@ namespace EGSE.Devices
             /// <value>
             ///   <c>true</c> если [питание второго полукомплекта БУНД]; иначе, <c>false</c>.
             /// </value>
-            public bool PowerBund2
+            public bool IsPowerBund2
             {
                 get
                 {
-                    return _powerBund2;
+                    return _isPowerBund2;
                 }
 
                 set
                 {
-                    _powerBund2 = value;
+                    _isPowerBund2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+
+            public ICommand IssuePowerBund2Command
+            {
+                get
+                {
+                    if (null == _issuePowerBund2Command)
+                    {
+                        _issuePowerBund2Command = new RelayCommand(obj => { IsPowerBund2 = !IsPowerBund2; }, obj => { return true; });
+                    }
+
+                    return _issuePowerBund2Command;
                 }
             }
 
@@ -2903,10 +2969,10 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk1, 15, 1, Device.CmdPowerBusk1, value => PowerBusk1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => PowerBusk2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => PowerBund1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => PowerBund2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk1, 15, 1, Device.CmdPowerBusk1, value => IsPowerBusk1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => IsPowerBusk2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => IsPowerBund1 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => IsPowerBund2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 6, 1, delegate { }, value => UfesLight1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 7, 1, delegate { }, value => UfesLight2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value);

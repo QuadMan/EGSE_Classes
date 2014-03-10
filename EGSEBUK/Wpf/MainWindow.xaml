@@ -66,27 +66,27 @@
                         <Button Grid.Column="2"
 							Grid.Row="2" 
 							Grid.RowSpan="2"                           
-							Tag="{Binding PowerBusk1, Converter={StaticResource BoolToIndexConverter}}"
-							Template="{StaticResource FlatButtonCheck}" 
-							Click="Button_Click"/>
+							Tag="{Binding IsPowerBusk1, Converter={StaticResource BoolToIndexConverter}}"							
+							Command="{Binding IssuePowerBusk1Command}"
+                            Template="{StaticResource FlatButtonCheck}"/>
                         <Button Grid.Column="3"
 							Grid.Row="2"  
 							Grid.RowSpan="2"
-							Tag="{Binding PowerBusk2, Converter={StaticResource BoolToIndexConverter}}"
-							Template="{StaticResource FlatButtonCheck}" 
-							Click="Button_Click_1"/>
+							Tag="{Binding IsPowerBusk2, Converter={StaticResource BoolToIndexConverter}}"
+                            Command="{Binding IssuePowerBusk2Command}"
+							Template="{StaticResource FlatButtonCheck}"/>
                         <Button Grid.Column="2"
 							Grid.Row="4"  
 							Grid.RowSpan="2"
-							Tag="{Binding PowerBund1, Converter={StaticResource BoolToIndexConverter}}"
-							Template="{StaticResource FlatButtonCheck}" 
-							Click="Button_Click_2"/>
+							Tag="{Binding IsPowerBund1, Converter={StaticResource BoolToIndexConverter}}"
+                            Command="{Binding IssuePowerBund1Command}"
+							Template="{StaticResource FlatButtonCheck}"/>
                         <Button Grid.Column="3"
 							Grid.Row="4" 
 							Grid.RowSpan="2"
-							Tag="{Binding PowerBund2, Converter={StaticResource BoolToIndexConverter}}"
-							Template="{StaticResource FlatButtonCheck}" 
-							Click="Button_Click_3"/>
+							Tag="{Binding IsPowerBund2, Converter={StaticResource BoolToIndexConverter}}"
+                            Command="{Binding IssuePowerBund2Command}"
+							Template="{StaticResource FlatButtonCheck}"/>
                         <Label Grid.Column="0"
 							Grid.Row="0"
 							Grid.RowSpan="2"

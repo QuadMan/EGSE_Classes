@@ -147,23 +147,13 @@ namespace EGSE.Defaults
         }
 
         /// <summary>
-        /// Handles the Click event of the Button control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.TelemetryNotify.PowerBusk1 = !_intfEGSE.TelemetryNotify.PowerBusk1;
-        }
-
-        /// <summary>
         /// Handles the 1 event of the Button_Click control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.TelemetryNotify.PowerBusk2 = !_intfEGSE.TelemetryNotify.PowerBusk2;
+            _intfEGSE.TelemetryNotify.IsPowerBusk2 = !_intfEGSE.TelemetryNotify.IsPowerBusk2;
         }
 
         /// <summary>
@@ -173,7 +163,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.TelemetryNotify.PowerBund1 = !_intfEGSE.TelemetryNotify.PowerBund1;
+            _intfEGSE.TelemetryNotify.IsPowerBund1 = !_intfEGSE.TelemetryNotify.IsPowerBund1;
         }
 
         /// <summary>
@@ -183,7 +173,7 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.TelemetryNotify.PowerBund2 = !_intfEGSE.TelemetryNotify.PowerBund2;           
+            _intfEGSE.TelemetryNotify.IsPowerBund2 = !_intfEGSE.TelemetryNotify.IsPowerBund2;           
         }
 
         /// <summary>
