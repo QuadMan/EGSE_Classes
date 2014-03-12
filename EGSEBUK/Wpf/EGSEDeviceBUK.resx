@@ -150,4 +150,13 @@
   <data name="stShowLogicBusk" xml:space="preserve">
     <value>Имитатор БУСК (адрес: {0}h)</value>
   </data>
+  <data name="stHsiLogName" xml:space="preserve">
+    <value>hsibuk</value>
+  </data>
+  <data name="stSdLogName" xml:space="preserve">
+    <value>sdbuk</value>
+  </data>
+  <data name="stSpacewireLogName" xml:space="preserve">
+    <value>spacewirebuk</value>
+  </data>
 </root>

@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="3"
 				Content="Управление"
-				Template="{StaticResource FlatLabel}"/>
+				Style="{StaticResource FlatHeader}"/>
             <Label Grid.Row="1" 
             	Content="Линия приема"		
             	Template="{StaticResource FlatLabel}"/>
@@ -66,12 +66,14 @@
                 Grid.Column="2"                                           	                                                           
             	Tag="{Binding IsIssueRequest, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueRequestCommand}"
-            	Template="{StaticResource FlatButtonCheck}"/>
+            	Template="{StaticResource FlatButtonCheck}"/>            
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition />
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -81,15 +83,40 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
         		Content="Передать УКС"
-        		Template="{StaticResource FlatLabel}"/>
+        		Style="{StaticResource FlatHeader}"/>
             <Button Grid.Column="2"  
-        		Template="{StaticResource FlatButtonClick}"                       
+        		Template="{StaticResource FlatButtonClick}"      
+                Command="{Binding FromFileCommand}"
         		Content="из файла..."/>
             <TextBox Grid.Row="1"
         		Grid.ColumnSpan="3"
         		Template="{StaticResource DataSendInError}"
         		Style="{StaticResource TextBoxInError}"
         		Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+            <Label Grid.Row="3" 
+                Grid.RowSpan="2"
+            	Content="Передать УКС активации"
+            	Template="{StaticResource FlatLabel}"/>
+            <Button Grid.Row="3"  
+        		Grid.Column="1"
+                Content="Включить КВВ ПК1"
+                Command="{Binding IssueCmdEnable1Command}"
+        		Template="{StaticResource FlatButtonClickBusy}"/>
+            <Button Grid.Row="4"  
+        		Grid.Column="1"
+                Content="Включить КВВ ПК2"
+                Command="{Binding IssueCmdEnable2Command}"
+        		Template="{StaticResource FlatButtonClickBusy}"/>
+            <Button Grid.Row="3"  
+        		Grid.Column="2"
+                Content="Выключить КВВ ПК1"
+        		Command="{Binding IssueCmdDisable1Command}"
+        		Template="{StaticResource FlatButtonClickBusy}"/>
+            <Button Grid.Row="4"  
+        		Grid.Column="2"
+                Content="Выключить КВВ ПК2"
+                Command="{Binding IssueCmdDisable2Command}"
+        		Template="{StaticResource FlatButtonClickBusy}"/>
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="3"
                 Content="Выдать УКС"

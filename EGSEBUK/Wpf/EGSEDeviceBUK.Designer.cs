@@ -97,11 +97,29 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hsibuk.
+        /// </summary>
+        internal static string stHsiLogName {
+            get {
+                return ResourceManager.GetString("stHsiLogName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} ({1}, на позиции: {2}).
         /// </summary>
         internal static string stOnErrorUSBMsg {
             get {
                 return ResourceManager.GetString("stOnErrorUSBMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to sdbuk.
+        /// </summary>
+        internal static string stSdLogName {
+            get {
+                return ResourceManager.GetString("stSdLogName", resourceCulture);
             }
         }
         
@@ -156,6 +174,15 @@ namespace Wpf {
         internal static string stShowSimLogicSD2 {
             get {
                 return ResourceManager.GetString("stShowSimLogicSD2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to spacewirebuk.
+        /// </summary>
+        internal static string stSpacewireLogName {
+            get {
+                return ResourceManager.GetString("stSpacewireLogName", resourceCulture);
             }
         }
     }

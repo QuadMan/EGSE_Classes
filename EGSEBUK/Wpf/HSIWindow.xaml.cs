@@ -64,14 +64,14 @@ namespace EGSE.Defaults
             if (msg != null)
             {
                 string hsiMsg;
-                if (msg.Data.Length > 30)
-                {
-                    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
-                }
-                else
-                {
-                    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
-                }
+                //if (msg.Data.Length > 30)
+                //{
+                //    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+                //}
+                //else
+                //{
+                    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.DataLen.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                //}
 
                 if (null != Monitor && Visibility.Visible == this.Visibility)
                 {
@@ -93,6 +93,16 @@ namespace EGSE.Defaults
         {
             e.Cancel = true;
             Hide();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Monitor.Items.Clear();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MonitorCmd.Items.Clear();
         }
     }
 }

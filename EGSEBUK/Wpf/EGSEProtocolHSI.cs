@@ -55,7 +55,7 @@ namespace EGSE.Protocols
             {
                 if (_dataAddr == msg.Addr)
                 {
-                    HsiMsgEventArgs _msg = new HsiMsgEventArgs(msg.Data);
+                    HsiMsgEventArgs _msg = new HsiMsgEventArgs(msg.Data, msg.DataLen);
                     OnHsiMsg(this, _msg);
                 }
             }
@@ -84,11 +84,11 @@ namespace EGSE.Protocols
         /// Инициализирует новый экземпляр класса <see cref="HsiMsgEventArgs" />.
         /// </summary>
         /// <param name="data">The data.</param>
-        public HsiMsgEventArgs(byte[] data)
+        public HsiMsgEventArgs(byte[] data, int length)
         {
-            Data = new byte[data.Length];
-            Array.Copy(data, Data, data.Length);
-            DataLen = Data.Length;
+            Data = new byte[length];
+            Array.Copy(data, Data, length);
+            DataLen = length;
         }
     }
 }

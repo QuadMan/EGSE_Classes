@@ -85,5 +85,10 @@ namespace EGSE.Defaults
             e.Cancel = true;
             Hide();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Monitor.Items.Clear();
+        }
     }
 }

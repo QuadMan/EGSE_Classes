@@ -12,8 +12,9 @@
 		Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition MinHeight="80"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition MinHeight="60"/>
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
@@ -33,7 +34,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="6"
 				Content="Управление"
-				Template="{StaticResource FlatLabel}"/>
+				Style="{StaticResource FlatHeader}"/>
             <Label Grid.Row="1"             	
 				Grid.RowSpan="2"
 				Content="П/К"
@@ -137,25 +138,43 @@
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="2"
-				Content="Монитор ВСИ"
-				Template="{StaticResource FlatLabel}"/>
+            <Label Content="Монитор ВСИ"
+                Style="{StaticResource FlatHeader}"/>
+            <DockPanel Grid.Row="1"
+            	LastChildFill="True">
+                <Label DockPanel.Dock="Left" Content="Запись в файл"
+            		Template="{StaticResource FlatLabel}"/>
+                <Button DockPanel.Dock="Left"                                                    
+            		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
+            		Command="{Binding SaveRawDataCommand}"
+            		Template="{StaticResource FlatButtonCheck}"/>
+                <TextBox              
+                    IsReadOnly="True"
+            		Template="{StaticResource FilePreviewer}"
+            		Style="{StaticResource TextBoxInError}"                    
+            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"/>
+            </DockPanel>
             <ListBox x:Name="Monitor" 
-				Grid.Row="1"
-				Grid.ColumnSpan="2"
+				Grid.Row="2"
 				Margin="1"
 				BorderThickness="0"/>
+            <Button Grid.Row="3"  
+                Content="Очистить монитор ВСИ"
+        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click"/>
         </Grid>
-        <Grid Grid.Row="2">
+        <GridSplitter Grid.Row="2" Height="16" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <Grid Grid.Row="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -163,12 +182,16 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
         		Content="Монитор УКС"
-        		Template="{StaticResource FlatLabel}"/>
+        		Style="{StaticResource FlatHeader}"/>
             <ListBox x:Name="MonitorCmd" 
         		Grid.Row="1"
         		Grid.ColumnSpan="2"
         		Margin="1"
         		BorderThickness="0"/>
+            <Button Grid.Row="2"  
+        		Grid.ColumnSpan="2"
+                Content="Очистить монитор УКС"
+        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click_1"/>
         </Grid>
     </Grid>
 </Window>

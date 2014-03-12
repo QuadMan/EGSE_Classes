@@ -813,7 +813,7 @@ namespace EGSE.Devices
         internal void CmdSimHSIRecord(int value)
         {
             SendToUSB(SimHSIRecordTXFlagAddr, new byte[1] { 2 });
-            SendToUSB(SimHSIRecordByteNumberAddr, new byte[1] { 1 });
+            SendToUSB(SimHSIRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HSINotify.Data.Length) });
             SendToUSB(SimHSIRecordFlushAddr, new byte[1] { 1 });
             if ((null != _intfBUK.HSINotify.Data) && (0 < _intfBUK.HSINotify.Data.Length))
             {
@@ -821,6 +821,18 @@ namespace EGSE.Devices
             }
 
             SendToUSB(SimHSIRecordSendAddr, new byte[1] { (byte)value });
+        }
+
+        internal void CmdSimHSI1(int value)
+        {
+            _intfBUK.HSINotify.Data = new byte[1] { 0xA5 };
+            CmdSimHSIRecord(value);
+        }
+
+        internal void CmdSimHSI2(int value)
+        {
+            _intfBUK.HSINotify.Data = new byte[1] { 0xA5 };
+            CmdSimHSIRecord(value);
         }
 
         /// <summary>
@@ -961,26 +973,31 @@ namespace EGSE.Devices
             
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
             _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = e.Data[0]; });
             _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime2 = e.Data[0]; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBusk.OnMessageFunc);
 
             _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
             _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = e.Data[0]; });
             _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.Data[0]; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
 
             _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2);
             _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
+            _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDIn.OnMessageFunc);
 
             _decoderSpacewireSDOut = new ProtocolSpacewire((uint)Spacewire3.Addr.OutData, (uint)Spacewire3.Addr.OutEnd, (uint)Spacewire3.Addr.OutTime1, (uint)Spacewire3.Addr.OutTime2);
             _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
+            _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDOut.OnMessageFunc);
 
             _decoderHsi = new ProtocolHsi((uint)HSI.Addr);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
+            _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(HSINotify.OnHsiMsgRawSave);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderHsi.OnMessageFunc);
 
             _devDataLogStream = null;
@@ -1174,6 +1191,13 @@ namespace EGSE.Devices
             }
         }
 
+        internal string GetNewFileName(string logName)
+        {
+            string dataLogDir = Directory.GetCurrentDirectory().ToString() + @"\DATA\";
+            Directory.CreateDirectory(dataLogDir);
+            return dataLogDir + logName + "_" + DateTime.Now.ToString(@"yyMMdd_HHmmss") + @".dat";
+        }
+
         /// <summary>
         /// Получает значение, показывающее, открыто ли [окно "имитатор БУК (для БУСК)"].
         /// </summary>
@@ -1305,6 +1329,22 @@ namespace EGSE.Devices
             }
         }
 
+        public byte[] OpenFromFile()
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = ".dat";
+            dlg.Filter = "Bin data (.dat)|*.dat|All files (*.*)|*.*";
+
+            bool? result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                byte[] buf = File.ReadAllBytes(dlg.FileName);
+                return buf;
+            }
+            return new byte[] { };
+        }
+
         /// <summary>
         /// Получает или задает время, пришедшее от прибора.
         /// </summary>       
@@ -1361,11 +1401,23 @@ namespace EGSE.Devices
         /// </summary>
         public void TickAllControlsValues()
         {
+            UpdateProperties();
             Debug.Assert(ControlValuesList != null, @"ControlValuesList не должны быть равны null!");
             foreach (var cv in ControlValuesList)
             {
                 (cv.Value as ControlValue).TimerTick(); 
             }
+        }
+
+        /// <summary>
+        /// Вынуждает обновить отображаемые свойства на UI. 
+        /// </summary>
+        private void UpdateProperties()
+        {
+            FirePropertyChangedEvent(null, @"DeviceTime");
+            FirePropertyChangedEvent(null, @"DeviceSpeed");
+            FirePropertyChangedEvent(null, @"DeviceTrafic");
+            FirePropertyChangedEvent(null, @"BytesAvailable");
         }
 
         /// <summary>
@@ -1576,14 +1628,6 @@ namespace EGSE.Devices
                         ControlValuesList[Global.HSI.Line2FrameCounter].UsbValue = (msg.Data[42] << 8) | msg.Data[41];
                         ControlValuesList[Global.SimHSI.Control].UsbValue = msg.Data[43];
                         ControlValuesList[Global.SimHSI.Record].UsbValue = msg.Data[44];
-                        FirePropertyChangedEvent(null, @"DeviceTime");
-                        FirePropertyChangedEvent(null, @"DeviceSpeed");
-                        FirePropertyChangedEvent(null, @"DeviceTrafic");
-                        FirePropertyChangedEvent(null, @"BytesAvailable");
-                        FirePropertyChangedEvent(HSINotify, @"StateCounter1");
-                        FirePropertyChangedEvent(HSINotify, @"StateCounter2");
-                        FirePropertyChangedEvent(HSINotify, @"FrameCounter1");
-                        FirePropertyChangedEvent(HSINotify, @"FrameCounter2");
                         break;
                     case TeleDataAddr:
                         ControlValuesList[Global.Telemetry].UsbValue = (msg.Data[2] << 16) | (msg.Data[3] << 8) | msg.Data[4];
@@ -1687,11 +1731,13 @@ namespace EGSE.Devices
         /// </summary>
         public class HSI : SubNotify, IDataErrorInfo
         {
+            public const int WaitForWriteTime = 1000;
+
             /// <summary>
             /// Адресный байт "Данные интерфейса ВСИ".
             /// </summary>
             public const byte Addr = 0x14;
-
+           
             /// <summary>
             /// КВВ ПК1: Вкл/выкл.
             /// </summary>
@@ -1771,6 +1817,12 @@ namespace EGSE.Devices
             /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
             private ICommand _issueCmdCommand;
+            private ICommand _saveRawDataCommand;
+            private bool _isSaveRawData;
+            private string _rawDataFile;
+            private ICommand _fromFileCommand;
+            private FileStream _rawDataStream;
+            private Task _rawDataTask;
             
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="HSI" />.
@@ -1929,6 +1981,91 @@ namespace EGSE.Devices
                     _stateCounter1 = value;
                     FirePropertyChangedEvent();
                 }
+            }
+
+            public string RawDataFile
+            {
+                get
+                {
+                    return _rawDataFile;
+                }
+
+                set
+                {
+                    _rawDataFile = value;
+                    if (string.Empty != value)
+                    {
+                        _rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+                    }
+                    else
+                    {
+                        if (null != _rawDataStream)
+                        {
+                            try
+                            {
+                                if (null != _rawDataTask)
+                                {
+                                    _rawDataTask.Wait(WaitForWriteTime);
+                                }
+                            }
+                            finally
+                            {
+                                _rawDataStream.Close();
+                            }                            
+                        }
+                    }
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsSaveRawData 
+            { 
+                get
+                {
+                    return _isSaveRawData;
+                }
+
+                set 
+                {
+                    _isSaveRawData = value;
+                    if (value)
+                    {
+                        RawDataFile = Owner.GetNewFileName(Resource.Get(@"stHsiLogName"));                    
+                    }
+                    else
+                    {
+                       RawDataFile = string.Empty;
+                    }
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand SaveRawDataCommand
+            {
+                get
+                {
+                    if (null == _saveRawDataCommand)
+                    {
+                        _saveRawDataCommand = new RelayCommand(obj => { IsSaveRawData = !IsSaveRawData; }, obj => { return true; });
+                    }
+
+                    return _saveRawDataCommand;
+                }
+            }
+
+            public virtual void OnHsiMsgRawSave(object sender, HsiMsgEventArgs e)
+            {
+               if (null != _rawDataStream)
+               {
+                   if (null != _rawDataTask)
+                   {
+                       _rawDataTask.Wait(WaitForWriteTime);
+                   }
+                   if (_rawDataStream.CanWrite)
+                   {
+                       _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                   }
+               }
             }
 
             /// <summary>
@@ -2136,6 +2273,35 @@ namespace EGSE.Devices
             }
 
             /// <summary>
+            /// Получает команду на [получение данных из файла].
+            /// </summary>
+            /// <value>
+            /// Команда на [получение данных из файла].
+            /// </value>
+            public ICommand FromFileCommand
+            {
+                get
+                {
+                    if (_fromFileCommand == null)
+                    {
+                        _fromFileCommand = new RelayCommand(OpenFromFile, obj => { return true; });
+                    }
+
+                    return _fromFileCommand;
+                }
+            }
+
+            /// <summary>
+            /// Вызов диалога "Открыть файл".
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public void OpenFromFile(object obj)
+            {
+                Data = Owner.OpenFromFile();
+                FirePropertyChangedEvent("Data");
+            }
+
+            /// <summary>
             /// Получает команду на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
             /// <value>
@@ -2154,6 +2320,57 @@ namespace EGSE.Devices
                 }
             }
 
+            public ICommand IssueCmdEnable1Command
+            {
+                get
+                {
+                    if (_issueCmdCommand == null)
+                    {
+                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI1(1); }, obj => { return true; });
+                    }
+
+                    return _issueCmdCommand;
+                }
+            }
+
+            public ICommand IssueCmdDisable1Command
+            {
+                get
+                {
+                    if (_issueCmdCommand == null)
+                    {
+                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI1(0); }, obj => { return true; });
+                    }
+
+                    return _issueCmdCommand;
+                }
+            }
+
+            public ICommand IssueCmdEnable2Command
+            {
+                get
+                {
+                    if (_issueCmdCommand == null)
+                    {
+                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI2(1); }, obj => { return true; });
+                    }
+
+                    return _issueCmdCommand;
+                }
+            }
+
+            public ICommand IssueCmdDisable2Command
+            {
+                get
+                {
+                    if (_issueCmdCommand == null)
+                    {
+                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI2(0); }, obj => { return true; });
+                    }
+
+                    return _issueCmdCommand;
+                }
+            }
             /// <summary>
             /// Получает сообщение об ошибке в объекте.
             /// </summary>
@@ -2217,6 +2434,7 @@ namespace EGSE.Devices
                 ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.IssueRequest, 0, 1, Device.CmdSimHSIControl, value => IsIssueRequest = 1 == value);
                 ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.IssueCmd, 0, 1, Device.CmdSimHSIRecord, value => IsIssueCmd = 1 == value);
             }
+           
         }
 
         /// <summary>
@@ -3709,7 +3927,9 @@ namespace EGSE.Devices
         /// Нотификатор spacewire2.
         /// </summary>
         public class Spacewire2 : SubNotify, IDataErrorInfo
-        {           
+        {
+            public const int WaitForWriteTime = 1000;
+
             /// <summary>
             /// SPTP: Адрес ИМИТАТОРА БУСКа.
             /// </summary>
@@ -3859,6 +4079,11 @@ namespace EGSE.Devices
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
             private ICommand _fromFileCommand;
+            private ICommand _saveRawDataCommand;
+            private string _rawDataFile;
+            private bool _isSaveRawData;
+            private FileStream _rawDataStream;
+            private Task _rawDataTask;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
@@ -3987,6 +4212,90 @@ namespace EGSE.Devices
                 {
                     _buskTickTime1 = value;
                     FirePropertyChangedEvent();
+                }
+            }
+            public string RawDataFile
+            {
+                get
+                {
+                    return _rawDataFile;
+                }
+
+                set
+                {
+                    _rawDataFile = value;
+                    if (string.Empty != value)
+                    {
+                        _rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+                    }
+                    else
+                    {
+                        if (null != _rawDataStream)
+                        {
+                            try
+                            {
+                                if (null != _rawDataTask)
+                                {
+                                    _rawDataTask.Wait(WaitForWriteTime);
+                                }
+                            }
+                            finally
+                            {
+                                _rawDataStream.Close();
+                            }
+                        }
+                    }
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsSaveRawData
+            {
+                get
+                {
+                    return _isSaveRawData;
+                }
+
+                set
+                {
+                    _isSaveRawData = value;
+                    if (value)
+                    {
+                        RawDataFile = Owner.GetNewFileName(Resource.Get(@"stSpacewireLogName"));
+                    }
+                    else
+                    {
+                        RawDataFile = string.Empty;
+                    }
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand SaveRawDataCommand
+            {
+                get
+                {
+                    if (null == _saveRawDataCommand)
+                    {
+                        _saveRawDataCommand = new RelayCommand(obj => { IsSaveRawData = !IsSaveRawData; }, obj => { return true; });
+                    }
+
+                    return _saveRawDataCommand;
+                }
+            }
+
+            public virtual void OnSpacewire2MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
+            {
+                if (null != _rawDataStream)
+                {
+                    if (null != _rawDataTask)
+                    {
+                        _rawDataTask.Wait(WaitForWriteTime);
+                    }
+                    if (_rawDataStream.CanWrite)
+                    {
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                    }
                 }
             }
 
@@ -4691,17 +5000,8 @@ namespace EGSE.Devices
             /// <param name="obj">The object.</param>
             public void OpenFromFile(object obj)
             {
-                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-                dlg.DefaultExt = ".dat";
-                dlg.Filter = "Bin data (.dat)|*.dat|All files (*.*)|*.*";
-
-                bool? result = dlg.ShowDialog();
-
-                if (result == true)
-                {
-                    Data = File.ReadAllBytes(dlg.FileName);
-                    FirePropertyChangedEvent("Data");
-                }
+                Data = Owner.OpenFromFile();
+                FirePropertyChangedEvent("Data");
             }
 
             /// <summary>
@@ -4741,6 +5041,8 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
+            public const int WaitForWriteTime = 1000;
+
             /// <summary>
             /// Рабочий прибор.
             /// </summary>
@@ -4770,6 +5072,11 @@ namespace EGSE.Devices
             /// Экземпляр команды [включение интерфейса spacewire].
             /// </summary>
             private ICommand _issueEnableCommand;
+            private string _rawDataFile;
+            private bool _isSaveRawData;
+            private ICommand _saveRawDataCommand;
+            private FileStream _rawDataStream;
+            private Task _rawDataTask;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
@@ -4987,6 +5294,91 @@ namespace EGSE.Devices
                 }
             }
 
+            public string RawDataFile
+            {
+                get
+                {
+                    return _rawDataFile;
+                }
+
+                set
+                {
+                    _rawDataFile = value;
+                    if (string.Empty != value)
+                    {
+                        _rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+                    }
+                    else
+                    {
+                        if (null != _rawDataStream)
+                        {
+                            try
+                            {
+                                if (null != _rawDataTask)
+                                {
+                                    _rawDataTask.Wait(WaitForWriteTime);
+                                }
+                            }
+                            finally
+                            {
+                                _rawDataStream.Close();
+                            }
+                        }
+                    }
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsSaveRawData
+            {
+                get
+                {
+                    return _isSaveRawData;
+                }
+
+                set
+                {
+                    _isSaveRawData = value;
+                    if (value)
+                    {
+                        RawDataFile = Owner.GetNewFileName(Resource.Get(@"stSdLogName"));
+                    }
+                    else
+                    {
+                        RawDataFile = string.Empty;
+                    }
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand SaveRawDataCommand
+            {
+                get
+                {
+                    if (null == _saveRawDataCommand)
+                    {
+                        _saveRawDataCommand = new RelayCommand(obj => { IsSaveRawData = !IsSaveRawData; }, obj => { return true; });
+                    }
+
+                    return _saveRawDataCommand;
+                }
+            }
+
+            public virtual void OnSpacewire3MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
+            {
+                if (null != _rawDataStream)
+                {
+                    if (null != _rawDataTask)
+                    {
+                        _rawDataTask.Wait(WaitForWriteTime);
+                    }
+                    if (_rawDataStream.CanWrite)
+                    {
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                    }
+                }
+            }
+
             /// <summary>
             /// Получает сообщение об ошибке в объекте.
             /// </summary>
@@ -5112,6 +5504,7 @@ namespace EGSE.Devices
             /// Экземпляр команды на [включение автоматической выдачи посылки по интерфейсу spacewire].
             /// </summary>
             private ICommand _issueAutoCommand;
+            private ICommand _fromFileCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire4" />.
@@ -5310,6 +5703,35 @@ namespace EGSE.Devices
 
                     return _issueEOPCommand;
                 }
+            }
+
+            /// <summary>
+            /// Получает команду на [получение данных из файла].
+            /// </summary>
+            /// <value>
+            /// Команда на [получение данных из файла].
+            /// </value>
+            public ICommand FromFileCommand
+            {
+                get
+                {
+                    if (_fromFileCommand == null)
+                    {
+                        _fromFileCommand = new RelayCommand(OpenFromFile, obj => { return true; });
+                    }
+
+                    return _fromFileCommand;
+                }
+            }
+
+            /// <summary>
+            /// Вызов диалога "Открыть файл".
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public void OpenFromFile(object obj)
+            {
+                Data = Owner.OpenFromFile();
+                FirePropertyChangedEvent("Data");
             }
 
             /// <summary>

@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="3"
 				Content="Управление"
-				Template="{StaticResource FlatLabel}"/>
+				Style="{StaticResource FlatHeader}"/>
             <Label Grid.Row="1"  
                 Content="Имитатор БУК"
             	Template="{StaticResource FlatLabel}"/>
@@ -65,9 +65,10 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
     			Content="Передать данные"
-    			Template="{StaticResource FlatLabel}"/>
+    			Style="{StaticResource FlatHeader}"/>
             <Button Grid.Column="2"  
-    			Template="{StaticResource FlatButtonClick}"                       
+    			Template="{StaticResource FlatButtonClick}"     
+                Command="{Binding FromFileCommand}"
     			Content="из файла..."/>
             <TextBox Grid.Row="1"
     			Grid.ColumnSpan="3"

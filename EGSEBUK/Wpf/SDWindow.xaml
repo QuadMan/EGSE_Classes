@@ -28,7 +28,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
 				Content="Управление"
-				Template="{StaticResource FlatLabel}"/>
+				Style="{StaticResource FlatHeader}"/>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -81,21 +81,95 @@
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="3"
+            <Label 
         		Content="Монитор Spacewire"
-        		Template="{StaticResource FlatLabel}"/>          
+        		Style="{StaticResource FlatHeader}"/>
+            <DockPanel Grid.Row="1"
+            	LastChildFill="True">
+                <Label DockPanel.Dock="Left" Content="Запись в файл"
+            		Template="{StaticResource FlatLabel}"/>
+                <Button DockPanel.Dock="Left"                                                    
+            		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
+            		Command="{Binding SaveRawDataCommand}"
+            		Template="{StaticResource FlatButtonCheck}"/>
+                <TextBox              
+                    IsReadOnly="True"
+            		Template="{StaticResource FilePreviewer}"
+            		Style="{StaticResource TextBoxInError}"                    
+            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"/>
+            </DockPanel>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>                              
+                <Label 	Content="TIME TICK 1"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label
+                	Grid.Column="1"
+                	Content="{Binding BuskTickTime1}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label
+                	Grid.Column="2"
+                	Content="{Binding BukTickTime1}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1"
+                	Content="TIME TICK 2"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1" 
+                	Grid.Column="1"
+                	Content="{Binding BuskTickTime2}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1" 
+                	Grid.Column="2"
+                	Content="{Binding BukTickTime2}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="2"
+                	Content="Количество запросов кредита"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="2" 
+                	Grid.Column="1"
+                	Content="{Binding RequestQueueFromBusk}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="2"  
+                	Grid.Column="2"
+                	Content="{Binding RequestQueueFromBuk}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+                	Content="Количество предоставления кредита"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3" 
+                	Grid.Column="1"
+                	Content="{Binding ReplyQueueFromBusk}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"  
+                	Grid.Column="2"
+                	Content="{Binding ReplyQueueFromBuk}"
+                	Template="{StaticResource FlatLabel}"/>               
+            </Grid>
             <ListBox x:Name="Monitor" 
-        		Grid.Row="1"
-        		Grid.ColumnSpan="3"
+        		Grid.Row="3"
         		Margin="1"
         		BorderThickness="0"/>
+            <Button Grid.Row="4"  
+                Content="Очистить монитор Spacewire"
+                Command="{Binding XXX}"
+        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click"/>
         </Grid>
     </Grid>
 </Window>

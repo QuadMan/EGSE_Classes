@@ -197,7 +197,27 @@
                     <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
                 </Trigger>
             </ControlTemplate.Triggers>
-        </ControlTemplate>            
+        </ControlTemplate>
+        <ControlTemplate x:Key="FilePreviewer" TargetType="{x:Type TextBox}">
+            <Border x:Name="Border"
+                Margin="1"
+                Background="{StaticResource SelectBrush}"
+                BorderThickness="0">
+                <Grid>
+                    <ScrollViewer x:Name="PART_ContentHost"/>
+                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" Margin="0" Background="{StaticResource TextBrush}" Foreground="Gray" IsHitTestVisible="False" Text="Файл отсутствует..."/>
+                    <TextBlock Visibility="Hidden" x:Name="ErrorText" Margin="0" Background="{StaticResource TextBrush}" Foreground="Red" IsHitTestVisible="False" Text="Ошибка! Не удалось открыть файл."/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Visibility" TargetName="WatermarkText" Value="Visible"/>
+                </Trigger>
+                <Trigger Property="Text" Value=" ">
+                    <Setter Property="Visibility" TargetName="ErrorText" Value="Visible"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         <ControlTemplate x:Key="FlatLabelTransmission" TargetType="{x:Type Label}">
             <Border x:Name="Border"
                         Background="{StaticResource UnConnectedBrush}"                                          
