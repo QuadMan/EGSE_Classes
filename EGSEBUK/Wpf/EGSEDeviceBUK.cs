@@ -316,6 +316,7 @@ namespace EGSE.Devices
             }
 
             SendToUSB(PowerLoAddr, new byte[1] { buf });
+            SendToUSB(PowerHiAddr, new byte[1] { 0 });
             SendToUSB(PowerSetAddr, new byte[1] { 1 });
         }
 
@@ -351,6 +352,7 @@ namespace EGSE.Devices
             }
 
             SendToUSB(PowerLoAddr, new byte[1] { buf });
+            SendToUSB(PowerHiAddr, new byte[1] { 0 });
             SendToUSB(PowerSetAddr, new byte[1] { 1 });
         }
 
@@ -385,6 +387,7 @@ namespace EGSE.Devices
                 }
             }
 
+            SendToUSB(PowerLoAddr, new byte[1] { 0 });
             SendToUSB(PowerHiAddr, new byte[1] { buf });
             SendToUSB(PowerSetAddr, new byte[1] { 1 });
         }
@@ -420,6 +423,7 @@ namespace EGSE.Devices
                 }
             }
 
+            SendToUSB(PowerLoAddr, new byte[1] { 0 });
             SendToUSB(PowerHiAddr, new byte[1] { buf });
             SendToUSB(PowerSetAddr, new byte[1] { 1 });
         }
@@ -825,14 +829,30 @@ namespace EGSE.Devices
 
         internal void CmdSimHSI1(int value)
         {
-            _intfBUK.HSINotify.Data = new byte[1] { 0xA5 };
-            CmdSimHSIRecord(value);
+            if (1 == value)
+            {
+                _intfBUK.HSINotify.Data = new byte[1] { 0xA1 };
+            }
+            else
+            {
+                _intfBUK.HSINotify.Data = new byte[1] { 0xFF };
+            }
+
+            CmdSimHSIRecord(1);
         }
 
         internal void CmdSimHSI2(int value)
         {
-            _intfBUK.HSINotify.Data = new byte[1] { 0xA5 };
-            CmdSimHSIRecord(value);
+            if (1 == value)
+            {
+                _intfBUK.HSINotify.Data = new byte[1] { 0xA2 };
+            }
+            else
+            {
+                _intfBUK.HSINotify.Data = new byte[1] { 0xFF };
+            }
+
+            CmdSimHSIRecord(1);
         }
 
         /// <summary>
@@ -1430,8 +1450,13 @@ namespace EGSE.Devices
             if (IsConnected)
             {
                 Device.CmdSetDeviceTime();
-                Device.CmdSetDeviceLogicAddr();
-                RefreshAllControlsValues();                           
+                Task.Run(() =>
+                {
+                    Task.Delay(500).Wait();
+                    Device.CmdSetDeviceLogicAddr();
+                    RefreshAllControlsValues();
+                });
+                                         
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
             else
@@ -1531,7 +1556,37 @@ namespace EGSE.Devices
         {
             if (this.GotHsiMsg != null)
             {
-                this.GotHsiMsg(sender, e);
+                if (IsHsiRequestStateMsg(e))
+                {
+                    if (HsiMsgEventArgs.HsiLine.Main == e.Line)
+                    {
+                        HSINotify.RequestStateMain++;
+                    }
+                    else
+                    {
+                        HSINotify.RequestStateResv++;
+                    }
+                }
+                else if (IsHsiRequestDataMsg(e))
+                {
+                    if (HsiMsgEventArgs.HsiLine.Main == e.Line)
+                    {
+                        HSINotify.RequestDataMain++;
+                    }
+                    else
+                    {
+                        HSINotify.RequestDataResv++;
+                    }
+                }
+                //else if (IsHsiCmdMsg(e))
+                //{
+
+                //    this.GotHsiMsg(sender, e);
+                //}
+                else
+                {
+                    this.GotHsiMsg(sender, e);
+                }
             }
         }
 
@@ -1560,6 +1615,16 @@ namespace EGSE.Devices
             return SpacewireSptpMsgEventArgs.Type.Request == msg.MsgType;
         }
 
+        private bool IsHsiRequestStateMsg(HsiMsgEventArgs msg)
+        {
+            return 0x03 == msg.Flag;
+        }
+
+        private bool IsHsiRequestDataMsg(HsiMsgEventArgs msg)
+        {
+            return 0x04 == msg.Flag;
+        }
+        
         /// <summary>
         /// Определяет когда [сообщение по spacewire] [является КБВ].
         /// </summary>
@@ -1816,13 +1881,20 @@ namespace EGSE.Devices
             /// <summary>
             /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
-            private ICommand _issueCmdCommand;
+            private ICommand _issueCmdEnable1Command;
             private ICommand _saveRawDataCommand;
             private bool _isSaveRawData;
             private string _rawDataFile;
             private ICommand _fromFileCommand;
             private FileStream _rawDataStream;
             private Task _rawDataTask;
+            private ICommand _issueCmdDisableCommand;
+            private ICommand _issueCmdEnable2Command;
+            private ICommand _issueCmdDisable2Command;
+            private long _requestStateMain;
+            private long _requestStateResv;
+            private long _requestDataResv;
+            private long _requestDataMain;
             
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="HSI" />.
@@ -2311,12 +2383,12 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    if (_issueCmdCommand == null)
+                    if (_issueCmdEnable1Command == null)
                     {
-                        _issueCmdCommand = new RelayCommand(obj => { IsIssueCmd = true; ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.IssueCmd, 1); }, obj => { return true; });
+                        _issueCmdEnable1Command = new RelayCommand(obj => { IsIssueCmd = true; ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.IssueCmd, 1); }, obj => { return true; });
                     }
 
-                    return _issueCmdCommand;
+                    return _issueCmdEnable1Command;
                 }
             }
 
@@ -2324,25 +2396,25 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    if (_issueCmdCommand == null)
+                    if (_issueCmdEnable1Command == null)
                     {
-                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI1(1); }, obj => { return true; });
+                        _issueCmdEnable1Command = new RelayCommand(obj => { Device.CmdSimHSI1(1); }, obj => { return true; });
                     }
 
-                    return _issueCmdCommand;
+                    return _issueCmdEnable1Command;
                 }
             }
 
-            public ICommand IssueCmdDisable1Command
+            public ICommand IssueCmdDisableCommand
             {
                 get
                 {
-                    if (_issueCmdCommand == null)
+                    if (_issueCmdDisableCommand == null)
                     {
-                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI1(0); }, obj => { return true; });
+                        _issueCmdDisableCommand = new RelayCommand(obj => { Device.CmdSimHSI1(0); }, obj => { return true; });
                     }
 
-                    return _issueCmdCommand;
+                    return _issueCmdDisableCommand;
                 }
             }
 
@@ -2350,27 +2422,15 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    if (_issueCmdCommand == null)
+                    if (_issueCmdEnable2Command == null)
                     {
-                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI2(1); }, obj => { return true; });
+                        _issueCmdEnable2Command = new RelayCommand(obj => { Device.CmdSimHSI2(1); }, obj => { return true; });
                     }
 
-                    return _issueCmdCommand;
+                    return _issueCmdEnable2Command;
                 }
             }
 
-            public ICommand IssueCmdDisable2Command
-            {
-                get
-                {
-                    if (_issueCmdCommand == null)
-                    {
-                        _issueCmdCommand = new RelayCommand(obj => { Device.CmdSimHSI2(0); }, obj => { return true; });
-                    }
-
-                    return _issueCmdCommand;
-                }
-            }
             /// <summary>
             /// Получает сообщение об ошибке в объекте.
             /// </summary>
@@ -2434,7 +2494,62 @@ namespace EGSE.Devices
                 ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.IssueRequest, 0, 1, Device.CmdSimHSIControl, value => IsIssueRequest = 1 == value);
                 ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.IssueCmd, 0, 1, Device.CmdSimHSIRecord, value => IsIssueCmd = 1 == value);
             }
-           
+
+            public long RequestStateMain
+            {
+                get
+                {
+                    return _requestStateMain;
+                }
+
+                set
+                {
+                    _requestStateMain = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public long RequestStateResv
+            {
+                get
+                {
+                    return _requestStateResv;
+                }
+
+                set
+                {
+                    _requestStateResv = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public long RequestDataMain
+            {
+                get
+                {
+                    return _requestDataMain;
+                }
+
+                set
+                {
+                    _requestDataMain = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public long RequestDataResv
+            {
+                get
+                {
+                    return _requestDataResv;
+                }
+
+                set
+                {
+                    _requestDataResv = value;
+                    FirePropertyChangedEvent();
+                }
+            }
         }
 
         /// <summary>
@@ -2697,7 +2812,7 @@ namespace EGSE.Devices
                 set
                 {
                     _isPowerBusk1 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(value));
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -2714,7 +2829,7 @@ namespace EGSE.Devices
                 {
                     if (null == _issuePowerBusk1Command)
                     {
-                        _issuePowerBusk1Command = new RelayCommand(obj => { IsPowerBusk1 = !IsPowerBusk1; }, obj => { return true; });
+                        _issuePowerBusk1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!IsPowerBusk1)); IsPowerBusk1 = !IsPowerBusk1; }, obj => { return true; });
                     }
 
                     return _issuePowerBusk1Command;
@@ -2737,7 +2852,7 @@ namespace EGSE.Devices
                 set
                 {
                     _isPowerBusk2 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(value));
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -2754,7 +2869,7 @@ namespace EGSE.Devices
                 {
                     if (null == _issuePowerBusk2Command)
                     {
-                        _issuePowerBusk2Command = new RelayCommand(obj => { IsPowerBusk2 = !IsPowerBusk2; }, obj => { return true; });
+                        _issuePowerBusk2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!IsPowerBusk2)); IsPowerBusk2 = !IsPowerBusk2; }, obj => { return true; });
                     }
 
                     return _issuePowerBusk2Command;
@@ -2777,7 +2892,7 @@ namespace EGSE.Devices
                 set
                 {
                     _powerBund1 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(value));
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -2794,7 +2909,7 @@ namespace EGSE.Devices
                 {
                     if (null == _issuePowerBund1Command)
                     {
-                        _issuePowerBund1Command = new RelayCommand(obj => { IsPowerBund1 = !IsPowerBund1; }, obj => { return true; });
+                        _issuePowerBund1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!IsPowerBund1)); IsPowerBund1 = !IsPowerBund1; }, obj => { return true; });
                     }
 
                     return _issuePowerBund1Command;
@@ -2817,7 +2932,7 @@ namespace EGSE.Devices
                 set
                 {
                     _isPowerBund2 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(value));
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -2834,7 +2949,7 @@ namespace EGSE.Devices
                 {
                     if (null == _issuePowerBund2Command)
                     {
-                        _issuePowerBund2Command = new RelayCommand(obj => { IsPowerBund2 = !IsPowerBund2; }, obj => { return true; });
+                        _issuePowerBund2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!IsPowerBund2)); IsPowerBund2 = !IsPowerBund2; }, obj => { return true; });
                     }
 
                     return _issuePowerBund2Command;
@@ -5077,6 +5192,14 @@ namespace EGSE.Devices
             private ICommand _saveRawDataCommand;
             private FileStream _rawDataStream;
             private Task _rawDataTask;
+            private byte _bukTickTime1;
+            private byte _bukTickTime2;
+            private byte _sdTickTime2;
+            private byte _sdTickTime1;
+            private long _requestQueueFromBuk;
+            private long _replyQueueFromBuk;
+            private long _replyQueueFromSD;
+            private long _requestQueueFromSD;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
@@ -5361,6 +5484,118 @@ namespace EGSE.Devices
                     }
 
                     return _saveRawDataCommand;
+                }
+            }
+
+            public long RequestQueueFromBuk
+            {
+                get
+                {
+                    return _requestQueueFromBuk;
+                }
+
+                set
+                {
+                    _requestQueueFromBuk = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public long ReplyQueueFromBuk
+            {
+                get
+                {
+                    return _replyQueueFromBuk;
+                }
+
+                set
+                {
+                    _replyQueueFromBuk = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public long RequestQueueFromSD
+            {
+                get
+                {
+                    return _requestQueueFromSD;
+                }
+
+                set
+                {
+                    _requestQueueFromSD = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public long ReplyQueueFromSD
+            {
+                get
+                {
+                    return _replyQueueFromSD;
+                }
+
+                set
+                {
+                    _replyQueueFromSD = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte SDTickTime1
+            {
+                get
+                {
+                    return _sdTickTime1;
+                }
+
+                set
+                {
+                    _sdTickTime1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte SDTickTime2
+            {
+                get
+                {
+                    return _sdTickTime2;
+                }
+
+                set
+                {
+                    _sdTickTime2 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte BukTickTime1
+            {
+                get
+                {
+                    return _bukTickTime1;
+                }
+
+                set
+                {
+                    _bukTickTime1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte BukTickTime2
+            {
+                get
+                {
+                    return _bukTickTime2;
+                }
+
+                set
+                {
+                    _bukTickTime2 = value;
+                    FirePropertyChangedEvent();
                 }
             }
 

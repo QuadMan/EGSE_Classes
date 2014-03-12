@@ -112,52 +112,61 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
-                </Grid.ColumnDefinitions>                              
-                <Label 	Content="TIME TICK 1"
+                </Grid.ColumnDefinitions>
+                <Label Content="Прибор"
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="1"
+                	Content="НП"
                 	Template="{StaticResource FlatLabel}"/>
-                <Label
+                <Label Grid.Column="2"
+                	Content="БУК"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1"	Content="TIME TICK 1"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1"
                 	Grid.Column="1"
-                	Content="{Binding BuskTickTime1}"
+                	Content="{Binding SDTickTime1}"
                 	Template="{StaticResource FlatLabel}"/>
-                <Label
+                <Label Grid.Row="1"
                 	Grid.Column="2"
                 	Content="{Binding BukTickTime1}"
                 	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1"
-                	Content="TIME TICK 2"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1" 
-                	Grid.Column="1"
-                	Content="{Binding BuskTickTime2}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1" 
-                	Grid.Column="2"
-                	Content="{Binding BukTickTime2}"
-                	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="2"
-                	Content="Количество запросов кредита"
+                	Content="TIME TICK 2"
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="2" 
                 	Grid.Column="1"
-                	Content="{Binding RequestQueueFromBusk}"
+                	Content="{Binding SDTickTime2}"
                 	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="2"  
+                <Label Grid.Row="2" 
                 	Grid.Column="2"
-                	Content="{Binding RequestQueueFromBuk}"
+                	Content="{Binding BukTickTime2}"
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
-                	Content="Количество предоставления кредита"
+                	Content="Количество запросов кредита"
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3" 
                 	Grid.Column="1"
-                	Content="{Binding ReplyQueueFromBusk}"
+                	Content="{Binding RequestQueueFromSD}"
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"  
+                	Grid.Column="2"
+                	Content="{Binding RequestQueueFromBuk}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="4"
+                	Content="Количество предоставления кредита"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="4" 
+                	Grid.Column="1"
+                	Content="{Binding ReplyQueueFromSD}"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="4"  
                 	Grid.Column="2"
                 	Content="{Binding ReplyQueueFromBuk}"
                 	Template="{StaticResource FlatLabel}"/>               

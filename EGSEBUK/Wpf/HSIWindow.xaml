@@ -29,8 +29,6 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="6"
 				Content="Управление"
@@ -49,19 +47,6 @@
 				Grid.RowSpan="2"
 				Content="Линии передач"
 				Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="1" 
-				Grid.Column="3"
-				Grid.ColumnSpan="2"
-				Content="Счетчики"
-				Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="2" 
-				Grid.Column="3"
-				Content="Выданных статусов"
-				Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="2" 
-                Grid.Column="4"
-                Content="Выданных кадров"
-                Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="3" 
             	Content="ПК 1"
             	Template="{StaticResource FlatLabel}"/>
@@ -70,34 +55,31 @@
 				Tag="{Binding IsIssueEnable1, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable1Command}"
                 Template="{StaticResource FlatButtonCheck}"/>
-            <StackPanel Grid.Column="2"                               
-				Grid.Row="3"		
-				Margin="1">
-                <RadioButton Content="Выкл" 
+            <Grid Grid.Column="2"                               
+				Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <RadioButton  Content="Выкл" 
             		GroupName="lineHalfSet1"            		
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
-                <RadioButton Content="Основная" 
+                <RadioButton Grid.Column="1" Content="Основная" 
             		GroupName="lineHalfSet1"            		
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Main}}"/>
-                <RadioButton Content="Резервная" 
+                <RadioButton Grid.Column="2" Content="Резервная" 
             		GroupName="lineHalfSet1"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Resv}}"/>
-                <RadioButton Content="Осн + Рез" 
+                <RadioButton Grid.Column="3" Content="Осн + Рез" 
             		GroupName="lineHalfSet1"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.MainResv}}"/>
-            </StackPanel>
-            <Label Grid.Row="3"
-            	Grid.Column="3"
-            	Content="{Binding StateCounter1}"
-            	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="3"
-				Grid.Column="4"
-				Content="{Binding FrameCounter1}"
-				Template="{StaticResource FlatLabel}"/>
+            </Grid>
             <Label Grid.Row="4" 
             	Content="ПК 2"
             	Template="{StaticResource FlatLabel}"/>
@@ -106,37 +88,37 @@
             	Tag="{Binding IsIssueEnable2, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable2Command}"
             	Template="{StaticResource FlatButtonCheck}"/>
-            <StackPanel Grid.Column="2"                               
-				Grid.Row="4"
-		  	    Margin="1">
+            <Grid Grid.Column="2"                               
+				Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
                 <RadioButton Content="Выкл" 
             		GroupName="lineHalfSet2"            		
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
-                <RadioButton Content="Основная" 
+                <RadioButton Grid.Column="1" Content="Основная" 
             		GroupName="lineHalfSet2"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Main}}"/>
-                <RadioButton Content="Резервная" 
+                <RadioButton Grid.Column="2" Content="Резервная" 
             		GroupName="lineHalfSet2"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Resv}}"/>
-                <RadioButton Content="Осн + Рез" 
+                <RadioButton Grid.Column="3" Content="Осн + Рез" 
             		GroupName="lineHalfSet2"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.MainResv}}"/>
-            </StackPanel>
-            <Label Grid.Row="4"
-				Grid.Column="3"
-				Content="{Binding StateCounter2}"				
-				Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="4"
-				Grid.Column="4"
-				Content="{Binding FrameCounter2}"
-				Template="{StaticResource FlatLabel}"/>
+            </Grid>
+
+
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition/>
@@ -161,11 +143,120 @@
             		Style="{StaticResource TextBoxInError}"                    
             		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"/>
             </DockPanel>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="П/К"
+                       Grid.RowSpan="3"
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="1"
+                       Grid.ColumnSpan="3"
+                    Content="Статус"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="4"
+                       Grid.ColumnSpan="3"
+                    Content="Данные"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="7"
+                       Grid.RowSpan="3"
+                    Content="УКС"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="1"
+                       Grid.Row="2"
+                    Content="ОСН"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="2"
+                       Grid.Row="2"
+                    Content="РЕЗ"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="4"
+                       Grid.Row="2"
+                    Content="ОСН"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Column="5"
+                       Grid.Row="2"
+                    Content="РЕЗ"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    Content="Запрос"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1"
+                    Grid.Column="3"
+                       Grid.RowSpan="2"
+                    Content="Ответ"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1"
+                    Grid.Column="4"
+                    Grid.ColumnSpan="2"
+                    Content="Запрос"                       
+            		Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1"
+                    Grid.Column="6"
+                       Grid.RowSpan="2"
+                    Content="Ответ"                       
+            		Template="{StaticResource FlatLabel}"/>                
+                <Label Grid.Row="3"
+                	Content="ПК 1"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+            	Grid.Column="1"
+            	Content="{Binding RequestStateMain}"
+            	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+            	Grid.Column="2"
+            	Content="{Binding RequestStateResv}"
+            	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+            	Grid.Column="3"
+            	Content="{Binding StateCounter1}"
+            	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+            	Grid.Column="4"
+            	Content="{Binding RequestDataMain}"
+            	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+            	Grid.Column="5"
+            	Content="{Binding RequestDataResv}"
+            	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+				Grid.Column="6"
+				Content="{Binding FrameCounter1}"
+				Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="4"
+                	Content="ПК 2"
+                	Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="4"
+				Grid.Column="3"
+				Content="{Binding StateCounter2}"				
+				Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="4"
+				Grid.Column="6"
+				Content="{Binding FrameCounter2}"
+				Template="{StaticResource FlatLabel}"/>
+            </Grid>
             <ListBox x:Name="Monitor" 
-				Grid.Row="2"
+				Grid.Row="3"
 				Margin="1"
 				BorderThickness="0"/>
-            <Button Grid.Row="3"  
+            <Button Grid.Row="4"  
                 Content="Очистить монитор ВСИ"
         		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click"/>
         </Grid>
