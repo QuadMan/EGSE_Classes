@@ -14,9 +14,9 @@ namespace EGSE.Utilites
     using System.Collections.Specialized;
     using System.ComponentModel;
     using System.Globalization;
-   
     using System.IO;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
@@ -146,6 +146,92 @@ namespace EGSE.Utilites
             byte[] buf = new byte[obj.Length];
             Array.Copy(obj, buf, buf.Length);
             return new SpacewireSptpMsgEventArgs(buf, to, from);
+        }
+    }
+
+    /// <summary>
+    /// Для проверки входных аргументов на null.
+    /// Использовать:
+    /// internal void SomeName(int arg1, bool arg2, byte[] arg3)
+    /// {
+    ///     new { arg1, arg2, arg3 }.CheckNotNull();
+    /// }
+    /// </summary>
+    public static class NullCheckers
+    {
+        /// <summary>
+        /// Проверяет аргумент на null.
+        /// </summary>
+        /// <typeparam name="T">Тип аргумента.</typeparam>
+        /// <param name="container">Список аргументов.</param>
+        /// <exception cref="System.ArgumentNullException">Если пытаются проверить пустой список.</exception>
+        public static void CheckNotNull<T>(this T container) where T : class
+        {
+            if (container == null)
+            {
+                throw new ArgumentNullException(@"container");
+            }
+
+            NullChecker<T>.Check(container);
+        }
+
+        /// <summary>
+        /// Формирует список аргументов, использую рефлексию получает имена аргументов, проверяет на null.
+        /// </summary>
+        /// <typeparam name="T">Класс аргумента.</typeparam>
+        private static class NullChecker<T> where T : class
+        {
+            /// <summary>
+            /// Список аргументов, подлежащих проверки на null.
+            /// </summary>
+            private static readonly List<Func<T, bool>> Checkers;
+
+            /// <summary>
+            /// Список наименований аргументов.
+            /// </summary>
+            private static readonly List<string> Names;
+
+            /// <summary>
+            /// Инициализирует статические поля класса <see cref="NullChecker{T}" />.
+            /// </summary>
+            /// <exception cref="System.ArgumentException">Если аргумент является свойством класса.</exception>
+            static NullChecker()
+            {
+                Checkers = new List<Func<T, bool>>();
+                Names = new List<string>();
+                foreach (string name in typeof(T).GetConstructors()[0].GetParameters().Select(p => p.Name))
+                {
+                    Names.Add(name);
+                    PropertyInfo property = typeof(T).GetProperty(name);
+                    if (property.PropertyType.IsValueType)
+                    {
+                        throw new ArgumentException(string.Format(@"Свойство {0} является типом значения.", property));
+                    }
+
+                    ParameterExpression param = System.Linq.Expressions.Expression.Parameter(typeof(T), @"container");
+                    System.Linq.Expressions.Expression propertyAccess = System.Linq.Expressions.Expression.Property(param, property);
+                    System.Linq.Expressions.Expression nullValue = System.Linq.Expressions.Expression.Constant(null, property.PropertyType);
+                    System.Linq.Expressions.Expression equality = System.Linq.Expressions.Expression.Equal(propertyAccess, nullValue);
+                    var lambda = System.Linq.Expressions.Expression.Lambda<Func<T, bool>>(equality, param);
+                    Checkers.Add(lambda.Compile());
+                }
+            }
+
+            /// <summary>
+            /// Вызывает проверку на список аргументов.
+            /// </summary>
+            /// <param name="item">Список аргументов.</param>
+            /// <exception cref="System.ArgumentNullException">Если аргумент равен null.</exception>
+            internal static void Check(T item)
+            {
+                for (int i = 0; i < Checkers.Count; i++)
+                {
+                    if (Checkers[i](item))
+                    {
+                        throw new ArgumentNullException(Names[i]);
+                    }
+                }
+            }
         }
     }
 
@@ -795,7 +881,6 @@ namespace EGSE.Utilites
             Data[2] |= (byte)(now.Second >> 4);
             Data[3] = (byte)(now.Second << 4);
             Data[3] |= (byte)(now.Millisecond >> 6);
-
             Data[4] = (byte)(now.Millisecond << 2);
             Data[5] = 0;
         }
@@ -810,7 +895,6 @@ namespace EGSE.Utilites
             StringBuilder sb = new StringBuilder();
             sb.Clear();
             sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}.{3:D3}.{4:D3}", Hour, Min, Sec, Msec, Mcsec);
-
             return sb.ToString();
         }
     }

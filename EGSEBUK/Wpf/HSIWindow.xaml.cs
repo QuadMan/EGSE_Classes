@@ -50,6 +50,7 @@ namespace EGSE.Defaults
         {
             _intfEGSE = intfEGSE;
             _intfEGSE.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
+            _intfEGSE.GotHsiCmdMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiCmdMsg);
             DataContext = _intfEGSE;
             GridHSI.DataContext = _intfEGSE.HSINotify;
         }
@@ -61,27 +62,53 @@ namespace EGSE.Defaults
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         public void OnHsiMsg(object sender, HsiMsgEventArgs msg)
         {
-            if (msg != null)
+            new { msg }.CheckNotNull(); 
+            string hsiMsg;
+            if (msg.Data.Length > 30)
             {
-                string hsiMsg;
-                //if (msg.Data.Length > 30)
-                //{
-                //    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
-                //}
-                //else
-                //{
-                    hsiMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.DataLen.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
-                //}
-
-                if (null != Monitor && Visibility.Visible == this.Visibility)
-                {
-                    Monitor.Dispatcher.Invoke(new Action(delegate
-                    {
-                        Monitor.Items.Add(hsiMsg);
-                        Monitor.ScrollIntoView(hsiMsg);
-                    }));
-                }
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + (0 == msg.Line ? "ОСН] (" : "РЕЗ] (") + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
             }
+            else
+            {
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": ["  + (0 == msg.Line ? "ОСН] (" : "РЕЗ] (") + msg.DataLen.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+            }
+
+            if (null != Monitor && Visibility.Visible == this.Visibility)
+            {
+                Monitor.Dispatcher.Invoke(new Action(delegate
+                {
+                    Monitor.Items.Add(hsiMsg);
+                    Monitor.ScrollIntoView(hsiMsg);
+                }));
+            }
+        }
+
+        /// <summary>
+        /// Вызывается когда [пришло УКС по протоколу ВСИ].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        public void OnHsiCmdMsg(object sender, HsiMsgEventArgs msg)
+        {
+            new { msg }.CheckNotNull(); 
+            string hsiMsg;
+            if (msg.Data.Length > 30)
+            {
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + (0 == msg.Line ? "ОСН] (" : "РЕЗ] (") + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+            }
+            else
+            {
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + (0 == msg.Line ? "ОСН] (" : "РЕЗ] (") + msg.DataLen.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+            }
+
+            if (null != Monitor && Visibility.Visible == this.Visibility)
+            {
+                MonitorCmd.Dispatcher.Invoke(new Action(delegate
+                {
+                    MonitorCmd.Items.Add(hsiMsg);
+                    MonitorCmd.ScrollIntoView(hsiMsg);
+                }));
+            }        
         } 
 
         /// <summary>
@@ -95,11 +122,21 @@ namespace EGSE.Defaults
             Hide();
         }
 
+        /// <summary>
+        /// Handles the Click event of the Button control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Monitor.Items.Clear();
         }
 
+        /// <summary>
+        /// Handles the 1 event of the Button_Click control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             MonitorCmd.Items.Clear();

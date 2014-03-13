@@ -271,6 +271,13 @@ namespace EGSE.Devices
         /// Обеспечивает доступ к интерфейсу устройства. 
         /// </summary>
         private readonly EgseBukNotify _intfBUK;
+
+        /// <summary>
+        /// Для временного хранения массивов.
+        /// Примечание:
+        /// При отправлении активного УКС, тут временно сохраняется последний отправленный УКС.
+        /// </summary>
+        private byte[] _tempData;
                
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseBuk" />.
@@ -816,21 +823,52 @@ namespace EGSE.Devices
         /// <param name="value">Байт управления выдачей УКС.</param>
         internal void CmdSimHSIRecord(int value)
         {
-            SendToUSB(SimHSIRecordTXFlagAddr, new byte[1] { 2 });
-            SendToUSB(SimHSIRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HSINotify.Data.Length) });
-            SendToUSB(SimHSIRecordFlushAddr, new byte[1] { 1 });
+            SendToUSB(SimHSIRecordTXFlagAddr, new byte[1] { 2 });            
             if ((null != _intfBUK.HSINotify.Data) && (0 < _intfBUK.HSINotify.Data.Length))
             {
+                SendToUSB(SimHSIRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HSINotify.Data.Length) });
+                SendToUSB(SimHSIRecordFlushAddr, new byte[1] { 1 });
                 SendToUSB(SimHSIRecordDataAddr, _intfBUK.HSINotify.Data);
             }
 
-            SendToUSB(SimHSIRecordSendAddr, new byte[1] { (byte)value });
+            SendToUSB(SimHSIRecordSendAddr, new byte[1] { (byte)value });            
         }
 
-        internal void CmdSimHSI1(int value)
+        /// <summary>
+        /// Временно сохраняет массив байт.
+        /// </summary>
+        internal void TempData()
         {
-            if (1 == value)
+            if ((null != _intfBUK.HSINotify.Data) && (0 != _intfBUK.HSINotify.Data.Length))
             {
+                _tempData = new byte[_intfBUK.HSINotify.Data.Length];
+                Array.Copy(_intfBUK.HSINotify.Data, _tempData, _intfBUK.HSINotify.Data.Length);
+            }
+        }
+
+        /// <summary>
+        /// Восстанавливает сохраненный массив байт.
+        /// </summary>
+        internal void RevertData()
+        {
+            if ((null != _tempData) && (0 != _tempData.Length))
+            {
+                _intfBUK.HSINotify.Data = new byte[_tempData.Length];
+                Array.Copy(_tempData, _intfBUK.HSINotify.Data, _tempData.Length);
+            }
+        }
+
+        /// <summary>
+        /// Команда [выдачи активного УКС активировать/деактивировать ПК1 ВСИ].
+        /// Примечание:
+        /// Временно подменяет данные УКС в ВСИ нотификаторе для формирования УКС активации.
+        /// </summary>
+        /// <param name="value">1 - для активации, 0 - деактивация.</param>
+        internal void CmdSimHSI1(int value)
+        { 
+            TempData();
+            if (1 == value)
+            {                                
                 _intfBUK.HSINotify.Data = new byte[1] { 0xA1 };
             }
             else
@@ -839,10 +877,18 @@ namespace EGSE.Devices
             }
 
             CmdSimHSIRecord(1);
+            RevertData();
         }
 
+        /// <summary>
+        /// Команда [выдачи активного УКС активировать/деактивировать ПК2 ВСИ].
+        /// Примечание:
+        /// Временно подменяет данные УКС в ВСИ нотификаторе для формирования УКС активации.
+        /// </summary>
+        /// <param name="value">1 - для активации, 0 - деактивация.</param>
         internal void CmdSimHSI2(int value)
         {
+            TempData();
             if (1 == value)
             {
                 _intfBUK.HSINotify.Data = new byte[1] { 0xA2 };
@@ -853,6 +899,7 @@ namespace EGSE.Devices
             }
 
             CmdSimHSIRecord(1);
+            RevertData();
         }
 
         /// <summary>
@@ -921,16 +968,6 @@ namespace EGSE.Devices
         /// Текущее состояние подключения устройства.
         /// </summary>
         private bool _isConnected;
-
-        /// <summary>
-        /// Записывать данные от прибора в файл.
-        /// </summary>
-        private bool _isWriteDevDataToFile;
-
-        /// <summary>
-        /// Экземпляр класса, представляющий файл для записи данных от прибора.
-        /// </summary>
-        private FileStream _devDataLogStream;
 
         /// <summary>
         /// Отображать ли [окно "имитатор ВСИ"].
@@ -1008,20 +1045,21 @@ namespace EGSE.Devices
             _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2);
             _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
             _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
+            _decoderSpacewireSDIn.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime1 = e.Data[0]; });
+            _decoderSpacewireSDIn.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime2 = e.Data[0]; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDIn.OnMessageFunc);
 
             _decoderSpacewireSDOut = new ProtocolSpacewire((uint)Spacewire3.Addr.OutData, (uint)Spacewire3.Addr.OutEnd, (uint)Spacewire3.Addr.OutTime1, (uint)Spacewire3.Addr.OutTime2);
             _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
             _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
+            _decoderSpacewireSDOut.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime1 = e.Data[0]; });
+            _decoderSpacewireSDOut.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime2 = e.Data[0]; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDOut.OnMessageFunc);
 
             _decoderHsi = new ProtocolHsi((uint)HSI.Addr);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(HSINotify.OnHsiMsgRawSave);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderHsi.OnMessageFunc);
-
-            _devDataLogStream = null;
-            _isWriteDevDataToFile = false;
         }
 
         /// <summary>
@@ -1038,6 +1076,11 @@ namespace EGSE.Devices
         /// Вызывается, когда [получено сообщение по ВСИ].
         /// </summary>
         public event ProtocolHsi.HsiMsgEventHandler GotHsiMsg;
+
+        /// <summary>
+        /// Вызывается, когда [получено УКС-сообщение по ВСИ].
+        /// </summary>
+        public event ProtocolHsi.HsiMsgEventHandler GotHsiCmdMsg;
         
         /// <summary>
         /// Вызывается, когда [получено сообщение по spacewire 3].
@@ -1211,13 +1254,6 @@ namespace EGSE.Devices
             }
         }
 
-        internal string GetNewFileName(string logName)
-        {
-            string dataLogDir = Directory.GetCurrentDirectory().ToString() + @"\DATA\";
-            Directory.CreateDirectory(dataLogDir);
-            return dataLogDir + logName + "_" + DateTime.Now.ToString(@"yyMMdd_HHmmss") + @".dat";
-        }
-
         /// <summary>
         /// Получает значение, показывающее, открыто ли [окно "имитатор БУК (для БУСК)"].
         /// </summary>
@@ -1287,85 +1323,6 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает значение, показывающее, нужно ли [записывать данные от прибора в файл].
-        /// </summary>
-        /// <value>
-        /// <c>true</c> если [записывать данные от прибора в файл]; иначе, <c>false</c>.
-        /// </value>
-        public bool IsWriteDevDataToFile
-        {
-            get 
-            { 
-                return _isWriteDevDataToFile; 
-            }
-
-            set
-            {
-                _isWriteDevDataToFile = value;
-                WriteDevData(value);
-                FirePropertyChangedEvent();
-            }
-        }
-             
-        /// <summary>
-        /// Получает размер файла данных от прибора.
-        /// </summary>
-        /// <value>
-        /// Размер файла (в байтах).
-        /// </value>
-        public long DevDataFileSize
-        {
-            get 
-            {
-                if (_devDataLogStream != null)
-                {
-                    return _devDataLogStream.Length;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Получает имя файла данных от прибора.  
-        /// </summary>
-        /// <value>
-        /// Имя файла.
-        /// </value>
-        public string DevDataFileName
-        {
-            get 
-            {
-                if (_devDataLogStream != null)
-                {
-                    return _devDataLogStream.Name;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-            }
-        }
-
-        public byte[] OpenFromFile()
-        {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ".dat";
-            dlg.Filter = "Bin data (.dat)|*.dat|All files (*.*)|*.*";
-
-            bool? result = dlg.ShowDialog();
-
-            if (result == true)
-            {
-                byte[] buf = File.ReadAllBytes(dlg.FileName);
-                return buf;
-            }
-            return new byte[] { };
-        }
-
-        /// <summary>
         /// Получает или задает время, пришедшее от прибора.
         /// </summary>       
         public EgseTime DeviceTime
@@ -1417,6 +1374,27 @@ namespace EGSE.Devices
         }
 
         /// <summary>
+        /// Открывает файл, для предоставления содержимого как массива байт.
+        /// </summary>
+        /// <returns>Массив байт открытого файла.</returns>
+        public byte[] OpenFromFile()
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = ".dat";
+            dlg.Filter = "Bin data (.dat)|*.dat|All files (*.*)|*.*";
+
+            bool? result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                byte[] buf = File.ReadAllBytes(dlg.FileName);
+                return buf;
+            }
+
+            return new byte[] { };
+        }
+
+        /// <summary>
         /// Для каждого элемента управления тикаем временем.
         /// </summary>
         public void TickAllControlsValues()
@@ -1427,17 +1405,6 @@ namespace EGSE.Devices
             {
                 (cv.Value as ControlValue).TimerTick(); 
             }
-        }
-
-        /// <summary>
-        /// Вынуждает обновить отображаемые свойства на UI. 
-        /// </summary>
-        private void UpdateProperties()
-        {
-            FirePropertyChangedEvent(null, @"DeviceTime");
-            FirePropertyChangedEvent(null, @"DeviceSpeed");
-            FirePropertyChangedEvent(null, @"DeviceTrafic");
-            FirePropertyChangedEvent(null, @"BytesAvailable");
         }
 
         /// <summary>
@@ -1466,35 +1433,15 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Указываем какой файл использовать для записи данных от прибора и по какому каналу.
+        /// Получает название файла, сформированного по правилам.
         /// </summary>
-        /// <param name="stream">Поток для записи данных.</param>
-        public void SetFileForLogDevData(FileStream stream)
+        /// <param name="logName">Название-база лог файла.</param>
+        /// <returns>Полное наименование файла.</returns>
+        internal string GetNewFileName(string logName)
         {
-            _devDataLogStream = stream;
-        }
-
-        /// <summary>
-        /// Записывает данные от прибора в файл.
-        /// </summary>
-        /// <param name="startWrite">Если установлено <c>true</c> [идет запись].</param>
-        public void WriteDevData(bool startWrite)
-        {
-            if (startWrite)
-            {
-                string dataLogDir = Directory.GetCurrentDirectory().ToString() + @"\\DATA\\";
-                Directory.CreateDirectory(dataLogDir);
-                string fileName = dataLogDir + Resource.Get(@"stDevLogName") + "_" + DateTime.Now.ToString(@"yyMMdd_HHmmss") + @".dat";
-                _devDataLogStream = new FileStream(fileName, System.IO.FileMode.Create);
-            }
-            else 
-            {
-                if (_devDataLogStream != null)
-                {
-                    _devDataLogStream.Close();
-                    _devDataLogStream = null;
-                }
-            }
+            string dataLogDir = Directory.GetCurrentDirectory().ToString() + @"\DATA\";
+            Directory.CreateDirectory(dataLogDir);
+            return dataLogDir + logName + "_" + DateTime.Now.ToString(@"yyMMdd_HHmmss") + @".dat";
         }
 
         /// <summary>
@@ -1578,11 +1525,14 @@ namespace EGSE.Devices
                         HSINotify.RequestDataResv++;
                     }
                 }
-                //else if (IsHsiCmdMsg(e))
-                //{
-
-                //    this.GotHsiMsg(sender, e);
-                //}
+                else if (IsHsiCmdMsg(e))
+                {
+                    if (this.GotHsiCmdMsg != null)
+                    {
+                        HSINotify.CmdCounter++;
+                        this.GotHsiCmdMsg(sender, e);
+                    }
+                }
                 else
                 {
                     this.GotHsiMsg(sender, e);
@@ -1606,6 +1556,17 @@ namespace EGSE.Devices
         }
 
         /// <summary>
+        /// Вынуждает обновить отображаемые свойства на UI. 
+        /// </summary>
+        private void UpdateProperties()
+        {
+            FirePropertyChangedEvent(null, @"DeviceTime");
+            FirePropertyChangedEvent(null, @"DeviceSpeed");
+            FirePropertyChangedEvent(null, @"DeviceTrafic");
+            FirePropertyChangedEvent(null, @"BytesAvailable");
+        }
+
+        /// <summary>
         /// Определяет когда [сообщение по spacewire] [является запросом квоты].
         /// </summary>
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
@@ -1615,14 +1576,34 @@ namespace EGSE.Devices
             return SpacewireSptpMsgEventArgs.Type.Request == msg.MsgType;
         }
 
+        /// <summary>
+        /// Определяет когда [сообщение по ВСИ] [является запросом статуса].
+        /// </summary>
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns><c>true</c> если сообщение "запрос статуса"</returns>
         private bool IsHsiRequestStateMsg(HsiMsgEventArgs msg)
         {
             return 0x03 == msg.Flag;
         }
 
+        /// <summary>
+        /// Определяет когда [сообщение по ВСИ] [является запросом данных].
+        /// </summary>
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns><c>true</c> если сообщение "запрос данных"</returns>
         private bool IsHsiRequestDataMsg(HsiMsgEventArgs msg)
         {
             return 0x04 == msg.Flag;
+        }
+
+        /// <summary>
+        /// Определяет когда [сообщение по ВСИ] [является УКС].
+        /// </summary>
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns><c>true</c> если сообщение "УКС"</returns>
+        private bool IsHsiCmdMsg(HsiMsgEventArgs msg)
+        {
+            return 0x02 == msg.Flag;
         }
         
         /// <summary>
@@ -1796,6 +1777,9 @@ namespace EGSE.Devices
         /// </summary>
         public class HSI : SubNotify, IDataErrorInfo
         {
+            /// <summary>
+            /// Timeout на запись данных в файл.
+            /// </summary>
             public const int WaitForWriteTime = 1000;
 
             /// <summary>
@@ -1864,6 +1848,53 @@ namespace EGSE.Devices
             private Line _line2;
 
             /// <summary>
+            /// Сохранять данные в файл.
+            /// </summary>
+            private bool _isSaveRawData;
+
+            /// <summary>
+            /// Имя файла данных.
+            /// </summary>
+            private string _rawDataFile;
+
+            /// <summary>
+            /// Для асинхронной записи в файл.
+            /// </summary>
+            private FileStream _rawDataStream;
+
+            /// <summary>
+            /// Квазиасинхронная запись в файл.
+            /// Примечание:
+            /// Используется для сигнала, что все данные записались в файл.
+            /// </summary>
+            private Task _rawDataTask;
+
+            /// <summary>
+            /// Количество запросов статуса по основной линии.
+            /// </summary>
+            private long _requestStateMain;
+
+            /// <summary>
+            /// Количество запросов статуса по резервной линии.
+            /// </summary>
+            private long _requestStateResv;
+
+            /// <summary>
+            /// Количество запросов данных по резервной линии.
+            /// </summary>
+            private long _requestDataResv;
+
+            /// <summary>
+            /// Количество запросов данных по основной линии.
+            /// </summary>
+            private long _requestDataMain;
+
+            /// <summary>
+            /// Количество переданных УКС.
+            /// </summary>
+            private long _cmdCounter;
+
+            /// <summary>
             /// Экземпляр команды на [включение КВВ ПК1].
             /// </summary>
             private ICommand _issueEnable1Command;
@@ -1879,23 +1910,35 @@ namespace EGSE.Devices
             private ICommand _issueRequestCommand;
 
             /// <summary>
-            /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
+            /// Экземпляр команды на [включение записи в файл].
+            /// </summary>
+            private ICommand _saveRawDataCommand;
+
+            /// <summary>
+            /// Экземпляр команды на [открытие данных из файла].
+            /// </summary>
+            private ICommand _fromFileCommand;
+
+            /// <summary>
+            /// Экземпляр команды на [выдачу активного УКС активация ПК1 по интерфейсу ВСИ].
             /// </summary>
             private ICommand _issueCmdEnable1Command;
-            private ICommand _saveRawDataCommand;
-            private bool _isSaveRawData;
-            private string _rawDataFile;
-            private ICommand _fromFileCommand;
-            private FileStream _rawDataStream;
-            private Task _rawDataTask;
+
+            /// <summary>
+            /// Экземпляр команды на [выдачу активного УКС деактивировать ПК-ы по интерфейсу ВСИ].
+            /// </summary>
             private ICommand _issueCmdDisableCommand;
+
+            /// <summary>
+            /// Экземпляр команды на [выдачу активного УКС активация ПК2 по интерфейсу ВСИ].
+            /// </summary>
             private ICommand _issueCmdEnable2Command;
-            private ICommand _issueCmdDisable2Command;
-            private long _requestStateMain;
-            private long _requestStateResv;
-            private long _requestDataResv;
-            private long _requestDataMain;
-            
+
+            /// <summary>
+            /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
+            /// </summary>
+            private ICommand _issueCmdCommand;
+                        
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="HSI" />.
             /// </summary>
@@ -2055,6 +2098,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает наименование файла для записи.
+            /// </summary>
+            /// <value>
+            /// Наименование файла для записи.
+            /// </value>
             public string RawDataFile
             {
                 get
@@ -2086,10 +2135,17 @@ namespace EGSE.Devices
                             }                            
                         }
                     }
+
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что запись в файл включена.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если требуется запись данных в файл; иначе, <c>false</c>.
+            /// </value>
             public bool IsSaveRawData 
             { 
                 get
@@ -2108,10 +2164,17 @@ namespace EGSE.Devices
                     {
                        RawDataFile = string.Empty;
                     }
+
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает команду на [включение записи данных в файл].
+            /// </summary>
+            /// <value>
+            /// Команда на [включение записи данных в файл].
+            /// </value>
             public ICommand SaveRawDataCommand
             {
                 get
@@ -2123,21 +2186,6 @@ namespace EGSE.Devices
 
                     return _saveRawDataCommand;
                 }
-            }
-
-            public virtual void OnHsiMsgRawSave(object sender, HsiMsgEventArgs e)
-            {
-               if (null != _rawDataStream)
-               {
-                   if (null != _rawDataTask)
-                   {
-                       _rawDataTask.Wait(WaitForWriteTime);
-                   }
-                   if (_rawDataStream.CanWrite)
-                   {
-                       _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
-                   }
-               }
             }
 
             /// <summary>
@@ -2364,16 +2412,6 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Вызов диалога "Открыть файл".
-            /// </summary>
-            /// <param name="obj">The object.</param>
-            public void OpenFromFile(object obj)
-            {
-                Data = Owner.OpenFromFile();
-                FirePropertyChangedEvent("Data");
-            }
-
-            /// <summary>
             /// Получает команду на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
             /// <value>
@@ -2383,15 +2421,21 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    if (_issueCmdEnable1Command == null)
+                    if (_issueCmdCommand == null)
                     {
-                        _issueCmdEnable1Command = new RelayCommand(obj => { IsIssueCmd = true; ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.IssueCmd, 1); }, obj => { return true; });
+                        _issueCmdCommand = new RelayCommand(obj => { IsIssueCmd = true; ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.IssueCmd, 1); }, obj => { return true; });
                     }
 
-                    return _issueCmdEnable1Command;
+                    return _issueCmdCommand;
                 }
             }
 
+            /// <summary>
+            /// Получает команду на [выдачу активного УКС активация ПК1 по интерфейсу ВСИ].
+            /// </summary>
+            /// <value>
+            /// Команда на [выдачу активного УКС активация ПК1 по интерфейсу ВСИ].
+            /// </value>
             public ICommand IssueCmdEnable1Command
             {
                 get
@@ -2405,6 +2449,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на [выдачу активного УКС деактивация ПК по интерфейсу ВСИ].
+            /// </summary>
+            /// <value>
+            /// Команда на [выдачу активного УКС деактивация ПК по интерфейсу ВСИ].
+            /// </value>
             public ICommand IssueCmdDisableCommand
             {
                 get
@@ -2418,6 +2468,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает команду на [выдачу активного УКС активация ПК2 по интерфейсу ВСИ].
+            /// </summary>
+            /// <value>
+            /// Команда на [выдачу активного УКС активация ПК2 по интерфейсу ВСИ].
+            /// </value>
             public ICommand IssueCmdEnable2Command
             {
                 get
@@ -2428,6 +2484,106 @@ namespace EGSE.Devices
                     }
 
                     return _issueCmdEnable2Command;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество запросов статусов по основной линии.
+            /// </summary>
+            /// <value>
+            /// Количество запросов статусов по основной линии.
+            /// </value>
+            public long RequestStateMain
+            {
+                get
+                {
+                    return _requestStateMain;
+                }
+
+                set
+                {
+                    _requestStateMain = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество запросов статусов по резервной линии.
+            /// </summary>
+            /// <value>
+            /// Количество запросов статусов по резервной линии.
+            /// </value>
+            public long RequestStateResv
+            {
+                get
+                {
+                    return _requestStateResv;
+                }
+
+                set
+                {
+                    _requestStateResv = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество запросов данных по основной линии.
+            /// </summary>
+            /// <value>
+            /// Количество запросов данных по основной линии.
+            /// </value>
+            public long RequestDataMain
+            {
+                get
+                {
+                    return _requestDataMain;
+                }
+
+                set
+                {
+                    _requestDataMain = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество запросов данных по резервной линии.
+            /// </summary>
+            /// <value>
+            /// Количество запросов данных по резервной линии.
+            /// </value>
+            public long RequestDataResv
+            {
+                get
+                {
+                    return _requestDataResv;
+                }
+
+                set
+                {
+                    _requestDataResv = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество полученых УКС.
+            /// </summary>
+            /// <value>
+            /// Количество полученых УКС.
+            /// </value>
+            public long CmdCounter
+            {
+                get
+                {
+                    return _cmdCounter;
+                }
+
+                set
+                {
+                    _cmdCounter = value;
+                    FirePropertyChangedEvent();
                 }
             }
 
@@ -2458,6 +2614,37 @@ namespace EGSE.Devices
                     string result = null;
 
                     return result;
+                }
+            }
+
+            /// <summary>
+            /// Вызов диалога "Открыть файл".
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public void OpenFromFile(object obj)
+            {
+                Data = Owner.OpenFromFile();
+                FirePropertyChangedEvent("Data");
+            }
+
+            /// <summary>
+            /// Вызывается когда [требуется записать данные сообщения в файл].
+            /// </summary>
+            /// <param name="sender">The sender.</param>
+            /// <param name="e">The <see cref="HsiMsgEventArgs"/> instance containing the event data.</param>
+            public virtual void OnHsiMsgRawSave(object sender, HsiMsgEventArgs e)
+            {
+                if (null != _rawDataStream)
+                {
+                    if (null != _rawDataTask)
+                    {
+                        _rawDataTask.Wait(WaitForWriteTime);
+                    }
+
+                    if (_rawDataStream.CanWrite)
+                    {
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                    }
                 }
             }
 
@@ -2493,63 +2680,7 @@ namespace EGSE.Devices
                 ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineOut, 1, 1, Device.CmdSimHSIControl, value => IssueLineOut = (SimLine)value);
                 ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.IssueRequest, 0, 1, Device.CmdSimHSIControl, value => IsIssueRequest = 1 == value);
                 ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.IssueCmd, 0, 1, Device.CmdSimHSIRecord, value => IsIssueCmd = 1 == value);
-            }
-
-            public long RequestStateMain
-            {
-                get
-                {
-                    return _requestStateMain;
-                }
-
-                set
-                {
-                    _requestStateMain = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            public long RequestStateResv
-            {
-                get
-                {
-                    return _requestStateResv;
-                }
-
-                set
-                {
-                    _requestStateResv = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            public long RequestDataMain
-            {
-                get
-                {
-                    return _requestDataMain;
-                }
-
-                set
-                {
-                    _requestDataMain = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            public long RequestDataResv
-            {
-                get
-                {
-                    return _requestDataResv;
-                }
-
-                set
-                {
-                    _requestDataResv = value;
-                    FirePropertyChangedEvent();
-                }
-            }
+            }            
         }
 
         /// <summary>
@@ -4043,6 +4174,9 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire2 : SubNotify, IDataErrorInfo
         {
+            /// <summary>
+            /// Timeout на запись данных в файл.
+            /// </summary>
             public const int WaitForWriteTime = 1000;
 
             /// <summary>
@@ -4156,6 +4290,28 @@ namespace EGSE.Devices
             private bool _isMakeTK;
 
             /// <summary>
+            /// Сохранять данные в файл.
+            /// </summary>
+            private bool _isSaveRawData;
+
+            /// <summary>
+            /// Имя файла данных.
+            /// </summary>
+            private string _rawDataFile;
+
+            /// <summary>
+            /// Для асинхронной записи в файл.
+            /// </summary>
+            private FileStream _rawDataStream;
+
+            /// <summary>
+            /// Квазиасинхронная запись в файл.
+            /// Примечание:
+            /// Используется для сигнала, что все данные записались в файл.
+            /// </summary>
+            private Task _rawDataTask;
+
+            /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
             /// </summary>
             private ICommand _issuePackageCommand;
@@ -4194,11 +4350,11 @@ namespace EGSE.Devices
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
             private ICommand _fromFileCommand;
+
+            /// <summary>
+            /// Экземпляр команды на [включение записи в файл].
+            /// </summary>
             private ICommand _saveRawDataCommand;
-            private string _rawDataFile;
-            private bool _isSaveRawData;
-            private FileStream _rawDataStream;
-            private Task _rawDataTask;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
@@ -4329,6 +4485,13 @@ namespace EGSE.Devices
                     FirePropertyChangedEvent();
                 }
             }
+
+            /// <summary>
+            /// Получает или задает наименование файла для записи данных.
+            /// </summary>
+            /// <value>
+            /// Наименование файла для записи данных.
+            /// </value>
             public string RawDataFile
             {
                 get
@@ -4360,10 +4523,17 @@ namespace EGSE.Devices
                             }
                         }
                     }
+
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что включена запись данных в файл.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> исли запись данных включена; иначе, <c>false</c>.
+            /// </value>
             public bool IsSaveRawData
             {
                 get
@@ -4382,10 +4552,17 @@ namespace EGSE.Devices
                     {
                         RawDataFile = string.Empty;
                     }
+
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает команду на [включение записи данных в файл].
+            /// </summary>
+            /// <value>
+            /// Команда на [включение записи данных в файл].
+            /// </value>
             public ICommand SaveRawDataCommand
             {
                 get
@@ -4396,21 +4573,6 @@ namespace EGSE.Devices
                     }
 
                     return _saveRawDataCommand;
-                }
-            }
-
-            public virtual void OnSpacewire2MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
-            {
-                if (null != _rawDataStream)
-                {
-                    if (null != _rawDataTask)
-                    {
-                        _rawDataTask.Wait(WaitForWriteTime);
-                    }
-                    if (_rawDataStream.CanWrite)
-                    {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
-                    }
                 }
             }
 
@@ -5110,6 +5272,27 @@ namespace EGSE.Devices
             }
 
             /// <summary>
+            /// Вызывается когда [требуется записать данные сообщения в файл].
+            /// </summary>
+            /// <param name="sender">The sender.</param>
+            /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+            public virtual void OnSpacewire2MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
+            {
+                if (null != _rawDataStream)
+                {
+                    if (null != _rawDataTask)
+                    {
+                        _rawDataTask.Wait(WaitForWriteTime);
+                    }
+
+                    if (_rawDataStream.CanWrite)
+                    {
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                    }
+                }
+            }
+
+            /// <summary>
             /// Вызов диалога "Открыть файл".
             /// </summary>
             /// <param name="obj">The object.</param>
@@ -5156,6 +5339,9 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
+            /// <summary>
+            /// Timeout на запись данных в файл.
+            /// </summary>
             public const int WaitForWriteTime = 1000;
 
             /// <summary>
@@ -5179,6 +5365,28 @@ namespace EGSE.Devices
             private bool _isIssueTransmission;
 
             /// <summary>
+            /// Сохранять данные в файл.
+            /// </summary>
+            private bool _isSaveRawData;
+
+            /// <summary>
+            /// Имя файла данных.
+            /// </summary>
+            private string _rawDataFile;
+
+            /// <summary>
+            /// Для асинхронной записи в файл.
+            /// </summary>
+            private FileStream _rawDataStream;
+
+            /// <summary>
+            /// Квазиасинхронная запись в файл.
+            /// Примечание:
+            /// Используется для сигнала, что все данные записались в файл.
+            /// </summary>
+            private Task _rawDataTask;
+
+            /// <summary>
             /// Полукомплект рабочего прибора.
             /// </summary>
             private HalfSet _workDeviceHalfSet;
@@ -5187,18 +5395,50 @@ namespace EGSE.Devices
             /// Экземпляр команды [включение интерфейса spacewire].
             /// </summary>
             private ICommand _issueEnableCommand;
-            private string _rawDataFile;
-            private bool _isSaveRawData;
+
+            /// <summary>
+            /// Экземпляр команды на [включение записи в файл].
+            /// </summary>
             private ICommand _saveRawDataCommand;
-            private FileStream _rawDataStream;
-            private Task _rawDataTask;
+
+            /// <summary>
+            /// Текущее значение Timetick1 от БУК.
+            /// </summary>
             private byte _bukTickTime1;
+
+            /// <summary>
+            /// Текущее значение Timetick2 от БУК.
+            /// </summary>
             private byte _bukTickTime2;
-            private byte _sdTickTime2;
-            private byte _sdTickTime1;
+
+            /// <summary>
+            /// Текущее значение Timetick2 от НП.
+            /// </summary>
+            private byte _scidevTickTime2;
+
+            /// <summary>
+            /// Текущее значение Timetick1 от НП.
+            /// </summary>
+            private byte _scidevTickTime1;
+
+            /// <summary>
+            /// Количество запросов квоты от БУК.
+            /// </summary>
             private long _requestQueueFromBuk;
+
+            /// <summary>
+            /// Количество предоставления квот от БУК.
+            /// </summary>
             private long _replyQueueFromBuk;
+
+            /// <summary>
+            /// Количество запросов квоты от НП.
+            /// </summary>
             private long _replyQueueFromSD;
+
+            /// <summary>
+            /// Количество предоставления квот от НП.
+            /// </summary>
             private long _requestQueueFromSD;
 
             /// <summary>
@@ -5417,6 +5657,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает наименование файла для записи данных.
+            /// </summary>
+            /// <value>
+            /// Наименование файла для записи данных.
+            /// </value>
             public string RawDataFile
             {
                 get
@@ -5448,10 +5694,17 @@ namespace EGSE.Devices
                             }
                         }
                     }
+
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что активна запись данных в файл.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если активна запись данных в файл; иначе, <c>false</c>.
+            /// </value>
             public bool IsSaveRawData
             {
                 get
@@ -5470,10 +5723,17 @@ namespace EGSE.Devices
                     {
                         RawDataFile = string.Empty;
                     }
+
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает команду на [включение записи данных в файл].
+            /// </summary>
+            /// <value>
+            /// Команда на [включение записи данных в файл].
+            /// </value>
             public ICommand SaveRawDataCommand
             {
                 get
@@ -5487,6 +5747,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает количество запросов квот от БУК.
+            /// </summary>
+            /// <value>
+            /// Количество запросов квот от БУК.
+            /// </value>
             public long RequestQueueFromBuk
             {
                 get
@@ -5501,6 +5767,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает количество предоставления квот от БУК.
+            /// </summary>
+            /// <value>
+            /// Количество предоставления квот от БУК.
+            /// </value>
             public long ReplyQueueFromBuk
             {
                 get
@@ -5515,6 +5787,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает количество запросов квот от НП.
+            /// </summary>
+            /// <value>
+            /// Количество запросов квот от НП.
+            /// </value>
             public long RequestQueueFromSD
             {
                 get
@@ -5529,6 +5807,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает количество предоставления квот от НП.
+            /// </summary>
+            /// <value>
+            /// Количество предоставления квот от НП.
+            /// </value>
             public long ReplyQueueFromSD
             {
                 get
@@ -5543,34 +5827,52 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает текущий TimeTick1 от НП.
+            /// </summary>
+            /// <value>
+            /// Текущий TimeTick1 от НП.
+            /// </value>
             public byte SDTickTime1
             {
                 get
                 {
-                    return _sdTickTime1;
+                    return _scidevTickTime1;
                 }
 
                 set
                 {
-                    _sdTickTime1 = value;
+                    _scidevTickTime1 = value;
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает или задает текущий TimeTick2 от НП.
+            /// </summary>
+            /// <value>
+            /// Текущий TimeTick2 от НП.
+            /// </value>
             public byte SDTickTime2
             {
                 get
                 {
-                    return _sdTickTime2;
+                    return _scidevTickTime2;
                 }
 
                 set
                 {
-                    _sdTickTime2 = value;
+                    _scidevTickTime2 = value;
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает или задает текущий TimeTick1 от БУК.
+            /// </summary>
+            /// <value>
+            /// Текущий TimeTick1 от БУК.
+            /// </value>
             public byte BukTickTime1
             {
                 get
@@ -5585,6 +5887,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает текущий TimeTick2 от БУК.
+            /// </summary>
+            /// <value>
+            /// Текущий TimeTick2 от БУК.
+            /// </value>
             public byte BukTickTime2
             {
                 get
@@ -5596,21 +5904,6 @@ namespace EGSE.Devices
                 {
                     _bukTickTime2 = value;
                     FirePropertyChangedEvent();
-                }
-            }
-
-            public virtual void OnSpacewire3MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
-            {
-                if (null != _rawDataStream)
-                {
-                    if (null != _rawDataTask)
-                    {
-                        _rawDataTask.Wait(WaitForWriteTime);
-                    }
-                    if (_rawDataStream.CanWrite)
-                    {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
-                    }
                 }
             }
 
@@ -5641,6 +5934,27 @@ namespace EGSE.Devices
                     string result = null;
 
                     return result;
+                }
+            }
+
+            /// <summary>
+            /// Вызывается когда [требуется записать данные сообщения в файл].
+            /// </summary>
+            /// <param name="sender">The sender.</param>
+            /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+            public virtual void OnSpacewire3MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
+            {
+                if (null != _rawDataStream)
+                {
+                    if (null != _rawDataTask)
+                    {
+                        _rawDataTask.Wait(WaitForWriteTime);
+                    }
+
+                    if (_rawDataStream.CanWrite)
+                    {
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                    }
                 }
             }
 
@@ -5739,6 +6053,10 @@ namespace EGSE.Devices
             /// Экземпляр команды на [включение автоматической выдачи посылки по интерфейсу spacewire].
             /// </summary>
             private ICommand _issueAutoCommand;
+
+            /// <summary>
+            /// Экземпляр команды на [открыть из файла].
+            /// </summary>
             private ICommand _fromFileCommand;
 
             /// <summary>
@@ -5960,16 +6278,6 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Вызов диалога "Открыть файл".
-            /// </summary>
-            /// <param name="obj">The object.</param>
-            public void OpenFromFile(object obj)
-            {
-                Data = Owner.OpenFromFile();
-                FirePropertyChangedEvent("Data");
-            }
-
-            /// <summary>
             /// Получает или задает значение, показывающее, что [включена автоматическая выдача посылки].
             /// </summary>
             /// <value>
@@ -6105,6 +6413,16 @@ namespace EGSE.Devices
 
                     return result;
                 }
+            }
+
+            /// <summary>
+            /// Вызов диалога "Открыть файл".
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public void OpenFromFile(object obj)
+            {
+                Data = Owner.OpenFromFile();
+                FirePropertyChangedEvent("Data");
             }
 
             /// <summary>

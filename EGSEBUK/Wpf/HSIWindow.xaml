@@ -131,7 +131,7 @@
                 Style="{StaticResource FlatHeader}"/>
             <DockPanel Grid.Row="1"
             	LastChildFill="True">
-                <Label DockPanel.Dock="Left" Content="Запись в файл"
+                <Label DockPanel.Dock="Left" Content="Запись УКС в файл"
             		Template="{StaticResource FlatLabel}"/>
                 <Button DockPanel.Dock="Left"                                                    
             		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
@@ -218,10 +218,12 @@
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
             	Grid.Column="1"
+                       Grid.RowSpan="2"
             	Content="{Binding RequestStateMain}"
             	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
             	Grid.Column="2"
+                Grid.RowSpan="2"
             	Content="{Binding RequestStateResv}"
             	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
@@ -230,15 +232,22 @@
             	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
             	Grid.Column="4"
+                       Grid.RowSpan="2"
             	Content="{Binding RequestDataMain}"
             	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
             	Grid.Column="5"
+                       Grid.RowSpan="2"
             	Content="{Binding RequestDataResv}"
             	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
 				Grid.Column="6"
 				Content="{Binding FrameCounter1}"
+				Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="3"
+				Grid.Column="7"
+                Grid.RowSpan="2"
+				Content="{Binding CmdCounter}"
 				Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="4"
                 	Content="ПК 2"

@@ -35,10 +35,10 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
 				Content="О программе"
-				Margin="5"/>
+				Template="{StaticResource FlatButtonClickDefault}"/>
             <Button Grid.Column="1" 
 				Content="Выход"
-				Margin="5" Click="CloseButton_Click"/>
+				Template="{StaticResource FlatButtonClickDefault}" Click="CloseButton_Click"/>
         </Grid>
         <StackPanel Grid.Row="1" 
 			Grid.Column="0">
@@ -388,7 +388,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Padding="1" Grid.Column="0">
-                <Label Content="{Binding BytesAvailable}" Template="{StaticResource FlatLabel}"/>
+                <Label Content="{Binding BytesAvailable}" Template="{StaticResource FlatLabel}" Visibility="Hidden"/>
             </StatusBarItem>
             <StatusBarItem Padding="1" Grid.Column="1"
 				HorizontalAlignment="Right">

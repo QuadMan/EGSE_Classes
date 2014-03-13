@@ -9,9 +9,11 @@ namespace EGSE.Protocols
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using EGSE.Utilites;
 
     /// <summary>
     /// Декодер протокола ВСИ.
@@ -22,6 +24,38 @@ namespace EGSE.Protocols
         /// Адресный байт "ВСИ".
         /// </summary>
         private readonly uint _dataAddr;
+
+        /// <summary>
+        /// Текущий шаг декодера.
+        /// </summary>
+        private int _decodeState = 0;
+
+        /// <summary>
+        /// Количество ошибок декодера.
+        /// Примечание: 
+        /// Считает количество не распознанных байт.
+        /// </summary>
+        private int _errorCount;
+
+        /// <summary>
+        /// Текущий флаг кадра.
+        /// </summary>
+        private byte _flag;
+
+        /// <summary>
+        /// Текущий размер кадра.
+        /// </summary>
+        private short _size = -1;
+
+        /// <summary>
+        /// Текущий байт HI.
+        /// </summary>
+        private byte _hi;
+
+        /// <summary>
+        /// Текущий кадр.
+        /// </summary>
+        private byte[] _buf;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="ProtocolHsi" />.
@@ -44,22 +78,6 @@ namespace EGSE.Protocols
         /// </summary>
         public event HsiMsgEventHandler GotHsiMsg;
 
-        private enum DecodeState
-        {
-            Start,
-            Flag,
-            Hi,
-            Lo,
-            Data
-        }
-
-        private DecodeState _decodeState = DecodeState.Start;
-        private byte _flag;
-        private short _size = 0;
-        private byte _lo;
-        private byte _hi;
-        private byte _line;
-        private byte[] _buf;
         /// <summary>
         /// Метод, обрабатывающий сообщения от декодера USB.
         /// </summary>
@@ -67,79 +85,65 @@ namespace EGSE.Protocols
         /// <param name="msg">Сообщение для обработки.</param>
         public void OnMessageFunc(object sender, ProtocolMsgEventArgs msg)
         {
-            if (msg != null)
+            new { msg }.CheckNotNull(); 
+            if (_dataAddr != msg.Addr)
             {
-                if (_dataAddr == msg.Addr)
+                return;
+            }
+
+            for (int i = 0; i < msg.DataLen; i++)
+            {
+                switch (_decodeState)
                 {
-                    int i = 0;
-                    byte bt;
-                    while (i < msg.DataLen)
-                    {
-                        bt = msg.Data[i];
-                        switch (_decodeState)
+                    case 0:
+                        if (0xA4 != msg.Data[i])
                         {
-                            case DecodeState.Start: if (0xA4 == bt)
-                                {
-                                    _decodeState = DecodeState.Flag;                                    
-                                }
-                                break;
-                            case DecodeState.Flag: 
-                                {
-                                    _decodeState = DecodeState.Hi;
-                                    _flag = bt;
-                                }
-                                break;
-                            case DecodeState.Hi:
-                                {
-                                    _decodeState = DecodeState.Lo;
-                                    _hi = bt;
-                                    _size = (short)((short)(bt << 8) & 0x7FFF);
-                                    _line = (byte)(bt & (1 << 7));
-                                }
-                                break;
-                            case DecodeState.Lo:
-                                {
-                                    _decodeState = DecodeState.Data;
-                                    _lo = bt;
-                                    _size |= (short)bt;
-                                    _buf = new byte[_size + 4];
-                                    if (_size == 0)
-                                    {
-                                        _buf[0] = 0xa4;
-                                        _buf[1] = _flag;
-                                        _buf[2] = _hi;
-                                        _buf[3] = _lo;
-                                        HsiMsgEventArgs _msg = new HsiMsgEventArgs(_buf, _buf.Length);
-                                        OnHsiMsg(this, _msg);
-                                        _decodeState = DecodeState.Start;
-                                    }
-                                }
-                                break;
-                            default:
-                                if (_size > 0)
-                                {
-                                    _buf[_buf.Length - _size] = bt;
-                                    _size--;
-                                    if (_size == 0)
-                                    {
-                                        HsiMsgEventArgs _msg = new HsiMsgEventArgs(_buf, _buf.Length);
-                                        OnHsiMsg(this, _msg);
-                                        _decodeState = DecodeState.Start;
-                                    }
-                                }
-                                else
-                                {
-                                    HsiMsgEventArgs _msg = new HsiMsgEventArgs(_buf, _buf.Length);
-                                    OnHsiMsg(this, _msg);
-                                    _decodeState = DecodeState.Start;
-                                }
-                                break;
+                            _errorCount++;
+                            _decodeState = -1;
                         }
 
-                        i++;
-                    }                  
+                        break;
+                    case 1:
+                        {
+                            _flag = msg.Data[i];
+                        }
+
+                        break;
+                    case 2:
+                        {
+                            _hi = msg.Data[i];
+                        }
+
+                        break;
+                    case 3:
+                        {
+                            _size = (short)((short)(_hi << 8) & 0x7FFF | msg.Data[i]);
+                            _buf = new byte[_size + 4];
+                            _buf[0] = 0xa4;
+                            _buf[1] = _flag;
+                            _buf[2] = _hi;
+                            _buf[3] = msg.Data[i];                            
+                        }
+
+                        break;
+                    default:
+                        {
+                            _buf[_buf.Length - _size] = msg.Data[i];
+                            _size--;
+                        }
+
+                        break;
                 }
-            }
+
+                _decodeState++;
+                if (0 == _size)
+                {
+                    HsiMsgEventArgs _msg = new HsiMsgEventArgs(_buf, _buf.Length);
+                    OnHsiMsg(this, _msg);
+                    _decodeState = 0;
+                    _size = -1;
+                }
+            }                  
         }
 
         /// <summary>
@@ -164,13 +168,14 @@ namespace EGSE.Protocols
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="HsiMsgEventArgs" />.
         /// </summary>
-        /// <param name="data">The data.</param>
+        /// <param name="data">Данные кадра.</param>
+        /// <param name="length">Длина кадра.</param>
         public HsiMsgEventArgs(byte[] data, int length)
         {
             if (4 <= data.Length)
             {
                 Data = new byte[length - 4];
-                Array.Copy(data, Data, length - 4);
+                Array.Copy(data, 4, Data, 0, length - 4);
                 DataLen = length - 4;
                 Flag = data[1];
                 Line = (HsiLine)(data[2] & (1 << 7));
@@ -184,16 +189,44 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Линия передачи ВСИ.
+        /// </summary>
         public enum HsiLine
         {
+            /// <summary>
+            /// Основная линия ВСИ.
+            /// </summary>
             Main = 0x00,
+
+            /// <summary>
+            /// Резервная линия ВСИ.
+            /// </summary>
             Resv = 0x01
         }
 
+        /// <summary>
+        /// Получает или задает флаг кадра ВСИ.
+        /// </summary>
+        /// <value>
+        /// Флаг кадра ВСИ.
+        /// </value>
         public byte Flag { get; set; }
 
+        /// <summary>
+        /// Получает или задает линию передачи кадра.
+        /// </summary>
+        /// <value>
+        /// Линия передачи кадра.
+        /// </value>
         public HsiLine Line { get; set; }
 
+        /// <summary>
+        /// Получает или задает размер кадра ВСИ.
+        /// </summary>
+        /// <value>
+        /// Размер кадра в байтах.
+        /// </value>
         public int Size { get; set; }
     }
 }

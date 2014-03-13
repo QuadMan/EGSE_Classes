@@ -280,5 +280,28 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <ControlTemplate x:Key="FlatButtonClickDefault" TargetType="{x:Type Button}">
+            <Border x:Name="Border"
+                        Background="{StaticResource ClickBrush}"   
+                        Focusable="True" 
+                        BorderThickness="0" 
+                        Margin="1">
+                <ContentPresenter x:Name="ContentPresenter"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Content="{TemplateBinding Content}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource GrayBrush}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
     </Application.Resources>
 </Application>
