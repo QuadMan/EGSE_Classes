@@ -11,10 +11,12 @@ namespace FTD2XXNET
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Runtime.InteropServices;  
+    using System.Runtime.InteropServices;
+    using System.Security;
     using System.Text;
-    using System.Threading;    
-          
+    using System.Threading;
+    using Microsoft.Win32.SafeHandles;   
+ 
     /// <summary>
     /// Class wrapper for FTD2XX.DLL
     /// </summary>
@@ -80,7 +82,7 @@ namespace FTD2XXNET
         /// <summary>
         /// The handle ft d2 XXDLL
         /// </summary>
-        private IntPtr handleFTD2XXDLL = IntPtr.Zero;
+        private SafeHandleDll _handle;
 
         // Declare pointers to each of the functions we are going to use in FT2DXX.DLL
         // These are assigned in our constructor and freed in our destructor.
@@ -197,9 +199,7 @@ namespace FTD2XXNET
         /// <summary>
         /// The _fthandle
         /// </summary>
-        private IntPtr _fthandle = IntPtr.Zero;
-
-        #region CONSTRUCTOR_DESTRUCTOR
+        private IntPtr _fthandle = IntPtr.Zero;        
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="FTDICustom" />.
@@ -207,26 +207,19 @@ namespace FTD2XXNET
         /// </summary>
         public FTDICustom()
         {
-            // If FTD2XX.DLL is NOT loaded already, load it
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            _handle = new SafeHandleDll(true, SafeNativeMethods.LoadLibrary(@"FTD2XX.DLL"));
+
+            if (_handle.IsInvalid)
             {
-                // Load our FTD2XX.DLL library
-                handleFTD2XXDLL = LoadLibrary(@"FTD2XX.DLL");
-                if (handleFTD2XXDLL == IntPtr.Zero)
-                {
-                    // Failed to load our FTD2XX.DLL library from System32 or the application directory
-                    // Try the same directory that this FTD2XX_NET DLL is in
-                    // !MessageBox.Show("Attempting to load FTD2XX.DLL from:\n" + Path.GetDirectoryName(GetType().Assembly.Location));
-                    handleFTD2XXDLL = LoadLibrary(@Path.GetDirectoryName(GetType().Assembly.Location) + "\\FTD2XX.DLL");
-                }
+                _handle = new SafeHandleDll(true, SafeNativeMethods.LoadLibrary(@Path.GetDirectoryName(GetType().Assembly.Location) + "\\FTD2XX.DLL"));
             }
 
             // If we have succesfully loaded the library, get the function pointers set up
-            if (handleFTD2XXDLL != IntPtr.Zero)
+            if (!_handle.IsInvalid)
             {
                 // Set up our function pointers for use through our exported methods
 //                pFT_Open = GetProcAddress(hFTD2XXDLL, "FT_Open");
-                entryFTOpenEx = GetProcAddress(handleFTD2XXDLL, "FT_OpenEx");
+                entryFTOpenEx = GetProcAddress(_handle, "FT_OpenEx");
                 if (entryFTOpenEx != IntPtr.Zero)
                 {
                     FT_OpenEx = (TFT_OpenEx)Marshal.GetDelegateForFunctionPointer(entryFTOpenEx, typeof(TFT_OpenEx));
@@ -235,83 +228,68 @@ namespace FTD2XXNET
                 {
                 }
 
-                entryFTClose = GetProcAddress(handleFTD2XXDLL, "FT_Close");
+                entryFTClose = GetProcAddress(_handle, "FT_Close");
                 FT_Close = (TFT_Close)Marshal.GetDelegateForFunctionPointer(entryFTClose, typeof(TFT_Close));
 
-                entryFTRead = GetProcAddress(handleFTD2XXDLL, "FT_Read");
+                entryFTRead = GetProcAddress(_handle, "FT_Read");
                 FT_Read = (TFT_Read)Marshal.GetDelegateForFunctionPointer(entryFTRead, typeof(TFT_Read));
 
-                entryFTWrite = GetProcAddress(handleFTD2XXDLL, "FT_Write");
+                entryFTWrite = GetProcAddress(_handle, "FT_Write");
                 FT_Write = (TFT_Write)Marshal.GetDelegateForFunctionPointer(entryFTWrite, typeof(TFT_Write));
 
-                entryFTGetQueueStatus = GetProcAddress(handleFTD2XXDLL, "FT_GetQueueStatus");
+                entryFTGetQueueStatus = GetProcAddress(_handle, "FT_GetQueueStatus");
                 FT_GetQueueStatus = (TFT_GetQueueStatus)Marshal.GetDelegateForFunctionPointer(entryFTGetQueueStatus, typeof(TFT_GetQueueStatus));
 
-                entryFTGetStatus = GetProcAddress(handleFTD2XXDLL, "FT_GetStatus");
+                entryFTGetStatus = GetProcAddress(_handle, "FT_GetStatus");
                 FT_GetStatus = (TFT_GetStatus)Marshal.GetDelegateForFunctionPointer(entryFTGetStatus, typeof(TFT_GetStatus));
 
-                entryFTResetDevice = GetProcAddress(handleFTD2XXDLL, "FT_ResetDevice");
+                entryFTResetDevice = GetProcAddress(_handle, "FT_ResetDevice");
                 FT_ResetDevice = (TFT_ResetDevice)Marshal.GetDelegateForFunctionPointer(entryFTResetDevice, typeof(TFT_ResetDevice));
 
-                entryFTResetPort = GetProcAddress(handleFTD2XXDLL, "FT_ResetPort");
+                entryFTResetPort = GetProcAddress(_handle, "FT_ResetPort");
                 FT_ResetPort = (TFT_ResetPort)Marshal.GetDelegateForFunctionPointer(entryFTResetPort, typeof(TFT_ResetPort));
 
-                entryFTCyclePort = GetProcAddress(handleFTD2XXDLL, "FT_CyclePort");
+                entryFTCyclePort = GetProcAddress(_handle, "FT_CyclePort");
                 FT_CyclePort = (TFT_CyclePort)Marshal.GetDelegateForFunctionPointer(entryFTCyclePort, typeof(TFT_CyclePort));
 
-                entryFTRescan = GetProcAddress(handleFTD2XXDLL, "FT_Rescan");
+                entryFTRescan = GetProcAddress(_handle, "FT_Rescan");
                 FT_Rescan = (TFT_Rescan)Marshal.GetDelegateForFunctionPointer(entryFTRescan, typeof(TFT_Rescan));
 
-                entryFTReload = GetProcAddress(handleFTD2XXDLL, "FT_Reload");
+                entryFTReload = GetProcAddress(_handle, "FT_Reload");
                 FT_Reload = (TFT_Reload)Marshal.GetDelegateForFunctionPointer(entryFTReload, typeof(TFT_Reload));
 
-                entryFTPurge = GetProcAddress(handleFTD2XXDLL, "FT_Purge");
+                entryFTPurge = GetProcAddress(_handle, "FT_Purge");
                 FT_Purge = (TFT_Purge)Marshal.GetDelegateForFunctionPointer(entryFTPurge, typeof(TFT_Purge));
 
-                entryFTSetTimeouts = GetProcAddress(handleFTD2XXDLL, "FT_SetTimeouts");
+                entryFTSetTimeouts = GetProcAddress(_handle, "FT_SetTimeouts");
                 FT_SetTimeouts = (TFT_SetTimeouts)Marshal.GetDelegateForFunctionPointer(entryFTSetTimeouts, typeof(TFT_SetTimeouts));
 
-                entryFTGetDriverVersion = GetProcAddress(handleFTD2XXDLL, "FT_GetDriverVersion");
+                entryFTGetDriverVersion = GetProcAddress(_handle, "FT_GetDriverVersion");
                 FT_GetDriverVersion = (TFT_GetDriverVersion)Marshal.GetDelegateForFunctionPointer(entryFTGetDriverVersion, typeof(TFT_GetDriverVersion));
 
-                entryFTGetLibraryVersion = GetProcAddress(handleFTD2XXDLL, "FT_GetLibraryVersion");
+                entryFTGetLibraryVersion = GetProcAddress(_handle, "FT_GetLibraryVersion");
                 FT_GetLibraryVersion = (TFT_GetLibraryVersion)Marshal.GetDelegateForFunctionPointer(entryFTGetLibraryVersion, typeof(TFT_GetLibraryVersion));
 
-                entryFTSetDeadmanTimeout = GetProcAddress(handleFTD2XXDLL, "FT_SetDeadmanTimeout");
+                entryFTSetDeadmanTimeout = GetProcAddress(_handle, "FT_SetDeadmanTimeout");
 
-                entryFTSetBitMode = GetProcAddress(handleFTD2XXDLL, "FT_SetBitMode");
+                entryFTSetBitMode = GetProcAddress(_handle, "FT_SetBitMode");
                 FT_SetBitMode = (TFT_SetBitMode)Marshal.GetDelegateForFunctionPointer(entryFTSetBitMode, typeof(TFT_SetBitMode));
-                
-                entryFTSetLatencyTimer = GetProcAddress(handleFTD2XXDLL, "FT_SetLatencyTimer");
+
+                entryFTSetLatencyTimer = GetProcAddress(_handle, "FT_SetLatencyTimer");
                 FT_SetLatencyTimer = (TFT_SetLatencyTimer)Marshal.GetDelegateForFunctionPointer(entryFTSetLatencyTimer, typeof(TFT_SetLatencyTimer));
 
-                entryFTGetLatencyTimer = GetProcAddress(handleFTD2XXDLL, "FT_GetLatencyTimer");
+                entryFTGetLatencyTimer = GetProcAddress(_handle, "FT_GetLatencyTimer");
                 FT_GetLatencyTimer = (TFT_GetLatencyTimer)Marshal.GetDelegateForFunctionPointer(entryFTGetLatencyTimer, typeof(TFT_GetLatencyTimer));
 
-                entryFTSetUSBParameters = GetProcAddress(handleFTD2XXDLL, "FT_SetUSBParameters");
+                entryFTSetUSBParameters = GetProcAddress(_handle, "FT_SetUSBParameters");
                 FT_SetUSBParameters = (TFT_SetUSBParameters)Marshal.GetDelegateForFunctionPointer(entryFTSetUSBParameters, typeof(TFT_SetUSBParameters));
             }
             else
             {
                 // Failed to load our DLL - alert the user
                 // !MessageBox.Show("Failed to load FTD2XX.DLL.  Are the FTDI drivers installed?");
-            }
+            }          
         }
-
-        /// <summary>
-        /// Уничтожает экземпляр класса <see cref="FTDICustom" />.
-        /// </summary>
-        ~FTDICustom()
-        {
-            // FreeLibrary here - we should only do this if we are completely finished
-            FreeLibrary(handleFTD2XXDLL);
-            handleFTD2XXDLL = IntPtr.Zero;
-        }
-        #endregion
-
-        #region VARIABLES
-
-        #endregion
 
         #region DELEGATES
         // Definitions for FTD2XX functions
@@ -833,7 +811,7 @@ namespace FTD2XXNET
             FT_STATUS status = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return status;
             }
@@ -870,7 +848,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -904,7 +882,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -942,7 +920,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -971,7 +949,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1001,7 +979,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1030,7 +1008,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1060,7 +1038,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1098,7 +1076,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1126,7 +1104,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1163,7 +1141,7 @@ namespace FTD2XXNET
             // !FT_ERROR ftErrorCondition = FT_ERROR.FT_NO_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1289,7 +1267,7 @@ namespace FTD2XXNET
             FT_STATUS status = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return status;
             }
@@ -1319,7 +1297,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1353,7 +1331,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1383,7 +1361,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1413,7 +1391,7 @@ namespace FTD2XXNET
             FT_STATUS statusFT = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return statusFT;
             }
@@ -1439,7 +1417,7 @@ namespace FTD2XXNET
             FT_STATUS status = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             { 
                 return status; 
             }
@@ -1484,7 +1462,7 @@ namespace FTD2XXNET
             FT_STATUS status = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return status;
             }
@@ -1527,7 +1505,7 @@ namespace FTD2XXNET
             FT_STATUS status = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return status;
             }
@@ -1561,7 +1539,7 @@ namespace FTD2XXNET
             FT_STATUS status = FT_STATUS.FT_OTHER_ERROR;
 
             // If the DLL hasn't been loaded, just return here
-            if (handleFTD2XXDLL == IntPtr.Zero)
+            if (_handle.IsInvalid)
             {
                 return status;
             }
@@ -1577,37 +1555,18 @@ namespace FTD2XXNET
             return status;
         }
 
-        #endregion
-
-        #region LOAD_LIBRARIES
-        /// Built-in Windows API functions to allow us to dynamically load our own DLL.
-        /// Will allow us to use old versions of the DLL that do not have all of these functions available.
+        #endregion      
+        
         /// <summary>
-        /// Загружает динамическую библиотеку средствами WinAPI.
+        /// Получает точку входа, указанной процедуры.
         /// </summary>
-        /// <param name="dllToLoad">Имя библиотеки</param>
-        /// <returns>Состояние операции</returns>
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr LoadLibrary(string dllToLoad);
-
-        /// <summary>
-        /// Возвращает точку входа в заданную процедуру.
-        /// </summary>
-        /// <param name="handleModule">Handle загруженной dll-ки</param>
-        /// <param name="procedureName">Название операции</param>
-        /// <returns>Состояние операции</returns>
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetProcAddress(IntPtr handleModule, string procedureName);
-
-        /// <summary>
-        /// WinAPI выгрузить dll-ку.
-        /// </summary>
-        /// <param name="handleModule">Handle загруженной dll-ки</param>
-        /// <returns>Состояние операции</returns>
-        [DllImport("kernel32.dll")]
-        private static extern bool FreeLibrary(IntPtr handleModule);
-
-        #endregion
+        /// <param name="handle">Handle загруженной библиотеки.</param>
+        /// <param name="p">Наименование процедуры.</param>
+        /// <returns>Адрес точки входа в процедуру.</returns>
+        private IntPtr GetProcAddress(IntPtr handle, string p)
+        {
+            return SafeNativeMethods.GetProcAddress(handle, p);
+        }
 
         #region HELPER_METHODS
         // **************************************************************************
@@ -1981,6 +1940,81 @@ namespace FTD2XXNET
             /// 16mA drive current
             /// </summary>
             public const byte FTDriveCurrent16MA = 16;
+        }
+
+        /// <summary>
+        /// Класс предназначен для методов, которые являются безопасными для всех, кто их вызывает.
+        /// </summary>
+        [SuppressUnmanagedCodeSecurityAttribute]   
+        internal static class SafeNativeMethods
+        {
+            /// <summary>
+            /// Загружает динамическую библиотеку FTD2XX_NET средствами WinAPI.
+            /// Примечание:
+            /// Используется старая версия библиотеки, поэтому не все функции доступны.
+            /// </summary>
+            /// <param name="dllToLoad">Имя библиотеки.</param>
+            /// <returns>Точка входа библиотеки.</returns>
+            [DllImport("kernel32.dll", CharSet = CharSet.Ansi, BestFitMapping = false)]
+            public static extern IntPtr LoadLibrary(string dllToLoad);
+
+            /// <summary>
+            /// Возвращает точку входа в процедуру.
+            /// </summary>
+            /// <param name="handleModule">Handle загруженной dll-ки.</param>
+            /// <param name="procedureName">Название процедуры.</param>
+            /// <returns>Точка входа процедуры.</returns>
+            [DllImport("kernel32.dll", CharSet = CharSet.Ansi, BestFitMapping = false)]
+            public static extern IntPtr GetProcAddress(IntPtr handleModule, string procedureName);
+
+            /// <summary>
+            /// Выгружает библиотеку средствами WinAPI.
+            /// </summary>
+            /// <param name="handleModule">Handle загруженной dll-ки.</param>
+            /// <returns>Состояние операции.</returns>
+            [DllImport("kernel32.dll")]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool FreeLibrary(IntPtr handleModule);
+        }
+
+        /// <summary>
+        /// Класс для реализаций безопасного дескриптора Win32, в котором значение 0 или -1 обозначает недопустимый дескриптор.
+        /// </summary>
+        internal class SafeHandleDll : SafeHandleZeroOrMinusOneIsInvalid
+        {
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="SafeHandleDll" />.
+            /// </summary>
+            /// <param name="ownsHandle">if set to <c>true</c> [owns handle].</param>
+            /// <param name="initHandle">The initialize handle.</param>
+            public SafeHandleDll(bool ownsHandle, IntPtr initHandle)
+                : base(ownsHandle)
+            {
+                SetHandle(initHandle);
+            }
+            
+            /// <summary>
+            /// Performs an implicit conversion from <see cref="SafeHandleDll"/> to <see cref="IntPtr"/>.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            /// <returns>
+            /// The result of the conversion.
+            /// </returns>
+            public static implicit operator IntPtr(SafeHandleDll obj)
+            {
+                return obj.handle;
+            }
+
+            /// <summary>
+            /// When overridden in a derived class, executes the code required to free the handle.
+            /// </summary>
+            /// <returns>
+            /// true if the handle is released successfully; otherwise, in the event of a catastrophic failure, false. In this case, it generates a releaseHandleFailed MDA Managed Debugging Assistant.
+            /// </returns>
+            protected override bool ReleaseHandle()
+            {
+                return SafeNativeMethods.FreeLibrary(handle);
+            }
         }
     }
 }

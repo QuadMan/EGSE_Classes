@@ -11,6 +11,7 @@ namespace EGSE.Cyclogram
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Runtime.Serialization;
     
     /// <summary>
     /// Делегат для функции тесторования команды циклограммы

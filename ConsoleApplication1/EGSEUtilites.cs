@@ -20,6 +20,7 @@ namespace EGSE.Utilites
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
+    using System.Security;
     using System.Text;
     using System.Windows;
     using EGSE.Protocols;
@@ -261,9 +262,9 @@ namespace EGSE.Utilites
                 _ini.Write(param, value, section);
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -287,9 +288,9 @@ namespace EGSE.Utilites
                     return null;
                 }
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -321,9 +322,9 @@ namespace EGSE.Utilites
 
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -362,9 +363,9 @@ namespace EGSE.Utilites
                     i++;
                 }
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
 
             return true;
@@ -389,9 +390,9 @@ namespace EGSE.Utilites
                 _ini.Write(@"Height", GetPropertyValue(win, Window.HeightProperty), sectionName);   
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -459,56 +460,13 @@ namespace EGSE.Utilites
                 else
                 {
                     _ini.Write(@"Height", GetPropertyValue(win, Window.HeightProperty), sectionName);
-                }
-
-                ////if (_ini.IsKeyExists("Bounds", win.Title))
-                ////{
-                ////    System.ComponentModel.TypeConverter _conv =
-                ////        System.ComponentModel.TypeDescriptor.GetConverter(typeof(Rect));
-                ////    Rect _rect = (Rect)_conv.ConvertFromString(_ini.Read("Bounds", win.Title));
-
-                ////    // сделал проверки на NaN и 0, так как для окон, которые не открывались значения (Left,Top,RenderSize) не рассчитываются системой, нужно придумать другой способ сохранения
-                ////    if (_rect.Left != double.NaN)
-                ////    {
-                ////        win.Left = _rect.Left;
-                ////    }
-
-                ////    if (_rect.Top != double.NaN)
-                ////    {
-                ////        win.Top = _rect.Top;
-                ////    }
-
-                ////    if (_rect.Size.Height != 0)
-                ////    {
-                ////        win.Height = _rect.Size.Height;
-                ////    }
-
-                ////    if (_rect.Size.Width != 0)
-                ////    {
-                ////        win.Width = _rect.Size.Width;
-                ////    }
-                ////}
-                ////else
-                ////{
-                ////    _ini.Write("Bounds", Convert.ToString(new Rect(new System.Windows.Point(win.Left, win.Top), win.RenderSize), new System.Globalization.CultureInfo("en-US")), win.Title);
-                ////}
-
-                ////if (_ini.IsKeyExists("WindowState", win.Title))
-                ////{
-                ////    System.ComponentModel.TypeConverter _conv2 =
-                ////        System.ComponentModel.TypeDescriptor.GetConverter(typeof(WindowState));
-                ////    win.WindowState = (WindowState)_conv2.ConvertFromString(_ini.Read("WindowState", win.Title));
-                ////}
-                ////else
-                ////{
-                ////    _ini.Write("WindowState", Convert.ToString(win.WindowState), win.Title);
-                ////}         
+                }   
 
                 return true;
             }
-            catch (Exception e)
+            catch
             {
-                throw e;
+                throw;
             }
         }
 
@@ -933,7 +891,7 @@ namespace EGSE.Utilites
         public string Read(string key, string section = null)
         {
             var retVal = new StringBuilder(255);
-            GetPrivateProfileString(section ?? _exe, key, string.Empty, retVal, 255, _path);
+            SafeNativeMethods.GetPrivateProfileString(section ?? _exe, key, string.Empty, retVal, 255, _path);
             return retVal.ToString();
         }
 
@@ -945,7 +903,7 @@ namespace EGSE.Utilites
         /// <param name="section">Название группы параметра</param>
         public void Write(string key, string value, string section = null)
         {
-            WritePrivateProfileString(section ?? _exe, key, value, _path);
+            SafeNativeMethods.WritePrivateProfileString(section ?? _exe, key, value, _path);
         }
 
         /// <summary>
@@ -978,10 +936,18 @@ namespace EGSE.Utilites
             return Read(key, section).Length > 0;
         }
 
-        [DllImport("kernel32")]
-        private static extern long WritePrivateProfileString(string section, string key, string value, string filePath);
-        [DllImport("kernel32")]
-        private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+        /// <summary>
+        /// Класс предназначен для методов, которые являются безопасными для всех, кто их вызывает.
+        /// </summary>
+        [SuppressUnmanagedCodeSecurityAttribute]
+        internal static class SafeNativeMethods
+        {
+            [DllImport("kernel32", CharSet = CharSet.Ansi, BestFitMapping = false)]
+            public static extern int WritePrivateProfileString(string section, string key, string value, string filePath);
+
+            [DllImport("kernel32", CharSet = CharSet.Ansi, BestFitMapping = false)]
+            public static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
+        }
     }
 
     /// <summary>

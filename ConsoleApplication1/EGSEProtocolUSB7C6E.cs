@@ -114,7 +114,7 @@ namespace EGSE.Protocols
         {
             _protoMsg = new ProtocolMsgEventArgs(DecoderMaxDataLength);
             _protoErrMsg = new ProtocolErrorEventArgs(70000);        // FIXIT: убрать константу
-            Reset();
+            _firstMsg = true;
         }
 
         /// <summary>

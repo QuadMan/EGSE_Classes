@@ -200,7 +200,7 @@ namespace EGSE.Protocols
         public event ProtocolMsgEventHandler GotProtocolMsg;
 
         /// <summary>
-        /// Сброс конечного автомата состояния протокола в исходное состояние .
+        /// Сброс конечного автомата состояния протокола в исходное состояние.
         /// </summary>
         public abstract void Reset();
 

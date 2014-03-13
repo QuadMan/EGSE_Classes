@@ -21,7 +21,7 @@ namespace EGSE.Utilites
     /// <summary>
     /// Класс единичного текстлога
     /// </summary>
-    public class TxtLogger // : IDisposable
+    public class TxtLogger : IDisposable
     {
         //// private bool disposed = false;
 
@@ -158,6 +158,15 @@ namespace EGSE.Utilites
             {
                 _enableTimeWrite = value;
             }
+        }        
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -220,11 +229,17 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Метод, очищающий буфер и производящий сброс информации непосредственно в log-файл
+        /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        public void LogFlush()
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
         {
-            _sw.Flush();
+            if (disposing)
+            {
+                // освобождаем неуправляемые ресурсы
+                _sw.Close();
+            }
+            //// тут освобождаем управляемые ресурсы
         }
     }
 
@@ -244,15 +259,6 @@ namespace EGSE.Utilites
         public TxtLoggers()
         {
             txtLoggers = new List<TxtLogger>();
-        }
-
-        /// <summary>
-        /// Уничтожает экземпляр класса <see cref="TxtLoggers" />.
-        /// </summary>
-        ~TxtLoggers()
-        {
-            // foreach (TxtLogger tl in txtLoggers)
-            //    tl.Dispose(); 
         }
 
         /// <summary>
@@ -299,7 +305,7 @@ namespace EGSE.Utilites
         {
             foreach (TxtLogger tl in txtLoggers)
             {
-                tl.LogFlush();
+                tl.Dispose();
             }
         }
     }
