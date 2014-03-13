@@ -1,0 +1,73 @@
+﻿<Window x:Class="EGSE.Defaults.UsbSendsMonitor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
+        xmlns:d="clr-namespace:EGSE.Devices" 
+        Title="Монитор USB (исходящий)"
+        FontFamily="{StaticResource BaseFontFamily}"
+        FontSize="{StaticResource BaseFontSize}"
+        Closing="Window_Closing"
+        Visibility="{Binding IsShowUsbSendsMonitor, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+    <Grid x:Name="GridUsbSendsMonitor"
+          Background="{StaticResource BackBrush}"
+          Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBox IsReadOnly="True"
+            Template="{StaticResource FilePreviewer}"
+            Style="{StaticResource TextBoxInError}"                    
+            Text="{Binding UsbLogFile, ValidatesOnDataErrors=True}"/>
+        <Button Grid.Row="1"
+				Content="Обновить"
+				Template="{StaticResource FlatButtonClickDefault}" Click="Button_Click_2"/>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+        		Content="Содержимое файла"
+        		Style="{StaticResource FlatHeader}"/>
+            <ListBox x:Name="Monitor" 
+        		Grid.Row="1"
+        		Grid.ColumnSpan="2"
+        		Margin="1"
+        		BorderThickness="0"/>
+            <Button Grid.Row="2"  
+        		Grid.ColumnSpan="2"
+                Content="Очистить"
+        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click"/>
+        </Grid>
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+        		Content="Последние изменения"
+        		Style="{StaticResource FlatHeader}"/>
+            <ListBox x:Name="LastOperationMonitor" 
+        		Grid.Row="1"
+        		Grid.ColumnSpan="2"
+        		Margin="1"
+        		BorderThickness="0"/>
+            <Button Grid.Row="2"  
+        		Grid.ColumnSpan="2"
+                Content="Очистить"
+        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click_1"/>
+        </Grid>
+    </Grid>
+</Window>
