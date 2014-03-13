@@ -31,6 +31,11 @@ namespace EGSE.Defaults
     public partial class MainWindow : Window
     {
         /// <summary>
+        /// Окно "Монитор USB (исходящий)".
+        /// </summary>
+        private UsbSendsMonitor winUsbSendsMonitor;
+
+        /// <summary>
         /// Окно "Имитатор ВСИ".
         /// </summary>
         private HSIWindow winHSI;
@@ -143,6 +148,8 @@ namespace EGSE.Defaults
             winSimSpacewire.Init(_intfEGSE);
             winSimSD = new SimSDWindow();
             winSimSD.Init(_intfEGSE);
+            winUsbSendsMonitor = new UsbSendsMonitor();
+            winUsbSendsMonitor.Init(_intfEGSE);
             GridTelemetry.DataContext = _intfEGSE.TelemetryNotify;
         }
 

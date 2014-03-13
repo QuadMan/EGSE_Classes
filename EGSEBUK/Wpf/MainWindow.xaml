@@ -388,7 +388,9 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Padding="1" Grid.Column="0">
-                <Label Content="{Binding BytesAvailable}" Template="{StaticResource FlatLabel}" Visibility="Hidden"/>
+                <CheckBox Content="Монитор USB (исходящий)" 
+						Margin="0"
+						IsChecked="{Binding IsShowUsbSendsMonitor, Mode=TwoWay}"/>                
             </StatusBarItem>
             <StatusBarItem Padding="1" Grid.Column="1"
 				HorizontalAlignment="Right">

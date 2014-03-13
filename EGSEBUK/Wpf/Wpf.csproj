@@ -112,6 +112,9 @@
     <Compile Include="EGSEDeviceBUK.cs" />
     <Compile Include="EGSEConstantsBUK.cs" />
     <Compile Include="EGSECyclogramCommandBUK.cs" />
+    <Compile Include="UsbSendsMonitor.xaml.cs">
+      <DependentUpon>UsbSendsMonitor.xaml</DependentUpon>
+    </Compile>
     <Page Include="..\..\ConsoleApplication1\EGSECyclogramControl.xaml">
       <Link>EGSECyclogramControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
@@ -220,6 +223,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SimSpacewireWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UsbSendsMonitor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

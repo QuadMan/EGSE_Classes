@@ -1027,7 +1027,9 @@ namespace EGSE.Devices
             Spacewire2Notify = new Spacewire2(this);
             Spacewire3Notify = new Spacewire3(this);
             Spacewire4Notify = new Spacewire4(this);
-            
+            UITestNotify = new UITest(this);
+            UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
+
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
@@ -1086,6 +1088,15 @@ namespace EGSE.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
+        private bool _isShowUsbSendsMonitor;
+
+        /// <summary>
+        /// Получает или задает нотификатор self-теста.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public UITest UITestNotify { get; set; }
 
         /// <summary>
         /// Получает или задает нотификатор телеметрии.
@@ -1254,6 +1265,20 @@ namespace EGSE.Devices
             }
         }
 
+        public bool IsShowUsbSendsMonitor
+        {
+            get
+            {
+                return _isShowUsbSendsMonitor;
+            }
+
+            private set
+            {
+                _isShowUsbSendsMonitor = value;
+                FirePropertyChangedEvent();
+            }
+        }
+        
         /// <summary>
         /// Получает значение, показывающее, открыто ли [окно "имитатор БУК (для БУСК)"].
         /// </summary>
@@ -2681,6 +2706,63 @@ namespace EGSE.Devices
                 ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.IssueRequest, 0, 1, Device.CmdSimHSIControl, value => IsIssueRequest = 1 == value);
                 ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.IssueCmd, 0, 1, Device.CmdSimHSIRecord, value => IsIssueCmd = 1 == value);
             }            
+        }
+
+        /// <summary>
+        /// Вспомогательный нотификатор, используется для самопроверки.
+        /// </summary>
+        public class UITest : SubNotify, IDataErrorInfo
+        {
+            private string _usbLogFile;
+
+            public UITest(EgseBukNotify owner)
+                : base(owner)
+            {
+            }
+
+            public string UsbLogFile
+            {
+                get
+                {
+                    return _usbLogFile;
+                }
+
+                set
+                {
+                    _usbLogFile = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает сообщение об ошибке в объекте.
+            /// </summary>
+            /// <returns>An error message indicating what is wrong with this object. The default is an empty string ("").</returns>
+            public string Error
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="System.String"/> with the specified name.
+            /// </summary>
+            /// <value>
+            /// The <see cref="System.String"/>.
+            /// </value>
+            /// <param name="name">The name.</param>
+            /// <returns>Сообщение об ошибке.</returns>
+            public string this[string name]
+            {
+                get
+                {
+                    string result = null;
+
+                    return result;
+                }
+            }
         }
 
         /// <summary>

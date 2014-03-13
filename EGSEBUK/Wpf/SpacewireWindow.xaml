@@ -286,7 +286,6 @@
                      BorderThickness="0"/>
             <Button Grid.Row="4"  
                 Content="Очистить монитор Spacewire"
-                Command="{Binding XXX}"
         		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click"/>
         </Grid>
     </Grid>

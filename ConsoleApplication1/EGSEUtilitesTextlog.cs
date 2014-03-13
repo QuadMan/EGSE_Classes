@@ -23,32 +23,6 @@ namespace EGSE.Utilites
     /// </summary>
     public class TxtLogger : IDisposable
     {
-        //// private bool disposed = false;
-
-        //// public void Dispose()
-        //// {
-        ////    Cleanup(true);
-        ////    GC.SuppressFinalize(this);
-        //// }
-
-        ////private void Cleanup(bool disposing)
-        //// {
-        ////    if (!this.disposed)
-        ////    {
-        ////        if (disposing)
-        ////        {
-        ////            _sw.Flush();
-
-        //// }
-        ////    }
-        ////    disposed = true;
-        //// }
-
-        //// ~TxtLogger()
-        //// {
-        ////    Cleanup(false);
-        //// }
-
         /// <summary>
         /// Имя файла
         /// Объект StreamWriter, работающий с log-файлом
@@ -94,6 +68,14 @@ namespace EGSE.Utilites
             set { seconds = value * 3600; }
 
         }*/
+
+        public string FileName
+        {
+            get
+            {
+                return _fileName;
+            }
+        }
 
         /// <summary>
         /// Получает или задает метод, реализующий запись текста и времени в log-файл.
