@@ -55,17 +55,17 @@ namespace EGSE.Constants
         /// <summary>
         /// Заголовок главного окна.
         /// </summary>
-        public static readonly string ShowCaption;
+        public static readonly string ShowCaption = InitializeResourceString(@"stShowCaption");
 
         /// <summary>
         /// Название КИА.
         /// </summary>
-        public static readonly string DeviceName;
+        public static readonly string DeviceName = InitializeResourceString(@"stDeviceName");
 
         /// <summary>
         /// Уникальный идентификатор USB.
         /// </summary>
-        public static readonly string DeviceSerial;        
+        public static readonly string DeviceSerial = InitializeResourceString(@"stDeviceSerial");     
 
         /// <summary>
         /// Инициализирует статические поля класса <see cref="Global" />.
@@ -73,9 +73,6 @@ namespace EGSE.Constants
         static Global()
         {
             Telemetry = new CVTelemetry();
-            ShowCaption = Resource.Get("stShowCaption");
-            DeviceName = Resource.Get("stDeviceName");
-            DeviceSerial = Resource.Get("stDeviceSerial");
         }
 
         /// <summary>
@@ -102,6 +99,16 @@ namespace EGSE.Constants
             }
 
             return string.Format("{0:0.##} {1}", value, sizes[order]);
+        }
+
+        /// <summary>
+        /// Инициализирует статические строки из ресурсов.
+        /// </summary>
+        /// <param name="resourceName">Наименование ресурса.</param>
+        /// <returns>Значение указанного ресурса.</returns>
+        internal static string InitializeResourceString(string resourceName)
+        {
+            return Resource.Get(resourceName);
         }
 
         /// <summary>

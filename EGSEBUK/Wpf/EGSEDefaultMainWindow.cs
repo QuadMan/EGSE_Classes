@@ -460,12 +460,14 @@ namespace EGSE.Defaults
             {
                 return null;
             }
+
             byte[] buf;
             using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
             {
                 (new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter()).Serialize(ms, obj);
                 buf = ms.ToArray().Take<byte>((int)(ms.Length - ObjEnderSysBytesCount)).ToArray().Skip<byte>(ObjHeaderSysBytesCount).ToArray();
             }
+
             return buf;
         }
     }

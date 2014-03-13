@@ -62,7 +62,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Получает или задает ссылку на экземпляр устройства.
         /// </summary>
-        public EgseBukNotify BUK { private get; set; }
+        public EgseBukNotify BUK { get; set; }
 
         /// <summary>
         /// Команда XSAN 
