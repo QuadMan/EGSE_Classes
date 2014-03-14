@@ -346,7 +346,7 @@
 					Margin="1">
                     <Label Content="Окна управления"
 						Template="{StaticResource FlatLabel}"/>
-                    <CheckBox Content="Имитатор ВСИ" 
+                    <CheckBox Content="Имитатор КВВ" 
 						Margin="4"
 						IsChecked="{Binding IsShowHSI, Mode=TwoWay}"/>
                     <CheckBox Content="Имитатор БУСК" 
@@ -355,7 +355,7 @@
                     <CheckBox Content="Имитатор НП" 
 						Margin="4"
 						IsChecked="{Binding IsShowSD, Mode=TwoWay}"/>
-                    <CheckBox Content="Имитатор БУК (для ВСИ)" 
+                    <CheckBox Content="Имитатор БУК (для КВВ)" 
 						Margin="4"
 						IsChecked="{Binding IsShowSimHSI, Mode=TwoWay}"/>
                     <CheckBox Content="Имитатор БУК (для БУСК)" 

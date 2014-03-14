@@ -83,6 +83,11 @@ namespace EGSE.Defaults
         internal void PopulateList(string filePath)
         {
             List<string> lines = new List<string>();
+            if (!File.Exists(filePath))
+            {
+                Monitor.Items.Add(@"Файл не существует!");
+                return;
+            }
             using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             using (var sr = new StreamReader(fs, Encoding.Default)) 
             {
@@ -95,14 +100,17 @@ namespace EGSE.Defaults
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
-        {            
-            string[] last = new string[Monitor.Items.Count];
-            Monitor.Items.CopyTo(last, 0);
+        {
+            List<string> last = Monitor.Items.Cast<string>().ToList();                                         
             Monitor.Items.Clear();
             PopulateList(_intfEGSE.UITestNotify.UsbLogFile);
-            //IEnumerable<string> differenceQuery = Monitor.Items.Except(last);
-            
-            //foreach (string s in differenceQuery)
+            List<string> now = Monitor.Items.Cast<string>().ToList();
+            var differenceQuery = now.Except(last);
+            LastOperationMonitor.Items.Clear();
+            foreach (var s in differenceQuery)
+            {
+                LastOperationMonitor.Items.Add(s);
+            }
         }
     }
 }

@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -302,6 +302,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -309,4 +317,49 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+  </Target>
+  <PropertyGroup>
+    <PostBuildEventDependsOn>
+      $(PostBuildEventDependsOn);
+      PostBuildMacros;
+    </PostBuildEventDependsOn>
+    <PostBuildEvent>
+      set CURRENT_VERSION=@(Targets->'%(Version)')
+      echo Current version: %CURRENT_VERSION%
+      set IVAN_DIR=Z:\Users\Ivan\$(TargetName)
+      set ALEXANDR_DIR=Z:\Users\QuadMan\$(TargetName)
+      set ANDREW_DIR=Z:\Users\Vitamin\$(TargetName)
+      set DEPLOY_DIR=
+      if $(ConfigurationName) == Debug (
+      echo Debug deploy
+      cmd /x /c mkdir "%IVAN_DIR%\CurrentDebug\"
+      echo mkdir Ivan dir: %IVAN_DIR%\CurrentDebug\
+      xcopy /Q /Y "$(TargetPath)" %IVAN_DIR%\CurrentDebug\
+      cmd /x /c mkdir "%ALEXANDR_DIR%\CurrentDebug\"
+      echo mkdir Alexandr dir: %ALEXANDR_DIR%\CurrentDebug\
+      xcopy /Q /Y "$(TargetPath)" %ALEXANDR_DIR%\CurrentDebug\
+      cmd /x /c mkdir "%ANDREW_DIR%\CurrentDebug\"
+      echo mkdir Andrew dir: %ANDREW_DIR%\CurrentDebug\
+      xcopy /Q /Y "$(TargetPath)" %ANDREW_DIR%\CurrentDebug\
+      ) ELSE (
+      echo Release deploy
+      cmd /x /c mkdir "%IVAN_DIR%\%CURRENT_VERSION%\"
+      echo mkdir Ivan dir: %IVAN_DIR%\%CURRENT_VERSION%\
+      xcopy /Q /Y "$(TargetPath)" %IVAN_DIR%\%CURRENT_VERSION%\
+      cmd /x /c mkdir "%ALEXANDR_DIR%\%CURRENT_VERSION%\"
+      echo mkdir Alexandr dir: %ALEXANDR_DIR%\%CURRENT_VERSION%\
+      xcopy /Q /Y "$(TargetPath)" %ALEXANDR_DIR%\%CURRENT_VERSION%\
+      cmd /x /c mkdir "%ANDREW_DIR%\%CURRENT_VERSION%\"
+      echo mkdir Andrew dir: %ANDREW_DIR%\%CURRENT_VERSION%\
+      xcopy /Q /Y "$(TargetPath)" %ANDREW_DIR%\%CURRENT_VERSION%\
+      cmd /x /c mkdir "Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\"
+      echo mkdir Deploy dir: Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\
+      xcopy /Q /Y "$(TargetPath)" "Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\"
+      )
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>
