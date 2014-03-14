@@ -330,10 +330,11 @@
     <PostBuildEvent>
       set CURRENT_VERSION=@(Targets->'%(Version)')
       echo Current version: %CURRENT_VERSION%
+      echo Current user: %USERDOMAIN%\%USERNAME%
+      if %USERDOMAIN%\%USERNAME% == Иван-ПК\Иван (
       set IVAN_DIR=Z:\Users\Ivan\$(TargetName)
       set ALEXANDR_DIR=Z:\Users\QuadMan\$(TargetName)
       set ANDREW_DIR=Z:\Users\Vitamin\$(TargetName)
-      set DEPLOY_DIR=
       if $(ConfigurationName) == Debug (
       echo Debug deploy
       cmd /x /c mkdir "%IVAN_DIR%\CurrentDebug\"
@@ -359,6 +360,7 @@
       cmd /x /c mkdir "Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\"
       echo mkdir Deploy dir: Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\
       xcopy /Q /Y "$(TargetPath)" "Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\"
+      )
       )
     </PostBuildEvent>
   </PropertyGroup>
