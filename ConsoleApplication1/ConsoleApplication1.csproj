@@ -56,6 +56,11 @@
     <Compile Include="EGSEProtocolUSB5E4D.cs" />
     <Compile Include="EGSEProtocolUSB5E4DNoHeadCrc.cs" />
     <Compile Include="EGSEProtocolUSB7C6E.cs" />
+    <Compile Include="EGSEProtocolUSB7C6E.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSEProtocolUSB7C6E.resx</DependentUpon>
+    </Compile>
     <Compile Include="EGSEThreadingCyclogram.cs" />
     <Compile Include="EGSEThreadingProtocol.cs" />
     <Compile Include="EGSEThreadingUSB.cs" />
@@ -74,6 +79,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EGSEProtocolUSB7C6E.resx">
+      <DependentUpon>EGSEProtocolUSB7C6E.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSEProtocolUSB7C6E.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

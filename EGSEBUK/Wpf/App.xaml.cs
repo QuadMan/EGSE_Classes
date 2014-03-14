@@ -7,6 +7,8 @@
 
 namespace EGSE.WPF
 {
+    using EGSE.Defaults;
+    using EGSE.Utilites;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -14,11 +16,25 @@ namespace EGSE.WPF
     using System.Linq;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Mouses the logger event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
+        public void MouseLoggerEvent(object sender, MouseButtonEventArgs e)
+        {
+            string logEvent = EventClickToString.ElementClicked(e);
+            if (logEvent != null)
+            {
+                LogsClass.LogOperator.LogText = logEvent;
+            }
+        }
     }
 }

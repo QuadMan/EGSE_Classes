@@ -117,46 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="eNotAssigned" xml:space="preserve">
-    <value>ControlValuesList не должны быть равны null!</value>
-  </data>
-  <data name="stDeviceSpeed" xml:space="preserve">
-    <value>Скорость передачи по USB: {0}/с</value>
-  </data>
-  <data name="stDeviceTrafic" xml:space="preserve">
-    <value>Трафик: {0}</value>
-  </data>
-  <data name="stDevLogName" xml:space="preserve">
-    <value>buk</value>
-  </data>
-  <data name="stOnErrorUSBMsg" xml:space="preserve">
-    <value>{0} ({1}, на позиции: {2})</value>
-  </data>
-  <data name="stShowLogicBkp" xml:space="preserve">
-    <value>БКП (адрес: {0})</value>
-  </data>
-  <data name="stShowLogicBuk" xml:space="preserve">
-    <value>БУК (адрес: {0})</value>
-  </data>
-  <data name="stShowSimLogicBusk" xml:space="preserve">
-    <value>БУСК (адрес: {0})</value>
-  </data>
-  <data name="stShowSimLogicSD1" xml:space="preserve">
-    <value>БУК (адрес: {0})</value>
-  </data>
-  <data name="stShowSimLogicSD2" xml:space="preserve">
-    <value>НП2 (адрес: {0})</value>
-  </data>
-  <data name="stShowLogicBusk" xml:space="preserve">
-    <value>Имитатор БУСК (адрес: {0})</value>
-  </data>
-  <data name="stHsiLogName" xml:space="preserve">
-    <value>hsibuk</value>
-  </data>
-  <data name="stSdLogName" xml:space="preserve">
-    <value>sdbuk</value>
-  </data>
-  <data name="stSpacewireLogName" xml:space="preserve">
-    <value>spacewirebuk</value>
+  <data name="eUnknownData" xml:space="preserve">
+    <value>Данные не декодируются</value>
   </data>
 </root>

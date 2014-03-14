@@ -62,27 +62,25 @@ namespace EGSE.Defaults
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
         public void OnSpacewireMsg(object sender, SpacewireSptpMsgEventArgs msg)
         {
-            if (msg != null)
+            new { msg }.CheckNotNull();
+            string spacewireMsg;
+            if (msg.Data.Length > 30) 
             {
-                string spacewireMsg;
-                if (msg.Data.Length > 30) 
-                {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
-                }
-                else
-                {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
-                }
-
-                if (null != Monitor && Visibility.Visible == this.Visibility)
-                {
-                    Monitor.Dispatcher.Invoke(new Action(delegate
-                        {
-                            Monitor.Items.Add(spacewireMsg);
-                            Monitor.ScrollIntoView(spacewireMsg);
-                        }));
-                }           
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + msg.From.ToString() + "-" + msg.MsgType.ToString() + "->" + msg.To.ToString() + " " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
             }
+            else
+            {
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + msg.From.ToString() + "-" + msg.MsgType.ToString() + "->"+  msg.To.ToString() + " " +  Converter.ByteArrayToHexStr(msg.Data);
+            }
+
+            if (null != Monitor && Visibility.Visible == this.Visibility)
+            {
+                Monitor.Dispatcher.Invoke(new Action(delegate
+                    {
+                        Monitor.Items.Add(spacewireMsg);
+                        Monitor.ScrollIntoView(spacewireMsg);
+                    }));
+            }           
         }  
 
         /// <summary>

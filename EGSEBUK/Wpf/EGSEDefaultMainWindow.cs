@@ -171,20 +171,6 @@ namespace EGSE.Defaults
         }
 
         /// <summary>
-        /// Mouses the logger event.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
-        private void MouseLoggerEvent(object sender, MouseButtonEventArgs e)
-        {
-            string logEvent = EventClickToString.ElementClicked(e);
-            if (logEvent != null)
-            {
-                LogsClass.LogOperator.LogText = logEvent;
-            }
-        }
-
-        /// <summary>
         /// Handles the Activated event of the Window control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>

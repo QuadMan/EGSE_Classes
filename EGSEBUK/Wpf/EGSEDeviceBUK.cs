@@ -1478,44 +1478,44 @@ namespace EGSE.Devices
         {
             if (this.GotSpacewire2Msg != null)
             {
-                if (IsRequestSpacewireMsg(e))
-                {
-                    if (Spacewire2Notify.LogicBusk == e.From)
-                    {
-                        Spacewire2Notify.RequestQueueFromBusk++;
-                    }
-                    else if (Spacewire2Notify.LogicBuk == e.From)
-                    {
-                        Spacewire2Notify.RequestQueueFromBuk++;
-                    }
-                    else
-                    {
-                        this.GotSpacewire2Msg(sender, e);
-                    }
-                }
-                else if (IsReplySpacewireMsg(e))
-                {
-                    if (Spacewire2Notify.LogicBusk == e.From)
-                    {
-                        Spacewire2Notify.ReplyQueueFromBusk++;
-                    }
-                    else if (Spacewire2Notify.LogicBuk == e.From)
-                    {
-                        Spacewire2Notify.ReplyQueueFromBuk++;
-                    }
-                    else
-                    {
-                        this.GotSpacewire2Msg(sender, e);
-                    }
-                }
-                else if (IsKbvSpacewireMsg(e))
-                {
-                    Spacewire2Notify.CodeOnboardTime = (e as SpacewireIcdMsgEventArgs).AsKbv().Kbv;
-                }
-                else
-                {
+                //if (IsRequestSpacewireMsg(e))
+                //{
+                //    if (Spacewire2Notify.LogicBusk == e.From)
+                //    {
+                //        Spacewire2Notify.RequestQueueFromBusk++;
+                //    }
+                //    else if (Spacewire2Notify.LogicBuk == e.From)
+                //    {
+                //        Spacewire2Notify.RequestQueueFromBuk++;
+                //    }
+                //    else
+                //    {
+                //        this.GotSpacewire2Msg(sender, e);
+                //    }
+                //}
+                //else if (IsReplySpacewireMsg(e))
+                //{
+                //    if (Spacewire2Notify.LogicBusk == e.From)
+                //    {
+                //        Spacewire2Notify.ReplyQueueFromBusk++;
+                //    }
+                //    else if (Spacewire2Notify.LogicBuk == e.From)
+                //    {
+                //        Spacewire2Notify.ReplyQueueFromBuk++;
+                //    }
+                //    else
+                //    {
+                //        this.GotSpacewire2Msg(sender, e);
+                //    }
+                //}
+                //else if (IsKbvSpacewireMsg(e))
+                //{
+                //    Spacewire2Notify.CodeOnboardTime = (e as SpacewireIcdMsgEventArgs).AsKbv().Kbv;
+                //}
+                //else
+                //{
                     this.GotSpacewire2Msg(sender, e);
-                }
+                //}
             }
         }
 
@@ -3735,7 +3735,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowSimLogicBusk"), LogicBusk.ToString("X2"));
+                    return string.Format(Resource.Get(@"stShowSimLogicBusk"), LogicBusk.ToString(/*"X2"*/));
                 }
 
                 private set
@@ -3776,7 +3776,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowSimLogicSD1"), LogicSD1.ToString("X2"));
+                    return string.Format(Resource.Get(@"stShowSimLogicSD1"), LogicSD1.ToString(/*"X2"*/));
                 }
 
                 private set
@@ -4871,7 +4871,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowLogicBusk"), LogicBusk.ToString("X2"));
+                    return string.Format(Resource.Get(@"stShowLogicBusk"), LogicBusk.ToString(/*"X2"*/));
                 }
 
                 private set
@@ -4912,7 +4912,7 @@ namespace EGSE.Devices
             {
                 get
                 {
-                    return string.Format(Resource.Get(@"stShowLogicBuk"), LogicBuk.ToString("X2"));
+                    return string.Format(Resource.Get(@"stShowLogicBuk"), LogicBuk.ToString(/*"X2"*/));
                 }
 
                 private set

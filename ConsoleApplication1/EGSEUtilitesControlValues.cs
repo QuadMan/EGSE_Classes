@@ -105,7 +105,7 @@ namespace EGSE.Utilites
                 _usbValue = value;   
                 if (_hasIndicate)
                 {
-                    CheckPropertiesForChanging();
+                    CheckPropertiesForChanging(true);
                 }
             }
         }
@@ -230,7 +230,7 @@ namespace EGSE.Utilites
                 // пришло время для проверки Get и Set Value
                 if ((_uiValue != _usbValue) || _refreshFlag)
                 {
-                    CheckPropertiesForChanging();
+                    CheckPropertiesForChanging(false);
                 }
             }
         }
@@ -264,7 +264,7 @@ namespace EGSE.Utilites
         /// Проверяем UsbVal и UiVal на изменения в свойствах
         /// Какие своцства изменились, для таких свойств вызваем делегаты ChangeEvent
         /// </summary>
-        private void CheckPropertiesForChanging()
+        private void CheckPropertiesForChanging(bool checkIndicate)
         {
             int usbVal;
             int uiVal;
@@ -273,8 +273,13 @@ namespace EGSE.Utilites
             {
                 usbVal = GetCVProperty(pair.Value, _usbValue);
                 uiVal = GetCVProperty(pair.Value, _uiValue);
+                
                 if (((usbVal != -1) && (uiVal != -1) && (usbVal != uiVal)) || _refreshFlag)
                 {
+                    if (checkIndicate && !(pair.Value as CVProperty).IsIndicate)
+                    {
+                        return;
+                    }
                     pair.Value.ChangeEvent(usbVal);
                 }
             }

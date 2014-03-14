@@ -300,6 +300,7 @@ namespace EGSE.Protocols
         {
             Array.Copy(buf, _protoErrMsg.Data, bufferLen);
             _protoErrMsg.ErrorPos = (uint)bufPos;
+            _protoErrMsg.Msg = Resource.Get(@"eUnknownData"); 
             OnProtocolError(this, _protoErrMsg);
         }
     }

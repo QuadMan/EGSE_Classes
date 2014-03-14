@@ -105,28 +105,7 @@ namespace EGSE.Defaults
         /// Загружаем специфичные настройки приложения при загрузке
         /// </summary>
         private void LoadAppSettings()
-        {
-            /*
-            // управляем отображением телеметрической информацией
-            string powerLabelVisible = AppSettings.Load("PowerLabel");
-            if (powerLabelVisible != null)
-            {
-                switch (powerLabelVisible)
-                {
-                    case "Visible":
-                        TMGrid.Visibility = System.Windows.Visibility.Visible;
-                        break;
-                    case "Hidden":
-                        TMGrid.Visibility = System.Windows.Visibility.Hidden;
-                        break;
-                    default:
-                        TMGrid.Visibility = System.Windows.Visibility.Visible;
-                        break;
-                }
-            }
-
-            AppSettings.LoadList(hsiWin.UksSendedList, "UksItems");
-            hsiWin.UksStrText.ItemsSource = hsiWin.UksSendedList.ToArray<string>();*/
+        {          
         }
 
         /// <summary>

@@ -247,6 +247,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EGSEProtocolUSB.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\ConsoleApplication1\EGSEProtocolUSB7C6E.resx">
+      <Link>EGSEProtocolUSB7C6E.resx</Link>
+      <DependentUpon>EGSEProtocolUSB7C6E.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EGSEConstantsBUK.resx">
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
