@@ -14,22 +14,22 @@ namespace EGSE.Cyclogram
     using System.Runtime.Serialization;
     
     /// <summary>
-    /// Делегат для функции тесторования команды циклограммы
+    /// Делегат для функции тесторования команды циклограммы.
     /// </summary>
-    /// <param name="Params">Массив параметров функции</param>
-    /// <param name="errString">Строка ошибок, которые обнаружила фкнция проверки</param>
-    /// <returns>TRUE, если результат проверки функции положительный</returns>
+    /// <param name="Params">Массив параметров функции.</param>
+    /// <param name="errString">Строка ошибок, которые обнаружила фкнция проверки.</param>
+    /// <returns><c>true</c>, если результат проверки функции положительный.</returns>
     public delegate bool TestFunctionEventhandler(string[] Params, out string errString);
 
     /// <summary>
-    /// Делегат для функции выполнения команды циклограммы
+    /// Делегат для функции выполнения команды циклограммы.
     /// </summary>
-    /// <param name="Params">Массив параметров функции</param>
-    /// <returns>TRUE, если результат выполнения функции положительный</returns>
+    /// <param name="Params">Массив параметров функции.</param>
+    /// <returns><c>true</c>, если результат выполнения функции положительный.</returns>
     public delegate bool ExecFunctionEventHandler(string[] Params);
 
     /// <summary>
-    /// Класс описания команды циклограммы
+    /// Класс описания команды циклограммы.
     /// </summary>
     public class CyclogramLine : INotifyPropertyChanged
     {
@@ -39,42 +39,42 @@ namespace EGSE.Cyclogram
         public const int CYCUnknownCommandID = -1;
 
         /// <summary>
-        /// Изначальное значение задержки выполнения команды используется для восстановления значения после отсчета времени при выполненении циклограммы 
+        /// Изначальное значение задержки выполнения команды используется для восстановления значения после отсчета времени при выполненении циклограммы.
         /// </summary>
         private int _delayOriginal;
 
         /// <summary>
-        /// Значение задержки в мс
+        /// Значение задержки в мс.
         /// </summary>
         private int _delayMs;
 
         /// <summary>
-        /// Значение задержки в секундах, переведенное в строку
+        /// Значение задержки в секундах, переведенное в строку.
         /// </summary>
         private string _delayStr;
 
         /// <summary>
-        /// Строка в файле циклограмм
+        /// Строка в файле циклограмм.
         /// </summary>
         private int _line;
 
         /// <summary>
-        /// Рассчитанное абсолютное время
+        /// Рассчитанное абсолютное время.
         /// </summary>
         private string _absoluteTime;
 
         /// <summary>
-        /// сама команда с параметрами для вывода в последнем столбце таблицы
+        /// Команда с параметрами для вывода в последнем столбце таблицы.
         /// </summary>
         private string _command;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="CyclogramLine" />.
         /// </summary>
-        /// <param name="name">Название команды</param>
-        /// <param name="testFunc">Функция тестирования</param>
-        /// <param name="execFunc">Функция выполнения</param>
-        /// <param name="color">Цвет команды</param>
+        /// <param name="name">Название команды.</param>
+        /// <param name="testFunc">Функция тестирования.</param>
+        /// <param name="execFunc">Функция выполнения.</param>
+        /// <param name="color">Цвет команды.</param>
         public CyclogramLine(string name, TestFunctionEventhandler testFunc, ExecFunctionEventHandler execFunc, string color)
         {
             Reset();
@@ -209,7 +209,7 @@ namespace EGSE.Cyclogram
 
         /// <summary>
         /// Получает или задает задержку в мс перед выполнением команды.
-        /// при обновлении, также меняет DelayStr.
+        /// При обновлении, также меняет DelayStr.
         /// </summary>
         public int DelayMs 
         { 
@@ -271,7 +271,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Восстановление значения задержки в исходное значение, так как в циклограмме идет обратный отсчет по этому полю
+        /// Восстановление значения задержки в исходное значение, так как в циклограмме идет обратный отсчет по этому полю.
         /// </summary>
         public void RestoreDelay()
         {
@@ -279,7 +279,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Инициализация команды по-умолчанию
+        /// Инициализация команды по-умолчанию.
         /// </summary>
         public void Reset()
         {
@@ -304,10 +304,10 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Запуск и проверка результатов выполнения тестовой функции для данной команды
-        /// В случае неудачного выполнения, функция генерирует исключение
+        /// Запуск и проверка результатов выполнения тестовой функции для данной команды.
+        /// В случае неудачного выполнения, функция генерирует исключение.
         /// </summary>
-        /// <returns>Результат выполнения функции тестирования команды</returns>
+        /// <returns>Результат выполнения функции тестирования команды.</returns>
         public bool RunTestFunction()
         {
             Debug.Assert(TestFunction != null, string.Format("Не задана функция тестирования команды {0}", CmdName));
@@ -326,9 +326,9 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Вызываем INotifyChanged
+        /// Вызываем INotifyChanged.
         /// </summary>
-        /// <param name="propertyName">Название свойства</param>
+        /// <param name="propertyName">Название свойства.</param>
         private void FirePropertyChangedEvent(string propertyName)
         {
             if (PropertyChanged != null)
@@ -340,13 +340,13 @@ namespace EGSE.Cyclogram
 
     /// <summary>
     /// Класс поддержки списка команд.
-    /// Используется для реализации списка поддерживаемых команд
-    /// В случае поддерживаемых команд, ключем словаря является название команды (должно быть уникальным)
+    /// Используется для реализации списка поддерживаемых команд.
+    /// В случае поддерживаемых команд, ключем словаря является название команды (должно быть уникальным).
     /// </summary>
     public class CyclogramCommands : Dictionary<string, CyclogramLine>
     {
         /// <summary>
-        /// Количество команд в словаре (для присваивания Id новой команде)
+        /// Количество команд в словаре (для присваивания Id новой команде).
         /// </summary>
         private int _totalCommandsCount;
 
@@ -361,10 +361,10 @@ namespace EGSE.Cyclogram
         /// <summary>
         /// Функция добавляет команду в список.
         /// </summary>
-        /// <param name="cmdKey">Уникальный идентификатор команды(повторения не допускаются)</param>
-        /// <param name="cmd">Команда для данного идентификатора</param>
-        /// <returns>Если ключ уникален, команда добавляется и возвращается TRUE, в противном случае, команда
-        /// не добавляется и функция возвращает FALSE</returns>
+        /// <param name="cmdKey">Уникальный идентификатор команды(повторения не допускаются).</param>
+        /// <param name="cmd">Команда для данного идентификатора.</param>
+        /// <returns>Если ключ уникален, команда добавляется и возвращается <c>true</c>, в противном случае, команда
+        /// не добавляется и функция возвращает <c>false</c>.</returns>
         public bool AddCommand(string cmdKey, CyclogramLine cmd)
         {
             if (ContainsKey(cmdKey))

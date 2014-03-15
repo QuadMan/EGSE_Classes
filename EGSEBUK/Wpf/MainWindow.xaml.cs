@@ -68,7 +68,7 @@ namespace EGSE.Defaults
         /// <summary>
         /// Экземпляр для работы с командами циклограммы.
         /// </summary>
-        private CyclogramCommandBUK _bukCycCommands = new CyclogramCommandBUK();
+        private CyclogramCommandBuk _bukCycCommands = new CyclogramCommandBuk();
 
         /// <summary>
         /// Интерфейс работы с устройством устройства.
@@ -80,7 +80,7 @@ namespace EGSE.Defaults
         /// </summary>
         private void InitControlValues()
         {
-            _bukCycCommands.BUK = _intfEGSE;
+            _bukCycCommands.BukNotify = _intfEGSE;
         }
 
         /// <summary>

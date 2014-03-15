@@ -48,7 +48,6 @@ namespace EGSE.Cyclogram
         
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="CyclogramParsingException" />.
-        /// Конструктор для обработки сериализации типа
         /// </summary>
         /// <param name="info">The information.</param>
         /// <param name="contex">The contex.</param>
@@ -59,17 +58,17 @@ namespace EGSE.Cyclogram
     }
 
     /// <summary>
-    /// Класс, предназначенный для работы с файлом циклограмм
+    /// Класс, предназначенный для работы с файлом циклограмм.
     /// </summary>
     public class CyclogramFile
     {
         /// <summary>
-        /// Символ комментария
+        /// Символ комментария.
         /// </summary>
         public const char CycloCommentChar = '#';
 
         /// <summary>
-        /// Максимальнео значение секунд в формате времени циклограммы
+        /// Максимальнео значение секунд в формате времени циклограммы.
         /// </summary>
         public const int MaxSecondsValue = 65535;
 
@@ -122,10 +121,10 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Функция парсинга строки
+        /// Функция парсинга строки.
         /// Работаем на исключениях, в вызывающей функции, необходимо проверять исключения от этой функции
         /// </summary>
-        /// <param name="cycStr">Строка циклограммы</param>
+        /// <param name="cycStr">Строка циклограммы.</param>
         public void TryParseString(string cycStr)
         {
             _curCommand.Reset();
@@ -190,11 +189,11 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// загружаем файл циклограмм
-        /// Даже в случае ошибки, команда добавляется в список команд, но выставляется признак наличия ошибки
+        /// Загружаем файл циклограмм.
+        /// Даже в случае ошибки, команда добавляется в список команд, но выставляется признак наличия ошибки.
         /// </summary>
-        /// <param name="cycFName">Путь к файлу циклограмм</param>
-        /// <param name="availableCommands">Список доступных команд</param>
+        /// <param name="cycFName">Путь к файлу циклограмм.</param>
+        /// <param name="availableCommands">Список доступных команд.</param>
         public void TryLoad(string cycFName, CyclogramCommands availableCommands)
         {
             Debug.Assert(availableCommands != null, "Список доступных команд циклограммы пуст!");
@@ -250,10 +249,10 @@ namespace EGSE.Cyclogram
         /// Расчитывает абсолютное время для всех команд циклограммы в формате ЧЧ:ММ:СС.МСС.
         /// Может рассчитать относительно заданного времени.
         /// </summary>
-        /// <param name="hr">Час(для относительного рассчета)</param>
-        /// <param name="min">Минута(для относительного рассчета)</param>
-        /// <param name="sec">Секунда(для относительного расчета)</param>
-        /// <param name="fromLineNum">С какой строки рассчитывать время, если запускаем циклограмму не с первой строки</param>
+        /// <param name="hr">Час(для относительного рассчета).</param>
+        /// <param name="min">Минута(для относительного рассчета).</param>
+        /// <param name="sec">Секунда(для относительного расчета).</param>
+        /// <param name="fromLineNum">С какой строки рассчитывать время, если запускаем циклограмму не с первой строки.</param>
         public void CalcAbsoluteTime(int hr = 0, int min = 0, int sec = 0, int fromLineNum = 0)
         {
             DateTime dt = new DateTime(1, 1, 1, hr, min, sec, 0);
@@ -332,10 +331,10 @@ namespace EGSE.Cyclogram
         */
 
         /// <summary>
-        /// Проверяем, есть ли на этой строке файла циклограмм команда
+        /// Проверяем, есть ли на этой строке файла циклограмм команда.
         /// </summary>
-        /// <param name="cycLine">Номер строки</param>
-        /// <returns>Возвращает TRUE, если на этой строке есть команда</returns>
+        /// <param name="cycLine">Номер строки.</param>
+        /// <returns>Возвращает <c>true</c>, если на этой строке есть команда.</returns>
         public bool IsCmdExistsOnLine(uint cycLine)
         {
             foreach (var cmd in Commands)
@@ -352,8 +351,8 @@ namespace EGSE.Cyclogram
         /// <summary>
         /// Функция из строки вырезает комментарии и возвращает строку без комментариев по ссылке и сам комментарий в возвращаемом значении.
         /// </summary>
-        /// <param name="cycStr">Исходная строка, из которой исключаются комментарии</param>
-        /// <returns>Cтрока комментариев (если их нет, возвращет String.Empty)</returns>
+        /// <param name="cycStr">Исходная строка, из которой исключаются комментарии.</param>
+        /// <returns>Cтрока комментариев (если их нет, возвращет String.Empty).</returns>
         private string TakeComments(ref string cycStr)
         {
             int commentStartPos = cycStr.IndexOf(CycloCommentChar);
@@ -440,12 +439,12 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Проверяем, что команда существует в списке доступных команд
+        /// Проверяем, что команда существует в списке доступных команд.
         /// Если команда не находится в списке, вызывается исключение CyclogramParsingException
-        /// Если команда в списке находится, переменной _curCommand присваиваются значения id, execFunction и testFunction
-        /// Выставляется флаг cmdExists
+        /// Если команда в списке находится, переменной _curCommand присваиваются значения id, execFunction и testFunction.
+        /// Выставляется флаг cmdExists.
         /// </summary>
-        /// <param name="cmdStr">Название команды</param>
+        /// <param name="cmdStr">Название команды.</param>
         private void TryParseCmdToken(string cmdStr)
         {
             Debug.Assert(_availableCommands != null, "Список доступных команд циклограммы пуст!");
@@ -501,7 +500,7 @@ namespace EGSE.Cyclogram
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="CycPosition" />.
         /// </summary>
-        /// <param name="cycloFile">Экземпляр класса, представляющий файл циклограммы</param>
+        /// <param name="cycloFile">Экземпляр класса, представляющий файл циклограммы.</param>
         public CycPosition(CyclogramFile cycloFile)
         {
             _cycloFile = cycloFile;
@@ -565,7 +564,7 @@ namespace EGSE.Cyclogram
         /// </summary>
         /// <param name="lineNum">The line number.</param>
         /// <param name="findFirst">if set to <c>true</c> [find first].</param>
-        /// <returns>Экземпляр класса, отвечающий за представление строки циклограммы</returns>
+        /// <returns>Экземпляр класса, отвечающий за представление строки циклограммы.</returns>
         public CyclogramLine SetToLine(int lineNum, bool findFirst = false)
         {
             _curCmd = null;
@@ -592,7 +591,7 @@ namespace EGSE.Cyclogram
         /// <summary>
         /// Возвращает следующую команду.
         /// </summary>
-        /// <returns>Если существует следующая команда</returns>
+        /// <returns>Если существует следующая команда.</returns>
         public CyclogramLine GetNextCmd()
         {
             _lastCommand = false;

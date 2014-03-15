@@ -58,7 +58,6 @@ namespace EGSE.Cyclogram
             SetButtonsByState(CurState.cycloNone);
             _cycCommandsAvailable.AddCommand("NOP", new CyclogramLine("NOP", NopTest, NopExec, string.Empty));
             _cycCommandsAvailable.AddCommand("STOP", new CyclogramLine("STOP", StopTest, StopExec, string.Empty));
-
             // cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, string.Empty));
         }
 
@@ -68,9 +67,9 @@ namespace EGSE.Cyclogram
         public bool IsTracingMode { get; set; }
 
         /// <summary>
-        /// Функция добавляет список команд циклограммы к исходным командам
+        /// Функция добавляет список команд циклограммы к исходным командам.
         /// </summary>
-        /// <param name="cycCommands">Список команд</param>
+        /// <param name="cycCommands">Список команд.</param>
         public void AddCycCommands(CyclogramCommands cycCommands)
         {
             foreach (KeyValuePair<string, CyclogramLine> cycLine in cycCommands) 
@@ -80,11 +79,11 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// TODO описание
+        /// Проверка команды [STOP].
         /// </summary>
-        /// <param name="setParams">Передаваемые параметры</param>
-        /// <param name="errstring">Сообщение об ошибке</param>
-        /// <returns>Всегда True</returns>
+        /// <param name="setParams">Передаваемые параметры.</param>
+        /// <param name="errstring">Сообщение об ошибке.</param>
+        /// <returns><c>true</c> всегда.</returns>
         public bool StopTest(string[] setParams, out string errstring)
         {
             errstring = string.Empty;
@@ -92,10 +91,10 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// TODO описание
+        /// Выполнение [STOP].
         /// </summary>
-        /// <param name="setParams">Передаваемые параметры</param>
-        /// <returns>Всегда True</returns>
+        /// <param name="setParams">Параметры команды.</param>
+        /// <returns><c>true</c> всегда.</returns>
         public bool StopExec(string[] setParams)
         {
             _cycloThread.StopAndSetNextCmd();
@@ -103,11 +102,11 @@ namespace EGSE.Cyclogram
         }
         
         /// <summary>
-        /// TODO описание
+        /// Проверка команды [NOP].
         /// </summary>
-        /// <param name="setParams">Передаваемые параметры</param>
-        /// <param name="errstring">Сообщение об ошибке</param>
-        /// <returns>Всегда True</returns>
+        /// <param name="setParams">Параметры команды.</param>
+        /// <param name="errstring">Сообщение об ошибке.</param>
+        /// <returns><c>true</c> всегда.</returns>
         public bool NopTest(string[] setParams, out string errstring)
         {
             errstring = string.Empty;
@@ -115,44 +114,44 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// TODO описание
+        /// Выполнение [NOP].
         /// </summary>
-        /// <param name="setParams">Передаваемые параметры</param>
-        /// <returns>Всегда True</returns>
+        /// <param name="setParams">Параметры команды.</param>
+        /// <returns><c>true</c> всегда.</returns>
         public bool NopExec(string[] setParams)
         {
             return true;
         }
 
-        /// <summary>
-        /// Loops the test.
-        /// </summary>
-        /// <param name="setParams">The set parameters.</param>
-        /// <param name="errstring">The errstring.</param>
-        /// <returns>True всегда</returns>
-        public bool LoopTest(string[] setParams, out string errstring)
-        {
-            errstring = string.Empty;
-            return true;
-        }
+        ///// <summary>
+        ///// Loops the test.
+        ///// </summary>
+        ///// <param name="setParams">The set parameters.</param>
+        ///// <param name="errstring">The errstring.</param>
+        ///// <returns>True всегда</returns>
+        //public bool LoopTest(string[] setParams, out string errstring)
+        //{
+        //    errstring = string.Empty;
+        //    return true;
+        //}
+
+        ///// <summary>
+        ///// Loops the execute.
+        ///// </summary>
+        ///// <param name="setParams">The set parameters.</param>
+        ///// <returns>True всегда</returns>
+        //public bool LoopExec(string[] setParams)
+        //{
+        //    return true;
+        //}
 
         /// <summary>
-        /// Loops the execute.
+        /// Вызывается когда [выполнение циклограммы окончено].
         /// </summary>
-        /// <param name="setParams">The set parameters.</param>
-        /// <returns>True всегда</returns>
-        public bool LoopExec(string[] setParams)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// TODO описание
-        /// </summary>
-        /// <param name="str">TODO параметр</param>
+        /// <param name="str">Дополнительная информация для вывода в сообщение.</param>
         private void OnCycFinished(string str)
         {
-            MessageBox.Show("Циклограмма завершена!");
+            MessageBox.Show("Циклограмма завершена!" + str);
         }
 
         /// <summary>
@@ -191,7 +190,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Called when [cyc state change].
+        /// Вызывается когда [циклограмма изменяет свой статус].
         /// </summary>
         /// <param name="cycloState">State of the cyclo.</param>
         private void OnCycStateChange(CurState cycloState)
@@ -247,7 +246,7 @@ namespace EGSE.Cyclogram
         }
 
         /// <summary>
-        /// Called when [new command].
+        /// Вызывается когда [циклограмма переходит к следующей команде].
         /// </summary>
         /// <param name="cycCommand">The cyc command.</param>
         private void OnNewCmd(CyclogramLine cycCommand)
@@ -275,22 +274,14 @@ namespace EGSE.Cyclogram
         private void LoadBtn_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ".cyc"; // Default file extension 
-            dlg.Filter = "Файл циклограмм (.cyc)|*.cyc"; // Filter files by extension 
+            dlg.DefaultExt = ".cyc";
+            dlg.Filter = "Файл циклограмм (.cyc)|*.cyc"; 
 
             if (dlg.ShowDialog() == true)
             {
-                ////try
-                ////{
-                    DG.DataContext = null;
-                    _cycloThread.Load(dlg.FileName, _cycCommandsAvailable);
-                    DG.DataContext = _cycloThread.CycloFile.Commands;
-
-                ////}
-                ////catch (CyclogramParsingException exc)
-                ////{
-                ////MessageBox.Show(exc.Message);
-                ////}
+                DG.DataContext = null;
+                _cycloThread.Load(dlg.FileName, _cycCommandsAvailable);
+                DG.DataContext = _cycloThread.CycloFile.Commands;
             }
         }
 
@@ -340,20 +331,6 @@ namespace EGSE.Cyclogram
         private void TrackingModeCB_Checked(object sender, RoutedEventArgs e)
         {
             IsTracingMode = (bool)TrackingModeCB.IsChecked;
-        }
-
-        /// <summary>
-        /// Логгируем все нажания кнопок, чекбоксов и т.д.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="MouseButtonEventArgs" /> instance containing the event data.</param>
-        private void MouseLoggerEvent(object sender, MouseButtonEventArgs e)
-        {
-            string logEvent = EventClickToString.ElementClicked(e);
-            if (logEvent != null)
-            {
-              // LogsClass.LogOperator.LogText = logEvent;
-            }
         }
     }
 }

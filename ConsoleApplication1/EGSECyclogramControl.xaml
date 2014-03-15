@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="670" MinHeight="200" MinWidth="670">
-    <Grid PreviewMouseLeftButtonDown="MouseLoggerEvent">
+    <Grid>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -66,9 +66,9 @@
                 </DataGrid.CellStyle>
 
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Line}" CanUserSort="False" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Строка" Width="50"/>
-                    <DataGridTextColumn Binding="{Binding AbsoluteTime}" CanUserSort="False" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Время" Width="80"/>
-                    <DataGridTextColumn Binding="{Binding DelayStr}" CanUserSort="False" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Инт.,с" Width="45"/>
+                    <DataGridTextColumn Binding="{Binding Line}" CanUserSort="False" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Строка" Width="60"/>
+                    <DataGridTextColumn Binding="{Binding AbsoluteTime}" CanUserSort="False" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Время" Width="100"/>
+                    <DataGridTextColumn Binding="{Binding DelayStr}" CanUserSort="False" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Инт.,с" Width="60"/>
                     <DataGridTextColumn Binding="{Binding Str}" CanUserSort="False" CanUserResize="False" ClipboardContentBinding="{x:Null}" Header="Команда" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
