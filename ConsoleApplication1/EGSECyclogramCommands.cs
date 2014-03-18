@@ -19,14 +19,14 @@ namespace EGSE.Cyclogram
     /// <param name="Params">Массив параметров функции.</param>
     /// <param name="errString">Строка ошибок, которые обнаружила фкнция проверки.</param>
     /// <returns><c>true</c>, если результат проверки функции положительный.</returns>
-    public delegate bool TestFunctionEventhandler(string[] Params, out string errString);
+    public delegate bool TestFunctionEventhandler(string[] cmdParams, out string errString);
 
     /// <summary>
     /// Делегат для функции выполнения команды циклограммы.
     /// </summary>
     /// <param name="Params">Массив параметров функции.</param>
     /// <returns><c>true</c>, если результат выполнения функции положительный.</returns>
-    public delegate bool ExecFunctionEventHandler(string[] Params);
+    public delegate bool ExecFunctionEventHandler(string[] cmdParams);
 
     /// <summary>
     /// Класс описания команды циклограммы.

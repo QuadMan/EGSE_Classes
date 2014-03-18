@@ -242,6 +242,11 @@ namespace EGSE.Devices
         /// </summary>
         private const int SimHSIControlAddr = 0x36;
 
+        private const int ShutterLoAddr = 0x44;
+        private const int ShutterHiAddr = 0x45;
+        private const int ShutterSendAddr = 0x46;
+        private const int ShutterAutoAddr = 0x47;
+
         /// <summary>
         /// Адресный байт "Сброс адреса данных УКС".
         /// </summary>
@@ -817,6 +822,27 @@ namespace EGSE.Devices
             SendToUSB(SimHSIControlAddr, new byte[1] { (byte)value });
         }
 
+        internal void CmdShutters(int value)
+        {
+            SendToUSB(ShutterLoAddr, new byte[1] { (byte)value });
+            SendToUSB(ShutterHiAddr, new byte[1] { (byte)(value >> 8) });
+            SendToUSB(ShutterSendAddr, new byte[1] { 1 });    
+        }
+
+        internal void CmdAutoShutters(int value)
+        {
+            byte x;
+            if (0 != value)
+            {
+                x = 1;
+            }
+            else
+            {
+                x = 0;
+            }
+            SendToUSB(ShutterAutoAddr, new byte[1] { x });
+        }
+
         /// <summary>
         /// Команда [выдачи УКС ВСИ].
         /// </summary>
@@ -1026,7 +1052,8 @@ namespace EGSE.Devices
             Spacewire1Notify = new Spacewire1(this);
             Spacewire2Notify = new Spacewire2(this);
             Spacewire3Notify = new Spacewire3(this);
-            Spacewire4Notify = new Spacewire4(this);
+            Spacewire4Notify = new Spacewire4(this);            
+
             UITestNotify = new UITest(this);
             UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
 
@@ -1040,8 +1067,8 @@ namespace EGSE.Devices
             _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
-            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = e.Data[0]; });
-            _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.Data[0]; });
+            _decoderSpacewireBuk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = e.Data[0]; });
+            _decoderSpacewireBuk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.Data[0]; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
 
             _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2);
@@ -1062,6 +1089,15 @@ namespace EGSE.Devices
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(HSINotify.OnHsiMsgRawSave);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderHsi.OnMessageFunc);
+
+            ControlValuesList.Add(Global.Shutters, new ControlValue());
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.Auto, 14, 1, Device.CmdAutoShutters, value => IssueManualShutter = !Convert.ToBoolean(value));
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesOpen, 10, 1, Device.CmdShutters, value => IssueUfesOpen = (DevEnabled)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesClose, 8, 1, Device.CmdShutters, value => IssueUfesClose = (DevEnabled)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesOpen, 6, 1, Device.CmdShutters, value => IssueVufesOpen = (DevEnabled)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesClose, 4, 1, Device.CmdShutters, value => IssueVufesClose = (DevEnabled)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.SdchshOpen, 2, 1, Device.CmdShutters, value => IssueSdchshOpen = (DevEnabled)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.SdchshClose, 0, 1, Device.CmdShutters, value => IssueSdchshClose = (DevEnabled)value);
         }
 
         /// <summary>
@@ -1089,6 +1125,13 @@ namespace EGSE.Devices
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
         private bool _isShowUsbSendsMonitor;
+        private DevEnabled _issueSdchshClose = DevEnabled.Off;
+        private DevEnabled _issueSdchshOpen = DevEnabled.Off;
+        private DevEnabled _issueVufesClose = DevEnabled.Off;
+        private DevEnabled _issueVufesOpen = DevEnabled.Off;
+        private DevEnabled _issueUfesClose = DevEnabled.Off;
+        private DevEnabled _issueUfesOpen = DevEnabled.Off;
+        private bool _issueManualShutter = true;
 
         /// <summary>
         /// Получает или задает нотификатор self-теста.
@@ -1162,6 +1205,127 @@ namespace EGSE.Devices
             get
             {
                 return Device.BytesAvailable;
+            }
+        }
+        public enum DevEnabled
+        {
+            On = 0x01,
+            Off = 0x00
+        }
+
+        public bool IssueManualShutter 
+        { 
+            get
+            {
+                return _issueManualShutter;
+            }
+
+            set
+            {
+                _issueManualShutter = value;
+                // SetShutters(DevEnabled.Off);
+                ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.Auto, Convert.ToInt32(!value));
+                FirePropertyChangedEvent();
+            } 
+        }
+
+        private void SetShutters(DevEnabled state)
+        {
+            IssueSdchshOpen = state;
+            IssueSdchshClose = state;
+            IssueUfesOpen = state;
+            IssueUfesClose = state;
+            IssueVufesOpen = state;
+            IssueVufesClose = state;
+        }
+
+        public DevEnabled IssueUfesOpen
+        {
+            get
+            {
+                return _issueUfesOpen;
+            }
+
+            set
+            {
+                _issueUfesOpen = value;
+                ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.UfesOpen, (int)value);
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public DevEnabled IssueUfesClose
+        {
+            get
+            {
+                return _issueUfesClose;
+            }
+
+            set
+            {
+                _issueUfesClose = value;
+                ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.UfesClose, (int)value);
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public DevEnabled IssueVufesOpen
+        {
+            get
+            {
+                return _issueVufesOpen;
+            }
+
+            set
+            {
+                _issueVufesOpen = value;
+                ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.VufesOpen, (int)value);
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public DevEnabled IssueVufesClose
+        {
+            get
+            {
+                return _issueVufesClose;
+            }
+
+            set
+            {
+                _issueVufesClose = value;
+                ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.VufesClose, (int)value);
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public DevEnabled IssueSdchshOpen
+        {
+            get
+            {
+                return _issueSdchshOpen;
+            }
+
+            set
+            {
+                _issueSdchshOpen = value;
+                ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.SdchshOpen, (int)value);
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public DevEnabled IssueSdchshClose 
+        { 
+            get 
+            {
+                return _issueSdchshClose;
+            }
+
+            set
+            {
+                _issueSdchshClose = value;
+                ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.SdchshClose, (int)value);
+                FirePropertyChangedEvent();
             }
         }
 
@@ -1699,6 +1863,7 @@ namespace EGSE.Devices
                         ControlValuesList[Global.HSI.Line2FrameCounter].UsbValue = (msg.Data[42] << 8) | msg.Data[41];
                         ControlValuesList[Global.SimHSI.Control].UsbValue = msg.Data[43];
                         ControlValuesList[Global.SimHSI.Record].UsbValue = msg.Data[44];
+                        ControlValuesList[Global.Shutters].UsbValue = (msg.Data[53] << 8) | msg.Data[52];
                         break;
                     case TeleDataAddr:
                         ControlValuesList[Global.Telemetry].UsbValue = (msg.Data[2] << 16) | (msg.Data[3] << 8) | msg.Data[4];

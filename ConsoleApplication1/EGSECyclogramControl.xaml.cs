@@ -56,8 +56,8 @@ namespace EGSE.Cyclogram
             _cycloThread.ChangeStateEvent = OnCycStateChange;
             _cycloThread.FinishedEvent = OnCycFinished;
             SetButtonsByState(CurState.cycloNone);
-            _cycCommandsAvailable.AddCommand("NOP", new CyclogramLine("NOP", NopTest, NopExec, string.Empty));
-            _cycCommandsAvailable.AddCommand("STOP", new CyclogramLine("STOP", StopTest, StopExec, string.Empty));
+            _cycCommandsAvailable.AddCommand("aa6e98173bf04ae1aa63e95751bbb856", new CyclogramLine("NOP", NopTest, NopExec, string.Empty));
+            _cycCommandsAvailable.AddCommand("b05d3add0acd436da6f8ac89e105d1f3", new CyclogramLine("STOP", StopTest, StopExec, string.Empty));
             // cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, string.Empty));
         }
 

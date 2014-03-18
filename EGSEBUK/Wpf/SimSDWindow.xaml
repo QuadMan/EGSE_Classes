@@ -56,7 +56,6 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -97,16 +96,7 @@
     			Grid.ColumnSpan="3"    	
                 Content="Передать посылку"
                 Command="{Binding IssuePackageCommand}"
-    			Template="{StaticResource FlatButtonClickBusy}"/>
-            <Label Grid.Row="5"   
-    			Grid.ColumnSpan="2"	
-    			Content="Автоматическая выдача посылки"
-    			Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Row="5"   
-    			Grid.Column="2"                        
-    			Tag="{Binding IsIssueAuto, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueAutoCommand}"
-    			Template="{StaticResource FlatButtonCheck}"/>
+    			Template="{StaticResource FlatButtonClickBusy}"/>           
         </Grid>
 
     </Grid>

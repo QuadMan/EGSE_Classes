@@ -453,7 +453,7 @@ namespace EGSE.Cyclogram
 
             foreach (var cmd in _availableCommands)
             {
-                if (cmd.Key == cmdStr)
+                if (cmd.Value.CmdName == cmdStr)
                 {
                     cmdExists = true;
                     _curCommand.Id = cmd.Value.Id;

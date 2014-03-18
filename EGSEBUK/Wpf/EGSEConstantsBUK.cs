@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿using Wpf;
+//-----------------------------------------------------------------------
 // <copyright file="EGSEConstantsBUK.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
@@ -73,12 +74,13 @@ namespace EGSE.Constants
         static Global()
         {
             Telemetry = new CVTelemetry();
+            Shutters = new CVShutters();
         }
 
         /// <summary>
         /// Получает индекс объекта "Телеметрия" в массиве ControlValuesList.
         /// </summary>
-        public static CVTelemetry Telemetry { get; private set; }
+        internal static CVTelemetry Telemetry { get; private set; }
 
         /// <summary>
         /// Расширяющий метод представления байт в формате: 0,00 байт/КБ/МБ/ГБ.
@@ -1173,6 +1175,35 @@ namespace EGSE.Constants
             public static implicit operator string(CVTelemetry obj)
             {
                 return "e302dd463fb94adaaf8e9e2cd049cfe6";
+            }
+        }
+
+        internal static CVShutters Shutters { get; private set; }
+
+        internal class CVShutters
+        {
+            public readonly string Auto = "0dd027489d2841b393f27bd24e1ba827";
+
+            public readonly string UfesOpen = "1a9eaeba16f746abbd76879400733dd6";
+
+            public readonly string UfesClose = "014d72354f774310b3c2d2c05980e72c";
+
+            public readonly string VufesOpen = "b80a1dc893ad4489866979d2a76f0724";
+
+            public readonly string VufesClose = "ec63f6626d73473ca4dc227a0ba1fb59";
+
+            public readonly string SdchshOpen = "29b4bbd9acbd4976a67a9198abd093d7";
+
+            public readonly string SdchshClose = "f45ba7d713994f2f80e67c92b67cbe87";
+
+            /// <summary>
+            /// Неявно преобразует объект к типу "строка". 
+            /// </summary>
+            /// <param name="obj">Объект для преобразования.</param>
+            /// <returns>Возвращает строковое представления объекта.</returns>
+            public static implicit operator string(CVShutters obj)
+            {
+                return "3b48052591d24dbd8e72d922c8721786";
             }
         }
     }

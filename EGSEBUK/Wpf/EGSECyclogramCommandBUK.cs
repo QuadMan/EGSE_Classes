@@ -23,27 +23,78 @@ namespace EGSE.Cyclogram.Command
     /// </summary>
     public class CyclogramCommandBuk
     {
-        /// <summary>
-        /// Параметры для выбора канала команд.
-        ///// </summary>
-        //private List<string> _channelCMD = new List<string>()
-        //{
-        //    "CMD_CH_NONE",
-        //    "CMD_CH_MAIN",
-        //    "CMD_CH_RES",
-        //    "CMD_CH_MAIN_RES"
-        //};
+        private enum switcher
+        {
+            ON,
+            OFF
+        }
 
-        ///// <summary>
-        ///// Параметры для выбора канала данных.
-        ///// </summary>
-        //private List<string> _channelDAT = new List<string>()
-        //{
-        //    "DAT_CH_NONE",
-        //    "DAT_CH_MAIN",
-        //    "DAT_CH_RES",
-        //    "DAT_CH_MAIN_RES"
-        //};
+        private enum device
+        {
+            BUSK,            
+            BUK,
+            BUND
+        }
+
+        private enum scidev
+        {
+            UFES,
+            VUFES,
+            SDSH
+        }
+
+        private enum halfset 
+        {
+            MAIN,
+            RESV,
+            BOTH,
+            NONE
+        }
+
+        private enum line
+        {
+            A,
+            B,
+            AB
+        }
+
+        private enum channel
+        {
+            CH1_1,
+            CH1_2,
+            CH2_1,
+            CH2_2
+        }
+
+        private enum command
+        {
+            RMAP,
+            TELE
+        }
+
+        private enum transmit
+        {
+            TRANSMIT_ON,
+            TRANSMIT_OFF
+        }
+
+        private enum ticktime
+        {
+            TICKTIME_ON,
+            TICKTIME_OFF
+        }
+
+        private enum onboardtime
+        {
+            ONBOARDTIME_ON,
+            ONBOARDTIME_OFF
+        }
+
+        private enum set
+        {
+            SET1,
+            SET2
+        }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="CyclogramCommandBuk" />.
@@ -61,9 +112,50 @@ namespace EGSE.Cyclogram.Command
             CyclogramCommandsAvailable.AddCommand("bdeae631daf8489983760003e615852a", new CyclogramLine("SCIDEV_IMIT", ScidevImitTest, ScidevImitExec, string.Empty));
         }
 
-        private bool PowerTest(string[] Params, out string errString)
+        private bool IncludeTest<TEnum>(string cmd, TEnum[] exclude = null)
         {
-            throw new NotImplementedException();
+            return GetAllList<TEnum>(exclude).Exists(x => x == cmd);
+        }
+
+        private List<string> GetAllList<TEnum>(TEnum[] exclude = null)
+        {
+            if (null != exclude)
+            {
+                return Enum.GetNames(typeof(TEnum)).ToList().Except(exclude.Where(x => x != null).Select(x => x.ToString()).ToList()).ToList();
+            }
+            else
+            {
+                return Enum.GetNames(typeof(TEnum)).ToList();
+            }
+        }
+
+        private bool PowerTest(string[] cmdParams, out string errString)
+        {
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 3:
+                    {
+                        if (!IncludeTest<device>(cmdParams[0], new device[1] { device.BUK }))
+                        {
+                            errString = string.Format(Resource.Get(@"eArg1"), string.Join(" или ", GetAllList<device>(new device[1] { device.BUK }).ToArray()));
+                            return false;
+                        }
+
+                        if (!IncludeTest<set>(cmdParams[1]))
+                        {
+                            errString = string.Format(Resource.Get(@"eArg2"), string.Join(" или ", GetAllList<set>().ToArray()));
+                            return false;
+                        }  
+                    }
+                    break;
+                case 4:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool PowerExec(string[] Params)
@@ -71,9 +163,18 @@ namespace EGSE.Cyclogram.Command
             throw new NotImplementedException();
         }
 
-        private bool GateTest(string[] Params, out string errString)
+        private bool GateTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 3:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool GateExec(string[] Params)
@@ -81,9 +182,22 @@ namespace EGSE.Cyclogram.Command
             throw new NotImplementedException();
         }
 
-        private bool KvvImitTest(string[] Params, out string errString)
+        private bool KvvImitTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool KvvImitExec(string[] Params)
@@ -91,9 +205,26 @@ namespace EGSE.Cyclogram.Command
             throw new NotImplementedException();
         }
 
-        private bool BuskImitTest(string[] Params, out string errString)
+        private bool BuskImitTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool BuskImitExec(string[] Params)
@@ -101,9 +232,20 @@ namespace EGSE.Cyclogram.Command
             throw new NotImplementedException();
         }
 
-        private bool BuskImitCmdTest(string[] Params, out string errString)
+        private bool BuskImitCmdTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool BuskImitCmdExec(string[] Params)
@@ -111,9 +253,18 @@ namespace EGSE.Cyclogram.Command
             throw new NotImplementedException();
         }
 
-        private bool BuskImitCmdFileTest(string[] Params, out string errString)
+        private bool BuskImitCmdFileTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 1:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool BuskImitCmdFileExec(string[] Params)
@@ -121,9 +272,18 @@ namespace EGSE.Cyclogram.Command
             throw new NotImplementedException();
         }
 
-        private bool BuskImitLogicTest(string[] Params, out string errString)
+        private bool BuskImitLogicTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 2:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool BuskImitLogicExec(string[] Params)
@@ -131,9 +291,22 @@ namespace EGSE.Cyclogram.Command
             throw new NotImplementedException();
         }
 
-        private bool ScidevImitTest(string[] Params, out string errString)
+        private bool ScidevImitTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            errString = string.Empty;
+            switch (cmdParams.Length)
+            {
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    errString = Resource.Get(@"eParamCount");
+                    return false;
+            }
+            return true;
         }
 
         private bool ScidevImitExec(string[] Params)

@@ -80,6 +80,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EGSEConstantsBUK.resx</DependentUpon>
     </Compile>
+    <Compile Include="EGSECyclogramCommandBUK.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSECyclogramCommandBUK.resx</DependentUpon>
+    </Compile>
     <Compile Include="EGSEDefaultMainWindow.cs" />
     <Compile Include="EGSEDefaultMainWindow.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -255,6 +260,11 @@
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EGSEConstantsBUK.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EGSECyclogramCommandBUK.resx">
+      <DependentUpon>EGSECyclogramCommandBUK.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSECyclogramCommandBUK.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="EGSEDefaultLoggers.resx">
       <DependentUpon>EGSEDefaultLoggers.cs</DependentUpon>

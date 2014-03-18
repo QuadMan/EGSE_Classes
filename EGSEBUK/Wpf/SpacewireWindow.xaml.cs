@@ -64,15 +64,22 @@ namespace EGSE.Defaults
         {
             new { msg }.CheckNotNull();
             string spacewireMsg;
+            
             if (msg.Data.Length > 30) 
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + msg.From.ToString() + "-" + msg.MsgType.ToString() + "->" + msg.To.ToString() + " " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.From.ToString() + "-" + msg.MsgType.ToString() + "->" + msg.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray()) + "]";
             }
             else
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + msg.From.ToString() + "-" + msg.MsgType.ToString() + "->"+  msg.To.ToString() + " " +  Converter.ByteArrayToHexStr(msg.Data);
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.From.ToString() + "-" + msg.MsgType.ToString() + "->" + msg.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data) + "]";
             }
-
+            // crc check
+            if (2 < msg.Data.Length)
+            {
+                ushort crcInData = (ushort)((msg.Data[msg.Data.Length - 2] << 8) | (msg.Data[msg.Data.Length - 1]));
+                ushort crcGen = msg.GetCrc();
+                spacewireMsg += (crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4"));
+            }
             if (null != Monitor && Visibility.Visible == this.Visibility)
             {
                 Monitor.Dispatcher.Invoke(new Action(delegate

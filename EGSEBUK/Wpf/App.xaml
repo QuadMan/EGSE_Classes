@@ -16,6 +16,7 @@
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
         <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
         <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
+        <SolidColorBrush x:Key="UnableBrush" Color="Gray"/>        
         <SolidColorBrush x:Key="GrayBrush" Color="Gray"/>        
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
         <SolidColorBrush x:Key="UnConnectedBrush" Color="Tomato"/>
@@ -71,7 +72,10 @@
                     <Trigger Property="IsChecked" Value="true">
                         <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
                     </Trigger>
-                </ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource UnableBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
             </ControlTemplate>
         <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
             <Border x:Name="Border"
@@ -163,8 +167,13 @@
         		Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
         			VerticalAlignment="Center"
-        			Content="{TemplateBinding Content}"/>
+        			Content="{TemplateBinding Content}"/>                
             </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource UnableBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
         </ControlTemplate>
         <Style x:Key="FlatHeader" TargetType="Label">
             <Setter Property="FontWeight" Value="Bold" />

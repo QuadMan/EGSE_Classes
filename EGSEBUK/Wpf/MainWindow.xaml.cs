@@ -130,46 +130,8 @@ namespace EGSE.Defaults
             winUsbSendsMonitor = new UsbSendsMonitor();
             winUsbSendsMonitor.Init(_intfEGSE);
             GridTelemetry.DataContext = _intfEGSE.TelemetryNotify;
-        }
-
-        /// <summary>
-        /// Handles the 1 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.TelemetryNotify.IsPowerBusk2 = !_intfEGSE.TelemetryNotify.IsPowerBusk2;
-        }
-
-        /// <summary>
-        /// Handles the 2 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.TelemetryNotify.IsPowerBund1 = !_intfEGSE.TelemetryNotify.IsPowerBund1;
-        }
-
-        /// <summary>
-        /// Handles the 3 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.TelemetryNotify.IsPowerBund2 = !_intfEGSE.TelemetryNotify.IsPowerBund2;           
-        }
-
-        /// <summary>
-        /// Handles the 4 event of the Button_Click control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            _intfEGSE.TelemetryNotify.UfesLock1 = !_intfEGSE.TelemetryNotify.UfesLock1;           
+            GridShutter.DataContext = _intfEGSE;
+            ManualControlSet.DataContext = _intfEGSE;
         }
     }
 }
