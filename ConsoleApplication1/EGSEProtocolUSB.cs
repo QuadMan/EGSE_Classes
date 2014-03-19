@@ -28,10 +28,20 @@ namespace EGSE.Protocols
         /// </summary>
         private int _dataLen;
 
+        public MsgBase()
+        {
+        }
+
+        public MsgBase(byte[] data, int dataLen)
+        {
+            _data = data;
+            _dataLen = dataLen;
+        }
+
         /// <summary>
         /// Получает или задает данные сообщения.
         /// </summary>
-        public byte[] Data
+        public byte[] Data // TODO need protected
         {
             get
             {
@@ -47,7 +57,7 @@ namespace EGSE.Protocols
         /// <summary>
         /// Получает или задает длину сообщения.
         /// </summary>
-        public int DataLen
+        public int DataLen // TODO need protected
         {
             get
             {
@@ -64,10 +74,11 @@ namespace EGSE.Protocols
         /// Преобразует данные экземпляра к массиву байт.
         /// </summary>
         /// <returns>Массив байт.</returns>
-        /// <exception cref="System.NotImplementedException">Нет реализациии.</exception>
         public virtual byte[] ToArray()
         {
-            throw new NotImplementedException();
+            byte[] buf = new byte[DataLen];
+            Array.Copy(_data, buf, DataLen);
+            return buf;
         }
     }
 

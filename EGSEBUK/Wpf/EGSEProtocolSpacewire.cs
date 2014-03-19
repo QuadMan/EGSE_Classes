@@ -14,6 +14,7 @@ namespace EGSE.Protocols
     using System.Text;
     using System.Threading.Tasks;
     using EGSE.Utilites;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Декодер протокола Spacewire.
@@ -180,19 +181,19 @@ namespace EGSE.Protocols
     /// </summary>
     public class SpacewireIcdMsgEventArgs : SpacewireSptpMsgEventArgs
     {
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
-        /// </summary>
-        public SpacewireIcdMsgEventArgs()
-        {
-        }
+        ///// <summary>
+        ///// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
+        ///// </summary>
+        //public SpacewireIcdMsgEventArgs()
+        //{
+        //}
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
         /// </summary>
         /// <param name="data">The data.</param>
         public SpacewireIcdMsgEventArgs(byte[] data)
-            : base(data)
+            : base(data, data.Length, 0x00, 0x00)
         {
         }
 
@@ -378,12 +379,12 @@ namespace EGSE.Protocols
             }
         }
 
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireKbvMsgEventArgs" />.
-        /// </summary>
-        public SpacewireKbvMsgEventArgs()
-        {
-        }
+        ///// <summary>
+        ///// Инициализирует новый экземпляр класса <see cref="SpacewireKbvMsgEventArgs" />.
+        ///// </summary>
+        //public SpacewireKbvMsgEventArgs()
+        //{
+        //}
 
         /// <summary>
         /// Получает или задает [поле Р нормальное протокола ICD].
@@ -667,80 +668,130 @@ namespace EGSE.Protocols
     /// </summary>
     public class SpacewireSptpMsgEventArgs : MsgBase
     {
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
-        /// </summary>
-        public SpacewireSptpMsgEventArgs()
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Sptp
         {
+            private const int MaxLengthOfSpacewirePackage = 0x10004;
+            private static readonly BitVector32.Section toSection = BitVector32.CreateSection(0xFF);
+            private static readonly BitVector32.Section protocolIdSection = BitVector32.CreateSection(0xFF, toSection);
+            private static readonly BitVector32.Section msgTypeSection = BitVector32.CreateSection(0xFF, protocolIdSection);
+            private static readonly BitVector32.Section fromSection = BitVector32.CreateSection(0xFF, msgTypeSection);
+
+            private BitVector32 header;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfSpacewirePackage)]
+            private byte[] data;
+
+            internal byte[] Data
+            {
+                get
+                {
+                    return data;
+                }
+            }
+
+            public byte To
+            {
+                get 
+                {
+                    return (byte)header[toSection];
+                }
+
+                set
+                {
+                    header[toSection] = (int)value;
+                }
+            }
+
+            public byte ProtocolId
+            {
+                get
+                {
+                    return (byte)header[protocolIdSection];
+                }
+
+                set
+                {
+                    header[protocolIdSection] = (int)value;
+                }
+            }
+
+            public Type MsgType
+            {
+                get
+                {
+                    return (Type)header[msgTypeSection];
+                }
+
+                set
+                {
+                    header[msgTypeSection] = (int)value;
+                }
+            }
+
+            public byte From
+            {
+                get
+                {
+                    return (byte)header[fromSection];
+                }
+
+                set
+                {
+                    header[fromSection] = (int)value;
+                }
+            }
+        }
+
+        ///// <summary>
+        ///// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
+        ///// </summary>
+        ///// <param name="data">The data.</param>
+        ///// <param name="to">Адрес устройства получатель.</param>
+        ///// <param name="from">Адрес устройства отправитель.</param>
+        //[Obsolete("Используй конструктор с 5 аргументами")]
+        //public SpacewireSptpMsgEventArgs(byte[] data, byte to, byte from)
+        //    : this(data, data.Length, 0x00, 0x00)
+        //{
+        //    MsgType = Type.Data;
+        //    To = to;
+        //    From = from;
+        //}
+
+        public Sptp Info;
+
+        public new byte[] Data
+        {
+            get
+            {
+                // возвращаем данные без учета заголовка
+                return Info.Data.Take(base.DataLen - 4).ToArray();
+            }
         }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
         /// </summary>
-        /// <param name="data">The data.</param>
-        public SpacewireSptpMsgEventArgs(byte[] data)
-        {
-            Data = new byte[data.Length];
-            Array.Copy(data, Data, data.Length);
-            DataLen = Data.Length;
-            MsgType = Type.Data;
-            To = 0x00;
-            From = 0x00;
-            ProtocolID = 0xF2;
-            Error = 0x00;
-            Time1 = 0x00;
-            Time2 = 0x00;
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="to">Адрес устройства получатель.</param>
-        /// <param name="from">Адрес устройства отправитель.</param>
-        public SpacewireSptpMsgEventArgs(byte[] data, byte to, byte from)
-            : this(data)
-        {
-            MsgType = Type.Data;
-            To = to;
-            From = from;
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
-        /// </summary>
-        /// <param name="data">The data.</param>
+        /// <param name="data">Данные посылки spacewire.</param>
+        /// <param name="dataLen">Длина посылки spacewire.</param>
         /// <param name="time1">Time tick 1</param>
         /// <param name="time2">Time tick 2</param>
         /// <param name="error">Ошибка в сообщении.</param>
-        public SpacewireSptpMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+        /// <exception cref="System.ContextMarshalException">Размер кадра spacewire меньше 4 байт!</exception>
+        public SpacewireSptpMsgEventArgs(byte[] data, int dataLen, byte time1, byte time2, byte error = 0x00)
+            : base(data, dataLen)
         {
-            if (4 <= data.Length)
+            new { data }.CheckNotNull();
+
+            if ((4 > data.Length) || (4 > base.DataLen))
             {
-                Data = new byte[data.Length - 4];
-                Array.Copy(data.Skip<byte>(4).ToArray(), Data, data.Length - 4);
-                DataLen = data.Length - 4;
-                MsgType = (Type)data[2];
-                To = data[0];
-                From = data[3];
-                ProtocolID = data[1];
-                Error = error;
-                Time1 = time1;
-                Time2 = time2;
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
             }
-            else
-            {
-                Data = new byte[data.Length];
-                Array.Copy(data, Data, data.Length);
-                DataLen = data.Length;
-                MsgType = Type.Error;
-                To = 0;
-                From = 0;
-                ProtocolID = 0;
-                Error = 0xFF;
-                Time1 = 0;
-                Time2 = 0;
-            }
+
+            // преобразуем данные к структуре Sptp.
+            GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
+            Info = (Sptp)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(Sptp));
+            pinnedInfo.Free();
         }
 
         /// <summary>
@@ -748,11 +799,6 @@ namespace EGSE.Protocols
         /// </summary>
         public enum Type
         {
-            /// <summary>
-            /// Сообщение не декодируемо.
-            /// </summary>
-            Error = 0xFF,
-
             /// <summary>
             /// Сообщение "Запрос кредита".
             /// </summary>
@@ -769,37 +815,37 @@ namespace EGSE.Protocols
             Data = 0x00
         }
 
-        /// <summary>
-        /// Получает или задает поле spacewire "Устройство передачи".
-        /// </summary>
-        /// <value>
-        /// Идентификатор устройства передачи сообщения.
-        /// </value>
-        public byte From { get; set; }
+        ///// <summary>
+        ///// Получает или задает поле spacewire "Устройство передачи".
+        ///// </summary>
+        ///// <value>
+        ///// Идентификатор устройства передачи сообщения.
+        ///// </value>
+        //public byte From { get; set; }
 
-        /// <summary>
-        /// Получает или задает поле spacewire "Устройство получения".
-        /// </summary>
-        /// <value>
-        /// Идентификатор устройства приема сообщения.
-        /// </value>
-        public byte To { get; set; }
+        ///// <summary>
+        ///// Получает или задает поле spacewire "Устройство получения".
+        ///// </summary>
+        ///// <value>
+        ///// Идентификатор устройства приема сообщения.
+        ///// </value>
+        //public byte To { get; set; }
 
-        /// <summary>
-        /// Получает или задает идентификатор протокола.
-        /// </summary>
-        /// <value>
-        /// Идентификатор протокола.
-        /// </value>
-        public byte ProtocolID { get; set; }
+        ///// <summary>
+        ///// Получает или задает идентификатор протокола.
+        ///// </summary>
+        ///// <value>
+        ///// Идентификатор протокола.
+        ///// </value>
+        //public byte ProtocolID { get; set; }
 
-        /// <summary>
-        /// Получает или задает тип сообщения spacewire SPTP.
-        /// </summary>
-        /// <value>
-        /// Тип сообщения spacewire SPTP.
-        /// </value>
-        public Type MsgType { get; set; }
+        ///// <summary>
+        ///// Получает или задает тип сообщения spacewire SPTP.
+        ///// </summary>
+        ///// <value>
+        ///// Тип сообщения spacewire SPTP.
+        ///// </value>
+        //public Type MsgType { get; set; }
 
         /// <summary>
         /// Получает или задает ошибку в приеме сообщения.
@@ -831,13 +877,13 @@ namespace EGSE.Protocols
         /// <returns>Массив байт.</returns>
         public override byte[] ToArray()
         {
-            byte[] buf = new byte[DataLen + 4];
-            buf[0] = (byte)To;
-            buf[1] = (byte)ProtocolID;
-            buf[2] = (byte)MsgType;
-            buf[3] = (byte)From;
-            Array.Copy(Data, 0, buf, 4, Data.Length);
-            return buf;
+            //byte[] buf = new byte[DataLen + 4];
+            //buf[0] = (byte)To;
+            //buf[1] = (byte)ProtocolID;
+            //buf[2] = (byte)MsgType;
+            //buf[3] = (byte)From;
+            //Array.Copy(Data, 0, buf, 4, Data.Length);
+            return base.Data;
         }
     }
 

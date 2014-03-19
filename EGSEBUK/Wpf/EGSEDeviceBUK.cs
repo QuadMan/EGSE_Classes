@@ -1607,10 +1607,10 @@ namespace EGSE.Devices
             {
                 Device.CmdSetDeviceTime();
                 Task.Run(() =>
-                {
-                    Task.Delay(500).Wait();
-                    Device.CmdSetDeviceLogicAddr();
+                {                 
                     RefreshAllControlsValues();
+                    Task.Delay(1500).Wait();  
+                    Device.CmdSetDeviceLogicAddr();
                 });
                                          
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
@@ -1762,7 +1762,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "запрос квоты"</returns>
         private bool IsRequestSpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
-            return SpacewireSptpMsgEventArgs.Type.Request == msg.MsgType;
+            return SpacewireSptpMsgEventArgs.Type.Request == msg.Info.MsgType;
         }
 
         /// <summary>
@@ -1812,7 +1812,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "предоставление квоты"</returns>
         private bool IsReplySpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
-            return SpacewireSptpMsgEventArgs.Type.Reply == msg.MsgType;
+            return SpacewireSptpMsgEventArgs.Type.Reply == msg.Info.MsgType;
         }
 
         /// <summary>
@@ -4626,12 +4626,12 @@ namespace EGSE.Devices
                 /// <summary>
                 /// Канал "БУК ПК1 - БМ-4 ПК2".
                 /// </summary>
-                BUK1BM2 = 0x01,
+                BUK1BM2 = 0x02,
 
                 /// <summary>
                 /// Канал "БУК ПК2 - БМ-4 ПК1".
                 /// </summary>
-                BUK2BM1 = 0x02,
+                BUK2BM1 = 0x01,
 
                 /// <summary>
                 /// Канал "БУК ПК2 - БМ-4 ПК2".

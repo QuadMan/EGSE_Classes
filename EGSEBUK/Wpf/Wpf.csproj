@@ -98,6 +98,11 @@
     </Compile>
     <Compile Include="EGSEProtocolHsi.cs" />
     <Compile Include="EGSEProtocolSpacewire.cs" />
+    <Compile Include="EGSEProtocolSpacewire.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSEProtocolSpacewire.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SDWindow.xaml.cs">
       <DependentUpon>SDWindow.xaml</DependentUpon>
@@ -280,6 +285,11 @@
       <DependentUpon>EGSEDeviceBUK.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EGSEDeviceBUK.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EGSEProtocolSpacewire.resx">
+      <DependentUpon>EGSEProtocolSpacewire.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSEProtocolSpacewire.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

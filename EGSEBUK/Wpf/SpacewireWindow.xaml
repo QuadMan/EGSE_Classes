@@ -47,14 +47,14 @@
                 <RadioButton Content="БУК 1ПК :: БМ-4 2ПК"
             		GroupName="SpacewireChannel"
             		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK2BM1}}"/>
+            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK1BM2}}"/>
             </StackPanel>
             <StackPanel Grid.Row="1"
             	Grid.Column="2">
                 <RadioButton Content="БУК 2ПК :: БМ-4 1ПК"
             		GroupName="SpacewireChannel"
             		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK1BM2}}"/>
+            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK2BM1}}"/>
                 <RadioButton Content="БУК 2ПК :: БМ-4 2ПК"
             		GroupName="SpacewireChannel"
             		Template="{StaticResource FlatRadioButton}"

@@ -222,7 +222,7 @@ namespace EGSE.Utilites
         {
             byte[] buf = new byte[obj.Length];
             Array.Copy(obj, buf, buf.Length);
-            return new SpacewireSptpMsgEventArgs(buf, to, from);
+            return new SpacewireSptpMsgEventArgs(buf, buf.Length, to, from);
         }
     }
 
