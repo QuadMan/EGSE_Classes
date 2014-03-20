@@ -668,7 +668,7 @@ namespace EGSE.Devices
             {
                 if (_intfBUK.Spacewire2Notify.IsMakeTK)
                 {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk(_intfBUK.Spacewire2Notify.CurApid, _intfBUK.Spacewire2Notify.CounterIcd).ToArray().ToSptp((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk).ToArray());
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.CurApid, _intfBUK.Spacewire2Notify.CounterIcd).ToArray());
                 }
                 else
                 {
@@ -1060,29 +1060,29 @@ namespace EGSE.Devices
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
-            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = e.Data[0]; });
-            _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime2 = e.Data[0]; });
+            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = e.Tick; });
+            _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime2 = e.Tick; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBusk.OnMessageFunc);
 
             _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
-            _decoderSpacewireBuk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = e.Data[0]; });
-            _decoderSpacewireBuk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.Data[0]; });
+            _decoderSpacewireBuk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = e.Tick; });
+            _decoderSpacewireBuk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.Tick; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
 
             _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2);
             _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
             _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
-            _decoderSpacewireSDIn.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime1 = e.Data[0]; });
-            _decoderSpacewireSDIn.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime2 = e.Data[0]; });
+            _decoderSpacewireSDIn.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime1 = e.Tick; });
+            _decoderSpacewireSDIn.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime2 = e.Tick; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDIn.OnMessageFunc);
 
             _decoderSpacewireSDOut = new ProtocolSpacewire((uint)Spacewire3.Addr.OutData, (uint)Spacewire3.Addr.OutEnd, (uint)Spacewire3.Addr.OutTime1, (uint)Spacewire3.Addr.OutTime2);
             _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
             _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
-            _decoderSpacewireSDOut.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime1 = e.Data[0]; });
-            _decoderSpacewireSDOut.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime2 = e.Data[0]; });
+            _decoderSpacewireSDOut.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime1 = e.Tick; });
+            _decoderSpacewireSDOut.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime2 = e.Tick; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDOut.OnMessageFunc);
 
             _decoderHsi = new ProtocolHsi((uint)HSI.Addr);
@@ -1672,7 +1672,8 @@ namespace EGSE.Devices
                 //        this.GotSpacewire2Msg(sender, e);
                 //    }
                 //}
-                //else if (IsKbvSpacewireMsg(e))
+                //else 
+                //if (IsKbvSpacewireMsg(e))
                 //{
                 //    Spacewire2Notify.CodeOnboardTime = (e as SpacewireIcdMsgEventArgs).AsKbv().Kbv;
                 //}
@@ -1694,7 +1695,7 @@ namespace EGSE.Devices
             {
                 if (IsHsiRequestStateMsg(e))
                 {
-                    if (HsiMsgEventArgs.HsiLine.Main == e.Line)
+                    if (HsiMsgEventArgs.HsiLine.Main == e.Info.Line)
                     {
                         HSINotify.RequestStateMain++;
                     }
@@ -1705,7 +1706,7 @@ namespace EGSE.Devices
                 }
                 else if (IsHsiRequestDataMsg(e))
                 {
-                    if (HsiMsgEventArgs.HsiLine.Main == e.Line)
+                    if (HsiMsgEventArgs.HsiLine.Main == e.Info.Line)
                     {
                         HSINotify.RequestDataMain++;
                     }
@@ -1762,7 +1763,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "запрос квоты"</returns>
         private bool IsRequestSpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
-            return SpacewireSptpMsgEventArgs.Type.Request == msg.Info.MsgType;
+            return SpacewireSptpMsgEventArgs.SptpType.Request == msg.SptpInfo.MsgType;
         }
 
         /// <summary>
@@ -1772,7 +1773,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "запрос статуса"</returns>
         private bool IsHsiRequestStateMsg(HsiMsgEventArgs msg)
         {
-            return 0x03 == msg.Flag;
+            return HsiMsgEventArgs.Type.RequestState == msg.Info.Flag;
         }
 
         /// <summary>
@@ -1782,7 +1783,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "запрос данных"</returns>
         private bool IsHsiRequestDataMsg(HsiMsgEventArgs msg)
         {
-            return 0x04 == msg.Flag;
+            return HsiMsgEventArgs.Type.RequestData == msg.Info.Flag;
         }
 
         /// <summary>
@@ -1792,7 +1793,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "УКС"</returns>
         private bool IsHsiCmdMsg(HsiMsgEventArgs msg)
         {
-            return 0x02 == msg.Flag;
+            return HsiMsgEventArgs.Type.Cmd == msg.Info.Flag;
         }
         
         /// <summary>
@@ -1802,7 +1803,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "КБВ"</returns>
         private bool IsKbvSpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {            
-            return 6 == msg.DataLen; // TODO Написать другой детерминатор!
+            return 6 == msg.Data.Length; // TODO Написать другой детерминатор!
         }
 
         /// <summary>
@@ -1812,7 +1813,7 @@ namespace EGSE.Devices
         /// <returns><c>true</c> если сообщение "предоставление квоты"</returns>
         private bool IsReplySpacewireMsg(SpacewireSptpMsgEventArgs msg)
         {
-            return SpacewireSptpMsgEventArgs.Type.Reply == msg.Info.MsgType;
+            return SpacewireSptpMsgEventArgs.SptpType.Reply == msg.SptpInfo.MsgType;
         }
 
         /// <summary>
@@ -2833,7 +2834,7 @@ namespace EGSE.Devices
 
                     if (_rawDataStream.CanWrite)
                     {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
                     }
                 }
             }
@@ -5534,7 +5535,7 @@ namespace EGSE.Devices
 
                     if (_rawDataStream.CanWrite)
                     {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
                     }
                 }
             }
@@ -6200,7 +6201,7 @@ namespace EGSE.Devices
 
                     if (_rawDataStream.CanWrite)
                     {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.DataLen);
+                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
                     }
                 }
             }

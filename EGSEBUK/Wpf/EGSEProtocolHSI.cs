@@ -14,6 +14,8 @@ namespace EGSE.Protocols
     using System.Text;
     using System.Threading.Tasks;
     using EGSE.Utilites;
+    using System.Runtime.InteropServices;
+    using System.Collections.Specialized;
 
     /// <summary>
     /// Декодер протокола ВСИ.
@@ -165,28 +167,104 @@ namespace EGSE.Protocols
     /// </summary>
     public class HsiMsgEventArgs : MsgBase
     {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Hsi
+        {
+            private const int MaxLengthOfHsiPackage = 0xFFFF;
+            private static readonly BitVector32.Section packStartSection = BitVector32.CreateSection(0xFF);
+            private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0xFF, packStartSection);
+            private static readonly BitVector32.Section lineSection = BitVector32.CreateSection(0x1, flagSection);
+            private static readonly BitVector32.Section sizeHiSection = BitVector32.CreateSection(0x7F, lineSection);
+            private static readonly BitVector32.Section sizeLoSection = BitVector32.CreateSection(0xFF, sizeHiSection);                                                           
+
+            private BitVector32 _header;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfHsiPackage)]
+            private byte[] _data;
+
+            internal byte[] Data
+            {
+                get
+                {
+                    return _data;
+                }
+            }
+
+            public Type Flag
+            {
+                get
+                {
+                    return (Type)_header[flagSection];
+                }
+
+                set
+                {
+                    _header[flagSection] = (int)value;
+                }
+            }
+
+            public HsiLine Line
+            {
+                get
+                {
+                    return (HsiLine)_header[lineSection];
+                }
+
+                set
+                {
+                    _header[lineSection] = (int)value;
+                }
+            }
+
+            public int Size
+            {
+                get
+                {
+                    return (_header[sizeHiSection] << 8) | (_header[sizeLoSection]);
+                }
+
+                set
+                {
+                    _header[sizeHiSection] = (value >> 8) & 0x7F;
+                    _header[sizeLoSection] = (byte)value;
+                }
+            }
+        }
+
+        private Hsi _info;
+
+        public Hsi Info 
+        { 
+            get 
+            { 
+                return _info; 
+            } 
+        }
+
+        public new byte[] Data
+        {
+            get
+            {
+                // возвращаем данные без учета заголовка
+                return Info.Data.Take(base.DataLen - 4).ToArray();
+            }
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="HsiMsgEventArgs" />.
         /// </summary>
         /// <param name="data">Данные кадра.</param>
-        /// <param name="length">Длина кадра.</param>
-        public HsiMsgEventArgs(byte[] data, int length)
+        /// <param name="dataLen">Длина кадра.</param>
+        public HsiMsgEventArgs(byte[] data, int dataLen)
+            : base(data, dataLen)
         {
-            if (4 <= data.Length)
+            if ((4 > data.Length) || (4 > base.DataLen))
             {
-                Data = new byte[length - 4];
-                Array.Copy(data, 4, Data, 0, length - 4);
-                DataLen = length - 4;
-                Flag = data[1];
-                Line = (HsiLine)(data[2] & (1 << 7));
-                Size = ((data[2] << 8) | data[3]) & 0x7FFF;
+                throw new ContextMarshalException(Resource.Get(@"eSmallHsiData"));
             }
-            else
-            {
-                Data = new byte[length];
-                Array.Copy(data, Data, length);
-                DataLen = length;
-            }
+            
+            // преобразуем данные к структуре Hsi.           
+            _info = Converter.MarshalTo<Hsi>(data);
         }
 
         /// <summary>
@@ -205,28 +283,13 @@ namespace EGSE.Protocols
             Resv = 0x01
         }
 
-        /// <summary>
-        /// Получает или задает флаг кадра ВСИ.
-        /// </summary>
-        /// <value>
-        /// Флаг кадра ВСИ.
-        /// </value>
-        public byte Flag { get; set; }
-
-        /// <summary>
-        /// Получает или задает линию передачи кадра.
-        /// </summary>
-        /// <value>
-        /// Линия передачи кадра.
-        /// </value>
-        public HsiLine Line { get; set; }
-
-        /// <summary>
-        /// Получает или задает размер кадра ВСИ.
-        /// </summary>
-        /// <value>
-        /// Размер кадра в байтах.
-        /// </value>
-        public int Size { get; set; }
+        public enum Type
+        {
+            Obt = 0x01,
+            Cmd = 0x02,
+            RequestState = 0x03,
+            RequestData = 0x04,
+            Time = 0x05
+        }
     }
 }

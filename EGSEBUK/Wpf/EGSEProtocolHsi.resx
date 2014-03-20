@@ -117,13 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="eSmallSpacewireData" xml:space="preserve">
-    <value>Размер кадра spacewire меньше 4 байт!</value>
-  </data>
-  <data name="eSmallSpacewireIcdData" xml:space="preserve">
-    <value>Размер кадра spacewire icd меньше 10 байт!</value>
-  </data>
-  <data name="eSmallSpacewireTkData" xml:space="preserve">
-    <value>Размер кадра spacewire icd меньше 16 байт!</value>
+  <data name="eSmallHsiData" xml:space="preserve">
+    <value>Размер кадра hsi меньше 4 байт!</value>
   </data>
 </root>

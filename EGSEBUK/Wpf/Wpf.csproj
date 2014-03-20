@@ -97,6 +97,11 @@
       <DependentUpon>EGSEDeviceBUK.resx</DependentUpon>
     </Compile>
     <Compile Include="EGSEProtocolHsi.cs" />
+    <Compile Include="EGSEProtocolHsi.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EGSEProtocolHsi.resx</DependentUpon>
+    </Compile>
     <Compile Include="EGSEProtocolSpacewire.cs" />
     <Compile Include="EGSEProtocolSpacewire.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -285,6 +290,11 @@
       <DependentUpon>EGSEDeviceBUK.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>EGSEDeviceBUK.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EGSEProtocolHsi.resx">
+      <DependentUpon>EGSEProtocolHsi.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>EGSEProtocolHsi.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="EGSEProtocolSpacewire.resx">
       <DependentUpon>EGSEProtocolSpacewire.cs</DependentUpon>

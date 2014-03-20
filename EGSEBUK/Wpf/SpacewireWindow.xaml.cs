@@ -67,17 +67,17 @@ namespace EGSE.Defaults
             
             if (msg.Data.Length > 30) 
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.Info.From.ToString() + "-" + msg.Info.MsgType.ToString() + "->" + msg.Info.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray()) + "]";
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.SptpInfo.From.ToString() + "-" + msg.SptpInfo.MsgType.ToString() + "->" + msg.SptpInfo.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray()) + "]";
             }
             else
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.Info.From.ToString() + "-" + msg.Info.MsgType.ToString() + "->" + msg.Info.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data) + "]";
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.SptpInfo.From.ToString() + "-" + msg.SptpInfo.MsgType.ToString() + "->" + msg.SptpInfo.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data) + "]";
             }
             // crc check
-            if (2 < msg.Data.Length)
+            if (IsTkMsg(msg) || IsTmMsg(msg))
             {
-                ushort crcInData = (ushort)((msg.Data[msg.Data.Length - 2] << 8) | (msg.Data[msg.Data.Length - 1]));
-                ushort crcGen = msg.GetCrc();
+                ushort crcInData = msg.ToArray().AsTk().Crc;
+                ushort crcGen = msg.ToArray().AsTk().NeededCrc;
                 spacewireMsg += (crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4"));
             }
             if (null != Monitor && Visibility.Visible == this.Visibility)
@@ -88,7 +88,39 @@ namespace EGSE.Defaults
                         Monitor.ScrollIntoView(spacewireMsg);
                     }));
             }           
-        }  
+        }
+
+        internal bool IsTkMsg(SpacewireSptpMsgEventArgs msg)
+        {
+            try
+            {
+                SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
+                return icdMsg.IcdInfo.Version == 0 
+                    && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
+                    && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
+                    && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        internal bool IsTmMsg(SpacewireSptpMsgEventArgs msg)
+        {
+            try
+            {
+                SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
+                return icdMsg.IcdInfo.Version == 0
+                    && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
+                    && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
+                    && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Handles the Closing event of the Window control.

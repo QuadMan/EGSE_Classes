@@ -25,6 +25,31 @@ namespace EGSE.Utilites
     using System.Windows;
     using EGSE.Protocols;
 
+    public class RandomBufferGenerator
+    {
+        private readonly Random _random = new Random();
+        private readonly byte[] _seedBuffer;
+
+        public RandomBufferGenerator(int maxBufferSize)
+        {
+            _seedBuffer = new byte[maxBufferSize];
+
+            _random.NextBytes(_seedBuffer);
+        }
+
+        public byte[] GenerateBufferFromSeed(int size)
+        {
+            int randomWindow = _random.Next(0, size);
+
+            byte[] buffer = new byte[size];
+
+            Buffer.BlockCopy(_seedBuffer, randomWindow, buffer, 0, size - randomWindow);
+            Buffer.BlockCopy(_seedBuffer, 0, buffer, size - randomWindow, randomWindow);
+
+            return buffer;
+        }
+    }
+
     /// <summary>
     /// Предоставляет проверку контроля CRC-16.
     /// </summary>
@@ -77,10 +102,10 @@ namespace EGSE.Utilites
         /// <param name="bytes">Массив данных.</param>
         /// <param name="len">Сколько байт учавствует в расчете CRC.</param>
         /// <returns>Значение CRC.</returns>
-        public static ushort Get(byte[] bytes, int len)
+        public static ushort Get(byte[] bytes, int len, int start = 0)
         {
             ushort crc = 0xFFFF;
-            for (var i = 0; i < len; i++)
+            for (var i = start; i < len; i++)
             {
                 crc = (ushort)((crc << 8) ^ Crc16Table[(crc >> 8) ^ bytes[i]]);
             }
@@ -94,33 +119,35 @@ namespace EGSE.Utilites
     /// </summary>
     public static class MsgWorker
     {
-        public static SpacewireIcdMsgEventArgs AsIcd(this SpacewireSptpMsgEventArgs obj)
+        // приведение к типу сообщения от "сырых" массивов данных
+
+        public static SpacewireIcdMsgEventArgs AsIcd(this byte[] obj)
         {
-            SpacewireIcdMsgEventArgs newObj = new SpacewireIcdMsgEventArgs(obj.Data, obj.Time1, obj.Time2, obj.Error);
-            return newObj;
-        }
-        // TODO temp ext method
-        public static ushort GetCrc(this SpacewireSptpMsgEventArgs obj)
-        {
-            return Crc16.Get(obj.Data, obj.DataLen - 2);
+            return new SpacewireIcdMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
         }
 
-        /// <summary>
-        /// Преобразует "сырые" данные массива к типу КБВ-кадра.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Экземпляр КБВ-кадра.</returns>
-        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        public static SpacewireKbvMsgEventArgs AsKbv(this Array obj)
-        {            
-            throw new NotImplementedException();
+        public static SpacewireKbvMsgEventArgs AsKbv(this byte[] obj)
+        {
+            return new SpacewireKbvMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
         }
 
-        /// <summary>
-        /// Преобразует сообщение ICD-протокола к сообщению КБВ-кадра.
-        /// </summary>
-        /// <param name="obj">The <see cref="SpacewireIcdMsgEventArgs"/> instance containing the event data.</param>
-        /// <returns>Экземпляр КБВ-кадра.</returns>
+        public static SpacewireTmMsgEventArgs AsTm(this byte[] obj)
+        {
+            return new SpacewireTmMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
+        }
+
+        public static SpacewireTkMsgEventArgs AsTk(this byte[] obj)
+        {
+            return new SpacewireTkMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
+        }
+
+        public static SpacewireSptpMsgEventArgs AsSptp(this byte[] obj)
+        {
+            return new SpacewireTkMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
+        }
+
+        // приведение к типу сообщения от SpacewireIcdMsgEventArgs
+
         public static SpacewireKbvMsgEventArgs AsKbv(this SpacewireIcdMsgEventArgs obj)
         {
             SpacewireKbvMsgEventArgs newObj = new SpacewireKbvMsgEventArgs(new byte[] { }, obj.Time1, obj.Time2, obj.Error);
@@ -130,99 +157,26 @@ namespace EGSE.Utilites
             return newObj;
         }
 
-        /// <summary>
-        /// Формирует тип КБВ-кадра, с данными представленными в массиве байт.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Экземпляр КБВ-кадра.</returns>
-        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        public static SpacewireKbvMsgEventArgs ToKbv(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Преобразует "сырые" данные массива к типу ТМ-кадра.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Экземпляр ТМ-кадра.</returns>
-        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        public static SpacewireTmMsgEventArgs AsTm(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Преобразует сообщение ICD-протокола к сообщению ТМ-кадра.
-        /// </summary>
-        /// <param name="obj">The <see cref="SpacewireIcdMsgEventArgs"/> instance containing the event data.</param>
-        /// <returns>Экземпляр ТМ-кадра.</returns>
-        public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
-        {
-            SpacewireTmMsgEventArgs newObj = new SpacewireTmMsgEventArgs(obj.Data, obj.Time1, obj.Time2, obj.Error);
-            return newObj;
-        }
-
-        /// <summary>
-        /// Формирует тип ТМ-кадра, с данными представленными в массиве байт.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Экземпляр ТМ-кадра.</returns>
-        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        public static SpacewireTmMsgEventArgs ToTm(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Преобразует "сырые" данные массива к типу ТК-кадра.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Экземпляр ТК-кадра.</returns>
-        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        public static SpacewireTkMsgEventArgs AsTk(this Array obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Преобразует сообщение ICD-протокола к сообщению ТК-кадра.
-        /// </summary>
-        /// <param name="obj">The <see cref="SpacewireIcdMsgEventArgs"/> instance containing the event data.</param>
-        /// <returns>Экземпляр ТК-кадра.</returns>
         public static SpacewireTkMsgEventArgs AsTk(this SpacewireIcdMsgEventArgs obj)
         {
-            throw new NotImplementedException();
+            return obj.ToArray().AsTk();
         }
 
-        /// <summary>
-        /// Формирует тип ТК-кадра, с данными представленными в массиве байт.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <param name="apid">APID устройтсва.</param>
-        /// <param name="dict">Словарь контроля последовательности.</param>
-        /// <returns>
-        /// Экземпляр ТК-кадра.
-        /// </returns>
-        public static SpacewireTkMsgEventArgs ToTk(this Array obj, byte apid, Dictionary<byte, AutoCounter> dict)
+        public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
         {
-            byte[] buf = new byte[obj.Length];
-            Array.Copy(obj, buf, buf.Length);
-            return new SpacewireTkMsgEventArgs(apid, dict, buf);
+            return obj.ToArray().AsTm();
         }
 
-        /// <summary>
-        /// Формирует SPTP-сообщение.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <param name="to">Адрес устройства получателя.</param>
-        /// <param name="from">Адрес устройства отправителя.</param>
-        /// <returns>Экземпляр SPTP-кадра.</returns>
-        public static SpacewireSptpMsgEventArgs ToSptp(this Array obj, byte to, byte from)
+        // создание новых сообщений
+
+        public static SpacewireSptpMsgEventArgs ToSptp(this byte[] obj, byte to, byte from)
         {
-            byte[] buf = new byte[obj.Length];
-            Array.Copy(obj, buf, buf.Length);
-            return new SpacewireSptpMsgEventArgs(buf, buf.Length, to, from);
+            return SpacewireSptpMsgEventArgs.GetNew(obj, to, from);
+        }
+
+        public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, byte apid, Dictionary<byte, AutoCounter> dict)
+        {
+            return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid, dict);
         }
     }
 
@@ -678,6 +632,22 @@ namespace EGSE.Utilites
     /// </summary>
     public static class Converter
     {
+        internal static T1 MarshalTo<T1>(byte[] data)
+        {
+            GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);         
+            try
+            {                  
+                return (T1)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));
+            }
+            finally
+            {
+                if (pinnedInfo.IsAllocated)
+                {
+                    pinnedInfo.Free();
+                }
+            }
+        }
+
         /// <summary>
         /// Строка шестнадцатеричных чисел в массив байт.
         /// </summary>

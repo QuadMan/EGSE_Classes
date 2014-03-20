@@ -22,14 +22,14 @@ namespace Wpf {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class EGSEProtocolSpacewire {
+    internal class EGSEProtocolHsi {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal EGSEProtocolSpacewire() {
+        internal EGSEProtocolHsi() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Wpf {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.EGSEProtocolSpacewire", typeof(EGSEProtocolSpacewire).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.EGSEProtocolHsi", typeof(EGSEProtocolHsi).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,29 +61,11 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Размер кадра spacewire меньше 4 байт!.
+        ///   Looks up a localized string similar to Размер кадра hsi меньше 4 байт!.
         /// </summary>
-        internal static string eSmallSpacewireData {
+        internal static string eSmallHsiData {
             get {
-                return ResourceManager.GetString("eSmallSpacewireData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Размер кадра spacewire icd меньше 10 байт!.
-        /// </summary>
-        internal static string eSmallSpacewireIcdData {
-            get {
-                return ResourceManager.GetString("eSmallSpacewireIcdData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Размер кадра spacewire icd меньше 16 байт!.
-        /// </summary>
-        internal static string eSmallSpacewireTkData {
-            get {
-                return ResourceManager.GetString("eSmallSpacewireTkData", resourceCulture);
+                return ResourceManager.GetString("eSmallHsiData", resourceCulture);
             }
         }
     }

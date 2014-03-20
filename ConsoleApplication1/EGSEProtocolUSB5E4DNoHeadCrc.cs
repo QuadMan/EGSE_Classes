@@ -390,7 +390,6 @@ namespace EGSE.Protocols
             {
                 Array.Copy(buf, _errorFrame.Data, len);
                 _errorFrame.ErrorPos = pos;
-                _errorFrame.DataLen = (len > 256) ? 255 : len;
                 _errorFrame.Msg = msg;
                 OnProtocolError(this, _errorFrame);
             }

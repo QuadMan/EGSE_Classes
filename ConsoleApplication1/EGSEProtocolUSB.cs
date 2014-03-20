@@ -11,6 +11,7 @@ namespace EGSE.Protocols
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Linq;
+    using EGSE.Utilites;
 
     /// <summary>
     /// Базовый класс сообщения.
@@ -34,6 +35,8 @@ namespace EGSE.Protocols
 
         public MsgBase(byte[] data, int dataLen)
         {
+            new { data }.CheckNotNull();
+
             _data = data;
             _dataLen = dataLen;
         }
@@ -41,7 +44,7 @@ namespace EGSE.Protocols
         /// <summary>
         /// Получает или задает данные сообщения.
         /// </summary>
-        public byte[] Data // TODO need protected
+        protected byte[] Data // TODO need protected
         {
             get
             {
@@ -57,7 +60,7 @@ namespace EGSE.Protocols
         /// <summary>
         /// Получает или задает длину сообщения.
         /// </summary>
-        public int DataLen // TODO need protected
+        protected int DataLen // TODO need protected
         {
             get
             {
@@ -75,10 +78,8 @@ namespace EGSE.Protocols
         /// </summary>
         /// <returns>Массив байт.</returns>
         public virtual byte[] ToArray()
-        {
-            byte[] buf = new byte[DataLen];
-            Array.Copy(_data, buf, DataLen);
-            return buf;
+        {           
+            return _data;
         }
     }
 
@@ -99,9 +100,30 @@ namespace EGSE.Protocols
         /// <param name="maxDataLen">Размер буфера</param>
         public ProtocolMsgEventArgs(uint maxDataLen)
         {
-            Data = new byte[maxDataLen];
-            DataLen = 0;
+            base.Data = new byte[maxDataLen];
+            base.DataLen = 0;
             Addr = 0;
+        }
+
+        public new byte[] Data 
+        {
+            get
+            {
+                return base.Data;
+            }
+        }
+
+        public new int DataLen
+        {
+            get
+            {
+                return base.DataLen;
+            }
+
+            set
+            {
+                base.DataLen = value;
+            }
         }
 
         /// <summary>
@@ -143,9 +165,25 @@ namespace EGSE.Protocols
         /// <param name="maxDataLen">Размер буфера</param>
         public ProtocolErrorEventArgs(uint maxDataLen)
         {
-            Data = new byte[maxDataLen];
-            DataLen = 0;
+            base.Data = new byte[maxDataLen];
+            base.DataLen = 0;
             ErrorPos = 0;
+        }
+
+        public new byte[] Data
+        {
+            get
+            {
+                return base.Data;
+            }
+        }
+
+        public new int DataLen
+        {
+            get
+            {
+                return base.DataLen;
+            }
         }
 
         /// <summary>

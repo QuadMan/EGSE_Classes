@@ -15,6 +15,7 @@ namespace EGSE.Protocols
     using System.Threading.Tasks;
     using EGSE.Utilites;
     using System.Runtime.InteropServices;
+    using System.Windows;
 
     /// <summary>
     /// Декодер протокола Spacewire.
@@ -119,8 +120,21 @@ namespace EGSE.Protocols
                 }
                 else if (_eop == msg.Addr)
                 {
-                    SpacewireSptpMsgEventArgs _msg = new SpacewireIcdMsgEventArgs(_buf.ToArray(), _currentTime1, _currentTime2, msg.Data[0]);
-                    OnSpacewireMsg(this, _msg);
+                    SpacewireSptpMsgEventArgs _msg = null;                    
+                    try
+                    {
+                        _msg = new SpacewireSptpMsgEventArgs(_buf.ToArray(), _buf.Count, _currentTime1, _currentTime2, msg.Data[0]);
+                    }
+                    catch (ContextMarshalException e)
+                    {
+                        MessageBox.Show(e.Message);
+                        _msg = null;
+                    }
+                    
+                    if (null != _msg)
+                    {
+                        OnSpacewireMsg(this, _msg);
+                    }
                     _buf.Clear();
                 }
                 else if (_time1 == msg.Addr)
@@ -181,20 +195,160 @@ namespace EGSE.Protocols
     /// </summary>
     public class SpacewireIcdMsgEventArgs : SpacewireSptpMsgEventArgs
     {
-        ///// <summary>
-        ///// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
-        ///// </summary>
-        //public SpacewireIcdMsgEventArgs()
-        //{
-        //}
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        public SpacewireIcdMsgEventArgs(byte[] data)
-            : base(data, data.Length, 0x00, 0x00)
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Icd
         {
+            private const int MaxLengthOfSpacewirePackage = 0x10004;
+            private static readonly BitVector32.Section apidHiSection = BitVector32.CreateSection(0x07);
+            private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0x01, apidHiSection);
+            private static readonly BitVector32.Section typeSection = BitVector32.CreateSection(0x01, flagSection);
+            private static readonly BitVector32.Section versionSection = BitVector32.CreateSection(0x07, typeSection);
+            private static readonly BitVector32.Section apidLoSection = BitVector32.CreateSection(0xFF, versionSection);
+            private static readonly BitVector32.Section counterHiSection = BitVector32.CreateSection(0x3F, apidLoSection);
+            private static readonly BitVector32.Section segmentSection = BitVector32.CreateSection(0x03, counterHiSection);
+            private static readonly BitVector32.Section counterLoSection = BitVector32.CreateSection(0xFF, segmentSection);
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            private byte[] _nop;
+
+            internal BitVector32 _header;
+
+            private ushort _size;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfSpacewirePackage)]
+            private byte[] data;
+
+            internal byte[] Data
+            {
+                get
+                {
+                    return data;
+                }
+            }
+
+            public byte Version
+            {
+                get
+                {
+                    return (byte)_header[versionSection];
+                }
+
+                set
+                {
+                    _header[versionSection] = (int)value;
+                }
+            }
+
+            public IcdType Type
+            {
+                get
+                {
+                    return (IcdType)_header[typeSection];
+                }
+
+                set
+                {
+                    _header[typeSection] = (int)value;
+                }
+            }
+
+            public IcdFlag Flag
+            {
+                get
+                {
+                    return (IcdFlag)_header[flagSection];
+                }
+
+                set
+                {
+                    _header[flagSection] = (int)value;
+                }
+            }
+
+            public short Apid
+            {
+                get
+                {
+                    return (short)((_header[apidHiSection] << 8) | _header[apidLoSection]);
+                }
+
+                set
+                {
+                    _header[apidLoSection] = (byte)value;
+                    _header[apidHiSection] = (byte)(value >> 8);
+                }
+            }
+
+            public byte Segment
+            {
+                get
+                {
+                    return (byte)_header[segmentSection];
+                }
+
+                set
+                {
+                    _header[segmentSection] = (int)value;
+                }
+            }
+
+            public short Counter
+            {
+                get
+                {
+                    return (short)((_header[counterHiSection] << 8) | _header[counterLoSection]);
+                }
+
+                set
+                {
+                    _header[counterLoSection] = (byte)value;
+                    _header[counterHiSection] = (byte)(value >> 8);
+                }
+            }
+
+            public ushort Size
+            {
+                get
+                {
+                    return (ushort)((_size >> 8) | (_size << 8));
+                }
+
+                set
+                {
+                    _size = (ushort)((value >> 8) | (value << 8));
+                }
+            }
+        }
+
+        private Icd _icdInfo;
+
+        public Icd IcdInfo
+        {
+            get
+            {
+                return _icdInfo;
+            }
+        }
+
+        public enum IcdType
+        {
+            Tk = 0x01,
+            Tm = 0x00
+        }
+
+        public enum IcdFlag
+        {
+            HeaderFill = 0x01,
+            HeaderEmpty = 0x00
+        }
+
+        public new byte[] Data
+        {
+            get
+            {
+                // возвращаем данные без учета заголовка
+                return IcdInfo.Data.Take(base.Data.Length - 6).ToArray();
+            }
         }
 
         /// <summary>
@@ -204,128 +358,17 @@ namespace EGSE.Protocols
         /// <param name="time1">Time tick 1</param>
         /// <param name="time2">Time tick 2</param>
         /// <param name="error">Ошибка в сообщении.</param>
-        public SpacewireIcdMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
+        public SpacewireIcdMsgEventArgs(byte[] data, int dataLen, byte time1, byte time2, byte error = 0x00)
+            : base(data, dataLen, time1, time2, error)
         {
-            //if (6 <= DataLen)
-            //{
-            //    byte[] buf = new byte[DataLen - 6];
-            //    Array.Copy(Data.Skip<byte>(6).ToArray(), buf, DataLen - 6);
-            //    Id = new BitVector32(ConvertToInt(Data.Take<byte>(2).ToArray()));
-            //    Control = new BitVector32(ConvertToInt(Data.Take<byte>(4).ToArray().Skip<byte>(2).ToArray()));
-            //    Size = new BitVector32(ConvertToInt(Data.Take<byte>(6).ToArray().Skip<byte>(4).ToArray()));
-            //    Data = buf;
-            //    DataLen = buf.Length;
-            //}
-        }
-
-        /// <summary>
-        /// Получает [версию пакета протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [версия пакета протокола ICD].
-        /// </value>
-        public BitVector32.Section VersionNumber
-        {
-            get
+            if ((10 > data.Length) || (10 > base.DataLen))
             {
-                return BitVector32.CreateSection(7, TypeId);
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireIcdData"));
             }
+
+            // преобразуем данные к структуре Sptp.
+            _icdInfo = Converter.MarshalTo<Icd>(data);
         }
-
-        /// <summary>
-        /// Получает [тип протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [тип протокола ICD].
-        /// </value>
-        public BitVector32.Section TypeId
-        {
-            get
-            {
-                return BitVector32.CreateSection(1, Flag);
-            }
-        }
-
-        /// <summary>
-        /// Получает [флаг заголовка данных протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [флаг заголовка данных протокола ICD].
-        /// </value>
-        public BitVector32.Section Flag
-        {
-            get
-            {
-                return BitVector32.CreateSection(1, Apid);
-            }
-        }
-
-        /// <summary>
-        /// Получает [APID протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [APID протокола ICD].
-        /// </value>
-        public BitVector32.Section Apid
-        {
-            get
-            {
-                return BitVector32.CreateSection(0x7FF);
-            }
-        }
-
-        /// <summary>
-        /// Получает [флаги сегментации протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [флаги сегментации протокола ICD].
-        /// </value>
-        public BitVector32.Section SegmentFlag
-        {
-            get
-            {
-                return BitVector32.CreateSection(3, Counter);
-            }
-        }
-
-        /// <summary>
-        /// Получает [счетчик последовательности протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [счетчик последовательности протокола ICD].
-        /// </value>
-        public BitVector32.Section Counter
-        {
-            get
-            {
-                return BitVector32.CreateSection(0x3FFF);
-            }
-        }
-
-        /// <summary>
-        /// Получает или задает [идентификатор пакета протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [идентификатор пакета протокола ICD].
-        /// </value>
-        public BitVector32 Id { get; set; }
-
-        /// <summary>
-        /// Получает или задает [поле контроля последовательности протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [поле контроля последовательности протокола ICD].
-        /// </value>
-        public BitVector32 Control { get; set; }
-
-        /// <summary>
-        /// Получает или задает [длина поля данных протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [длина поля данных протокола ICD].
-        /// </value>
-        public BitVector32 Size { get; set; }
 
         /// <summary>
         /// Преобразует массив байт (количеством от 1 до 4) к целому.
@@ -352,7 +395,7 @@ namespace EGSE.Protocols
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public override byte[] ToArray()
         {
-            throw new NotImplementedException();
+            return base.ToArray();
         }
     }
 
@@ -368,8 +411,8 @@ namespace EGSE.Protocols
         /// <param name="time1">Time tick 1</param>
         /// <param name="time2">Time tick 2</param>
         /// <param name="error">Ошибка в сообщении.</param>
-        public SpacewireKbvMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
+        public SpacewireKbvMsgEventArgs(byte[] data, int dataLen, byte time1, byte time2, byte error = 0x00)
+            : base(data, dataLen, time1, time2, error)
         {
             if (6 <= DataLen)
             {
@@ -378,13 +421,6 @@ namespace EGSE.Protocols
                 Kbv = ConvertToInt(Data.Skip(2).ToArray());
             }
         }
-
-        ///// <summary>
-        ///// Инициализирует новый экземпляр класса <see cref="SpacewireKbvMsgEventArgs" />.
-        ///// </summary>
-        //public SpacewireKbvMsgEventArgs()
-        //{
-        //}
 
         /// <summary>
         /// Получает или задает [поле Р нормальное протокола ICD].
@@ -435,8 +471,8 @@ namespace EGSE.Protocols
         /// <param name="time1">Time tick 1</param>
         /// <param name="time2">Time tick 2</param>
         /// <param name="error">Ошибка в сообщении.</param>
-        public SpacewireTmMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
+        public SpacewireTmMsgEventArgs(byte[] data, int dataLen, byte time1, byte time2, byte error = 0x00)
+            : base(data, dataLen, time1, time2, error)
         {
         }
 
@@ -463,16 +499,69 @@ namespace EGSE.Protocols
     /// </summary>
     public class SpacewireTkMsgEventArgs : SpacewireIcdMsgEventArgs
     {
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireTkMsgEventArgs" />.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="time1">Time tick 1</param>
-        /// <param name="time2">Time tick 2</param>
-        /// <param name="error">Ошибка в сообщении.</param>
-        public SpacewireTkMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Tk
         {
+            private const int MaxLengthOfSpacewirePackage = 0x10004;
+            //private static readonly BitVector32.Section apidHiSection = BitVector32.CreateSection(0x07);
+            //private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0x01, apidHiSection);
+            //private static readonly BitVector32.Section typeSection = BitVector32.CreateSection(0x01, flagSection);
+            //private static readonly BitVector32.Section versionSection = BitVector32.CreateSection(0x07, typeSection);
+            //private static readonly BitVector32.Section apidLoSection = BitVector32.CreateSection(0xFF, versionSection);
+            //private static readonly BitVector32.Section counterHiSection = BitVector32.CreateSection(0x3F, apidLoSection);
+            //private static readonly BitVector32.Section segmentSection = BitVector32.CreateSection(0x03, counterHiSection);
+            //private static readonly BitVector32.Section counterLoSection = BitVector32.CreateSection(0xFF, segmentSection);
+         
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
+            private byte[] _nop;
+
+            private BitVector32 _header;
+
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfSpacewirePackage)]
+            private byte[] data;
+
+            internal byte[] Data
+            {
+                get
+                {
+                    return data;
+                }
+            }
+        }
+
+        private Tk _tkInfo;
+
+        public Tk TkInfo
+        {
+            get
+            {
+                return _tkInfo;
+            }
+        }
+
+        public new byte[] Data
+        {
+            get
+            {
+                // возвращаем данные без учета заголовка
+                return TkInfo.Data.Take(IcdInfo.Size).ToArray();
+            }
+        }
+
+        public ushort Crc
+        {
+            get
+            {
+                return (ushort)((base.Data[base.Data.Length - 2] << 8) | (base.Data[base.Data.Length - 1]));
+            }
+        }
+
+        public ushort NeededCrc
+        {
+            get
+            {
+                return Crc16.Get(SptpInfo.Data, (base.Data.Length - 2) + 6);
+            }
         }
 
         /// <summary>
@@ -481,167 +570,45 @@ namespace EGSE.Protocols
         /// <param name="apid">The apid.</param>
         /// <param name="dict">The dictionary.</param>
         /// <param name="data">The data.</param>
-        public SpacewireTkMsgEventArgs(byte apid, Dictionary<byte, AutoCounter> dict, byte[] data)
-            : base(data)
+        public SpacewireTkMsgEventArgs(byte[] data, int dataLen, byte time1, byte time2, byte error = 0x00)
+            : base(data, dataLen, time1, time2, error)
         {
-            BitVector32 id = new BitVector32();
-            BitVector32 control = new BitVector32();
-            BitVector32 header = new BitVector32();
-            id[VersionNumber] = 0;
-            id[TypeId] = 1;
-            id[Flag] = 1;
-            id[Apid] = apid;
-            control[SegmentFlag] = 3;
+            if ((16 > data.Length) || (16 > base.DataLen))
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTkData"));
+            }
+
+            // преобразуем данные к структуре Tk.
+            _tkInfo = Converter.MarshalTo<Tk>(data);
+        }
+
+        public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, byte apid, Dictionary<byte, AutoCounter> dict)
+        {
+            byte[] buf = new byte[data.Length + 16];
+            buf[0] = to;
+            buf[1] = 0xf2;
+            buf[2] = 0x00;
+            buf[3] = from;
+            Icd icdInfo = new Icd();
+            icdInfo.Version = 0;
+            icdInfo.Type = IcdType.Tk;
+            icdInfo.Flag = IcdFlag.HeaderFill;
+            icdInfo.Apid = apid;
             if (!dict.ContainsKey(apid))
-            {
-                dict.Add(apid, new AutoCounter());
-            }
-
-            control[Counter] = (int)dict[apid];
-            header[Ccsds] = 0;
-            header[Version] = 1;
-            header[Acknowledgment] = 8;
-            header[ServiceType] = 0;
-            header[ServiceSubType] = 0;
-            header[Reserve] = 0;
-            Id = new BitVector32(id);
-            Control = new BitVector32(control);
-            Size = new BitVector32(DataLen - 1);
-            Header = new BitVector32(header);
-        }
-
-        /// <summary>
-        /// Получает или задает [заголовок поля данных протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [заголовок поля данных протокола ICD].
-        /// </value>
-        public BitVector32 Header { get; set; }
-
-        /// <summary>
-        /// Получает [флаг вторичного заголовка CCSDS протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [флаг вторичного заголовка CCSDS протокола ICD].
-        /// </value>
-        public BitVector32.Section Ccsds
-        {
-            get
-            {
-                return BitVector32.CreateSection(1, Version);
-            }
-        }
-
-        /// <summary>
-        /// Получает [номер версии ТМ-пакета PUS протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [номер версии ТМ-пакета PUS протокола ICD].
-        /// </value>
-        public BitVector32.Section Version
-        {
-            get
-            {
-                return BitVector32.CreateSection(7, Acknowledgment);
-            }
-        }
-
-        /// <summary>
-        /// Получает [тип квитирования протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [тип квитирования протокола ICD].
-        /// </value>
-        public BitVector32.Section Acknowledgment
-        {
-            get
-            {
-                return BitVector32.CreateSection(0xF, ServiceType);
-            }
-        }
-
-        /// <summary>
-        /// Получает [тип сервиса протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [тип сервиса протокола ICD].
-        /// </value>
-        public BitVector32.Section ServiceType
-        {
-            get
-            {
-                return BitVector32.CreateSection(0xFF, ServiceSubType);
-            }
-        }
-
-        /// <summary>
-        /// Получает [подтип сервиса протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [подтип сервиса протокола ICD].
-        /// </value>
-        public BitVector32.Section ServiceSubType
-        {
-            get
-            {
-                return BitVector32.CreateSection(0xFF, Reserve);
-            }
-        }
-
-        /// <summary>
-        /// Получает [резерв протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [резерв протокола ICD].
-        /// </value>
-        public BitVector32.Section Reserve
-        {
-            get
-            {
-                return BitVector32.CreateSection(0xFF);
-            }
-        }
-
-        /// <summary>
-        /// Получает [сформированный CRC для телекоманды].
-        /// </summary>
-        /// <value>
-        /// [сформированный CRC для телекоманды].
-        /// </value>
-        public ushort GetCrc(byte[] pack)
-        {
-            return Crc16.Get(pack, pack.Length);
-        }
-
-        public ushort Crc
-        {
-            get
-            {
-                return (ushort)((Data[Data.Length - 1] << 8) | (Data[Data.Length - 2]));
-            }
-        }
-
-        /// <summary>
-        /// Получает [пакет телекоманды без CRC].
-        /// </summary>
-        /// <value>
-        /// [пакет телекоманды без CRC].
-        /// </value>
-        public byte[] GetPackWithoutCrc()
-        {
-            byte[] buf = new byte[DataLen + 10];
-            buf[0] = (byte)(Id.Data >> 8);
-            buf[1] = (byte)Id.Data;
-            buf[2] = (byte)(Control.Data >> 8);
-            buf[3] = (byte)Control.Data;
-            buf[4] = (byte)(Size.Data >> 8);
-            buf[5] = (byte)Size.Data;
-            buf[6] = (byte)(Header.Data >> 24);
-            buf[7] = (byte)(Header.Data >> 16);
-            buf[8] = (byte)(Header.Data >> 8);
-            buf[9] = (byte)Header.Data;
-            Array.Copy(Data, 0, buf, 10, Data.Length);
-            return buf;
+                {
+                   dict.Add(apid, new AutoCounter());
+                }       
+            icdInfo.Counter = (short)dict[apid];
+            int header = icdInfo._header.Data;
+            buf[7] = (byte)(header >> 24);
+            buf[6] = (byte)(header >> 16);
+            buf[5] = (byte)(header >> 8);
+            buf[4] = (byte)(header);
+            Array.Copy(data, 0, buf, 14, data.Length);
+            ushort crc = Crc16.Get(buf, buf.Length - 2, 4);
+            buf[buf.Length - 2] = (byte)(crc >> 8);
+            buf[buf.Length - 1] = (byte)crc;
+            return new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00);
         }
 
         /// <summary>
@@ -652,13 +619,7 @@ namespace EGSE.Protocols
         /// </returns>
         public override byte[] ToArray()
         {
-            byte[] packWithoutCRC = GetPackWithoutCrc();
-            byte[] buf = new byte[packWithoutCRC.Length + 2];
-            Array.Copy(packWithoutCRC, buf, packWithoutCRC.Length);
-            ushort newCrc = GetCrc(packWithoutCRC);
-            buf[buf.Length - 1] = (byte)(newCrc >> 8);
-            buf[buf.Length - 2] = (byte)newCrc;
-            return buf;
+            return base.ToArray();
         }
         
     }
@@ -677,16 +638,16 @@ namespace EGSE.Protocols
             private static readonly BitVector32.Section msgTypeSection = BitVector32.CreateSection(0xFF, protocolIdSection);
             private static readonly BitVector32.Section fromSection = BitVector32.CreateSection(0xFF, msgTypeSection);
 
-            private BitVector32 header;
+            private BitVector32 _header;
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfSpacewirePackage)]
-            private byte[] data;
+            private byte[] _data;
 
             internal byte[] Data
             {
                 get
                 {
-                    return data;
+                    return _data;
                 }
             }
 
@@ -694,12 +655,12 @@ namespace EGSE.Protocols
             {
                 get 
                 {
-                    return (byte)header[toSection];
+                    return (byte)_header[toSection];
                 }
 
                 set
                 {
-                    header[toSection] = (int)value;
+                    _header[toSection] = (int)value;
                 }
             }
 
@@ -707,25 +668,25 @@ namespace EGSE.Protocols
             {
                 get
                 {
-                    return (byte)header[protocolIdSection];
+                    return (byte)_header[protocolIdSection];
                 }
 
                 set
                 {
-                    header[protocolIdSection] = (int)value;
+                    _header[protocolIdSection] = (int)value;
                 }
             }
 
-            public Type MsgType
+            public SptpType MsgType
             {
                 get
                 {
-                    return (Type)header[msgTypeSection];
+                    return (SptpType)_header[msgTypeSection];
                 }
 
                 set
                 {
-                    header[msgTypeSection] = (int)value;
+                    _header[msgTypeSection] = (int)value;
                 }
             }
 
@@ -733,39 +694,32 @@ namespace EGSE.Protocols
             {
                 get
                 {
-                    return (byte)header[fromSection];
+                    return (byte)_header[fromSection];
                 }
 
                 set
                 {
-                    header[fromSection] = (int)value;
+                    _header[fromSection] = (int)value;
                 }
             }
         }
 
-        ///// <summary>
-        ///// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
-        ///// </summary>
-        ///// <param name="data">The data.</param>
-        ///// <param name="to">Адрес устройства получатель.</param>
-        ///// <param name="from">Адрес устройства отправитель.</param>
-        //[Obsolete("Используй конструктор с 5 аргументами")]
-        //public SpacewireSptpMsgEventArgs(byte[] data, byte to, byte from)
-        //    : this(data, data.Length, 0x00, 0x00)
-        //{
-        //    MsgType = Type.Data;
-        //    To = to;
-        //    From = from;
-        //}
+        private Sptp _sptpInfo;
 
-        public Sptp Info;
+        public Sptp SptpInfo
+        {
+            get
+            {
+                return _sptpInfo;
+            }
+        }
 
         public new byte[] Data
         {
             get
             {
                 // возвращаем данные без учета заголовка
-                return Info.Data.Take(base.DataLen - 4).ToArray();
+                return SptpInfo.Data.Take(base.DataLen - 4).ToArray();
             }
         }
 
@@ -781,23 +735,30 @@ namespace EGSE.Protocols
         public SpacewireSptpMsgEventArgs(byte[] data, int dataLen, byte time1, byte time2, byte error = 0x00)
             : base(data, dataLen)
         {
-            new { data }.CheckNotNull();
-
             if ((4 > data.Length) || (4 > base.DataLen))
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
             }
 
             // преобразуем данные к структуре Sptp.
-            GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
-            Info = (Sptp)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(Sptp));
-            pinnedInfo.Free();
+            _sptpInfo = Converter.MarshalTo<Sptp>(data);
+        }
+
+        public static SpacewireSptpMsgEventArgs GetNew(byte[] data, byte to, byte from)
+        {
+            byte[] buf = new byte[data.Length + 4];
+            buf[0] = to;
+            buf[1] = 0xf2;
+            buf[2] = 0x00;
+            buf[3] = from;
+            Array.Copy(data, 0, buf, 4, data.Length);
+            return new SpacewireSptpMsgEventArgs(buf, buf.Length, 0x00, 0x00);
         }
 
         /// <summary>
         /// Тип Spacewire SPTP сообщения. 
         /// </summary>
-        public enum Type
+        public enum SptpType
         {
             /// <summary>
             /// Сообщение "Запрос кредита".
@@ -814,38 +775,6 @@ namespace EGSE.Protocols
             /// </summary>
             Data = 0x00
         }
-
-        ///// <summary>
-        ///// Получает или задает поле spacewire "Устройство передачи".
-        ///// </summary>
-        ///// <value>
-        ///// Идентификатор устройства передачи сообщения.
-        ///// </value>
-        //public byte From { get; set; }
-
-        ///// <summary>
-        ///// Получает или задает поле spacewire "Устройство получения".
-        ///// </summary>
-        ///// <value>
-        ///// Идентификатор устройства приема сообщения.
-        ///// </value>
-        //public byte To { get; set; }
-
-        ///// <summary>
-        ///// Получает или задает идентификатор протокола.
-        ///// </summary>
-        ///// <value>
-        ///// Идентификатор протокола.
-        ///// </value>
-        //public byte ProtocolID { get; set; }
-
-        ///// <summary>
-        ///// Получает или задает тип сообщения spacewire SPTP.
-        ///// </summary>
-        ///// <value>
-        ///// Тип сообщения spacewire SPTP.
-        ///// </value>
-        //public Type MsgType { get; set; }
 
         /// <summary>
         /// Получает или задает ошибку в приеме сообщения.
@@ -877,12 +806,6 @@ namespace EGSE.Protocols
         /// <returns>Массив байт.</returns>
         public override byte[] ToArray()
         {
-            //byte[] buf = new byte[DataLen + 4];
-            //buf[0] = (byte)To;
-            //buf[1] = (byte)ProtocolID;
-            //buf[2] = (byte)MsgType;
-            //buf[3] = (byte)From;
-            //Array.Copy(Data, 0, buf, 4, Data.Length);
             return base.Data;
         }
     }
@@ -895,17 +818,18 @@ namespace EGSE.Protocols
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireTimeTickMsgEventArgs" />.
         /// </summary>
-        public SpacewireTimeTickMsgEventArgs()
-        {
-        }
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireTimeTickMsgEventArgs" />.
-        /// </summary>
         /// <param name="data">The data.</param>
         public SpacewireTimeTickMsgEventArgs(byte data)
         {
-            Data = new byte[1] { (byte)(data & 0x1F) };
+            base.Data = new byte[1] { (byte)(data & 0x1F) };
+        }
+
+        public byte Tick 
+        {
+            get
+            {
+                return base.Data[0];
+            }
         }
     }
 }
