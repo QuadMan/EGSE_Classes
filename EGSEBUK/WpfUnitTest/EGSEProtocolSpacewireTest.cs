@@ -41,6 +41,18 @@ namespace EGSE.Protocols.UnitTest
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTkMsgEventArgs_Income15Bytes_ExceptionThrown()
+        {
+            Random rnd = new Random();
+            Byte[] buf = new Byte[15];
+            rnd.NextBytes(buf);
+
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
         public void SpacewireTkMsgEventArgs_Income17Bytes_ReturnsEqualTokenValue()
         {
             // формируем массив из 10 байт и проверяем формирование посылки
@@ -131,7 +143,7 @@ namespace EGSE.Protocols.UnitTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void SpacewireTkMsgEventArgs_1ArgNull_ExceptionThrown()
         {
             // имитируем ошибочку
@@ -193,6 +205,18 @@ namespace EGSE.Protocols.UnitTest
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireIcdMsgEventArgs_Income9Bytes_ExceptionThrown()
+        {
+            Random rnd = new Random();
+            Byte[] buf = new Byte[9];
+            rnd.NextBytes(buf);
+
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);        
+        }
+
+        [TestMethod]
         public void SpacewireIcdMsgEventArgs_Income10Bytes_ReturnsEqualTokenValue()
         {
             byte from = 0x33;
@@ -210,21 +234,21 @@ namespace EGSE.Protocols.UnitTest
 
             // проверяем результаты парсинга заголовка Sptp
 
-            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства To");
-            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства ProtocolId");
-            Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства MsgType");
-            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства From");
+            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
 
             // проверяем результаты парсинга заголовка Icd
 
-            Assert.AreEqual((b[0] & 0xe0) >> 5, msg.IcdInfo.Version, "Ошибка в парсинге свойства Version");
-            Assert.AreEqual((SpacewireIcdMsgEventArgs.IcdType)((b[0] & 0x10) >> 4), msg.IcdInfo.Type, "Ошибка в парсинге свойства Type");
-            Assert.AreEqual((SpacewireIcdMsgEventArgs.IcdFlag)((b[0] & 0x08) >> 3), msg.IcdInfo.Flag, "Ошибка в парсинге свойства Flag");
-            Assert.AreEqual(((b[0] & 0x07) << 8) | b[1], msg.IcdInfo.Apid, "Ошибка в парсинге свойства Apid");
-            Assert.AreEqual(b[2] >> 6, msg.IcdInfo.Segment, "Ошибка в парсинге свойства Segment");
-            Assert.AreEqual(((b[2] & 0x3F) << 8) | b[3], msg.IcdInfo.Counter, "Ошибка в парсинге свойства Counter");
-            Assert.AreEqual(((b[0] & 0x07) << 8) | b[1], msg.IcdInfo.Apid, "Ошибка в парсинге свойства Apid");
-            Assert.AreEqual(((b[4]) << 8) | b[5], msg.IcdInfo.Size, "Ошибка в парсинге свойства Size");
+            Assert.AreEqual((b[0] & 0xe0) >> 5, msg.IcdInfo.Version, "Ошибка в парсинге свойства IcdInfo.Version");
+            Assert.AreEqual((SpacewireIcdMsgEventArgs.IcdType)((b[0] & 0x10) >> 4), msg.IcdInfo.Type, "Ошибка в парсинге свойства IcdInfo.Type");
+            Assert.AreEqual((SpacewireIcdMsgEventArgs.IcdFlag)((b[0] & 0x08) >> 3), msg.IcdInfo.Flag, "Ошибка в парсинге свойства IcdInfo.Flag");
+            Assert.AreEqual(((b[0] & 0x07) << 8) | b[1], msg.IcdInfo.Apid, "Ошибка в парсинге свойства IcdInfo.Apid");
+            Assert.AreEqual(b[2] >> 6, msg.IcdInfo.Segment, "Ошибка в парсинге свойства IcdInfo.Segment");
+            Assert.AreEqual(((b[2] & 0x3F) << 8) | b[3], msg.IcdInfo.Counter, "Ошибка в парсинге свойства IcdInfo.Counter");
+            Assert.AreEqual(((b[0] & 0x07) << 8) | b[1], msg.IcdInfo.Apid, "Ошибка в парсинге свойства IcdInfo.Apid");
+            Assert.AreEqual(((b[4]) << 8) | b[5], msg.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
         }
 
         [TestMethod]
@@ -253,7 +277,7 @@ namespace EGSE.Protocols.UnitTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void SpacewireIcdMsgEventArgs_1ArgNull_ExceptionThrown()
         {
             // имитируем ошибочку
@@ -285,6 +309,189 @@ namespace EGSE.Protocols.UnitTest
             CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");
         }       
     }
+    
+    [TestClass]
+    public class SpacewireObtMsgEventArgsTest
+    {
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireObtMsgEventArgs_Income3Bytes_ExceptionThrown()
+        {
+            // формируем массив из 3 байт и проверяем формирование посылки
+            byte[] buf = new byte[3] { 0x33, 0xf2, 0x34 };
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireObtMsgEventArgs_Income4Bytes_ExceptionThrown()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            // формируем массив из 4 байт и проверяем формирование посылки
+            byte[] buf = new byte[4] { to, protocolId, msgType, from };
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireObtMsgEventArgs_Income5Bytes_ExceptionThrown()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            byte customData = 0xAB;
+
+            // формируем массив из 5 байт и проверяем формирование посылки
+            byte[] buf = new byte[5] { to, protocolId, msgType, from, customData };
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireObtMsgEventArgs_Income0Bytes_ExceptionThrown()
+        {            
+            // имитируем ошибочку
+            byte[] buf = new byte[] { };
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SpacewireObtMsgEventArgs_1ArgNull_ExceptionThrown()
+        {
+            // имитируем ошибочку
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(null, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireObtMsgEventArgs_Income65540Bytes_ExceptionThrown()
+        {
+            RandomBufferGenerator generator = new RandomBufferGenerator(65540);
+            byte[] buf = generator.GenerateBufferFromSeed(65540);
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        public void SpacewireObtMsgEventArgs_ToArray_ReturnsEqualTokenValue()
+        {
+            RandomBufferGenerator generator = new RandomBufferGenerator(16);
+            byte[] buf = generator.GenerateBufferFromSeed(16);
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результат преобразования к массиву
+            CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");
+        }
+
+        [TestMethod]
+        public void SpacewireObtMsgEventArgs_Income16Bytes_ReturnsEqualTokenValue()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            Random rnd = new Random();
+            Byte[] b = new Byte[12];
+            rnd.NextBytes(b);
+
+            // формируем массив из 10 байт и проверяем формирование посылки
+            byte[] buf = new byte[16] { to, protocolId, msgType, from, b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9], b[10], b[11] };
+
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireObtMsgEventArgs msg = new SpacewireObtMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результаты парсинга заголовка Sptp
+
+            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
+
+            // проверяем результаты парсинга заголовка Icd
+
+            Assert.AreEqual((b[0] & 0xe0) >> 5, msg.IcdInfo.Version, "Ошибка в парсинге свойства IcdInfo.Version");
+            Assert.AreEqual((SpacewireIcdMsgEventArgs.IcdType)((b[0] & 0x10) >> 4), msg.IcdInfo.Type, "Ошибка в парсинге свойства IcdInfo.Type");
+            Assert.AreEqual((SpacewireIcdMsgEventArgs.IcdFlag)((b[0] & 0x08) >> 3), msg.IcdInfo.Flag, "Ошибка в парсинге свойства IcdInfo.Flag");
+            Assert.AreEqual(((b[0] & 0x07) << 8) | b[1], msg.IcdInfo.Apid, "Ошибка в парсинге свойства IcdInfo.Apid");
+            Assert.AreEqual(b[2] >> 6, msg.IcdInfo.Segment, "Ошибка в парсинге свойства IcdInfo.Segment");
+            Assert.AreEqual(((b[2] & 0x3F) << 8) | b[3], msg.IcdInfo.Counter, "Ошибка в парсинге свойства IcdInfo.Counter");
+            Assert.AreEqual(((b[0] & 0x07) << 8) | b[1], msg.IcdInfo.Apid, "Ошибка в парсинге свойства IcdInfo.Apid");
+            Assert.AreEqual(((b[4]) << 8) | b[5], msg.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
+
+            // проверяем результаты парсинга Obt
+
+            Assert.AreEqual(b[6], msg.ObtInfo.Normal, "Ошибка в парсинге свойства ObtInfo.Normal");
+            Assert.AreEqual(b[7], msg.ObtInfo.Extended, "Ошибка в парсинге свойства ObtInfo.Extended");
+            Assert.AreEqual((uint)SpacewireIcdMsgEventArgs.ConvertToInt(new byte[4] { b[11], b[10], b[9], b[8] }), msg.ObtInfo.Value, "Ошибка в парсинге свойства ObtInfo.Value");
+        }
+    }
+
+    [TestClass]
+    public class SpacewireTimeTickMsgEventArgsTest
+    {
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTimeTickMsgEventArgs_Income3Bytes_ExceptionThrown()
+        {
+            // формируем массив из 3 байт и проверяем формирование посылки
+            byte[] buf = new byte[3] { 0x33, 0xf2, 0x34 };
+            SpacewireTimeTickMsgEventArgs msg = new SpacewireTimeTickMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTimeTickMsgEventArgs_Income4Bytes_ExceptionThrown()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            // формируем массив из 4 байт и проверяем формирование посылки
+            byte[] buf = new byte[4] { to, protocolId, msgType, from };
+            SpacewireTimeTickMsgEventArgs msg = new SpacewireTimeTickMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        public void SpacewireTimeTickMsgEventArgs_Income1Bytes_ReturnsEqualTokenValue()
+        {
+            byte customData = 0xAB;
+
+            // формируем массив из 1 байт и проверяем формирование посылки
+            byte[] buf = new byte[1] { customData };
+            SpacewireTimeTickMsgEventArgs msg = new SpacewireTimeTickMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результаты парсинга заголовка
+            Assert.AreEqual(customData, msg.TimeTickInfo.Value, "Ошибка в парсинге свойства TimeTickInfo.Value");
+
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTimeTickMsgEventArgs_Income0Bytes_ExceptionThrown()
+        {
+            // имитируем ошибочку
+            byte[] buf = new byte[] { };
+            SpacewireTimeTickMsgEventArgs msg = new SpacewireTimeTickMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SpacewireTimeTickMsgEventArgs_1ArgNull_ExceptionThrown()
+        {
+            // имитируем ошибочку
+            SpacewireTimeTickMsgEventArgs msg = new SpacewireTimeTickMsgEventArgs(null, 0x00, 0x00, 0x00);
+        }
+    }
 
     [TestClass]
     public class SpacewireSptpMsgEventArgsTest
@@ -312,10 +519,10 @@ namespace EGSE.Protocols.UnitTest
 
             // проверяем результаты парсинга заголовка
 
-            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства To");            
-            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства ProtocolId");
-            Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства MsgType");
-            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства From");
+            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
         }
 
         [TestMethod]
@@ -333,10 +540,10 @@ namespace EGSE.Protocols.UnitTest
             SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00, 0x00);
            
             // проверяем результаты парсинга заголовка
-            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства To");
-            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства ProtocolId");
-            Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства MsgType");
-            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства From");
+            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
 
             // проверяем результат парсинга данных кадра
             CollectionAssert.AreEqual(new byte[1] { customData }, msg.Data, "Ошибка в парсинге данных кадра");
@@ -352,7 +559,7 @@ namespace EGSE.Protocols.UnitTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void SpacewireSptpMsgEventArgs_1ArgNull_ExceptionThrown()
         {
             // имитируем ошибочку

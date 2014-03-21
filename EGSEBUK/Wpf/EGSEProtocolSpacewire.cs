@@ -123,19 +123,35 @@ namespace EGSE.Protocols
                     MsgBase pack = null;                  
                     byte[] arr = _buf.ToArray();
                     try
-                    {                     
-                        if (10 < arr.Length)
+                    {
+                        if (SpacewireTkMsgEventArgs.Test(arr))
+                        {
+                            pack = new SpacewireTkMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
+                        }
+                        else if (SpacewireTmMsgEventArgs.Test(arr))
+                        {
+                            pack = new SpacewireTmMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
+                        }
+                        else if (SpacewireObtMsgEventArgs.Test(arr))
+                        {
+                            pack = new SpacewireObtMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
+                        }
+                        else if (SpacewireIcdMsgEventArgs.Test(arr))
                         {
                             pack = new SpacewireIcdMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
                         }
-                        else
+                        else if (SpacewireSptpMsgEventArgs.Test(arr))
                         {
                             pack = new SpacewireSptpMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
-                        }                       
+                        }
+                        else
+                        {
+                            throw new ContextMarshalException(Resource.Get(@"eUnknowSpacewireData"));
+                        }
                     }
                     catch (ContextMarshalException e)
                     {
-                        pack = new SpacewireErrorMsgEventArgs(arr, arr.Length, _currentTime1, _currentTime2, msg.Data[0]);
+                        pack = new SpacewireErrorMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0], e.Message);
                     }
                     
                     if (null != pack)
@@ -147,12 +163,12 @@ namespace EGSE.Protocols
                 else if (_time1 == msg.Addr)
                 {
                     _currentTime1 = msg.Data[0];
-                    OnTimeTick1Msg(this, new SpacewireTimeTickMsgEventArgs(_currentTime1));
+                    OnTimeTick1Msg(this, new SpacewireTimeTickMsgEventArgs(new byte[1] { msg.Data[0] }, _currentTime1, _currentTime2));
                 }
                 else if (_time2 == msg.Addr)
                 {
                     _currentTime2 = msg.Data[0];
-                    OnTimeTick2Msg(this, new SpacewireTimeTickMsgEventArgs(_currentTime2));
+                    OnTimeTick2Msg(this, new SpacewireTimeTickMsgEventArgs(new byte[1] { msg.Data[0] }, _currentTime1, _currentTime2));
                 }
             }
         }
@@ -205,7 +221,6 @@ namespace EGSE.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Icd
         {
-            //internal const int MaxLengthOfSpacewirePackage = 0x10004;
             private static readonly BitVector32.Section apidHiSection = BitVector32.CreateSection(0x07);
             private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0x01, apidHiSection);
             private static readonly BitVector32.Section typeSection = BitVector32.CreateSection(0x01, flagSection);
@@ -221,17 +236,6 @@ namespace EGSE.Protocols
             internal BitVector32 _header;
 
             private ushort _size;
-
-            //[MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfSpacewirePackage)]
-            //private byte[] data;
-
-            //internal byte[] Data
-            //{
-            //    get
-            //    {
-            //        return data;
-            //    }
-            //}
 
             public byte Version
             {
@@ -325,9 +329,24 @@ namespace EGSE.Protocols
                     _size = (ushort)((value >> 8) | (value << 8));
                 }
             }
+
+            public override string ToString()
+            {
+                return string.Format(Resource.Get(@"stIcdString"), Version, Type, Flag, Apid, Segment, Counter);
+            }
+
+            public string ToString(bool extended)
+            {
+                return extended ? this.ToString() : string.Format(@"[{0},{1},{2},{3},{4},{5}]", Version, Type, Flag, Apid, Segment, Counter);
+            }
         }
 
         private Icd _icdInfo;
+
+        public new static bool Test(byte[] data)
+        {
+            return (null != data ? 9 < data.Length : false);
+        }
 
         protected override ushort NeededCrc
         {
@@ -365,7 +384,6 @@ namespace EGSE.Protocols
             {
                 // возвращаем данные без учета заголовка
                 return _data;
-                //return IcdInfo.Data.Take(base.Data.Length - 6).ToArray();
             }
         }
 
@@ -379,30 +397,10 @@ namespace EGSE.Protocols
         public SpacewireIcdMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
-            if ((10 > data.Length) || (10 > base.DataLen))
+            if (10 > data.Length)
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireIcdData"));
             }
-
-            //if (Icd.MaxLengthOfSpacewirePackage < data.Length)
-            //{
-            //    throw new ContextMarshalException(Resource.Get(@"eBigSpacewireData"));
-            //}
-
-            // преобразуем данные к структуре Sptp.
-
-            //GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
-            //try
-            //{
-            //    _icdInfo = (Icd)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(Icd));
-            //}
-            //finally
-            //{
-            //    if (pinnedInfo.IsAllocated)
-            //    {
-            //        pinnedInfo.Free();
-            //    }
-            //}
 
             // преобразуем данные к структуре Sptp.
             try
@@ -420,11 +418,16 @@ namespace EGSE.Protocols
         /// </summary>
         /// <param name="array">Массив байт.</param>
         /// <returns>Знаковое целое.</returns>
-        public int ConvertToInt(byte[] array)
+        public static int ConvertToInt(byte[] array, int len = 0)
         {
+            if (0 == len)
+            {
+                len = array.Length;
+            }
+
             int pos = 0;
             int result = 0;
-            foreach (byte by in array.Reverse<byte>().ToArray())
+            foreach (byte by in array.Take(len).ToArray())
             {
                 result |= (int)(by << pos);
                 pos += 8;
@@ -447,49 +450,114 @@ namespace EGSE.Protocols
     /// <summary>
     /// Предоставляет аргументы КБВ-кадра для события, созданного полученным сообщением по протоколу spacewire.
     /// </summary>
-    public class SpacewireKbvMsgEventArgs : SpacewireIcdMsgEventArgs
+    public class SpacewireObtMsgEventArgs : SpacewireIcdMsgEventArgs
     {
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SpacewireKbvMsgEventArgs" />.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="time1">Time tick 1</param>
-        /// <param name="time2">Time tick 2</param>
-        /// <param name="error">Ошибка в сообщении.</param>
-        public SpacewireKbvMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
-        {
-            if (6 <= DataLen)
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Obt
+        {          
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
+            private byte[] _nop;
+
+            private byte _normal;
+
+            private byte _extended;
+
+            private uint _obt;
+
+            public byte Normal
             {
-                FieldPNormal = Data[0];
-                FieldPExtended = Data[1];
-                Kbv = ConvertToInt(Data.Skip(2).ToArray());
+                get
+                {
+                    return _normal;
+                }
+
+                set
+                {
+                    _normal = value;
+                }
+            }
+
+            public byte Extended
+            {
+                get
+                {
+                    return _extended;
+                }
+
+                set
+                {
+                    _extended = value;
+                }
+            }
+
+            public uint Value
+            {
+                get
+                {
+                    return _obt.ReverseBytes();
+                }
+
+                set
+                {
+                    _obt = value.ReverseBytes();
+                }
+            }
+        }
+
+        private Obt _obtInfo;
+
+        public Obt ObtInfo
+        {
+            get
+            {
+                return _obtInfo;
             }
         }
 
         /// <summary>
-        /// Получает или задает [поле Р нормальное протокола ICD].
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireObtMsgEventArgs" />.
         /// </summary>
-        /// <value>
-        /// [поле Р нормальное протокола ICD].
-        /// </value>
-        public byte FieldPNormal { get; set; }
+        /// <param name="data">Пакет данных.</param>
+        /// <param name="time1">Time tick 1</param>
+        /// <param name="time2">Time tick 2</param>
+        /// <param name="error">Ошибка в пакете данных.</param>
+        public SpacewireObtMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data, time1, time2, error)
+        {
+            if (16 != data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSpacewireObtData"));
+            }
 
-        /// <summary>
-        /// Получает или задает [поле Р расширенное протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [поле Р расширенное протокола ICD].
-        /// </value>
-        public byte FieldPExtended { get; set; }
+            // преобразуем данные к структуре Obt.
+            try
+            {
+                byte[] nop;
+                _obtInfo = Converter.MarshalTo<Obt>(data, out nop);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
 
-        /// <summary>
-        /// Получает или задает [поле Т КБВ протокола ICD].
-        /// </summary>
-        /// <value>
-        /// [поле Т КБВ протокола ICD].
-        /// </value>
-        public int Kbv { get; set; }
+        public new static bool Test(byte[] data)
+        {
+            if (null != data ? 16 == data.Length : false)
+            {
+                byte[] raw = data.Skip(4).Take(4).ToArray();
+                BitVector32 head = new BitVector32(ConvertToInt(raw));
+                Icd icdInfo = new Icd();
+                icdInfo._header = head;
+                return icdInfo.Version == 0
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderEmpty;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Преобразует данные экземпляра к массиву байт.
@@ -497,10 +565,9 @@ namespace EGSE.Protocols
         /// <returns>
         /// Массив байт.
         /// </returns>
-        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public override byte[] ToArray()
         {
-            throw new NotImplementedException();
+            return base.ToArray();
         }
     }
 
@@ -521,6 +588,24 @@ namespace EGSE.Protocols
         {
         }
 
+        public new static bool Test(byte[] data)
+        {
+            if (null != data ? 9 < data.Length : false)
+            {
+                byte[] raw = data.Skip(4).Take(4).ToArray();
+                BitVector32 head = new BitVector32(ConvertToInt(raw));
+                Icd icdInfo = new Icd();
+                icdInfo._header = head;
+                return icdInfo.Version == 0
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Преобразует данные экземпляра к массиву байт.
         /// </summary>
@@ -530,7 +615,7 @@ namespace EGSE.Protocols
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
         public override byte[] ToArray()
         {
-            throw new NotImplementedException();
+            return base.ToArray();
         }
 
         public bool CrcCheck()
@@ -559,19 +644,8 @@ namespace EGSE.Protocols
          
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
             private byte[] _nop;
-
+            
             private BitVector32 _header;
-
-            //[MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfSpacewirePackage)]
-            //private byte[] data;
-
-            //internal byte[] Data
-            //{
-            //    get
-            //    {
-            //        return data;
-            //    }
-            //}
         }
 
         private Tk _tkInfo;
@@ -592,7 +666,6 @@ namespace EGSE.Protocols
             {
                 // возвращаем данные без учета заголовка
                 return _data.Take(_data.Length - 2).ToArray();
-                //return TkInfo.Data.Take(IcdInfo.Size).ToArray();
             }
         }
 
@@ -609,7 +682,6 @@ namespace EGSE.Protocols
             get
             {
                 return base.NeededCrc;
-                //return Crc16.Get(base.Data, base.Data.Length - 2/*, 0, base.NeededCrc*/);
             }
         }
 
@@ -622,30 +694,10 @@ namespace EGSE.Protocols
         public SpacewireTkMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
-            if ((16 > data.Length) || (16 > base.DataLen))
+            if (16 > data.Length)
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTkData"));
             }
-
-            //if (Tk.MaxLengthOfSpacewirePackage < data.Length)
-            //{
-            //    throw new ContextMarshalException(Resource.Get(@"eBigSpacewireData"));
-            //}
-
-            // преобразуем данные к структуре Tk.
-
-            //GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
-            //try
-            //{
-            //    _tkInfo = (Tk)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(Tk));
-            //}
-            //finally
-            //{
-            //    if (pinnedInfo.IsAllocated)
-            //    {
-            //        pinnedInfo.Free();
-            //    }
-            //}
 
             // преобразуем данные к структуре Tk.
             try
@@ -656,6 +708,24 @@ namespace EGSE.Protocols
             {
                 MessageBox.Show(e.Message);
             }
+        }
+
+        public new static bool Test(byte[] data)
+        {
+            if (null != data ? 9 < data.Length : false)
+            {
+                byte[] raw = data.Skip(4).Take(4).ToArray();
+                BitVector32 head = new BitVector32(ConvertToInt(raw));
+                Icd icdInfo = new Icd();
+                icdInfo._header = head;
+                return icdInfo.Version == 0
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill;
+            }
+            else
+            {
+                return false;
+            }       
         }
 
         public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, byte apid, Dictionary<byte, AutoCounter> dict)
@@ -701,12 +771,14 @@ namespace EGSE.Protocols
 
     public class SpacewireErrorMsgEventArgs : MsgBase
     {
-        public SpacewireErrorMsgEventArgs(byte[] data, int dataLen, byte time1, byte time2, byte error = 0x00)
-            : base(data, dataLen)
+        private  string _errorMsg;
+        public SpacewireErrorMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00, string msg = null)
+            : base(data)
         {
+             _errorMsg = (null == msg ? string.Empty : msg);   
         }
 
-        public byte[] Data
+        public new byte[] Data
         {
             get
             {
@@ -714,7 +786,12 @@ namespace EGSE.Protocols
             }
         }
 
-        public int DataLen
+        public string ErrorMessage()
+        {
+            return _errorMsg;
+        }
+
+        public new int DataLen
         {
             get
             {
@@ -731,24 +808,12 @@ namespace EGSE.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Sptp
         {
-            //internal const int MaxLengthOfSpacewirePackage = 0x10004;
             private static readonly BitVector32.Section toSection = BitVector32.CreateSection(0xFF);
             private static readonly BitVector32.Section protocolIdSection = BitVector32.CreateSection(0xFF, toSection);
             private static readonly BitVector32.Section msgTypeSection = BitVector32.CreateSection(0xFF, protocolIdSection);
             private static readonly BitVector32.Section fromSection = BitVector32.CreateSection(0xFF, msgTypeSection);
 
             private BitVector32 _header;
-
-            //[MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfSpacewirePackage)]
-            //private byte[] _data;
-
-            //internal byte[] Data
-            //{
-            //    get
-            //    {
-            //        return _data;
-            //    }
-            //}
 
             public byte To
             {
@@ -821,7 +886,6 @@ namespace EGSE.Protocols
             {
                 // возвращаем данные без учета заголовка
                 return _data;
-                //return SptpInfo.Data.Take(base.DataLen - 4).ToArray();
             }
         }
 
@@ -831,6 +895,11 @@ namespace EGSE.Protocols
             {
                 return Crc16.Get(Data, Data.Length - 2);
             }
+        }
+
+        public new static bool Test(byte[] data)
+        {
+            return (null != data ? 3 < data.Length : false);
         }
 
         /// <summary>
@@ -843,36 +912,12 @@ namespace EGSE.Protocols
         /// <param name="error">Ошибка в сообщении.</param>
         /// <exception cref="System.ContextMarshalException">Размер кадра spacewire меньше 4 байт!</exception>
         public SpacewireSptpMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, data.Length)
+            : base(data)
         {
-            if ((4 > data.Length) || (4 > base.DataLen))
+            if (4 > data.Length)
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
             }
-
-            //if (Sptp.MaxLengthOfSpacewirePackage < data.Length)
-            //{
-            //    throw new ContextMarshalException(Resource.Get(@"eBigSpacewireData"));
-            //}
-
-            // преобразуем данные к структуре Sptp.
-
-            //GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
-            //try
-            //{
-            //    _sptpInfo = (Sptp)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(Sptp));
-            //}
-            //catch (Exception)
-            //{
-            //    _sptpInfo = new Sptp();
-            //}
-            //finally
-            //{
-            //    if (pinnedInfo.IsAllocated)
-            //    {
-            //        pinnedInfo.Free();
-            //    }
-            //}
 
             // преобразуем данные к структуре Sptp.
             try
@@ -956,21 +1001,62 @@ namespace EGSE.Protocols
     /// </summary>
     public class SpacewireTimeTickMsgEventArgs : MsgBase
     {
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct TimeTick
+        {
+            private byte _tick;
+
+            public byte Value
+            {
+                get
+                {
+                    return _tick;
+                }
+
+                set
+                {
+                    _tick = value;
+                }
+            }
+        }
+
+        private TimeTick _timeTickInfo;
+
+        public TimeTick TimeTickInfo
+        {
+            get
+            {
+                return _timeTickInfo;
+            }
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireTimeTickMsgEventArgs" />.
         /// </summary>
         /// <param name="data">The data.</param>
-        public SpacewireTimeTickMsgEventArgs(byte data)
+        public SpacewireTimeTickMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data)
         {
-            base.Data = new byte[1] { (byte)(data & 0x1F) };
+            if (1 != data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eTickTimeSpacewireData"));
+            }
+
+            // преобразуем данные к структуре TimeTick.
+            try
+            {
+                byte[] nop;
+                _timeTickInfo = Converter.MarshalTo<TimeTick>(data, out nop);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
-        public byte Tick 
+        public override byte[] ToArray()
         {
-            get
-            {
-                return base.Data[0];
-            }
+            return base.Data;
         }
     }
 }

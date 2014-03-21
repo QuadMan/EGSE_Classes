@@ -29,16 +29,21 @@ namespace EGSE.Protocols
         /// </summary>
         private int _dataLen;
 
+        internal protected static bool Test(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
         public MsgBase()
         {
         }
 
-        public MsgBase(byte[] data, int dataLen)
+        public MsgBase(byte[] data)
         {
             new { data }.CheckNotNull();
 
             Data = data;
-            DataLen = dataLen;
+            DataLen = data.Length;
         }
 
         /// <summary>

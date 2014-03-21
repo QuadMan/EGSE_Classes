@@ -129,4 +129,16 @@
   <data name="eSmallSpacewireTkData" xml:space="preserve">
     <value>Размер кадра spacewire icd меньше 16 байт!</value>
   </data>
+  <data name="eSpacewireObtData" xml:space="preserve">
+    <value>Размер кадра spacewire obt некорректен!</value>
+  </data>
+  <data name="eTickTimeSpacewireData" xml:space="preserve">
+    <value>Размер кадра timeTick некорректен!</value>
+  </data>
+  <data name="eUnknowSpacewireData" xml:space="preserve">
+    <value>Неизвестный кадр spacewire!</value>
+  </data>
+  <data name="stIcdString" xml:space="preserve">
+    <value>Заголовок пакета: Идентификатор пакета[Номер версии:{0}, Тип:{1}, Флаг заголовка данных:{2}, APID:{3}] Поле контроля последовательности[Флаг сегментации:{4}, Счетчик последовательности:{5}]</value>
+  </data>
 </root>

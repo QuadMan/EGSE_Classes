@@ -125,9 +125,9 @@ namespace EGSE.Utilites
             return new SpacewireIcdMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
-        public static SpacewireKbvMsgEventArgs AsKbv(this byte[] obj)
+        public static SpacewireObtMsgEventArgs AsKbv(this byte[] obj)
         {
-            return new SpacewireKbvMsgEventArgs(obj, 0x00, 0x00, 0x00);
+            return new SpacewireObtMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
         public static SpacewireTmMsgEventArgs AsTm(this byte[] obj)
@@ -610,15 +610,28 @@ namespace EGSE.Utilites
     /// </summary>
     public static class Converter
     {
+        public static uint ReverseBytes(this uint value)
+        {
+            return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
+                   (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+        }
+
         internal static T1 MarshalTo<T1>(byte[] data, out byte[] dynData)
         {
             GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
             try
             {
-                var structure = Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));                
+                var structure = Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));
                 IntPtr ptr = new IntPtr(pinnedInfo.AddrOfPinnedObject().ToInt32() + Marshal.SizeOf(typeof(T1)));
-                dynData = new byte[data.Length - Marshal.SizeOf(typeof(T1))];
-                Marshal.Copy(ptr, dynData, 0, dynData.Length);
+                if (0 < data.Length - Marshal.SizeOf(typeof(T1)))
+                {
+                    dynData = new byte[data.Length - Marshal.SizeOf(typeof(T1))];
+                    Marshal.Copy(ptr, dynData, 0, dynData.Length);
+                }
+                else
+                {
+                    dynData = new byte[] { };
+                }
                 return (T1)structure;
             }
             finally
@@ -628,23 +641,6 @@ namespace EGSE.Utilites
                     pinnedInfo.Free();
                 }
             }
-            
-            //GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);         
-            //try
-            //{                  
-            //    return (T1)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));
-            //}
-            //catch (AccessViolationException e)
-            //{
-            //    throw e;
-            //}
-            //finally
-            //{
-            //    if (pinnedInfo.IsAllocated)
-            //    {
-            //        pinnedInfo.Free();
-            //    }
-            //}
         }
 
         /// <summary>

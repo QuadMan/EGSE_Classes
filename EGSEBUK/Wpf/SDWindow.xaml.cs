@@ -80,7 +80,7 @@ namespace EGSE.Defaults
             else if (msg is SpacewireErrorMsgEventArgs)
             {
                 SpacewireErrorMsgEventArgs err = msg as SpacewireErrorMsgEventArgs;
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка в сообщении!";
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка: " + err.ErrorMessage();
             }
 
             if (null != Monitor && Visibility.Visible == this.Visibility)

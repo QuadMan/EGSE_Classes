@@ -95,5 +95,41 @@ namespace Wpf {
                 return ResourceManager.GetString("eSmallSpacewireTkData", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Размер кадра spacewire obt некорректен!.
+        /// </summary>
+        internal static string eSpacewireObtData {
+            get {
+                return ResourceManager.GetString("eSpacewireObtData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Размер кадра timeTick некорректен!.
+        /// </summary>
+        internal static string eTickTimeSpacewireData {
+            get {
+                return ResourceManager.GetString("eTickTimeSpacewireData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Неизвестный кадр spacewire!.
+        /// </summary>
+        internal static string eUnknowSpacewireData {
+            get {
+                return ResourceManager.GetString("eUnknowSpacewireData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Заголовок пакета: Идентификатор пакета[Номер версии:{0}, Тип:{1}, Флаг заголовка данных:{2}, APID:{3}] Поле контроля последовательности[Флаг сегментации:{4}, Счетчик последовательности:{5}].
+        /// </summary>
+        internal static string stIcdString {
+            get {
+                return ResourceManager.GetString("stIcdString", resourceCulture);
+            }
+        }
     }
 }

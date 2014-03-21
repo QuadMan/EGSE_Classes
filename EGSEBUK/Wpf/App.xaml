@@ -16,6 +16,7 @@
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
         <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
         <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
+        <SolidColorBrush x:Key="CheckBrush2" Color="Maroon"/>        
         <SolidColorBrush x:Key="UnableBrush" Color="Gray"/>        
         <SolidColorBrush x:Key="GrayBrush" Color="Gray"/>        
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
@@ -77,6 +78,33 @@
                 </Trigger>
             </ControlTemplate.Triggers>
             </ControlTemplate>
+        
+        <ControlTemplate x:Key="FlatRadioButton2" TargetType="{x:Type ToggleButton}">
+            <Border x:Name="Border" 
+        		Background="White"
+        		Focusable="False" 
+        		BorderThickness="0"
+        		Margin="1">
+                <ContentPresenter HorizontalAlignment="Center"
+        			VerticalAlignment="Center"                                        
+        			Content="{TemplateBinding Content}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource CheckBrush2}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource UnableBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
         <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
             <Border x:Name="Border"
         	Background="{StaticResource UnSelectBrush}" 

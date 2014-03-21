@@ -77,8 +77,19 @@ namespace EGSE.Defaults
                     spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") [" + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + "] [" + Converter.ByteArrayToHexStr(sptpMsg.Data) + "]";
                 }
                 // crc check
-                if (IsTkMsg(sptpMsg) || IsTmMsg(sptpMsg))
+                if ((sptpMsg is SpacewireTkMsgEventArgs) || (sptpMsg is SpacewireTmMsgEventArgs))
                 {
+                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") [" + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + "] ";                    
+                    if (sptpMsg is SpacewireTkMsgEventArgs)
+                    {
+                        SpacewireTkMsgEventArgs tkMsg = sptpMsg as SpacewireTkMsgEventArgs;
+                        spacewireMsg += tkMsg.IcdInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tkMsg.Data) + "]";
+                    }
+                    if (sptpMsg is SpacewireTmMsgEventArgs)
+                    {
+                        SpacewireTkMsgEventArgs tmMsg = sptpMsg as SpacewireTkMsgEventArgs;
+                        spacewireMsg += tmMsg.IcdInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tmMsg.Data) + "]";
+                    }                    
                     ushort crcInData = msg.ToArray().AsTk().Crc;
                     ushort crcGen = msg.ToArray().AsTk().NeededCrc;
                     spacewireMsg += (crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4"));
@@ -87,7 +98,7 @@ namespace EGSE.Defaults
             else if (msg is SpacewireErrorMsgEventArgs)
             {
                 SpacewireErrorMsgEventArgs err = msg as SpacewireErrorMsgEventArgs;
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка в сообщении!";
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка: " + err.ErrorMessage();
             }
 
             if (null != Monitor && Visibility.Visible == this.Visibility)
@@ -100,52 +111,7 @@ namespace EGSE.Defaults
             }
         }
 
-        internal bool IsTkMsg(SpacewireSptpMsgEventArgs msg)
-        {
-            try
-            {                
-                if (msg is SpacewireIcdMsgEventArgs)
-                {
-                    SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
-                    return icdMsg.IcdInfo.Version == 0
-                        && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
-                        && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
-                        && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (ContextMarshalException)
-            {
-                return false;
-            }
-        }
-
-        internal bool IsTmMsg(SpacewireSptpMsgEventArgs msg)
-        {
-            try
-            {
-                if (msg is SpacewireIcdMsgEventArgs)
-                {
-                    SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
-                    return icdMsg.IcdInfo.Version == 0
-                        && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
-                        && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
-                        && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
-                }
-                else
-                { 
-                    return false;
-                }
-            }
-            catch (ContextMarshalException)
-            {
-                return false;
-            }
-        }
-
+      
         /// <summary>
         /// Handles the Closing event of the Window control.
         /// </summary>

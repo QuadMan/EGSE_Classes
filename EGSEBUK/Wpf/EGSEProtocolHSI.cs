@@ -254,13 +254,18 @@ namespace EGSE.Protocols
             }
         }
 
+        public new static bool Test(byte[] data)
+        {
+            return (null != data ? 1 < data.Length : false);
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="HsiMsgEventArgs" />.
         /// </summary>
         /// <param name="data">Данные кадра.</param>
         /// <param name="dataLen">Длина кадра.</param>
         public HsiMsgEventArgs(byte[] data, int dataLen)
-            : base(data, dataLen)
+            : base(data)
         {
             if ((4 > data.Length) || (4 > base.DataLen))
             {

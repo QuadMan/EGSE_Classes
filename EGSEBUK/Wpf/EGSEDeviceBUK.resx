@@ -139,7 +139,7 @@
     <value>БУК (адрес: {0})</value>
   </data>
   <data name="stShowSimLogicBusk" xml:space="preserve">
-    <value>БУСК (адрес: {0})</value>
+    <value>Имитатор БУК (для БМ-4) (адрес: {0})</value>
   </data>
   <data name="stShowSimLogicSD1" xml:space="preserve">
     <value>БУК (адрес: {0})</value>
@@ -148,7 +148,7 @@
     <value>НП2 (адрес: {0})</value>
   </data>
   <data name="stShowLogicBusk" xml:space="preserve">
-    <value>Имитатор БУСК (адрес: {0})</value>
+    <value>Имитатор БМ-4 (БУСК, БУНД) (адрес: {0})</value>
   </data>
   <data name="stHsiLogName" xml:space="preserve">
     <value>hsibuk</value>

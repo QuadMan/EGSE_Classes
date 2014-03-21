@@ -1,7 +1,7 @@
 ﻿<Window x:Class="EGSE.Defaults.SimSDWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
-        Title="Имитатор БУК (для НП)"
+        Title="Имитатор БУК (для каналов БС)"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
         Closing="Window_Closing"

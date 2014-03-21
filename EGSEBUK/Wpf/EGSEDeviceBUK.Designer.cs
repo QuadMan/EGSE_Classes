@@ -142,7 +142,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Имитатор БУСК (адрес: {0}).
+        ///   Looks up a localized string similar to Имитатор БМ-4 (БУСК, БУНД) (адрес: {0}).
         /// </summary>
         internal static string stShowLogicBusk {
             get {
@@ -151,7 +151,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to БУСК (адрес: {0}).
+        ///   Looks up a localized string similar to Имитатор БУК (для БМ-4) (адрес: {0}).
         /// </summary>
         internal static string stShowSimLogicBusk {
             get {
