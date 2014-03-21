@@ -16,6 +16,7 @@ namespace EGSE.Protocols
     using EGSE.Utilites;
     using System.Runtime.InteropServices;
     using System.Collections.Specialized;
+    using System.Windows;
 
     /// <summary>
     /// Декодер протокола ВСИ.
@@ -167,10 +168,10 @@ namespace EGSE.Protocols
     /// </summary>
     public class HsiMsgEventArgs : MsgBase
     {
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1/*, Size = 0x10003*/)]
         public struct Hsi
         {
-            private const int MaxLengthOfHsiPackage = 0xFFFF;
+            //internal const int MaxLengthOfHsiPackage = 0xFFFF;
             private static readonly BitVector32.Section packStartSection = BitVector32.CreateSection(0xFF);
             private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0xFF, packStartSection);
             private static readonly BitVector32.Section lineSection = BitVector32.CreateSection(0x1, flagSection);
@@ -179,16 +180,16 @@ namespace EGSE.Protocols
 
             private BitVector32 _header;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfHsiPackage)]
-            private byte[] _data;
+            //[MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfHsiPackage)]
+            //private byte[] _data;
 
-            internal byte[] Data
-            {
-                get
-                {
-                    return _data;
-                }
-            }
+            //internal byte[] Data
+            //{
+            //    get
+            //    {
+            //        return _data;
+            //    }
+            //}
 
             public Type Flag
             {
@@ -241,12 +242,15 @@ namespace EGSE.Protocols
             } 
         }
 
+        private byte[] _data;
+
         public new byte[] Data
         {
             get
             {
                 // возвращаем данные без учета заголовка
-                return Info.Data.Take(base.DataLen - 4).ToArray();
+                return _data;
+                //return Info.Data.Take(base.DataLen - 4).ToArray();
             }
         }
 
@@ -262,9 +266,44 @@ namespace EGSE.Protocols
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallHsiData"));
             }
-            
-            // преобразуем данные к структуре Hsi.           
-            _info = Converter.MarshalTo<Hsi>(data);
+
+            //if (Hsi.MaxLengthOfHsiPackage < data.Length)
+            //{
+            //    throw new ContextMarshalException(Resource.Get(@"eBigHsiData"));
+            //}
+
+            // преобразуем данные к структуре Hsi.
+
+            //GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
+            //try
+            //{
+            //    var structure = Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(Hsi));
+            //    _info = (Hsi)structure;
+            //    IntPtr ptr = new IntPtr(pinnedInfo.AddrOfPinnedObject().ToInt32() + Marshal.SizeOf(typeof(Hsi)));
+            //    _data = new byte[dataLen - Marshal.SizeOf(typeof(Hsi))];
+            //    Marshal.Copy(ptr, _data, 0, _data.Length);                
+            //}
+            //catch
+            //{
+            //    _info = new Hsi();
+            //}
+            //finally
+            //{
+            //    if (pinnedInfo.IsAllocated)
+            //    {
+            //        pinnedInfo.Free();
+            //    }
+            //}
+
+            // преобразуем данные к структуре Hsi.
+            try
+            {
+                _info = Converter.MarshalTo<Hsi>(data, out _data);
+            }
+            catch (AccessViolationException e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         /// <summary>

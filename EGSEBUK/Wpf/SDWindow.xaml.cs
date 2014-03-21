@@ -59,17 +59,28 @@ namespace EGSE.Defaults
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        public void OnSpacewireMsg(object sender, SpacewireSptpMsgEventArgs msg)
+        public void OnSpacewireMsg(object sender, MsgBase msg)
         {
             new { msg }.CheckNotNull();
-            string spacewireMsg;
-            if (msg.Data.Length > 30)
+            string spacewireMsg = string.Empty;
+
+            if (msg is SpacewireSptpMsgEventArgs)
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + msg.SptpInfo.From.ToString() + "-" + msg.SptpInfo.MsgType.ToString() + "->" + msg.SptpInfo.To.ToString() + " " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+                SpacewireSptpMsgEventArgs sptpMsg = msg as SpacewireSptpMsgEventArgs;
+                if (sptpMsg.Data.Length > 30)
+                {
+                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + " " + Converter.ByteArrayToHexStr(sptpMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(sptpMsg.Data.Skip<byte>(sptpMsg.Data.Length - 10).ToArray());
+                }
+                else
+                {
+                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + " " + Converter.ByteArrayToHexStr(sptpMsg.Data);
+                }
+
             }
-            else
+            else if (msg is SpacewireErrorMsgEventArgs)
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") " + msg.SptpInfo.From.ToString() + "-" + msg.SptpInfo.MsgType.ToString() + "->" + msg.SptpInfo.To.ToString() + " " + Converter.ByteArrayToHexStr(msg.Data);
+                SpacewireErrorMsgEventArgs err = msg as SpacewireErrorMsgEventArgs;
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка в сообщении!";
             }
 
             if (null != Monitor && Visibility.Visible == this.Visibility)

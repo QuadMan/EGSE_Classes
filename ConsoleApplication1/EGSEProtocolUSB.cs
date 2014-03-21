@@ -37,14 +37,14 @@ namespace EGSE.Protocols
         {
             new { data }.CheckNotNull();
 
-            _data = data;
-            _dataLen = dataLen;
+            Data = data;
+            DataLen = dataLen;
         }
 
         /// <summary>
         /// Получает или задает данные сообщения.
         /// </summary>
-        protected byte[] Data // TODO need protected
+        protected byte[] Data
         {
             get
             {
@@ -60,7 +60,7 @@ namespace EGSE.Protocols
         /// <summary>
         /// Получает или задает длину сообщения.
         /// </summary>
-        protected int DataLen // TODO need protected
+        protected int DataLen
         {
             get
             {
@@ -80,6 +80,14 @@ namespace EGSE.Protocols
         public virtual byte[] ToArray()
         {           
             return _data;
+        }
+
+        protected virtual ushort NeededCrc
+        {
+            get
+            {
+                return Crc16.Get(this._data, this._data.Length);
+            }
         }
     }
 

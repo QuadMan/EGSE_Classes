@@ -102,9 +102,8 @@ namespace EGSE.Utilites
         /// <param name="bytes">Массив данных.</param>
         /// <param name="len">Сколько байт учавствует в расчете CRC.</param>
         /// <returns>Значение CRC.</returns>
-        public static ushort Get(byte[] bytes, int len, int start = 0)
+        public static ushort Get(byte[] bytes, int len, int start = 0, ushort crc = 0xFFFF)
         {
-            ushort crc = 0xFFFF;
             for (var i = start; i < len; i++)
             {
                 crc = (ushort)((crc << 8) ^ Crc16Table[(crc >> 8) ^ bytes[i]]);
@@ -123,48 +122,27 @@ namespace EGSE.Utilites
 
         public static SpacewireIcdMsgEventArgs AsIcd(this byte[] obj)
         {
-            return new SpacewireIcdMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
+            return new SpacewireIcdMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
         public static SpacewireKbvMsgEventArgs AsKbv(this byte[] obj)
         {
-            return new SpacewireKbvMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
+            return new SpacewireKbvMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
         public static SpacewireTmMsgEventArgs AsTm(this byte[] obj)
         {
-            return new SpacewireTmMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
+            return new SpacewireTmMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
         public static SpacewireTkMsgEventArgs AsTk(this byte[] obj)
         {
-            return new SpacewireTkMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
+            return new SpacewireTkMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
         public static SpacewireSptpMsgEventArgs AsSptp(this byte[] obj)
         {
-            return new SpacewireTkMsgEventArgs(obj, obj.Length, 0x00, 0x00, 0x00);
-        }
-
-        // приведение к типу сообщения от SpacewireIcdMsgEventArgs
-
-        public static SpacewireKbvMsgEventArgs AsKbv(this SpacewireIcdMsgEventArgs obj)
-        {
-            SpacewireKbvMsgEventArgs newObj = new SpacewireKbvMsgEventArgs(new byte[] { }, obj.Time1, obj.Time2, obj.Error);
-            newObj.FieldPNormal = obj.Data[0];
-            newObj.FieldPExtended = obj.Data[1];
-            newObj.Kbv = obj.ConvertToInt(obj.Data.Skip(2).ToArray());
-            return newObj;
-        }
-
-        public static SpacewireTkMsgEventArgs AsTk(this SpacewireIcdMsgEventArgs obj)
-        {
-            return obj.ToArray().AsTk();
-        }
-
-        public static SpacewireTmMsgEventArgs AsTm(this SpacewireIcdMsgEventArgs obj)
-        {
-            return obj.ToArray().AsTm();
+            return new SpacewireTkMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
         // создание новых сообщений
@@ -632,12 +610,16 @@ namespace EGSE.Utilites
     /// </summary>
     public static class Converter
     {
-        internal static T1 MarshalTo<T1>(byte[] data)
+        internal static T1 MarshalTo<T1>(byte[] data, out byte[] dynData)
         {
-            GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);         
+            GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
             try
-            {                  
-                return (T1)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));
+            {
+                var structure = Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));                
+                IntPtr ptr = new IntPtr(pinnedInfo.AddrOfPinnedObject().ToInt32() + Marshal.SizeOf(typeof(T1)));
+                dynData = new byte[data.Length - Marshal.SizeOf(typeof(T1))];
+                Marshal.Copy(ptr, dynData, 0, dynData.Length);
+                return (T1)structure;
             }
             finally
             {
@@ -646,6 +628,23 @@ namespace EGSE.Utilites
                     pinnedInfo.Free();
                 }
             }
+            
+            //GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);         
+            //try
+            //{                  
+            //    return (T1)Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));
+            //}
+            //catch (AccessViolationException e)
+            //{
+            //    throw e;
+            //}
+            //finally
+            //{
+            //    if (pinnedInfo.IsAllocated)
+            //    {
+            //        pinnedInfo.Free();
+            //    }
+            //}
         }
 
         /// <summary>

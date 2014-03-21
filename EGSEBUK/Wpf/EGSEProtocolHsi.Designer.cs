@@ -61,6 +61,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Размер кадра hsi слишком большой!.
+        /// </summary>
+        internal static string eBigHsiData {
+            get {
+                return ResourceManager.GetString("eBigHsiData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Размер кадра hsi меньше 4 байт!.
         /// </summary>
         internal static string eSmallHsiData {

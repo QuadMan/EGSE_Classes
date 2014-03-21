@@ -61,6 +61,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Размер кадра слишком большой!.
+        /// </summary>
+        internal static string eBigSpacewireData {
+            get {
+                return ResourceManager.GetString("eBigSpacewireData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Размер кадра spacewire меньше 4 байт!.
         /// </summary>
         internal static string eSmallSpacewireData {

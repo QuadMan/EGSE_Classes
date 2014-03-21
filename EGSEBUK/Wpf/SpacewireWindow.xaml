@@ -167,15 +167,10 @@
                      Style="{StaticResource TextBoxInError}"
                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
             <Button Grid.Row="3" 
-                    Grid.ColumnSpan="2"
+                    Grid.ColumnSpan="3"
                     Template="{StaticResource FlatButtonClickBusy}"  
                     Command="{Binding IssuePackageCommand}"
                     Content="Передать в БУК"/>
-            <Button Grid.Row="3"  
-                    Grid.Column="2"
-                    Template="{StaticResource FlatButtonClickBusy}"  
-                    Command="{Binding IssueRMapCommand}"
-                    Content="RMap"/>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>

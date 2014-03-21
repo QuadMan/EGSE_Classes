@@ -1638,7 +1638,7 @@ namespace EGSE.Devices
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnSpacewire2Msg(object sender, SpacewireSptpMsgEventArgs e)
+        protected virtual void OnSpacewire2Msg(object sender, MsgBase e)
         {
             if (this.GotSpacewire2Msg != null)
             {
@@ -1735,7 +1735,7 @@ namespace EGSE.Devices
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnSpacewire3Msg(object sender, SpacewireSptpMsgEventArgs e)
+        protected virtual void OnSpacewire3Msg(object sender, MsgBase e)
         {
             if (this.GotSpacewire3Msg != null)
             {
@@ -5524,7 +5524,7 @@ namespace EGSE.Devices
             /// </summary>
             /// <param name="sender">The sender.</param>
             /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-            public virtual void OnSpacewire2MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
+            public virtual void OnSpacewire2MsgRawSave(object sender, MsgBase e)
             {
                 if (null != _rawDataStream)
                 {
@@ -5535,7 +5535,11 @@ namespace EGSE.Devices
 
                     if (_rawDataStream.CanWrite)
                     {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
+                        if (e is SpacewireSptpMsgEventArgs)
+                        {
+                            SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
+                            _rawDataTask = _rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
+                        }
                     }
                 }
             }
@@ -6190,7 +6194,7 @@ namespace EGSE.Devices
             /// </summary>
             /// <param name="sender">The sender.</param>
             /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-            public virtual void OnSpacewire3MsgRawSave(object sender, SpacewireSptpMsgEventArgs e)
+            public virtual void OnSpacewire3MsgRawSave(object sender, MsgBase e)
             {
                 if (null != _rawDataStream)
                 {
@@ -6201,7 +6205,11 @@ namespace EGSE.Devices
 
                     if (_rawDataStream.CanWrite)
                     {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
+                        if (e is SpacewireSptpMsgEventArgs)
+                        {
+                            SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
+                            _rawDataTask = _rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
+                        }
                     }
                 }
             }

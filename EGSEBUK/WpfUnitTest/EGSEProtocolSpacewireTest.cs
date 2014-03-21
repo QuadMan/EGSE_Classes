@@ -28,7 +28,7 @@ namespace EGSE.Protocols.UnitTest
             byte[] testCrc = buf.Skip(4).ToArray().Take(buf.Length - 6).ToArray();
             buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
             buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             Assert.AreEqual((buf[buf.Length - 2] << 8) | buf[buf.Length - 1], msg.Crc, "Ошибка в парсинге CRC");
 
@@ -52,7 +52,7 @@ namespace EGSE.Protocols.UnitTest
             byte[] testCrc = buf.Skip(4).ToArray().Take(buf.Length - 6).ToArray();
             buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
             buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             Assert.AreEqual((buf[buf.Length - 2] << 8) | buf[buf.Length - 1], msg.Crc, "Ошибка в парсинге CRC");
                       
@@ -70,7 +70,7 @@ namespace EGSE.Protocols.UnitTest
         {
             // формируем массив из 3 байт и проверяем формирование посылки
             byte[] buf = new byte[3] { 0x33, 0xf2, 0x34 };
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -84,7 +84,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 4 байт и проверяем формирование посылки
             byte[] buf = new byte[4] { to, protocolId, msgType, from };
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -102,7 +102,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 10 байт и проверяем формирование посылки
             byte[] buf = new byte[10] { to, protocolId, msgType, from, b[0], b[1], b[2], b[3], b[4], b[5] };
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 5 байт и проверяем формирование посылки
             byte[] buf = new byte[5] { to, protocolId, msgType, from, customData };
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -127,15 +127,15 @@ namespace EGSE.Protocols.UnitTest
         {
             // имитируем ошибочку
             byte[] buf = new byte[] { };
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(NullReferenceException))]
         public void SpacewireTkMsgEventArgs_1ArgNull_ExceptionThrown()
         {
             // имитируем ошибочку
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(null, 0, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(null, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -146,7 +146,7 @@ namespace EGSE.Protocols.UnitTest
             buf[8] = 0x0f;
             buf[9] = 0xf4;
             // формируем максимально допустимую посылку для протокола spacewire.
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат парсинга данных кадра
             byte[] test = buf.Skip(14).ToArray().Take(0xff4).ToArray();
@@ -159,7 +159,7 @@ namespace EGSE.Protocols.UnitTest
             RandomBufferGenerator generator = new RandomBufferGenerator(65540);
             byte[] buf = generator.GenerateBufferFromSeed(65540);
             // формируем максимально допустимую посылку для протокола spacewire.
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат преобразования к массиву
             CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");
@@ -175,7 +175,7 @@ namespace EGSE.Protocols.UnitTest
         {
             // формируем массив из 3 байт и проверяем формирование посылки
             byte[] buf = new byte[3] { 0x33, 0xf2, 0x34 };
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -189,7 +189,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 4 байт и проверяем формирование посылки
             byte[] buf = new byte[4] { to, protocolId, msgType, from };
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -206,7 +206,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 10 байт и проверяем формирование посылки
             byte[] buf = new byte[10] { to, protocolId, msgType, from, b[0], b[1], b[2], b[3], b[4], b[5] };
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результаты парсинга заголовка Sptp
 
@@ -240,7 +240,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 5 байт и проверяем формирование посылки
             byte[] buf = new byte[5] { to, protocolId, msgType, from, customData };
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);           
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);           
         }
 
         [TestMethod]
@@ -249,15 +249,15 @@ namespace EGSE.Protocols.UnitTest
         {            
             // имитируем ошибочку
             byte[] buf = new byte[] { };
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(NullReferenceException))]
         public void SpacewireIcdMsgEventArgs_1ArgNull_ExceptionThrown()
         {
             // имитируем ошибочку
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(null, 0, 0x00, 0x00, 0x00);
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(null, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -266,7 +266,7 @@ namespace EGSE.Protocols.UnitTest
             RandomBufferGenerator generator = new RandomBufferGenerator(65540);
             byte[] buf = generator.GenerateBufferFromSeed(65540);
             // формируем максимально допустимую посылку для протокола spacewire.
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат парсинга данных кадра
             byte[] test = buf.Skip(10).ToArray();
@@ -279,7 +279,7 @@ namespace EGSE.Protocols.UnitTest
             RandomBufferGenerator generator = new RandomBufferGenerator(65540);
             byte[] buf = generator.GenerateBufferFromSeed(65540);
             // формируем максимально допустимую посылку для протокола spacewire.
-            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireIcdMsgEventArgs msg = new SpacewireIcdMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат преобразования к массиву
             CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");
@@ -295,7 +295,7 @@ namespace EGSE.Protocols.UnitTest
         {
             // формируем массив из 3 байт и проверяем формирование посылки
             byte[] buf = new byte[3] { 0x33, 0xf2, 0x34 };
-            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -308,7 +308,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 4 байт и проверяем формирование посылки
             byte[] buf = new byte[4] { to, protocolId, msgType, from };
-            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результаты парсинга заголовка
 
@@ -330,7 +330,7 @@ namespace EGSE.Protocols.UnitTest
 
             // формируем массив из 5 байт и проверяем формирование посылки
             byte[] buf = new byte[5] { to, protocolId, msgType, from, customData };
-            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00, 0x00);
            
             // проверяем результаты парсинга заголовка
             Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства To");
@@ -348,15 +348,15 @@ namespace EGSE.Protocols.UnitTest
         {            
             // имитируем ошибочку
             byte[] buf = new byte[] { };
-            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(NullReferenceException))]
         public void SpacewireSptpMsgEventArgs_1ArgNull_ExceptionThrown()
         {
             // имитируем ошибочку
-            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(null, 0, 0x00, 0x00, 0x00);
+            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(null, 0x00, 0x00, 0x00);
         }
 
         [TestMethod]
@@ -365,7 +365,7 @@ namespace EGSE.Protocols.UnitTest
             RandomBufferGenerator generator = new RandomBufferGenerator(65540);
             byte[] buf = generator.GenerateBufferFromSeed(65540);
             // формируем максимально допустимую посылку для протокола spacewire.
-            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат парсинга данных кадра
             CollectionAssert.AreEqual(buf.Skip(4).ToArray(), msg.Data, "Ошибка в парсинге данных кадра");
@@ -377,7 +377,7 @@ namespace EGSE.Protocols.UnitTest
             RandomBufferGenerator generator = new RandomBufferGenerator(65540);
             byte[] buf = generator.GenerateBufferFromSeed(65540);
             // формируем максимально допустимую посылку для протокола spacewire.
-            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, buf.Length, 0x00, 0x00, 0x00);
+            SpacewireSptpMsgEventArgs msg = new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат преобразования к массиву
             CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");

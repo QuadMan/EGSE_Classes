@@ -60,47 +60,64 @@ namespace EGSE.Defaults
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        public void OnSpacewireMsg(object sender, SpacewireSptpMsgEventArgs msg)
+        public void OnSpacewireMsg(object sender, MsgBase msg)
         {
             new { msg }.CheckNotNull();
-            string spacewireMsg;
-            
-            if (msg.Data.Length > 30) 
+            string spacewireMsg = string.Empty;
+
+            if (msg is SpacewireSptpMsgEventArgs)
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.SptpInfo.From.ToString() + "-" + msg.SptpInfo.MsgType.ToString() + "->" + msg.SptpInfo.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray()) + "]";
+                SpacewireSptpMsgEventArgs sptpMsg = msg as SpacewireSptpMsgEventArgs;
+                if (sptpMsg.Data.Length > 30)
+                {
+                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") [" + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + "] [" + Converter.ByteArrayToHexStr(sptpMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(sptpMsg.Data.Skip<byte>(sptpMsg.Data.Length - 10).ToArray()) + "]";
+                }
+                else
+                {
+                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") [" + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + "] [" + Converter.ByteArrayToHexStr(sptpMsg.Data) + "]";
+                }
+                // crc check
+                if (IsTkMsg(sptpMsg) || IsTmMsg(sptpMsg))
+                {
+                    ushort crcInData = msg.ToArray().AsTk().Crc;
+                    ushort crcGen = msg.ToArray().AsTk().NeededCrc;
+                    spacewireMsg += (crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4"));
+                }                
             }
-            else
+            else if (msg is SpacewireErrorMsgEventArgs)
             {
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + msg.Data.Length.ToString() + ") [" + msg.SptpInfo.From.ToString() + "-" + msg.SptpInfo.MsgType.ToString() + "->" + msg.SptpInfo.To.ToString() + "] [" + Converter.ByteArrayToHexStr(msg.Data) + "]";
+                SpacewireErrorMsgEventArgs err = msg as SpacewireErrorMsgEventArgs;
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка в сообщении!";
             }
-            // crc check
-            if (IsTkMsg(msg) || IsTmMsg(msg))
-            {
-                ushort crcInData = msg.ToArray().AsTk().Crc;
-                ushort crcGen = msg.ToArray().AsTk().NeededCrc;
-                spacewireMsg += (crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4"));
-            }
+
             if (null != Monitor && Visibility.Visible == this.Visibility)
             {
                 Monitor.Dispatcher.Invoke(new Action(delegate
-                    {
-                        Monitor.Items.Add(spacewireMsg);
-                        Monitor.ScrollIntoView(spacewireMsg);
-                    }));
-            }           
+                {
+                    Monitor.Items.Add(spacewireMsg);
+                    Monitor.ScrollIntoView(spacewireMsg);
+                }));
+            }
         }
 
         internal bool IsTkMsg(SpacewireSptpMsgEventArgs msg)
         {
             try
-            {
-                SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
-                return icdMsg.IcdInfo.Version == 0 
-                    && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
-                    && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
-                    && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
+            {                
+                if (msg is SpacewireIcdMsgEventArgs)
+                {
+                    SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
+                    return icdMsg.IcdInfo.Version == 0
+                        && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
+                        && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
+                        && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            catch
+            catch (ContextMarshalException)
             {
                 return false;
             }
@@ -110,13 +127,20 @@ namespace EGSE.Defaults
         {
             try
             {
-                SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
-                return icdMsg.IcdInfo.Version == 0
-                    && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
-                    && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
-                    && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
+                if (msg is SpacewireIcdMsgEventArgs)
+                {
+                    SpacewireIcdMsgEventArgs icdMsg = msg.ToArray().AsIcd();
+                    return icdMsg.IcdInfo.Version == 0
+                        && icdMsg.IcdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
+                        && icdMsg.IcdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
+                        && icdMsg.IcdInfo.Apid == _intfEGSE.Spacewire2Notify.CurApid;
+                }
+                else
+                { 
+                    return false;
+                }
             }
-            catch
+            catch (ContextMarshalException)
             {
                 return false;
             }
