@@ -17,75 +17,72 @@ namespace EGSE.Protocols
     using System.Runtime.InteropServices;
     using System.Collections.Specialized;
     using System.Windows;
-
-    /// <summary>
-    /// Декодер протокола ВСИ.
-    /// </summary>
+            
     public class ProtocolHsi
     {
-        /// <summary>
-        /// Адресный байт "ВСИ".
-        /// </summary>
+        
+        
+        
         private readonly uint _dataAddr;
 
-        /// <summary>
-        /// Текущий шаг декодера.
-        /// </summary>
+        
+        
+        
         private int _decodeState = 0;
 
-        /// <summary>
-        /// Количество ошибок декодера.
-        /// Примечание: 
-        /// Считает количество не распознанных байт.
-        /// </summary>
+        
+        
+        
+        
+        
         private int _errorCount;
 
-        /// <summary>
-        /// Текущий флаг кадра.
-        /// </summary>
+        
+        
+        
         private byte _flag;
 
-        /// <summary>
-        /// Текущий размер кадра.
-        /// </summary>
+        
+        
+        
         private short _size = -1;
 
-        /// <summary>
-        /// Текущий байт HI.
-        /// </summary>
+        
+        
+        
         private byte _hi;
 
-        /// <summary>
-        /// Текущий кадр.
-        /// </summary>
+        
+        
+        
         private byte[] _buf;
 
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="ProtocolHsi" />.
-        /// </summary>
-        /// <param name="dataAddr">The data addr.</param>
+        
+        
+        
+        
         public ProtocolHsi(uint dataAddr)
         {
             _dataAddr = dataAddr;
         }
 
-        /// <summary>
-        /// Обработка сообщений протокола ВСИ.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="HsiMsgEventArgs"/> instance containing the event data.</param>
+        
+        
+        
+        
+        
         public delegate void HsiMsgEventHandler(object sender, HsiMsgEventArgs e);
 
-        /// <summary>
-        /// Происходит, когда [сформировано сообщение ВСИ].
-        /// </summary>
+        
+        
+        
         public event HsiMsgEventHandler GotHsiMsg;
 
-        /// <summary>
-        /// Метод, обрабатывающий сообщения от декодера USB.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="msg">Сообщение для обработки.</param>
+        
+        
+        
+        
+        
         public void OnMessageFunc(object sender, ProtocolMsgEventArgs msg)
         {
             new { msg }.CheckNotNull(); 
@@ -149,12 +146,10 @@ namespace EGSE.Protocols
             }                  
         }
 
-        /// <summary>
-        /// Обертка события: возникновение сообщения протокола в декодере ВСИ.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">Класс описывающий сообщение протокола.</param>
-        protected virtual void OnHsiMsg(object sender, HsiMsgEventArgs e)
+        
+        
+        
+                        protected virtual void OnHsiMsg(object sender, HsiMsgEventArgs e)
         {
             if (this.GotHsiMsg != null)
             {
@@ -163,15 +158,11 @@ namespace EGSE.Protocols
         }
     }
     
-    /// <summary>
-    /// Предоставляет аргументы для события, созданного полученным сообщением по протоколу ВСИ.
-    /// </summary>
-    public class HsiMsgEventArgs : MsgBase
+                public class HsiMsgEventArgs : MsgBase
     {
-        [StructLayout(LayoutKind.Sequential, Pack = 1/*, Size = 0x10003*/)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Hsi
         {
-            //internal const int MaxLengthOfHsiPackage = 0xFFFF;
             private static readonly BitVector32.Section packStartSection = BitVector32.CreateSection(0xFF);
             private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0xFF, packStartSection);
             private static readonly BitVector32.Section lineSection = BitVector32.CreateSection(0x1, flagSection);
@@ -179,17 +170,6 @@ namespace EGSE.Protocols
             private static readonly BitVector32.Section sizeLoSection = BitVector32.CreateSection(0xFF, sizeHiSection);                                                           
 
             private BitVector32 _header;
-
-            //[MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxLengthOfHsiPackage)]
-            //private byte[] _data;
-
-            //internal byte[] Data
-            //{
-            //    get
-            //    {
-            //        return _data;
-            //    }
-            //}
 
             public Type Flag
             {
@@ -248,9 +228,8 @@ namespace EGSE.Protocols
         {
             get
             {
-                // возвращаем данные без учета заголовка
+                
                 return _data;
-                //return Info.Data.Take(base.DataLen - 4).ToArray();
             }
         }
 
@@ -259,11 +238,11 @@ namespace EGSE.Protocols
             return (null != data ? 1 < data.Length : false);
         }
 
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="HsiMsgEventArgs" />.
-        /// </summary>
-        /// <param name="data">Данные кадра.</param>
-        /// <param name="dataLen">Длина кадра.</param>
+        
+        
+        
+        
+        
         public HsiMsgEventArgs(byte[] data, int dataLen)
             : base(data)
         {
@@ -272,35 +251,7 @@ namespace EGSE.Protocols
                 throw new ContextMarshalException(Resource.Get(@"eSmallHsiData"));
             }
 
-            //if (Hsi.MaxLengthOfHsiPackage < data.Length)
-            //{
-            //    throw new ContextMarshalException(Resource.Get(@"eBigHsiData"));
-            //}
-
-            // преобразуем данные к структуре Hsi.
-
-            //GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
-            //try
-            //{
-            //    var structure = Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(Hsi));
-            //    _info = (Hsi)structure;
-            //    IntPtr ptr = new IntPtr(pinnedInfo.AddrOfPinnedObject().ToInt32() + Marshal.SizeOf(typeof(Hsi)));
-            //    _data = new byte[dataLen - Marshal.SizeOf(typeof(Hsi))];
-            //    Marshal.Copy(ptr, _data, 0, _data.Length);                
-            //}
-            //catch
-            //{
-            //    _info = new Hsi();
-            //}
-            //finally
-            //{
-            //    if (pinnedInfo.IsAllocated)
-            //    {
-            //        pinnedInfo.Free();
-            //    }
-            //}
-
-            // преобразуем данные к структуре Hsi.
+            
             try
             {
                 _info = Converter.MarshalTo<Hsi>(data, out _data);
@@ -311,19 +262,19 @@ namespace EGSE.Protocols
             }
         }
 
-        /// <summary>
-        /// Линия передачи ВСИ.
-        /// </summary>
+        
+        
+        
         public enum HsiLine
         {
-            /// <summary>
-            /// Основная линия ВСИ.
-            /// </summary>
+            
+            
+            
             Main = 0x00,
 
-            /// <summary>
-            /// Резервная линия ВСИ.
-            /// </summary>
+            
+            
+            
             Resv = 0x01
         }
 

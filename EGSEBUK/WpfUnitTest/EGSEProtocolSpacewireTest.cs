@@ -14,6 +14,172 @@ namespace EGSE.Protocols.UnitTest
     using EGSE.Utilites;
 
     [TestClass]
+    public class SpacewireTmMsgEventArgsTest
+    {
+        [TestMethod]
+        public void SpacewireTmMsgEventArgs_Income18Bytes_ReturnsEqualTokenValue()
+        {
+            // формируем массив из 10 байт и проверяем формирование посылки
+            Random rnd = new Random();
+            Byte[] buf = new Byte[18];
+            rnd.NextBytes(buf);
+            buf[8] = 0x00;
+            buf[9] = 0x02;
+            byte[] testCrc = buf.Skip(4).ToArray().Take(buf.Length - 6).ToArray();
+            buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
+            buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            Assert.AreEqual((buf[buf.Length - 2] << 8) | buf[buf.Length - 1], msg.Crc, "Ошибка в парсинге CRC");
+
+            Assert.AreEqual(Crc16.Get(testCrc, testCrc.Length), msg.Crc, "Ошибка в расчете CRC");
+
+            Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
+
+            byte[] test = buf.Skip(14).ToArray().Take(2).ToArray();
+            CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income15Bytes_ExceptionThrown()
+        {
+            Random rnd = new Random();
+            Byte[] buf = new Byte[15];
+            rnd.NextBytes(buf);
+
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        public void SpacewireTmMsgEventArgs_Income17Bytes_ReturnsEqualTokenValue()
+        {
+            // формируем массив из 10 байт и проверяем формирование посылки
+            Random rnd = new Random();
+            Byte[] buf = new Byte[17];
+            rnd.NextBytes(buf);
+            buf[8] = 0x00;
+            buf[9] = 0x01;
+            byte[] testCrc = buf.Skip(4).ToArray().Take(buf.Length - 6).ToArray();
+            buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
+            buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            Assert.AreEqual((buf[buf.Length - 2] << 8) | buf[buf.Length - 1], msg.Crc, "Ошибка в парсинге CRC");
+
+            Assert.AreEqual(Crc16.Get(testCrc, testCrc.Length), msg.Crc, "Ошибка в расчете CRC");
+
+            Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
+
+            byte[] test = buf.Skip(14).ToArray().Take(1).ToArray();
+            CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income3Bytes_ExceptionThrown()
+        {
+            // формируем массив из 3 байт и проверяем формирование посылки
+            byte[] buf = new byte[3] { 0x33, 0xf2, 0x34 };
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income4Bytes_ExceptionThrown()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            // формируем массив из 4 байт и проверяем формирование посылки
+            byte[] buf = new byte[4] { to, protocolId, msgType, from };
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income10Bytes_ExceptionThrown()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            Random rnd = new Random();
+            Byte[] b = new Byte[6];
+            rnd.NextBytes(b);
+
+            // формируем массив из 10 байт и проверяем формирование посылки
+            byte[] buf = new byte[10] { to, protocolId, msgType, from, b[0], b[1], b[2], b[3], b[4], b[5] };
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income5Bytes_ExceptionThrown()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            byte customData = 0xAB;
+
+            // формируем массив из 5 байт и проверяем формирование посылки
+            byte[] buf = new byte[5] { to, protocolId, msgType, from, customData };
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income0Bytes_ExceptionThrown()
+        {
+            // имитируем ошибочку
+            byte[] buf = new byte[] { };
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SpacewireTmMsgEventArgs_1ArgNull_ExceptionThrown()
+        {
+            // имитируем ошибочку
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(null, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        public void SpacewireTmMsgEventArgs_Income4100Bytes_ReturnsEqualTokenValue()
+        {
+            RandomBufferGenerator generator = new RandomBufferGenerator(4100);
+            byte[] buf = generator.GenerateBufferFromSeed(4100);
+            buf[8] = 0x0f;
+            buf[9] = 0xf4;
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результат парсинга данных кадра
+            byte[] test = buf.Skip(14).ToArray().Take(0xff4).ToArray();
+            CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
+        }
+
+        [TestMethod]
+        public void SpacewireTmMsgEventArgs_ToArray_ReturnsEqualTokenValue()
+        {
+            RandomBufferGenerator generator = new RandomBufferGenerator(65540);
+            byte[] buf = generator.GenerateBufferFromSeed(65540);
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результат преобразования к массиву
+            CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");
+        }
+    }
+
+
+    [TestClass]
     public class SpacewireTkMsgEventArgsTest
     {
         [TestMethod]

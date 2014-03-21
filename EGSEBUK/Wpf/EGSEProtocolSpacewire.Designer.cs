@@ -97,6 +97,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Размер кадра spacewire icd меньше 16 байт!.
+        /// </summary>
+        internal static string eSmallSpacewireTmData {
+            get {
+                return ResourceManager.GetString("eSmallSpacewireTmData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Размер кадра spacewire obt некорректен!.
         /// </summary>
         internal static string eSpacewireObtData {
@@ -124,11 +133,38 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Заголовок пакета: Идентификатор пакета[Номер версии:{0}, Тип:{1}, Флаг заголовка данных:{2}, APID:{3}] Поле контроля последовательности[Флаг сегментации:{4}, Счетчик последовательности:{5}].
+        ///   Looks up a localized string similar to [{0},{1},{2},0x{3:X},{4},{5},{6}].
         /// </summary>
         internal static string stIcdString {
             get {
                 return ResourceManager.GetString("stIcdString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Заголовок пакета: Идентификатор пакета[Номер версии:{0}, Тип:{1}, Флаг заголовка данных:{2}, APID:0x{3:X}] Поле контроля последовательности[Флаг сегментации:{4}, Счетчик последовательности:{5}, Длина поля данных:{6}].
+        /// </summary>
+        internal static string stIcdStringExt {
+            get {
+                return ResourceManager.GetString("stIcdStringExt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0},0x{1:X},{2},{3}].
+        /// </summary>
+        internal static string stSptpString {
+            get {
+                return ResourceManager.GetString("stSptpString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Заголовок sptp[Назначение:{0},Протокол:0x{1:X},Тип:{2},Инициатор:{3}].
+        /// </summary>
+        internal static string stSptpStringExt {
+            get {
+                return ResourceManager.GetString("stSptpStringExt", resourceCulture);
             }
         }
     }
