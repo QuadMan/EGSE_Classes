@@ -84,12 +84,12 @@ namespace EGSE.Defaults
                     if (sptpMsg is SpacewireTkMsgEventArgs)
                     {
                         SpacewireTkMsgEventArgs tkMsg = sptpMsg as SpacewireTkMsgEventArgs;
-                        spacewireMsg += tkMsg.IcdInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tkMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(tkMsg.Data.Skip<byte>(tkMsg.Data.Length - 10).ToArray()) + "]";
+                        spacewireMsg += tkMsg.TkInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tkMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(tkMsg.Data.Skip<byte>(tkMsg.Data.Length - 10).ToArray()) + "]";
                     }
                     if (sptpMsg is SpacewireTmMsgEventArgs)
                     {
                         SpacewireTmMsgEventArgs tmMsg = sptpMsg as SpacewireTmMsgEventArgs;
-                        spacewireMsg += tmMsg.IcdInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tmMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(tmMsg.Data.Skip<byte>(tmMsg.Data.Length - 10).ToArray()) + "]";
+                        spacewireMsg += tmMsg.TmInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tmMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(tmMsg.Data.Skip<byte>(tmMsg.Data.Length - 10).ToArray()) + "]";
                     }
                     ushort crcInData = msg.ToArray().AsTk().Crc;
                     ushort crcGen = msg.ToArray().AsTk().NeededCrc;

@@ -1,5 +1,4 @@
-﻿using Wpf;
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="EGSEConstantsBUK.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>

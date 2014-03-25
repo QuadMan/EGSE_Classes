@@ -668,7 +668,7 @@ namespace EGSE.Devices
             {
                 if (_intfBUK.Spacewire2Notify.IsMakeTK)
                 {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.CurApid, _intfBUK.Spacewire2Notify.CounterIcd).ToArray());
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.CurApid/*, _intfBUK.Spacewire2Notify.CounterIcd*/).ToArray());
                 }
                 else
                 {
@@ -4509,7 +4509,7 @@ namespace EGSE.Devices
             /// <summary>
             /// APID для формирования команды.
             /// </summary>
-            private byte _setApid;
+            private short _setApid;
 
             /// <summary>
             /// Текущее значение Timetick1 от БУСК.
@@ -4610,7 +4610,7 @@ namespace EGSE.Devices
             public Spacewire2(EgseBukNotify owner)
                 : base(owner)
             {
-                CounterIcd = new Dictionary<byte, AutoCounter>();
+                CounterIcd = new Dictionary<short, AutoCounter>();
             }
 
             /// <summary>
@@ -4889,7 +4889,7 @@ namespace EGSE.Devices
             /// <value>
             /// [Счетчик телекоманд].
             /// </value>
-            public Dictionary<byte, AutoCounter> CounterIcd { get; set; }
+            public Dictionary<short, AutoCounter> CounterIcd { get; set; }
 
             /// <summary>
             /// Получает значение, показывающее, что [выбран первый полукомплект БУК].
@@ -5466,7 +5466,7 @@ namespace EGSE.Devices
             /// <value>
             /// Текущий APID для формирования посылки.
             /// </value>
-            public byte CurApid
+            public short CurApid
             {
                 get
                 {

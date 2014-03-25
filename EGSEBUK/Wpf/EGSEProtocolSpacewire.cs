@@ -227,12 +227,24 @@ namespace EGSE.Protocols
             private static readonly BitVector32.Section segmentSection = BitVector32.CreateSection(0x03, counterHiSection);
             private static readonly BitVector32.Section counterLoSection = BitVector32.CreateSection(0xFF, segmentSection);
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-            private byte[] _nop;
+            private SpacewireSptpMsgEventArgs.Sptp _sptpHeader;
 
             internal BitVector32 _header;
 
             private ushort _size;
+
+            public SpacewireSptpMsgEventArgs.Sptp SptpInfo
+            {
+                get
+                {
+                    return _sptpHeader;
+                }
+
+                set
+                {
+                    _sptpHeader = value;
+                }
+            }
 
             public byte Version
             {
@@ -329,12 +341,12 @@ namespace EGSE.Protocols
 
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stIcdStringExt"), Version, Type, Flag, Apid, Segment, Counter, Size);
+                return string.Format(Resource.Get(@"stIcdStringExt"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo);
             }
 
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, Type, Flag, Apid, Segment, Counter, Size);
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo.ToString(extended));
             }
         }
 
@@ -452,8 +464,20 @@ namespace EGSE.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Obt
         {          
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-            private byte[] _nop;
+            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+
+            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            {
+                get
+                {
+                    return _icdHeader;
+                }
+
+                set
+                {
+                    _icdHeader = value;
+                }
+            }
 
             private byte _normal;
 
@@ -575,11 +599,33 @@ namespace EGSE.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tm
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-            private byte[] _nop;
+            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
 
             private BitVector32 _header;
-           
+
+            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            {
+                get
+                {
+                    return _icdHeader;
+                }
+
+                set
+                {
+                    _icdHeader = value;
+                }
+            }
+
+            public override string ToString()
+            {
+                return string.Format(Resource.Get(@"stTmStringExt"), IcdInfo);
+            }
+
+            public string ToString(bool extended)
+            {
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), IcdInfo);
+            }
+
         }
 
         private Tm _tmInfo;
@@ -680,10 +726,32 @@ namespace EGSE.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tk
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-            private byte[] _nop;
-            
+            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+
             private BitVector32 _header;
+
+            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            {
+                get
+                {
+                    return _icdHeader;
+                }
+
+                set
+                {
+                    _icdHeader = value;
+                }
+            }
+
+            public override string ToString()
+            {
+                return string.Format(Resource.Get(@"stTkStringExt"), IcdInfo);
+            }
+
+            public string ToString(bool extended)
+            {
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), IcdInfo.ToString(extended));
+            }
         }
 
         private Tk _tkInfo;
@@ -766,33 +834,45 @@ namespace EGSE.Protocols
             }       
         }
 
-        public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, byte apid, Dictionary<byte, AutoCounter> dict)
+        private static Dictionary<short, AutoCounter> _dict;
+
+        public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, short apid)
         {
-            byte[] buf = new byte[data.Length + 16];
-            buf[0] = to;
-            buf[1] = 0xf2;
-            buf[2] = 0x00;
-            buf[3] = from;
+            if (null == _dict)
+            {
+                _dict = new Dictionary<short, AutoCounter>();
+            }
+
+            Sptp sptpInfo = new Sptp();
+            sptpInfo.From = from;
+            sptpInfo.MsgType = SptpType.Data;
+            sptpInfo.ProtocolId = SptpProtocol.Standard;
+            sptpInfo.To = to;
+
             Icd icdInfo = new Icd();
             icdInfo.Version = 0;
             icdInfo.Type = IcdType.Tk;
             icdInfo.Flag = IcdFlag.HeaderFill;
             icdInfo.Apid = apid;
-            if (!dict.ContainsKey(apid))
+            icdInfo.Segment = 3;
+            icdInfo.SptpInfo = sptpInfo;
+            icdInfo.Size = (ushort)data.Length;
+            if (!_dict.ContainsKey(apid))
                 {
-                   dict.Add(apid, new AutoCounter());
-                }       
-            icdInfo.Counter = (short)dict[apid];
-            int header = icdInfo._header.Data;
-            buf[7] = (byte)(header >> 24);
-            buf[6] = (byte)(header >> 16);
-            buf[5] = (byte)(header >> 8);
-            buf[4] = (byte)(header);
-            Array.Copy(data, 0, buf, 14, data.Length);
-            ushort crc = Crc16.Get(buf, buf.Length - 2, 4);
-            buf[buf.Length - 2] = (byte)(crc >> 8);
-            buf[buf.Length - 1] = (byte)crc;
-            return new SpacewireTkMsgEventArgs(buf, 0x00, 0x00);
+                   _dict.Add(apid, new AutoCounter());
+                }            
+            icdInfo.Counter = (short)_dict[apid];
+
+            Tk tkInfo = new Tk();
+            tkInfo.IcdInfo = icdInfo;
+
+            byte[] rawData = Converter.MarshalFrom<Tk>(tkInfo, ref data);
+
+            ushort crc = Crc16.Get(rawData, rawData.Length, 4);
+            Array.Resize(ref rawData, rawData.Length + 2);
+            rawData[rawData.GetUpperBound(0) - 1] = (byte)(crc >> 8);
+            rawData[rawData.GetUpperBound(0)] = (byte)crc;
+            return new SpacewireTkMsgEventArgs(rawData, 0x00, 0x00);
         }
 
         
@@ -866,11 +946,11 @@ namespace EGSE.Protocols
                 }
             }
 
-            public byte ProtocolId
+            public SptpProtocol ProtocolId 
             {
                 get
                 {
-                    return (byte)_header[protocolIdSection];
+                    return (SptpProtocol)_header[protocolIdSection];
                 }
 
                 set
@@ -971,17 +1051,24 @@ namespace EGSE.Protocols
 
         public static SpacewireSptpMsgEventArgs GetNew(byte[] data, byte to, byte from)
         {
-            byte[] buf = new byte[data.Length + 4];
-            buf[0] = to;
-            buf[1] = 0xf2;
-            buf[2] = 0x00;
-            buf[3] = from;
-            Array.Copy(data, 0, buf, 4, data.Length);
-            return new SpacewireSptpMsgEventArgs(buf, 0x00, 0x00);
+            Sptp sptpInfo = new Sptp();
+            sptpInfo.From = from;
+            sptpInfo.MsgType = SptpType.Data;
+            sptpInfo.ProtocolId = SptpProtocol.Standard;
+            sptpInfo.To = to;
+
+            byte[] rawData = Converter.MarshalFrom<Sptp>(sptpInfo, ref data);
+
+            return new SpacewireSptpMsgEventArgs(rawData, 0x00, 0x00);
         }
 
-        
-        
+
+        public enum SptpProtocol : byte
+        {
+
+            Standard = 0xf2
+
+        }
         
         public enum SptpType
         {

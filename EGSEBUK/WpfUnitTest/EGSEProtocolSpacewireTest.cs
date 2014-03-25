@@ -317,6 +317,35 @@ namespace EGSE.Protocols.UnitTest
         }
 
         [TestMethod]
+        public void SpacewireTkMsgEventArgs_GetNew_ReturnsEqualTokenValue()
+        {
+            byte to = 0x77;
+            byte from = 0x66;
+            short apid = 607;
+
+            Random rnd = new Random();
+            Byte[] buf = new Byte[6];
+            rnd.NextBytes(buf);
+
+            SpacewireTkMsgEventArgs msg = SpacewireTkMsgEventArgs.GetNew(buf, to, from, apid);
+
+            CollectionAssert.AreEqual(buf, msg.Data, "Ошибка в парсинге данных кадра");
+            Assert.AreEqual(to, msg.TkInfo.IcdInfo.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual((SpacewireSptpMsgEventArgs.SptpProtocol)0xf2, msg.TkInfo.IcdInfo.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(0x00, (byte)msg.TkInfo.IcdInfo.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.TkInfo.IcdInfo.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
+
+            Assert.AreEqual(0, msg.TkInfo.IcdInfo.Version, "Ошибка в парсинге свойства IcdInfo.Version");
+            Assert.AreEqual(apid, msg.TkInfo.IcdInfo.Apid, "Ошибка в парсинге свойства IcdInfo.Apid");
+            Assert.AreEqual(0, msg.TkInfo.IcdInfo.Counter, "Ошибка в парсинге свойства IcdInfo.Counter");
+            Assert.AreEqual(SpacewireTkMsgEventArgs.IcdFlag.HeaderFill, msg.TkInfo.IcdInfo.Flag, "Ошибка в парсинге свойства IcdInfo.Flag");
+            Assert.AreEqual(3, msg.TkInfo.IcdInfo.Segment, "Ошибка в парсинге свойства IcdInfo.Segment");
+            Assert.AreEqual(6, msg.TkInfo.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
+
+            string str = msg.TkInfo.ToString(false);
+        }
+
+        [TestMethod]
         public void SpacewireTkMsgEventArgs_Income4100Bytes_ReturnsEqualTokenValue()
         {
             RandomBufferGenerator generator = new RandomBufferGenerator(4100);
@@ -401,7 +430,7 @@ namespace EGSE.Protocols.UnitTest
             // проверяем результаты парсинга заголовка Sptp
 
             Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
-            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual((SpacewireSptpMsgEventArgs.SptpProtocol)protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
             Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
             Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
 
@@ -578,7 +607,7 @@ namespace EGSE.Protocols.UnitTest
             // проверяем результаты парсинга заголовка Sptp
 
             Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
-            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual((SpacewireSptpMsgEventArgs.SptpProtocol)protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
             Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
             Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
 
@@ -672,6 +701,27 @@ namespace EGSE.Protocols.UnitTest
         }
 
         [TestMethod]
+        public void SpacewireSptpMsgEventArgs_GetNew_ReturnsEqualTokenValue()
+        {
+            byte to = 0x77;
+            byte from = 0x66;
+
+            Random rnd = new Random();
+            Byte[] buf = new Byte[6];
+            rnd.NextBytes(buf);
+
+            SpacewireSptpMsgEventArgs msg = SpacewireSptpMsgEventArgs.GetNew(buf, to, from);
+
+            CollectionAssert.AreEqual(buf, msg.Data, "Ошибка в парсинге данных кадра");
+            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual(SpacewireSptpMsgEventArgs.SptpProtocol.Standard, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(SpacewireSptpMsgEventArgs.SptpType.Data, msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
+
+            string str = msg.SptpInfo.ToString(false);
+        }
+
+        [TestMethod]
         public void SpacewireSptpMsgEventArgs_Income4Bytes_ReturnsEqualTokenValue()
         {
             byte from = 0x33;
@@ -686,7 +736,7 @@ namespace EGSE.Protocols.UnitTest
             // проверяем результаты парсинга заголовка
 
             Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
-            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual((SpacewireSptpMsgEventArgs.SptpProtocol)protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
             Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
             Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
         }
@@ -707,7 +757,7 @@ namespace EGSE.Protocols.UnitTest
            
             // проверяем результаты парсинга заголовка
             Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
-            Assert.AreEqual(protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual((SpacewireSptpMsgEventArgs.SptpProtocol)protocolId, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
             Assert.AreEqual(msgType, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
             Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
 

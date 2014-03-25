@@ -152,9 +152,9 @@ namespace EGSE.Utilites
             return SpacewireSptpMsgEventArgs.GetNew(obj, to, from);
         }
 
-        public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, byte apid, Dictionary<byte, AutoCounter> dict)
+        public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, short apid/*, Dictionary<short, AutoCounter> dict*/)
         {
-            return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid, dict);
+            return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid/*, dict*/);
         }
     }
 
@@ -614,6 +614,21 @@ namespace EGSE.Utilites
         {
             return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
                    (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+        }
+
+        internal static byte[] MarshalFrom<T1>(T1 data, ref byte[] dynData)
+        {
+            int rawSize = Marshal.SizeOf(typeof(T1));
+            IntPtr buf = Marshal.AllocHGlobal(rawSize);
+            Marshal.StructureToPtr(data, buf, true);
+            byte[] rawData = new byte[rawSize + (null != dynData ? dynData.Length : 0)];
+            Marshal.Copy(buf, rawData, 0, rawSize);
+            Marshal.FreeHGlobal(buf);
+            if (null != dynData)
+            {
+                Array.Copy(dynData, 0, rawData, rawSize, dynData.Length);
+            }
+            return rawData;
         }
 
         internal static T1 MarshalTo<T1>(byte[] data, out byte[] dynData)
