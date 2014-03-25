@@ -261,9 +261,10 @@ namespace EGSE.Utilites
         }
 
         /// <summary>
-        /// Проверяем UsbVal и UiVal на изменения в свойствах
-        /// Какие своцства изменились, для таких свойств вызваем делегаты ChangeEvent
+        /// Проверяем UsbVal и UiVal на изменения в свойствах.
+        /// Какие свойства изменились, для таких свойств вызваем делегаты ChangeEvent.
         /// </summary>
+        /// <param name="checkIndicate">если установлено <c>true</c> [свойство является индикаторным].</param>
         private void CheckPropertiesForChanging(bool checkIndicate)
         {
             int usbVal;

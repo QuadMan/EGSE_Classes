@@ -215,6 +215,9 @@ namespace EGSE.Protocols
     
     public class SpacewireIcdMsgEventArgs : SpacewireSptpMsgEventArgs
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения Icd.
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Icd
         {
@@ -233,6 +236,12 @@ namespace EGSE.Protocols
 
             private ushort _size;
 
+            /// <summary>
+            /// Получает или задает агрегат доступа к заголовку sptp сообщения.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку sptp сообщения.
+            /// </value>
             public SpacewireSptpMsgEventArgs.Sptp SptpInfo
             {
                 get
@@ -246,6 +255,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает icd-поле "номер версии".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "номер версии".
+            /// </value>
             public byte Version
             {
                 get
@@ -259,6 +274,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает icd-поле "тип".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "тип".
+            /// </value>
             public IcdType Type
             {
                 get
@@ -272,6 +293,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает icd-поле "флаг заголовка данных".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "флаг заголовка данных".
+            /// </value>
             public IcdFlag Flag
             {
                 get
@@ -285,6 +312,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает icd-поле "APID".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "APID".
+            /// </value>
             public short Apid
             {
                 get
@@ -299,6 +332,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает icd-поле "флаг сегментации".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "флаг сегментации".
+            /// </value>
             public byte Segment
             {
                 get
@@ -312,6 +351,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает icd-поле "счетчик последовательности".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "счетчик последовательности".
+            /// </value>
             public short Counter
             {
                 get
@@ -326,6 +371,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает icd-поле "длина поля данных".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "длина поля данных".
+            /// </value>
             public ushort Size
             {
                 get
@@ -357,6 +408,12 @@ namespace EGSE.Protocols
             return (null != data ? 9 < data.Length : false);
         }
 
+        /// <summary>
+        /// Получает истинное значение CRC для текущего сообщения.
+        /// </summary>
+        /// <value>
+        /// Истинное значение CRC для текущего сообщения.
+        /// </value>
         protected override ushort NeededCrc
         {
             get
@@ -365,6 +422,12 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает агрегат доступа к заголовку icd сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку icd сообщения.
+        /// </value>
         public Icd IcdInfo
         {
             get
@@ -375,18 +438,44 @@ namespace EGSE.Protocols
 
         private byte[] _data;
 
+        /// <summary>
+        /// Тип сообщения Icd.
+        /// </summary>
         public enum IcdType
         {
+            /// <summary>
+            /// Сообщение icd "телекоманда".
+            /// </summary>
             Tk = 0x01,
+
+            /// <summary>
+            /// Сообщение icd "телеметрия".
+            /// </summary>
             Tm = 0x00
         }
 
+        /// <summary>
+        /// Флаг сообщения icd.
+        /// </summary>
         public enum IcdFlag
         {
+            /// <summary>
+            /// Сообщение содержит заголовок в данных.
+            /// </summary>
             HeaderFill = 0x01,
+
+            /// <summary>
+            /// Сообщение не содержит заголовок в данных.
+            /// </summary>
             HeaderEmpty = 0x00
         }
 
+        /// <summary>
+        /// Получает данные icd сообщения. 
+        /// </summary>
+        /// <value>
+        /// Данные icd сообщения.
+        /// </value>
         public new byte[] Data
         {
             get
@@ -461,11 +550,20 @@ namespace EGSE.Protocols
     
     public class SpacewireObtMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения Obt(код бортового времени).
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Obt
         {          
             private SpacewireIcdMsgEventArgs.Icd _icdHeader;
 
+            /// <summary>
+            /// Получает или задает агрегат доступа к заголовку icd сообщения.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку icd сообщения.
+            /// </value>
             public SpacewireIcdMsgEventArgs.Icd IcdInfo
             {
                 get
@@ -485,6 +583,12 @@ namespace EGSE.Protocols
 
             private uint _obt;
 
+            /// <summary>
+            /// Получает или задает obt-поле "Поле P: нормальное".
+            /// </summary>
+            /// <value>
+            /// Значение obt-поля "Поле Р: нормальное"
+            /// </value>
             public byte Normal
             {
                 get
@@ -498,6 +602,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает obt-поле "Поле P: расширенное".
+            /// </summary>
+            /// <value>
+            /// Значение obt-поля "Поле Р: расширенное"
+            /// </value>
             public byte Extended
             {
                 get
@@ -596,6 +706,9 @@ namespace EGSE.Protocols
     
     public class SpacewireTmMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения Tm(телеметрии).
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tm
         {
@@ -723,6 +836,9 @@ namespace EGSE.Protocols
     
     public class SpacewireTkMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения Tk(телекоманды).
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tk
         {
@@ -923,6 +1039,9 @@ namespace EGSE.Protocols
     
     public class SpacewireSptpMsgEventArgs : MsgBase
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения Sptp.
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Sptp
         {
@@ -1063,28 +1182,35 @@ namespace EGSE.Protocols
         }
 
 
+        /// <summary>
+        /// Протокол сообщения sptp.
+        /// </summary>
         public enum SptpProtocol : byte
         {
-
+            /// <summary>
+            /// Стандартный протокол SPTP: 0xF2.
+            /// </summary>
             Standard = 0xf2
-
         }
-        
+
+        /// <summary>
+        /// Тип сообщения sptp.
+        /// </summary>
         public enum SptpType
         {
-            
-            
-            
+            /// <summary>
+            /// Сообщение "запрос квоты".
+            /// </summary>
             Request = 0x80,
 
-            
-            
-            
+            /// <summary>
+            /// Сообщение "предоставление квоты".
+            /// </summary>
             Reply = 0xC0,
-
             
-            
-            
+            /// <summary>
+            /// Сообщение "передача данных".
+            /// </summary>                        
             Data = 0x00
         }
 
@@ -1127,6 +1253,9 @@ namespace EGSE.Protocols
     
     public class SpacewireTimeTickMsgEventArgs : MsgBase
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения TimeTick.
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct TimeTick
         {

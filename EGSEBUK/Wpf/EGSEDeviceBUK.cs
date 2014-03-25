@@ -1091,7 +1091,7 @@ namespace EGSE.Devices
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderHsi.OnMessageFunc);
 
             ControlValuesList.Add(Global.Shutters, new ControlValue());
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.Auto, 14, 1, Device.CmdAutoShutters, value => IssueManualShutter = !Convert.ToBoolean(value));
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.Auto, 14, 1, Device.CmdAutoShutters, value => IsIssueManualShutter = !Convert.ToBoolean(value));
             ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesOpen, 10, 1, Device.CmdShutters, value => IssueUfesOpen = (DevEnabled)value);
             ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesClose, 8, 1, Device.CmdShutters, value => IssueUfesClose = (DevEnabled)value);
             ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesOpen, 6, 1, Device.CmdShutters, value => IssueVufesOpen = (DevEnabled)value);
@@ -1131,7 +1131,7 @@ namespace EGSE.Devices
         private DevEnabled _issueVufesOpen = DevEnabled.Off;
         private DevEnabled _issueUfesClose = DevEnabled.Off;
         private DevEnabled _issueUfesOpen = DevEnabled.Off;
-        private bool _issueManualShutter = true;
+        private bool _isIssueManualShutter = true;
 
         /// <summary>
         /// Получает или задает нотификатор self-теста.
@@ -1207,23 +1207,39 @@ namespace EGSE.Devices
                 return Device.BytesAvailable;
             }
         }
+
+        /// <summary>
+        /// Состояние прибора.
+        /// </summary>
         public enum DevEnabled
         {
+            /// <summary>
+            /// Прибор включен.
+            /// </summary>
             On = 0x01,
+
+            /// <summary>
+            /// Прибор выключен.
+            /// </summary>
             Off = 0x00
         }
 
-        public bool IssueManualShutter 
+        /// <summary>
+        /// Получает или задает значение, показывающее, что [включено ручное управление датчиками затворов].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [включено ручное управление датчиками затворов]; иначе, <c>false</c>.
+        /// </value>
+        public bool IsIssueManualShutter 
         { 
             get
             {
-                return _issueManualShutter;
+                return _isIssueManualShutter;
             }
 
             set
             {
-                _issueManualShutter = value;
-                // SetShutters(DevEnabled.Off);
+                _isIssueManualShutter = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.Auto, Convert.ToInt32(!value));
                 FirePropertyChangedEvent();
             } 
@@ -1239,6 +1255,12 @@ namespace EGSE.Devices
             IssueVufesClose = state;
         }
 
+        /// <summary>
+        /// Получает или задает команду на [включение датчика открытия для НП УФЕС].
+        /// </summary>
+        /// <value>
+        /// Команда на [включение датчика открытия для НП УФЕС].
+        /// </value>
         public DevEnabled IssueUfesOpen
         {
             get
@@ -1254,6 +1276,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает или задает команду на [включение датчика закрытия для НП УФЕС].
+        /// </summary>
+        /// <value>
+        /// Команда на [включение датчика закрытия для НП УФЕС].
+        /// </value>
         public DevEnabled IssueUfesClose
         {
             get
@@ -1269,6 +1297,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает или задает команду на [включение датчика открытия для НП ВУФЕС].
+        /// </summary>
+        /// <value>
+        /// Команда на [включение датчика открытия для НП ВУФЕС].
+        /// </value>
         public DevEnabled IssueVufesOpen
         {
             get
@@ -1284,6 +1318,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает или задает команду на [включение датчика закрытия для НП ВУФЕС].
+        /// </summary>
+        /// <value>
+        /// Команда на [включение датчика закрытия для НП ВУФЕС].
+        /// </value>
         public DevEnabled IssueVufesClose
         {
             get
@@ -1299,6 +1339,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает или задает команду на [включение датчика открытия для НП СДЩ].
+        /// </summary>
+        /// <value>
+        /// Команда на [включение датчика открытия для НП СДЩ].
+        /// </value>
         public DevEnabled IssueSdchshOpen
         {
             get
@@ -1314,6 +1360,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает или задает команду на [включение датчика закрытия для НП СДЩ].
+        /// </summary>
+        /// <value>
+        /// Команда на [включение датчика закрытия для НП СДЩ].
+        /// </value>
         public DevEnabled IssueSdchshClose 
         { 
             get 
@@ -1429,6 +1481,12 @@ namespace EGSE.Devices
             }
         }
 
+        /// <summary>
+        /// Получает значение, показывающее, открыто ли [окно "монитор USB"].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> если [окно "монитор USB"] открыто; иначе, <c>false</c>.
+        /// </value>
         public bool IsShowUsbSendsMonitor
         {
             get
@@ -2189,10 +2247,10 @@ namespace EGSE.Devices
             public byte[] Data { get; set; }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Вкл/выкл КВВ ПК1].
+            /// Получает или задает значение, показывающее, что [вкл КВВ ПК1].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [Вкл/выкл КВВ ПК1]; иначе, <c>false</c>.
+            ///   <c>true</c> если [вкл КВВ ПК1]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueEnable1
             {
@@ -2229,10 +2287,10 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Вкл/выкл КВВ ПК2].
+            /// Получает или задает значение, показывающее, что [включен КВВ ПК2].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [Вкл/выкл КВВ ПК2]; иначе, <c>false</c>.
+            /// <c>true</c> если [включен КВВ ПК2]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueEnable2
             {
@@ -2885,6 +2943,12 @@ namespace EGSE.Devices
             {
             }
 
+            /// <summary>
+            /// Получает или задает путь к файлу USB лога.
+            /// </summary>
+            /// <value>
+            /// Путь к файлу USB лога.
+            /// </value>
             public string UsbLogFile
             {
                 get
@@ -3747,24 +3811,24 @@ namespace EGSE.Devices
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => IsPowerBusk2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => IsPowerBund1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => IsPowerBund2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 6, 1, delegate { }, value => UfesLight1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 7, 1, delegate { }, value => UfesLight2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 9, 1, delegate { }, value => VufesLight2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 10, 1, delegate { }, value => SdchshLight1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower1, 20, 1, delegate { }, value => UfesPower1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower2, 21, 1, delegate { }, value => UfesPower2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower1, 19, 1, delegate { }, value => VufesPower1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower2, 18, 1, delegate { }, value => VufesPower2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower1, 17, 1, delegate { }, value => SdchshPower1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower2, 16, 1, delegate { }, value => SdchshPower2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock1, 0, 1, Device.CmdUfesLock1, value => UfesLock1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock2, 1, 1, Device.CmdUfesLock2, value => UfesLock2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock1, 2, 1, Device.CmdVufesLock1, value => VufesLock1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock2, 3, 1, Device.CmdVufesLock2, value => VufesLock2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock1, 4, 1, Device.CmdSdchshLock1, value => SdchshLock1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock2, 5, 1, Device.CmdSdchshLock2, value => SdchshLock2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 6, 1, delegate { }, value => UfesLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 7, 1, delegate { }, value => UfesLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 9, 1, delegate { }, value => VufesLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 10, 1, delegate { }, value => SdchshLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower1, 20, 1, delegate { }, value => UfesPower1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower2, 21, 1, delegate { }, value => UfesPower2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower1, 19, 1, delegate { }, value => VufesPower1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower2, 18, 1, delegate { }, value => VufesPower2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower1, 17, 1, delegate { }, value => SdchshPower1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshPower2, 16, 1, delegate { }, value => SdchshPower2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock1, 0, 1, delegate { }, value => UfesLock1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLock2, 1, 1, delegate { }, value => UfesLock2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock1, 2, 1, delegate { }, value => VufesLock1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLock2, 3, 1, delegate { }, value => VufesLock2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock1, 4, 1, delegate { }, value => SdchshLock1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLock2, 5, 1, delegate { }, value => SdchshLock2 = 1 == value, true);
             }
         }
 

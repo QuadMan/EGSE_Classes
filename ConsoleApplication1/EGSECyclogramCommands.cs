@@ -12,20 +12,24 @@ namespace EGSE.Cyclogram
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Runtime.Serialization;
-    
+
     /// <summary>
     /// Делегат для функции тесторования команды циклограммы.
     /// </summary>
-    /// <param name="Params">Массив параметров функции.</param>
-    /// <param name="errString">Строка ошибок, которые обнаружила фкнция проверки.</param>
-    /// <returns><c>true</c>, если результат проверки функции положительный.</returns>
+    /// <param name="cmdParams">The command parameters.</param>
+    /// <param name="errString">Строка ошибок, которые обнаружила функция проверки.</param>
+    /// <returns>
+    ///   <c>true</c>, если результат проверки функции положительный.
+    /// </returns>
     public delegate bool TestFunctionEventhandler(string[] cmdParams, out string errString);
 
     /// <summary>
     /// Делегат для функции выполнения команды циклограммы.
     /// </summary>
-    /// <param name="Params">Массив параметров функции.</param>
-    /// <returns><c>true</c>, если результат выполнения функции положительный.</returns>
+    /// <param name="cmdParams">Параметры команды.</param>
+    /// <returns>
+    ///   <c>true</c>, если результат выполнения функции положительный.
+    /// </returns>
     public delegate bool ExecFunctionEventHandler(string[] cmdParams);
 
     /// <summary>

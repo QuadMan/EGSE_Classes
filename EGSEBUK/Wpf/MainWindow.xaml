@@ -170,12 +170,10 @@
 							GroupName="control"/>
                         </StackPanel>
                         <StackPanel Margin="1" Grid.Column="2" Background="White">
-                        <RadioButton  x:Name="ManualControlSet"  
-							
+                        <RadioButton  x:Name="ManualControlSet"  							
 							Content="Ручное" 
-							GroupName="control"
-							
-							IsChecked="{Binding IssueManualShutter}"/>
+							GroupName="control"							
+							IsChecked="{Binding IsIssueManualShutter}"/>
                 </StackPanel>
             </Grid>
                     <Grid x:Name="GridShutter"  IsEnabled="{Binding IsChecked, ElementName=ManualControlSet}">

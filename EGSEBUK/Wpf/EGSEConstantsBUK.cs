@@ -82,6 +82,11 @@ namespace EGSE.Constants
         internal static CVTelemetry Telemetry { get; private set; }
 
         /// <summary>
+        /// Получает индекс объекта "Датчики затворов" в массиве ControlValuesList.
+        /// </summary>
+        internal static CVShutters Shutters { get; private set; }
+
+        /// <summary>
         /// Расширяющий метод представления байт в формате: 0,00 байт/КБ/МБ/ГБ.
         /// </summary>
         /// <param name="obj">Расширяемый класс.</param>
@@ -1176,8 +1181,6 @@ namespace EGSE.Constants
                 return "e302dd463fb94adaaf8e9e2cd049cfe6";
             }
         }
-
-        internal static CVShutters Shutters { get; private set; }
 
         internal class CVShutters
         {

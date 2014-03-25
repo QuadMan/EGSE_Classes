@@ -23,76 +23,214 @@ namespace EGSE.Cyclogram.Command
     /// </summary>
     public class CyclogramCommandBuk
     {
+        /// <summary>
+        /// Аргумент "переключатель состояния".
+        /// </summary>
         private enum switcher
         {
+            /// <summary>
+            /// Параметр "включения/активации" аргумента.
+            /// </summary>
             ON,
+
+            /// <summary>
+            /// Параметр "выключения/деактивации" аргумента.
+            /// </summary>
             OFF
         }
 
+        /// <summary>
+        /// Аргумент "выбор устройства".
+        /// </summary>
         private enum device
         {
-            BUSK,            
+            /// <summary>
+            /// Параметр "устройство БУСК" аргумента.
+            /// </summary>
+            BUSK,
+
+            /// <summary>
+            /// Параметр "устройство БУК" аргумента.
+            /// </summary>
             BUK,
+
+            /// <summary>
+            /// Параметр "устройство БУНД" аргумента.
+            /// </summary>
             BUND
         }
 
+        /// <summary>
+        /// Аргумент "выбор НП".
+        /// </summary>
         private enum scidev
         {
+            /// <summary>
+            /// Параметр "НП УФЕС" аргумента.
+            /// </summary>
             UFES,
+
+            /// <summary>
+            /// Параметр "НП ВУФЕС" аргумента.
+            /// </summary>
             VUFES,
+
+            /// <summary>
+            /// Параметр "НП СДЩ" аргумента.
+            /// </summary>
             SDSH
         }
 
+        /// <summary>
+        /// Аргумент "выбор линии передачи".
+        /// </summary>
         private enum halfset 
         {
+            /// <summary>
+            /// Параметр "основная линия" аргумента.
+            /// </summary>
             MAIN,
+
+            /// <summary>
+            /// Параметр "резервная линия" аргумента.
+            /// </summary>
             RESV,
+
+            /// <summary>
+            /// Параметр "основная+резервная линия" аргумента.
+            /// </summary>
             BOTH,
+
+            /// <summary>
+            /// Параметр "линия передачи отсутствует" аргумента.
+            /// </summary>
             NONE
         }
 
+        /// <summary>
+        /// Аргумент "выбор линии выдачи релейной команды".
+        /// </summary>
         private enum line
         {
+            /// <summary>
+            /// Параметр "выдача релейной команды по линии A" аргумента.
+            /// </summary>
             A,
+
+            /// <summary>
+            /// Параметр "выдача релейной команды по линии B" аргумента.
+            /// </summary>
             B,
+
+            /// <summary>
+            /// Параметр "выдача релейной команды по линиям A и B" аргумента.
+            /// </summary>
             AB
         }
 
+        /// <summary>
+        /// Аргумент "выбор канала spacewire".
+        /// </summary>
         private enum channel
         {
+            /// <summary>
+            /// Параметр "канал spacewire БУК ПК1 - БУСК ПК1" аргумента.
+            /// </summary>
             CH1_1,
+
+            /// <summary>
+            /// Параметр "канал spacewire БУК ПК1 - БУСК ПК2" аргумента.
+            /// </summary>
             CH1_2,
+
+            /// <summary>
+            /// Параметр "канал spacewire БУК ПК2 - БУСК ПК1" аргумента.
+            /// </summary>
             CH2_1,
+
+            /// <summary>
+            /// Параметр "канал spacewire БУК ПК2 - БУСК ПК2" аргумента.
+            /// </summary>
             CH2_2
         }
 
+        /// <summary>
+        /// Аргумент "выбор формируемую команду".
+        /// </summary>
         private enum command
         {
+            /// <summary>
+            /// Параметр "сформировать команду RMAP" аргумента.
+            /// </summary>
             RMAP,
+
+            /// <summary>
+            /// Параметр "сформировать команду TELE" аргумента.
+            /// </summary>
             TELE
         }
 
+        /// <summary>
+        /// Аргумент "обмен с прибором".
+        /// </summary>
         private enum transmit
         {
+            /// <summary>
+            /// Параметр "включить обмен с прибором" аргумента.
+            /// </summary>
             TRANSMIT_ON,
+
+            /// <summary>
+            /// Параметр "выключить обмен с прибором" аргумента.
+            /// </summary>
             TRANSMIT_OFF
         }
 
+        /// <summary>
+        /// Аргумент "секундная метка".
+        /// </summary>
         private enum ticktime
         {
+            /// <summary>
+            /// Параметр "включить выдачу секундной метки" аргумента.
+            /// </summary>
             TICKTIME_ON,
+
+            /// <summary>
+            /// Параметр "выключить выдачу секундной метки" аргумента.
+            /// </summary>
             TICKTIME_OFF
         }
 
+        /// <summary>
+        /// Аргумент "КБВ".
+        /// </summary>
         private enum onboardtime
         {
+            /// <summary>
+            /// Параметр "включить выдачу КБВ" аргумента.
+            /// </summary>
             ONBOARDTIME_ON,
+
+            /// <summary>
+            /// Параметр "выключить выдачу КБВ" аргумента.
+            /// </summary>
             ONBOARDTIME_OFF
         }
 
+        /// <summary>
+        /// Аргумент "выбор полукомплекта".
+        /// </summary>
         private enum set
         {
+            /// <summary>
+            /// Параметр "выбрать первый полукомплект" аргумента.
+            /// </summary>
             SET1,
+
+            /// <summary>
+            /// Параметр "выбрать второй полукомплект" аргумента.
+            /// </summary>
             SET2
         }
 

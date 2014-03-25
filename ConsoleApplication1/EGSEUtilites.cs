@@ -101,6 +101,8 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="bytes">Массив данных.</param>
         /// <param name="len">Сколько байт учавствует в расчете CRC.</param>
+        /// <param name="start">Индекс байта, с которого нужно считать CRC.</param>
+        /// <param name="crc">CRC с которого надо начать (для "кусочного" подсчета).</param>
         /// <returns>Значение CRC.</returns>
         public static ushort Get(byte[] bytes, int len, int start = 0, ushort crc = 0xFFFF)
         {

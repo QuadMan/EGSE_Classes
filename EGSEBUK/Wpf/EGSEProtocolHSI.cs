@@ -160,6 +160,9 @@ namespace EGSE.Protocols
     
                 public class HsiMsgEventArgs : MsgBase
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения ВСИ.
+        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Hsi
         {
@@ -171,6 +174,12 @@ namespace EGSE.Protocols
 
             private BitVector32 _header;
 
+            /// <summary>
+            /// Получает или задает флаг ВСИ сообщения.
+            /// </summary>
+            /// <value>
+            /// Значение флага ВСИ сообщения.
+            /// </value>
             public Type Flag
             {
                 get
@@ -184,6 +193,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает линию приема/передачи ВСИ сообщения.
+            /// </summary>
+            /// <value>
+            /// Линия приема/передачи ВСИ сообщения.
+            /// </value>
             public HsiLine Line
             {
                 get
@@ -197,6 +212,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает размер(в байтах) ВСИ сообщения.
+            /// </summary>
+            /// <value>
+            /// Размер(в байтах) ВСИ сообщения.
+            /// </value>
             public int Size
             {
                 get
@@ -214,6 +235,12 @@ namespace EGSE.Protocols
 
         private Hsi _info;
 
+        /// <summary>
+        /// Получает агрегат доступа к заголовоку ВСИ сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку ВСИ сообщения.
+        /// </value>
         public Hsi Info 
         { 
             get 
@@ -224,6 +251,9 @@ namespace EGSE.Protocols
 
         private byte[] _data;
 
+        /// <summary>
+        /// Получает данные ВСИ сообщения.
+        /// </summary>
         public new byte[] Data
         {
             get
@@ -262,28 +292,53 @@ namespace EGSE.Protocols
             }
         }
 
-        
-        
-        
+
+
+
+        /// <summary>
+        /// Линия приема/передачи.
+        /// </summary>
         public enum HsiLine
         {
-            
-            
-            
+            /// <summary>
+            /// Основня линия приема/передачи.
+            /// </summary>
             Main = 0x00,
 
-            
-            
-            
+            /// <summary>
+            /// Резервная линия приема/передачи.
+            /// </summary>
             Resv = 0x01
         }
 
+        /// <summary>
+        /// Тип сообщения ВСИ.
+        /// </summary>
         public enum Type
         {
+            /// <summary>
+            /// Сообщение "КБВ".
+            /// </summary>
             Obt = 0x01,
+
+            /// <summary>
+            /// Сообщение "УКС".
+            /// </summary>
             Cmd = 0x02,
+
+            /// <summary>
+            /// Сообщение "запрос статуса".
+            /// </summary>
             RequestState = 0x03,
+
+            /// <summary>
+            /// Сообщение "запрос данных".
+            /// </summary>
             RequestData = 0x04,
+
+            /// <summary>
+            /// Сообщение "метка времени".
+            /// </summary>
             Time = 0x05
         }
     }
