@@ -127,18 +127,15 @@
                 <Label Template="{StaticResource FlatLabel}"/>
                 <CheckBox VerticalAlignment="Center"    
                           HorizontalAlignment="Center"
-				        Tag="{Binding IsIssueReady1, Converter={StaticResource BoolToIndexConverter}}"
-                    Command="{Binding IssueReady1Command}"/>
+                          IsChecked="{Binding IsIssueReady1}"/>
                 <Label Grid.Column="1" Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="1"  VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                            				                                                            
-				Tag="{Binding IsIssueBusy1, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueBusy1Command}"/>
+				IsChecked="{Binding IsIssueBusy1}"/>
                 <Label Grid.Column="2" Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="2"  VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                            				                                                            
-				Tag="{Binding IsIssueMe1, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueMe1Command}"/>
+				IsChecked="{Binding IsIssueMe1}"/>
             </Grid>
             <Label Grid.Row="4" 
             	Content="ПК 2"
@@ -189,18 +186,15 @@
                 <Label Template="{StaticResource FlatLabel}"/>
                 <CheckBox     VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                       				                                                            
-				Tag="{Binding IsIssueReady2, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueReady2Command}"/>
+                              IsChecked="{Binding IsIssueReady2}"/>
                 <Label Grid.Column="1"  Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="1"     VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                             				                                                            
-				Tag="{Binding IsIssueBusy2, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueBusy2Command}"/>
+				IsChecked="{Binding IsIssueBusy2}"/>
                 <Label Grid.Column="2"  Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="2"   VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                             				                                                            
-				Tag="{Binding IsIssueMe2, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueMe2Command}"/>
+				IsChecked="{Binding IsIssueMe2}"/>
             </Grid>
 
         </Grid>

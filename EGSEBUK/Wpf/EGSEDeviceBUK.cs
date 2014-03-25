@@ -237,6 +237,8 @@ namespace EGSE.Devices
         /// </summary>
         private const int HSI2ControlAddr = 0x31;
 
+        private const int HSIStateAddr = 0x48;
+
         /// <summary>
         /// Адресный байт "Управление".
         /// </summary>
@@ -812,6 +814,12 @@ namespace EGSE.Devices
         {
             SendToUSB(HSI2ControlAddr, new byte[1] { (byte)value });
         }
+
+        internal void CmdHSIState(int value)
+        {
+            SendToUSB(HSIStateAddr, new byte[1] { (byte)value });
+        }
+        
 
         /// <summary>
         /// Команда [управления имитатором ВСИ].
@@ -1953,6 +1961,7 @@ namespace EGSE.Devices
                         ControlValuesList[Global.SimHSI.Control].UsbValue = msg.Data[43];
                         ControlValuesList[Global.SimHSI.Record].UsbValue = msg.Data[44];
                         ControlValuesList[Global.Shutters].UsbValue = (msg.Data[53] << 8) | msg.Data[52];
+                        ControlValuesList[Global.HSI.State].UsbValue = msg.Data[54];
                         break;
                     case TeleDataAddr:
                         ControlValuesList[Global.Telemetry].UsbValue = (msg.Data[2] << 16) | (msg.Data[3] << 8) | msg.Data[4];
@@ -2219,16 +2228,10 @@ namespace EGSE.Devices
             private ICommand _issueCmdCommand;
             private long _cmdCounter2;
             private bool _isIssueReady1;
-            private ICommand _issueReady1Command;
-            private ICommand _issueReady2Command;
             private bool _isIssueReady2;
-            private ICommand _issueBusy2Command;
             private bool _isIssueBusy2;
-            private ICommand _issueBusy1Command;
             private bool _isIssueBusy1;
-            private ICommand _issueMe2Command;
             private bool _isIssueMe2;
-            private ICommand _issueMe1Command;
             private bool _isIssueMe1;
             private bool _isActive1;
             private bool _isActive2;
@@ -2302,21 +2305,8 @@ namespace EGSE.Devices
                 set
                 {
                     _isIssueReady1 = value;
-                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueReady, Convert.ToInt32(value));
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueReady1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            public ICommand IssueReady1Command
-            {
-                get
-                {
-                    if (null == _issueReady1Command)
-                    {
-                        _issueReady1Command = new RelayCommand(obj => { IsIssueReady1 = !IsIssueReady1; }, obj => { return true; });
-                    }
-
-                    return _issueReady1Command;
                 }
             }
 
@@ -2330,21 +2320,8 @@ namespace EGSE.Devices
                 set
                 {
                     _isIssueReady2 = value;
-                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueReady, Convert.ToInt32(value));
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueReady2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            public ICommand IssueReady2Command
-            {
-                get
-                {
-                    if (null == _issueReady2Command)
-                    {
-                        _issueReady2Command = new RelayCommand(obj => { IsIssueReady2 = !IsIssueReady2; }, obj => { return true; });
-                    }
-
-                    return _issueReady2Command;
                 }
             }
 
@@ -2358,21 +2335,8 @@ namespace EGSE.Devices
                 set
                 {
                     _isIssueBusy1 = value;
-                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueBusy, Convert.ToInt32(value));
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueBusy1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            public ICommand IssueBusy1Command
-            {
-                get
-                {
-                    if (null == _issueBusy1Command)
-                    {
-                        _issueBusy1Command = new RelayCommand(obj => { IsIssueBusy1 = !IsIssueBusy1; }, obj => { return true; });
-                    }
-
-                    return _issueBusy1Command;
                 }
             }
 
@@ -2386,21 +2350,8 @@ namespace EGSE.Devices
                 set
                 {
                     _isIssueBusy2 = value;
-                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueBusy, Convert.ToInt32(value));
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueBusy2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            public ICommand IssueBusy2Command
-            {
-                get
-                {
-                    if (null == _issueBusy2Command)
-                    {
-                        _issueBusy2Command = new RelayCommand(obj => { IsIssueBusy2 = !IsIssueBusy2; }, obj => { return true; });
-                    }
-
-                    return _issueBusy2Command;
                 }
             }
 
@@ -2414,21 +2365,8 @@ namespace EGSE.Devices
                 set
                 {
                     _isIssueMe1 = value;
-                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueMe, Convert.ToInt32(value));
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueMe1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            public ICommand IssueMe1Command
-            {
-                get
-                {
-                    if (null == _issueMe1Command)
-                    {
-                        _issueMe1Command = new RelayCommand(obj => { IsIssueMe1 = !IsIssueMe1; }, obj => { return true; });
-                    }
-
-                    return _issueMe1Command;
                 }
             }
 
@@ -2442,21 +2380,8 @@ namespace EGSE.Devices
                 set
                 {
                     _isIssueMe2 = value;
-                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueMe, Convert.ToInt32(value));
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueMe2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            public ICommand IssueMe2Command
-            {
-                get
-                {
-                    if (null == _issueMe2Command)
-                    {
-                        _issueMe2Command = new RelayCommand(obj => { IsIssueMe2 = !IsIssueMe2; }, obj => { return true; });
-                    }
-
-                    return _issueMe2Command;
                 }
             }
 
@@ -3171,6 +3096,7 @@ namespace EGSE.Devices
                 ControlValuesList.Add(Global.HSI.Line2FrameCounter, new ControlValue());
                 ControlValuesList.Add(Global.SimHSI.Control, new ControlValue());
                 ControlValuesList.Add(Global.SimHSI.Record, new ControlValue());
+                ControlValuesList.Add(Global.HSI.State, new ControlValue());
             }
 
             /// <summary>
@@ -3190,6 +3116,15 @@ namespace EGSE.Devices
                 ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineOut, 1, 1, Device.CmdSimHSIControl, value => IssueLineOut = (SimLine)value);
                 ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.IssueRequest, 0, 1, Device.CmdSimHSIControl, value => IsIssueRequest = 1 == value);
                 ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.IssueCmd, 0, 1, Device.CmdSimHSIRecord, value => IsIssueCmd = 1 == value);
+
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.Active1, 6, 1, delegate { }, value => IsActive1 = 1 == value, true);
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.Active2, 7, 1, delegate { }, value => IsActive2 = 1 == value, true);
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueReady1, 0, 1, Device.CmdHSIState, value => IsIssueReady1 = 1 == value);
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueReady2, 3, 1, Device.CmdHSIState, value => IsIssueReady2 = 1 == value);
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueBusy1, 1, 1, Device.CmdHSIState, value => IsIssueBusy1 = 1 == value);
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueBusy2, 4, 1, Device.CmdHSIState, value => IsIssueBusy2 = 1 == value);
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueMe1, 2, 1, Device.CmdHSIState, value => IsIssueMe1 = 1 == value);
+                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueMe2, 5, 1, Device.CmdHSIState, value => IsIssueMe2 = 1 == value);
             }            
         }
 

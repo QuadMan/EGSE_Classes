@@ -133,7 +133,14 @@ namespace EGSE.Constants
                 Line2 = new CVLine2();
                 Line2StateCounter = new CVLine2StateCounter();
                 Line2FrameCounter = new CVLine2FrameCounter();
+
+                State = new CVState();
             }
+
+            /// <summary>
+            /// Получает индекс объекта "Дополнительные биты (продолжение имитатора КВВ)" в массиве ControlValuesList.
+            /// </summary>
+            public static CVState State { get; private set; }
 
             /// <summary>
             /// Получает индекс объекта "КВВ ПК1" в массиве ControlValuesList.
@@ -174,13 +181,7 @@ namespace EGSE.Constants
                 /// Индекс свойства [Вкл/выкл].
                 /// </summary>
                 public readonly string IssueEnable = "29de114f373d4db9a52a90c91c840902";
-
-                public readonly string IssueReady = "1c1652b38a0a49678353b28ebdabdad9";
-
-                public readonly string IssueBusy = "29de114f373d4db9a52a90c91c840902";
-
-                public readonly string IssueMe = "4085abfce08a4ba9b1bf0203b6797a3e";
-
+               
                 /// <summary>
                 /// Индекс свойства [Линия передачи].
                 /// </summary>
@@ -197,6 +198,30 @@ namespace EGSE.Constants
                 }
             }
 
+            public class CVState
+            {
+                public readonly string IssueReady1 = "1c1652b38a0a49678353b28ebdabdad9";
+
+                public readonly string IssueBusy1 = "29de114f373d4db9a52a90c91c840902";
+
+                public readonly string IssueMe1 = "4085abfce08a4ba9b1bf0203b6797a3e";
+
+                public readonly string Active1 = "4085abfce08a4ba9b1bf0203b6797a3e";
+
+                public readonly string IssueReady2 = "06309fea00e74ab8ac6680f37525d71b";
+
+                public readonly string IssueBusy2 = "3f8b05b055cd46a3af3c190c6d188e13";
+
+                public readonly string IssueMe2 = "f25b4a223abf4e338aeaa700f0d866a4";
+
+                public readonly string Active2 = "83e3d1f5d0af49d1a37063a618ada8a9";
+
+                public static implicit operator string(CVState obj)
+                {
+                    return "29dd3908502f41a4905676f89be55b0d";
+                }
+            }
+
             /// <summary>
             /// Индексы свойств [КВВ ПК2].
             /// </summary>
@@ -207,11 +232,6 @@ namespace EGSE.Constants
                 /// </summary>
                 public readonly string IssueEnable = "c7837417edd743eabe09ff6733c333e3";
 
-                public readonly string IssueReady = "06309fea00e74ab8ac6680f37525d71b";
-
-                public readonly string IssueBusy = "3f8b05b055cd46a3af3c190c6d188e13";
-
-                public readonly string IssueMe = "f25b4a223abf4e338aeaa700f0d866a4";
 
                 /// <summary>
                 /// Индекс свойства [Линия передачи].
