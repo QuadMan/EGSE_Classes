@@ -26,7 +26,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -46,13 +46,14 @@
             <Label Grid.Row="1" 
 				Grid.Column="2"
                    Grid.RowSpan="2"
-				Content="Линии передач"
+				Content="Активность"
 				Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1" 
 				Grid.Column="3"
                    Grid.RowSpan="2"
-				Content="Активность"
+				Content="Линии передач"
 				Template="{StaticResource FlatLabel}"/>
+            
             
             
                
@@ -85,8 +86,11 @@
 				Tag="{Binding IsIssueEnable1, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable1Command}"
                 Template="{StaticResource FlatButtonCheck}"/>
-            
-            <Grid Grid.Column="2"                               
+            <Label Grid.Row="3" 
+            	Grid.Column="2"
+            	Tag="{Binding IsActive1, Converter={StaticResource BoolToIndexConverter}}"     
+            	Template="{StaticResource FlatLabelActived}"/>
+            <Grid Grid.Column="3"                               
 				Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -111,10 +115,7 @@
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
             </Grid>
-            <Label Grid.Row="3" 
-            	Grid.Column="3"
-            	Tag="{Binding IsActive1, Converter={StaticResource BoolToIndexConverter}}"     
-            	Template="{StaticResource FlatLabelActived}"/>
+           
             <Grid Grid.Row="3" 
                   Grid.ColumnSpan="3"
 				Grid.Column="4">
@@ -122,19 +123,22 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
-                </Grid.ColumnDefinitions>                
-                <Button                            				                                                            
-				Tag="{Binding IsIssueReady1, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueReady1Command}"
-                Template="{StaticResource FlatButtonCheck}"/>
-                <Button Grid.Column="1"                              				                                                            
+                </Grid.ColumnDefinitions>
+                <Label Template="{StaticResource FlatLabel}"/>
+                <CheckBox VerticalAlignment="Center"    
+                          HorizontalAlignment="Center"
+				        Tag="{Binding IsIssueReady1, Converter={StaticResource BoolToIndexConverter}}"
+                    Command="{Binding IssueReady1Command}"/>
+                <Label Grid.Column="1" Template="{StaticResource FlatLabel}"/>
+                <CheckBox Grid.Column="1"  VerticalAlignment="Center"    
+                          HorizontalAlignment="Center"                            				                                                            
 				Tag="{Binding IsIssueBusy1, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueBusy1Command}"
-                Template="{StaticResource FlatButtonCheck}"/>
-                <Button Grid.Column="2"                              				                                                            
+                Command="{Binding IssueBusy1Command}"/>
+                <Label Grid.Column="2" Template="{StaticResource FlatLabel}"/>
+                <CheckBox Grid.Column="2"  VerticalAlignment="Center"    
+                          HorizontalAlignment="Center"                            				                                                            
 				Tag="{Binding IsIssueMe1, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueMe1Command}"
-                Template="{StaticResource FlatButtonCheck}"/>
+                Command="{Binding IssueMe1Command}"/>
             </Grid>
             <Label Grid.Row="4" 
             	Content="ПК 2"
@@ -144,8 +148,11 @@
             	Tag="{Binding IsIssueEnable2, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable2Command}"
             	Template="{StaticResource FlatButtonCheck}"/>
-            
-            <Grid Grid.Column="2"                               
+            <Label Grid.Row="4" 
+            	Grid.Column="2"
+            	Tag="{Binding IsActive2, Converter={StaticResource BoolToIndexConverter}}"     
+            	Template="{StaticResource FlatLabelActived}"/>
+            <Grid Grid.Column="3"                               
 				Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -170,10 +177,7 @@
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
             </Grid>
-            <Label Grid.Row="4" 
-            	Grid.Column="3"
-            	Tag="{Binding IsActive2, Converter={StaticResource BoolToIndexConverter}}"     
-            	Template="{StaticResource FlatLabelActived}"/>
+            
             <Grid Grid.Row="4" 
                   Grid.ColumnSpan="3"
 				Grid.Column="4">
@@ -182,18 +186,21 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button                            				                                                            
+                <Label Template="{StaticResource FlatLabel}"/>
+                <CheckBox     VerticalAlignment="Center"    
+                          HorizontalAlignment="Center"                       				                                                            
 				Tag="{Binding IsIssueReady2, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueReady2Command}"
-                Template="{StaticResource FlatButtonCheck}"/>
-                <Button Grid.Column="1"                              				                                                            
+                Command="{Binding IssueReady2Command}"/>
+                <Label Grid.Column="1"  Template="{StaticResource FlatLabel}"/>
+                <CheckBox Grid.Column="1"     VerticalAlignment="Center"    
+                          HorizontalAlignment="Center"                             				                                                            
 				Tag="{Binding IsIssueBusy2, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueBusy2Command}"
-                Template="{StaticResource FlatButtonCheck}"/>
-                <Button Grid.Column="2"                              				                                                            
+                Command="{Binding IssueBusy2Command}"/>
+                <Label Grid.Column="2"  Template="{StaticResource FlatLabel}"/>
+                <CheckBox Grid.Column="2"   VerticalAlignment="Center"    
+                          HorizontalAlignment="Center"                             				                                                            
 				Tag="{Binding IsIssueMe2, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueMe2Command}"
-                Template="{StaticResource FlatButtonCheck}"/>
+                Command="{Binding IssueMe2Command}"/>
             </Grid>
 
         </Grid>

@@ -21,6 +21,7 @@
         <SolidColorBrush x:Key="GrayBrush" Color="Gray"/>        
         <SolidColorBrush x:Key="UnSelectBrush" Color="Red"/>
         <SolidColorBrush x:Key="UnConnectedBrush" Color="Tomato"/>
+        <SolidColorBrush x:Key="UnActiveBrush" Color="White"/>
         <SolidColorBrush x:Key="ConnectedBrush" Color="PaleGreen"/>
         <SolidColorBrush x:Key="BackBrush" Color="LightBlue"/>          
         <FontFamily x:Key="BaseFontFamily">Consolas</FontFamily>
@@ -154,7 +155,7 @@
         </ControlTemplate>
         <ControlTemplate x:Key="FlatLabelActived" TargetType="{x:Type Label}">
             <Border x:Name="Border"
-        	Background="{StaticResource UnConnectedBrush}"                                          
+        	Background="{StaticResource UnActiveBrush}"                                          
         	BorderThickness="0"
         	Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"
