@@ -621,6 +621,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает obt-поле "Поле Т: КБВ".
+            /// </summary>
+            /// <value>
+            /// Значение obt-поля "Поле Т: КБВ"
+            /// </value>
             public uint Value
             {
                 get
@@ -637,6 +643,12 @@ namespace EGSE.Protocols
 
         private Obt _obtInfo;
 
+        /// <summary>
+        /// Получает агрегат доступа к заголовку obt сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку obt сообщения.
+        /// </value>
         public Obt ObtInfo
         {
             get
@@ -716,6 +728,12 @@ namespace EGSE.Protocols
 
             private BitVector32 _header;
 
+            /// <summary>
+            /// Получает или задает агрегат доступа к заголовку icd сообщения.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку icd сообщения.
+            /// </value>
             public SpacewireIcdMsgEventArgs.Icd IcdInfo
             {
                 get
@@ -745,6 +763,12 @@ namespace EGSE.Protocols
 
         private byte[] _data;
 
+        /// <summary>
+        /// Получает агрегат доступа к заголовку tm сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку tm сообщения.
+        /// </value>
         public Tm TmInfo
         {
             get

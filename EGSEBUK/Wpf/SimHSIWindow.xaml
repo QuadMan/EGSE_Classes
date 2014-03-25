@@ -99,11 +99,13 @@
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="3"  
         		Grid.Column="1"
+                    Grid.ColumnSpan="2"
                 Content="Активировать КВВ ПК1"
                 Command="{Binding IssueCmdEnable1Command}"
         		Template="{StaticResource FlatButtonClickBusy}"/>
             <Button Grid.Row="4"  
         		Grid.Column="1"
+                    Grid.ColumnSpan="2"
                 Content="Активировать КВВ ПК2"
                 Command="{Binding IssueCmdEnable2Command}"
         		Template="{StaticResource FlatButtonClickBusy}"/>
@@ -112,7 +114,7 @@
                     Grid.RowSpan="2"
                 Content="Деактивировать КВВ"
         		Command="{Binding IssueCmdDisableCommand}"
-        		Template="{StaticResource FlatButtonClickBusy}"/>
+        		Template="{StaticResource FlatButtonClickBusy}" Visibility="Collapsed"/>
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="3"
                 Content="Выдать УКС"

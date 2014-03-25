@@ -152,6 +152,24 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+        <ControlTemplate x:Key="FlatLabelActived" TargetType="{x:Type Label}">
+            <Border x:Name="Border"
+        	Background="{StaticResource UnConnectedBrush}"                                          
+        	BorderThickness="0"
+        	Margin="1">
+                <ContentPresenter HorizontalAlignment="Center"
+        		VerticalAlignment="Center"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Tag" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource ConnectedBrush}"/>
+                    <Setter Property="Content" Value="Активен"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="false">
+                    <Setter Property="Content" Value="Не активен"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
         <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
             <Border x:Name="Border"
         	Background="{StaticResource UnConnectedBrush}"                                          

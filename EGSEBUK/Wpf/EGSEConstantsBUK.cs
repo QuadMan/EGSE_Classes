@@ -175,6 +175,12 @@ namespace EGSE.Constants
                 /// </summary>
                 public readonly string IssueEnable = "29de114f373d4db9a52a90c91c840902";
 
+                public readonly string IssueReady = "1c1652b38a0a49678353b28ebdabdad9";
+
+                public readonly string IssueBusy = "29de114f373d4db9a52a90c91c840902";
+
+                public readonly string IssueMe = "4085abfce08a4ba9b1bf0203b6797a3e";
+
                 /// <summary>
                 /// Индекс свойства [Линия передачи].
                 /// </summary>
@@ -200,6 +206,12 @@ namespace EGSE.Constants
                 /// Индекс свойства [Вкл/выкл].
                 /// </summary>
                 public readonly string IssueEnable = "c7837417edd743eabe09ff6733c333e3";
+
+                public readonly string IssueReady = "06309fea00e74ab8ac6680f37525d71b";
+
+                public readonly string IssueBusy = "3f8b05b055cd46a3af3c190c6d188e13";
+
+                public readonly string IssueMe = "f25b4a223abf4e338aeaa700f0d866a4";
 
                 /// <summary>
                 /// Индекс свойства [Линия передачи].

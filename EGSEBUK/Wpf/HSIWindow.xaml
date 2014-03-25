@@ -19,13 +19,14 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>                
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -33,20 +34,49 @@
             <Label Grid.ColumnSpan="6"
 				Content="Управление"
 				Style="{StaticResource FlatHeader}"/>
-            <Label Grid.Row="1"             	
-				Grid.RowSpan="2"
+            <Label Grid.Row="1" 
+                   Grid.RowSpan="2"
 				Content="П/К"
 				Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1" 
 				Grid.Column="1"
-				Grid.RowSpan="2"
+                   Grid.RowSpan="2"
 				Content="Вкл/Выкл"
 				Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1" 
 				Grid.Column="2"
-				Grid.RowSpan="2"
+                   Grid.RowSpan="2"
 				Content="Линии передач"
 				Template="{StaticResource FlatLabel}"/>
+            <Label Grid.Row="1" 
+				Grid.Column="3"
+                   Grid.RowSpan="2"
+				Content="Активность"
+				Template="{StaticResource FlatLabel}"/>
+            
+            
+               
+            <Grid Grid.Row="1" 
+				Grid.Column="4" Grid.RowSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>                    
+                </Grid.ColumnDefinitions>
+                <Label Grid.ColumnSpan="3" Content="Статус"
+				Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1" Content="Готов"
+				Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1" Grid.Column="1" Content="BUSY"
+				Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="1" Grid.Column="2" Content="ME"
+				Template="{StaticResource FlatLabel}"/>
+            </Grid>
+            
             <Label Grid.Row="3" 
             	Content="ПК 1"
             	Template="{StaticResource FlatLabel}"/>
@@ -55,6 +85,7 @@
 				Tag="{Binding IsIssueEnable1, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable1Command}"
                 Template="{StaticResource FlatButtonCheck}"/>
+            
             <Grid Grid.Column="2"                               
 				Grid.Row="3">
                 <Grid.ColumnDefinitions>
@@ -62,23 +93,48 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <RadioButton  Content="Выкл" 
-            		GroupName="lineHalfSet1"            		
-                    Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
-                <RadioButton Grid.Column="1" Content="Основная" 
+                </Grid.ColumnDefinitions>                
+                <RadioButton  Content="Основная" 
             		GroupName="lineHalfSet1"            		
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Main}}"/>
-                <RadioButton Grid.Column="2" Content="Резервная" 
+                <RadioButton Grid.Column="1" Content="Резервная" 
             		GroupName="lineHalfSet1"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Resv}}"/>
-                <RadioButton Grid.Column="3" Content="Осн + Рез" 
+                <RadioButton Grid.Column="2" Content="Осн + Рез" 
             		GroupName="lineHalfSet1"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.MainResv}}"/>
+                <RadioButton Grid.Column="3" Content="Отключена" 
+            		GroupName="lineHalfSet1"            		
+                    Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
+            </Grid>
+            <Label Grid.Row="3" 
+            	Grid.Column="3"
+            	Tag="{Binding IsActive1, Converter={StaticResource BoolToIndexConverter}}"     
+            	Template="{StaticResource FlatLabelActived}"/>
+            <Grid Grid.Row="3" 
+                  Grid.ColumnSpan="3"
+				Grid.Column="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>                
+                <Button                            				                                                            
+				Tag="{Binding IsIssueReady1, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueReady1Command}"
+                Template="{StaticResource FlatButtonCheck}"/>
+                <Button Grid.Column="1"                              				                                                            
+				Tag="{Binding IsIssueBusy1, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueBusy1Command}"
+                Template="{StaticResource FlatButtonCheck}"/>
+                <Button Grid.Column="2"                              				                                                            
+				Tag="{Binding IsIssueMe1, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueMe1Command}"
+                Template="{StaticResource FlatButtonCheck}"/>
             </Grid>
             <Label Grid.Row="4" 
             	Content="ПК 2"
@@ -88,6 +144,7 @@
             	Tag="{Binding IsIssueEnable2, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable2Command}"
             	Template="{StaticResource FlatButtonCheck}"/>
+            
             <Grid Grid.Column="2"                               
 				Grid.Row="4">
                 <Grid.ColumnDefinitions>
@@ -96,24 +153,48 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <RadioButton Content="Выкл" 
-            		GroupName="lineHalfSet2"            		
-                    Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
-                <RadioButton Grid.Column="1" Content="Основная" 
+                <RadioButton Content="Основная" 
             		GroupName="lineHalfSet2"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Main}}"/>
-                <RadioButton Grid.Column="2" Content="Резервная" 
+                <RadioButton Grid.Column="1" Content="Резервная" 
             		GroupName="lineHalfSet2"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Resv}}"/>
-                <RadioButton Grid.Column="3" Content="Осн + Рез" 
+                <RadioButton Grid.Column="2" Content="Осн + Рез" 
             		GroupName="lineHalfSet2"
             		Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.MainResv}}"/>
+                <RadioButton Grid.Column="3" Content="Отключена" 
+            		GroupName="lineHalfSet2"            		
+                    Template="{StaticResource FlatRadioButton}"
+                    IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
             </Grid>
-
+            <Label Grid.Row="4" 
+            	Grid.Column="3"
+            	Tag="{Binding IsActive2, Converter={StaticResource BoolToIndexConverter}}"     
+            	Template="{StaticResource FlatLabelActived}"/>
+            <Grid Grid.Row="4" 
+                  Grid.ColumnSpan="3"
+				Grid.Column="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button                            				                                                            
+				Tag="{Binding IsIssueReady2, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueReady2Command}"
+                Template="{StaticResource FlatButtonCheck}"/>
+                <Button Grid.Column="1"                              				                                                            
+				Tag="{Binding IsIssueBusy2, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueBusy2Command}"
+                Template="{StaticResource FlatButtonCheck}"/>
+                <Button Grid.Column="2"                              				                                                            
+				Tag="{Binding IsIssueMe2, Converter={StaticResource BoolToIndexConverter}}"
+                Command="{Binding IssueMe2Command}"
+                Template="{StaticResource FlatButtonCheck}"/>
+            </Grid>
 
         </Grid>
         <Grid Grid.Row="1">
@@ -246,8 +327,11 @@
 				Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="3"
 				Grid.Column="7"
-                Grid.RowSpan="2"
-				Content="{Binding CmdCounter}"
+				Content="{Binding CmdCounter1}"
+				Template="{StaticResource FlatLabel}"/>
+                <Label Grid.Row="4"
+				Grid.Column="7"
+				Content="{Binding CmdCounter2}"
 				Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="4"
                 	Content="ПК 2"

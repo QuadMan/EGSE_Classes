@@ -1776,7 +1776,14 @@ namespace EGSE.Devices
                 {
                     if (this.GotHsiCmdMsg != null)
                     {
-                        HSINotify.CmdCounter++;
+                        if (IsCmdFromSet1(e))
+                        {
+                            HSINotify.CmdCounter1++;
+                        }
+                        else if (IsCmdFromSet2(e))
+                        {
+                            HSINotify.CmdCounter2++;
+                        }
                         this.GotHsiCmdMsg(sender, e);
                     }
                 }
@@ -1852,7 +1859,31 @@ namespace EGSE.Devices
         {
             return HsiMsgEventArgs.Type.Cmd == msg.Info.Flag;
         }
-        
+
+        private bool IsCmdFromSet1(HsiMsgEventArgs msg)
+        {            
+            if (0 < msg.Data.Length)
+            {
+                return 0xA1 == msg.Data[0];
+            }
+            else
+            {
+                return false;
+            }                    
+        }
+
+        private bool IsCmdFromSet2(HsiMsgEventArgs msg)
+        {
+            if (0 < msg.Data.Length)
+            {
+                return 0xA2 == msg.Data[0];
+            }
+            else
+            {
+                return false;
+            }  
+        }
+
         /// <summary>
         /// Определяет когда [сообщение по spacewire] [является КБВ].
         /// </summary>
@@ -2140,7 +2171,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Количество переданных УКС.
             /// </summary>
-            private long _cmdCounter;
+            private long _cmdCounter1;
 
             /// <summary>
             /// Экземпляр команды на [включение КВВ ПК1].
@@ -2186,6 +2217,21 @@ namespace EGSE.Devices
             /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
             private ICommand _issueCmdCommand;
+            private long _cmdCounter2;
+            private bool _isIssueReady1;
+            private ICommand _issueReady1Command;
+            private ICommand _issueReady2Command;
+            private bool _isIssueReady2;
+            private ICommand _issueBusy2Command;
+            private bool _isIssueBusy2;
+            private ICommand _issueBusy1Command;
+            private bool _isIssueBusy1;
+            private ICommand _issueMe2Command;
+            private bool _isIssueMe2;
+            private ICommand _issueMe1Command;
+            private bool _isIssueMe1;
+            private bool _isActive1;
+            private bool _isActive2;
                         
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="HSI" />.
@@ -2245,6 +2291,174 @@ namespace EGSE.Devices
             /// Буфер данных.
             /// </value>
             public byte[] Data { get; set; }
+
+            public bool IsIssueReady1
+            {
+                get
+                {
+                    return _isIssueReady1;
+                }
+
+                set
+                {
+                    _isIssueReady1 = value;
+                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueReady, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssueReady1Command
+            {
+                get
+                {
+                    if (null == _issueReady1Command)
+                    {
+                        _issueReady1Command = new RelayCommand(obj => { IsIssueReady1 = !IsIssueReady1; }, obj => { return true; });
+                    }
+
+                    return _issueReady1Command;
+                }
+            }
+
+            public bool IsIssueReady2
+            {
+                get
+                {
+                    return _isIssueReady2;
+                }
+
+                set
+                {
+                    _isIssueReady2 = value;
+                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueReady, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssueReady2Command
+            {
+                get
+                {
+                    if (null == _issueReady2Command)
+                    {
+                        _issueReady2Command = new RelayCommand(obj => { IsIssueReady2 = !IsIssueReady2; }, obj => { return true; });
+                    }
+
+                    return _issueReady2Command;
+                }
+            }
+
+            public bool IsIssueBusy1
+            {
+                get
+                {
+                    return _isIssueBusy1;
+                }
+
+                set
+                {
+                    _isIssueBusy1 = value;
+                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueBusy, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssueBusy1Command
+            {
+                get
+                {
+                    if (null == _issueBusy1Command)
+                    {
+                        _issueBusy1Command = new RelayCommand(obj => { IsIssueBusy1 = !IsIssueBusy1; }, obj => { return true; });
+                    }
+
+                    return _issueBusy1Command;
+                }
+            }
+
+            public bool IsIssueBusy2
+            {
+                get
+                {
+                    return _isIssueBusy2;
+                }
+
+                set
+                {
+                    _isIssueBusy2 = value;
+                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueBusy, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssueBusy2Command
+            {
+                get
+                {
+                    if (null == _issueBusy2Command)
+                    {
+                        _issueBusy2Command = new RelayCommand(obj => { IsIssueBusy2 = !IsIssueBusy2; }, obj => { return true; });
+                    }
+
+                    return _issueBusy2Command;
+                }
+            }
+
+            public bool IsIssueMe1
+            {
+                get
+                {
+                    return _isIssueMe1;
+                }
+
+                set
+                {
+                    _isIssueMe1 = value;
+                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueMe, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssueMe1Command
+            {
+                get
+                {
+                    if (null == _issueMe1Command)
+                    {
+                        _issueMe1Command = new RelayCommand(obj => { IsIssueMe1 = !IsIssueMe1; }, obj => { return true; });
+                    }
+
+                    return _issueMe1Command;
+                }
+            }
+
+            public bool IsIssueMe2
+            {
+                get
+                {
+                    return _isIssueMe2;
+                }
+
+                set
+                {
+                    _isIssueMe2 = value;
+                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueMe, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public ICommand IssueMe2Command
+            {
+                get
+                {
+                    if (null == _issueMe2Command)
+                    {
+                        _issueMe2Command = new RelayCommand(obj => { IsIssueMe2 = !IsIssueMe2; }, obj => { return true; });
+                    }
+
+                    return _issueMe2Command;
+                }
+            }
 
             /// <summary>
             /// Получает или задает значение, показывающее, что [вкл КВВ ПК1].
@@ -2513,6 +2727,34 @@ namespace EGSE.Devices
                 {
                     _line1 = value;
                     ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.Line, Convert.ToInt32(value));
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsActive1
+            {
+                get
+                {
+                    return _isActive1;
+                }
+
+                private set
+                {
+                    _isActive1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsActive2
+            {
+                get
+                {
+                    return _isActive2;
+                }
+
+                private set
+                {
+                    _isActive2 = value;
                     FirePropertyChangedEvent();
                 }
             }
@@ -2816,21 +3058,41 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество полученых УКС.
+            /// Получает или задает количество полученых УКС ПК1.
             /// </summary>
             /// <value>
-            /// Количество полученых УКС.
+            /// Количество полученых УКС ПК1.
             /// </value>
-            public long CmdCounter
+            public long CmdCounter1
             {
                 get
                 {
-                    return _cmdCounter;
+                    return _cmdCounter1;
                 }
 
                 set
                 {
-                    _cmdCounter = value;
+                    _cmdCounter1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает количество полученых УКС ПК2.
+            /// </summary>
+            /// <value>
+            /// Количество полученых УКС ПК2.
+            /// </value>
+            public long CmdCounter2
+            {
+                get
+                {
+                    return _cmdCounter2;
+                }
+
+                set
+                {
+                    _cmdCounter2 = value;
                     FirePropertyChangedEvent();
                 }
             }

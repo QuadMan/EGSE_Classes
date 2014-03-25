@@ -223,7 +223,7 @@
                 	Content="БУК"
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="1"
-                	Content="TIME TICK 1"
+                	Content="Time tick"
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="1" 
                 	Grid.Column="1"
@@ -235,15 +235,15 @@
                 	Template="{StaticResource FlatLabel}"/>
                 <Label Grid.Row="2"
                 	Content="TIME TICK 2"
-                	Template="{StaticResource FlatLabel}"/>
+                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
                 <Label Grid.Row="2" 
                 	Grid.Column="1"
                 	Content="{Binding BuskTickTime2}"
-                	Template="{StaticResource FlatLabel}"/>
+                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
                 <Label Grid.Row="2" 
                 	Grid.Column="2"
                 	Content="{Binding BukTickTime2}"
-                	Template="{StaticResource FlatLabel}"/>
+                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
                 <Label Grid.Row="3"
                 	Content="Количество запросов кредита"
                 	Template="{StaticResource FlatLabel}"/>

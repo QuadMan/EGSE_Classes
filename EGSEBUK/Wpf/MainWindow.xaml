@@ -165,17 +165,17 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Margin="1" Background="White">
-                        <RadioButton
+                            <RadioButton
 							Content="Автоматическое" 
 							GroupName="control"/>
                         </StackPanel>
                         <StackPanel Margin="1" Grid.Column="2" Background="White">
-                        <RadioButton  x:Name="ManualControlSet"  							
+                            <RadioButton  x:Name="ManualControlSet"  							
 							Content="Ручное" 
 							GroupName="control"							
 							IsChecked="{Binding IsIssueManualShutter}"/>
-                </StackPanel>
-            </Grid>
+                        </StackPanel>
+                    </Grid>
                     <Grid x:Name="GridShutter"  IsEnabled="{Binding IsChecked, ElementName=ManualControlSet}">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
@@ -369,10 +369,10 @@
 							Grid.Row="4"                            
 							Tag="{Binding SdchshPower2, Converter={StaticResource BoolToIndexConverter}}"
 							Template="{StaticResource FlatLabelCheck}" Visibility="Collapsed"/>
-                        <Label Grid.Column="3"
-							Grid.Row="2"                            
+                        <Label Grid.Column="2"
+							Grid.Row="1"                            
 							Tag="{Binding UfesLight1, Converter={StaticResource BoolToIndexConverter}}"
-							Template="{StaticResource FlatLabelCheck}"/>
+							Template="{StaticResource FlatLabelCheck}" Grid.ColumnSpan="3" Height="18" Margin="26,17.4,38.2,0" Grid.RowSpan="3" VerticalAlignment="Top"/>
                         <Label Grid.Column="3"
 							Grid.Row="3"                            
 							Tag="{Binding VufesLight1, Converter={StaticResource BoolToIndexConverter}}"
