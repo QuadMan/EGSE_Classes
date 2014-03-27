@@ -60,7 +60,7 @@ namespace EGSE.Defaults
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        public void OnSpacewireMsg(object sender, MsgBase msg)
+        public void OnSpacewireMsg(object sender, BaseMsgEventArgs msg)
         {
             new { msg }.CheckNotNull();
             string spacewireMsg = string.Empty;
@@ -83,17 +83,19 @@ namespace EGSE.Defaults
                     spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false);
                     if (sptpMsg is SpacewireTkMsgEventArgs)
                     {
-                        SpacewireTkMsgEventArgs tkMsg = sptpMsg as SpacewireTkMsgEventArgs;
-                        spacewireMsg += tkMsg.TkInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tkMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(tkMsg.Data.Skip<byte>(tkMsg.Data.Length - 10).ToArray()) + "]";
+                        SpacewireTkMsgEventArgs telecmdMsg = sptpMsg as SpacewireTkMsgEventArgs;
+                        spacewireMsg += telecmdMsg.TkInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telecmdMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(telecmdMsg.Data.Skip<byte>(telecmdMsg.Data.Length - 10).ToArray()) + "]";
                     }
+
                     if (sptpMsg is SpacewireTmMsgEventArgs)
                     {
-                        SpacewireTmMsgEventArgs tmMsg = sptpMsg as SpacewireTmMsgEventArgs;
-                        spacewireMsg += tmMsg.TmInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(tmMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(tmMsg.Data.Skip<byte>(tmMsg.Data.Length - 10).ToArray()) + "]";
+                        SpacewireTmMsgEventArgs telemetroMsg = sptpMsg as SpacewireTmMsgEventArgs;
+                        spacewireMsg += telemetroMsg.TmInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telemetroMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(telemetroMsg.Data.Skip<byte>(telemetroMsg.Data.Length - 10).ToArray()) + "]";
                     }
+
                     ushort crcInData = msg.ToArray().AsTk().Crc;
                     ushort crcGen = msg.ToArray().AsTk().NeededCrc;
-                    spacewireMsg += (crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4"));
+                    spacewireMsg += crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4");
                 }                
             }
             else if (msg is SpacewireErrorMsgEventArgs)
@@ -111,7 +113,6 @@ namespace EGSE.Defaults
                 }));
             }
         }
-
       
         /// <summary>
         /// Handles the Closing event of the Window control.

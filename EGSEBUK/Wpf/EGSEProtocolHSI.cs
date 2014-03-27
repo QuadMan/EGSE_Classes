@@ -9,80 +9,81 @@ namespace EGSE.Protocols
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Diagnostics;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using System.Text;
     using System.Threading.Tasks;
-    using EGSE.Utilites;
-    using System.Runtime.InteropServices;
-    using System.Collections.Specialized;
     using System.Windows;
-            
+    using EGSE.Utilites;
+
+    /// <summary>
+    /// Класс декодера по протоколу ВСИ.
+    /// </summary>
     public class ProtocolHsi
-    {
-        
-        
-        
+    {  
+        /// <summary>
+        /// Адресный байт, по которому ожидается ВСИ сообщение.
+        /// </summary>
         private readonly uint _dataAddr;
 
-        
-        
-        
+        /// <summary>
+        /// Состояние декодера.
+        /// </summary>
         private int _decodeState = 0;
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Количество ошибок декодера.
+        /// </summary>
         private int _errorCount;
 
-        
-        
-        
+        /// <summary>
+        /// Значение поля "ФЛАГ", формируемого ВСИ сообщения.
+        /// </summary>
         private byte _flag;
 
-        
-        
-        
+        /// <summary>
+        /// Размер(в байтах), формируемого ВСИ сообщения. 
+        /// </summary>
         private short _size = -1;
 
-        
-        
-        
+        /// <summary>
+        /// Значение поля "HI", формируемого ВСИ сообщения.
+        /// </summary>
         private byte _hi;
 
-        
-        
-        
+        /// <summary>
+        /// Формируемое ВСИ сообщение.
+        /// </summary>
         private byte[] _buf;
 
-        
-        
-        
-        
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolHsi" />.
+        /// </summary>
+        /// <param name="dataAddr">Адресный байт: сообщения ВСИ.</param>
         public ProtocolHsi(uint dataAddr)
         {
             _dataAddr = dataAddr;
         }
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Обработка сообщений ВСИ протокола.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="HsiMsgEventArgs"/> instance containing the event data.</param>
         public delegate void HsiMsgEventHandler(object sender, HsiMsgEventArgs e);
 
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [получено сообщений ВСИ].
+        /// </summary>
         public event HsiMsgEventHandler GotHsiMsg;
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [получено сообщение по USB].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="msg">The <see cref="ProtocolMsgEventArgs"/> instance containing the event data.</param>
         public void OnMessageFunc(object sender, ProtocolMsgEventArgs msg)
         {
             new { msg }.CheckNotNull(); 
@@ -146,10 +147,12 @@ namespace EGSE.Protocols
             }                  
         }
 
-        
-        
-        
-                        protected virtual void OnHsiMsg(object sender, HsiMsgEventArgs e)
+        /// <summary>
+        /// Вызывается когда [сформировано сообщение ВСИ].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="HsiMsgEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnHsiMsg(object sender, HsiMsgEventArgs e)
         {
             if (this.GotHsiMsg != null)
             {
@@ -157,130 +160,35 @@ namespace EGSE.Protocols
             }
         }
     }
-    
-                public class HsiMsgEventArgs : MsgBase
+
+    /// <summary>
+    /// Обмен сообщениями по протоколу ВСИ.
+    /// </summary>
+    public class HsiMsgEventArgs : BaseMsgEventArgs
     {
         /// <summary>
-        /// Агрегат доступа к заголовку сообщения ВСИ.
+        /// Агрегат доступа к заголовку ВСИ сообщения.
         /// </summary>
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Hsi
-        {
-            private static readonly BitVector32.Section packStartSection = BitVector32.CreateSection(0xFF);
-            private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0xFF, packStartSection);
-            private static readonly BitVector32.Section lineSection = BitVector32.CreateSection(0x1, flagSection);
-            private static readonly BitVector32.Section sizeHiSection = BitVector32.CreateSection(0x7F, lineSection);
-            private static readonly BitVector32.Section sizeLoSection = BitVector32.CreateSection(0xFF, sizeHiSection);                                                           
-
-            private BitVector32 _header;
-
-            /// <summary>
-            /// Получает или задает флаг ВСИ сообщения.
-            /// </summary>
-            /// <value>
-            /// Значение флага ВСИ сообщения.
-            /// </value>
-            public Type Flag
-            {
-                get
-                {
-                    return (Type)_header[flagSection];
-                }
-
-                set
-                {
-                    _header[flagSection] = (int)value;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает линию приема/передачи ВСИ сообщения.
-            /// </summary>
-            /// <value>
-            /// Линия приема/передачи ВСИ сообщения.
-            /// </value>
-            public HsiLine Line
-            {
-                get
-                {
-                    return (HsiLine)_header[lineSection];
-                }
-
-                set
-                {
-                    _header[lineSection] = (int)value;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает размер(в байтах) ВСИ сообщения.
-            /// </summary>
-            /// <value>
-            /// Размер(в байтах) ВСИ сообщения.
-            /// </value>
-            public int Size
-            {
-                get
-                {
-                    return (_header[sizeHiSection] << 8) | (_header[sizeLoSection]);
-                }
-
-                set
-                {
-                    _header[sizeHiSection] = (value >> 8) & 0x7F;
-                    _header[sizeLoSection] = (byte)value;
-                }
-            }
-        }
-
         private Hsi _info;
 
         /// <summary>
-        /// Получает агрегат доступа к заголовоку ВСИ сообщения.
+        /// Данные ВСИ сообщения.
         /// </summary>
-        /// <value>
-        /// Агрегат доступа к заголовку ВСИ сообщения.
-        /// </value>
-        public Hsi Info 
-        { 
-            get 
-            { 
-                return _info; 
-            } 
-        }
-
         private byte[] _data;
 
         /// <summary>
-        /// Получает данные ВСИ сообщения.
+        /// Инициализирует новый экземпляр класса <see cref="HsiMsgEventArgs" />.
         /// </summary>
-        public new byte[] Data
-        {
-            get
-            {
-                
-                return _data;
-            }
-        }
-
-        public new static bool Test(byte[] data)
-        {
-            return (null != data ? 1 < data.Length : false);
-        }
-
-        
-        
-        
-        
-        
+        /// <param name="data">"сырые" данные ВСИ сообщения.</param>
+        /// <param name="dataLen">Длина ВСИ сообщения.</param>
+        /// <exception cref="System.ContextMarshalException">Если длины сообщения не достаточно для декодирования.</exception>
         public HsiMsgEventArgs(byte[] data, int dataLen)
             : base(data)
         {
-            if ((4 > data.Length) || (4 > base.DataLen))
+            if ((4 > data.Length) || (4 > DataLen))
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallHsiData"));
             }
-
             
             try
             {
@@ -291,9 +199,6 @@ namespace EGSE.Protocols
                 MessageBox.Show(e.Message);
             }
         }
-
-
-
 
         /// <summary>
         /// Линия приема/передачи.
@@ -340,6 +245,136 @@ namespace EGSE.Protocols
             /// Сообщение "метка времени".
             /// </summary>
             Time = 0x05
+        }
+
+        /// <summary>
+        /// Получает агрегат доступа к заголовоку ВСИ сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку ВСИ сообщения.
+        /// </value>
+        public Hsi Info
+        {
+            get
+            {
+                return _info;
+            }
+        }
+
+        /// <summary>
+        /// Получает данные ВСИ сообщения.
+        /// </summary>
+        public new byte[] Data
+        {
+            get
+            {
+                return _data;
+            }
+        }
+
+        /// <summary>
+        /// "Сырая" проверка на принадлежность к ВСИ сообщениям.
+        /// </summary>
+        /// <param name="data">"сырые" данные.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
+        {
+            return null != data ? 1 < data.Length : false;
+        }
+
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения ВСИ.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Hsi
+        {
+            /// <summary>
+            /// Маска поля заголовка: начало сообщения (0xA4).
+            /// </summary>
+            private static readonly BitVector32.Section PackStartSection = BitVector32.CreateSection(0xFF);
+            
+            /// <summary>
+            /// Маска поля заголовка: FLAG.
+            /// </summary>
+            private static readonly BitVector32.Section FlagSection = BitVector32.CreateSection(0xFF, PackStartSection);
+            
+            /// <summary>
+            /// Маска поля заголовка: линия приема сообщения (1 - резервная, 0 - основная).
+            /// </summary>
+            private static readonly BitVector32.Section LineSection = BitVector32.CreateSection(0x1, FlagSection);
+            
+            /// <summary>
+            /// Маска поля заголовка: HI.
+            /// </summary>
+            private static readonly BitVector32.Section SizeHiSection = BitVector32.CreateSection(0x7F, LineSection);
+
+            /// <summary>
+            /// Маска поля заголовка: LO.
+            /// </summary>
+            private static readonly BitVector32.Section SizeLoSection = BitVector32.CreateSection(0xFF, SizeHiSection);
+
+            /// <summary>
+            /// Заголовок ВСИ сообщения.
+            /// </summary>
+            private BitVector32 _header;
+
+            /// <summary>
+            /// Получает или задает флаг ВСИ сообщения.
+            /// </summary>
+            /// <value>
+            /// Значение флага ВСИ сообщения.
+            /// </value>
+            public Type Flag
+            {
+                get
+                {
+                    return (Type)_header[FlagSection];
+                }
+
+                set
+                {
+                    _header[FlagSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает линию приема/передачи ВСИ сообщения.
+            /// </summary>
+            /// <value>
+            /// Линия приема/передачи ВСИ сообщения.
+            /// </value>
+            public HsiLine Line
+            {
+                get
+                {
+                    return (HsiLine)_header[LineSection];
+                }
+
+                set
+                {
+                    _header[LineSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает размер(в байтах) ВСИ сообщения.
+            /// </summary>
+            /// <value>
+            /// Размер(в байтах) ВСИ сообщения.
+            /// </value>
+            public int Size
+            {
+                get
+                {
+                    return (_header[SizeHiSection] << 8) | _header[SizeLoSection];
+                }
+
+                set
+                {
+                    _header[SizeHiSection] = (value >> 8) & 0x7F;
+                    _header[SizeLoSection] = (byte)value;
+                }
+            }
         }
     }
 }

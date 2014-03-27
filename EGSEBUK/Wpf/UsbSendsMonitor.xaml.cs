@@ -8,7 +8,8 @@
 namespace EGSE.Defaults
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Generic; 
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -19,9 +20,8 @@ namespace EGSE.Defaults
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
-    using System.Windows.Shapes;
+    using System.Windows.Shapes;   
     using EGSE.Devices;
-    using System.IO;
 
     /// <summary>
     /// Используется для мониторирования исходящего трафика по USB.
@@ -33,6 +33,9 @@ namespace EGSE.Defaults
         /// </summary>
         private EgseBukNotify _intfEGSE;
 
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="UsbSendsMonitor" />.
+        /// </summary>
         public UsbSendsMonitor()
         {
             InitializeComponent();
@@ -47,6 +50,30 @@ namespace EGSE.Defaults
             _intfEGSE = intfEGSE;
             DataContext = _intfEGSE;
             GridUsbSendsMonitor.DataContext = _intfEGSE.UITestNotify;
+        }
+
+        /// <summary>
+        /// Populates the list.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        internal void PopulateList(string filePath)
+        {
+            List<string> lines = new List<string>();
+            if (!File.Exists(filePath))
+            {
+                Monitor.Items.Add(@"Файл не существует!");
+                return;
+            }
+
+            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var sr = new StreamReader(fs, Encoding.Default))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    Monitor.Items.Add(line);
+                }
+            }
         }
 
         /// <summary>
@@ -80,25 +107,11 @@ namespace EGSE.Defaults
             LastOperationMonitor.Items.Clear();
         }
 
-        internal void PopulateList(string filePath)
-        {
-            List<string> lines = new List<string>();
-            if (!File.Exists(filePath))
-            {
-                Monitor.Items.Add(@"Файл не существует!");
-                return;
-            }
-            using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            using (var sr = new StreamReader(fs, Encoding.Default)) 
-            {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    Monitor.Items.Add(line);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Handles the 2 event of the Button_Click control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             List<string> last = Monitor.Items.Cast<string>().ToList();                                         

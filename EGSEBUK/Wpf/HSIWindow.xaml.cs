@@ -66,11 +66,11 @@ namespace EGSE.Defaults
             string hsiMsg;
             if (msg.Data.Length > 30)
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" +  msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
             }
             else
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" +  msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
             if (null != Monitor && Visibility.Visible == this.Visibility)
@@ -94,11 +94,11 @@ namespace EGSE.Defaults
             string hsiMsg;
             if (msg.Data.Length > 30)
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" +  msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(msg.Data.Skip<byte>(msg.Data.Length - 10).ToArray());
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
             }
             else
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" +  msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
             if (null != Monitor && Visibility.Visible == this.Visibility)

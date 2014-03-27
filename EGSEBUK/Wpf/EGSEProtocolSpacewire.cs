@@ -10,57 +10,60 @@ namespace EGSE.Protocols
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
-    using System.Linq;
+    using System.Linq;   
+    using System.Runtime.InteropServices;
     using System.Text;
     using System.Threading.Tasks;
-    using EGSE.Utilites;
-    using System.Runtime.InteropServices;
     using System.Windows;
-            
+    using EGSE.Utilites;
+
+    /// <summary>
+    /// Обмен сообщениями по протоколу Spacewire.
+    /// </summary>
     public class ProtocolSpacewire
     {
-        
-        
-        
+        /// <summary>
+        /// Адресный байт: данные spacewire.
+        /// </summary>
         private readonly uint _data;
 
-        
-        
-        
+        /// <summary>
+        /// Адресный байт: маркер eop или eep.
+        /// </summary>
         private readonly uint _eop;
 
-        
-        
-        
+        /// <summary>
+        /// Адресный байт: time tick1.
+        /// </summary>               
         private readonly uint _time1;
 
-        
-        
-        
+        /// <summary>
+        /// Адресный байт: time tick2.
+        /// </summary>
         private readonly uint _time2;
 
-        
-        
-        
+        /// <summary>
+        /// Формируемое сообщение spacewire.
+        /// </summary>
         private List<byte> _buf;
 
-        
-        
-        
+        /// <summary>
+        /// Значение поля: TIME TICK1.
+        /// </summary>                
         private byte _currentTime1;
 
-        
-        
-        
+        /// <summary>
+        /// Значение поля: TIME TICK2.
+        /// </summary>
         private byte _currentTime2;
 
-        
-        
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ProtocolSpacewire" />.
+        /// </summary>
+        /// <param name="data">Адресный байт: данные spacewire.</param>
+        /// <param name="eop">Адресный байт: метка EOP.</param>
+        /// <param name="time1">Адресный байт: Time tick 1.</param>
+        /// <param name="time2">Адресный байт: Time tick 2.</param>
         public ProtocolSpacewire(uint data, uint eop, uint time1, uint time2)
         {
             _data = data;
@@ -70,40 +73,41 @@ namespace EGSE.Protocols
             _buf = new List<byte>();
         }
 
-        
-        
-        
-        
-        
-        public delegate void SpacewireMsgEventHandler(object sender, MsgBase e);
+        /// <summary>
+        /// Обработка spacewire-сообщений.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="BaseMsgEventArgs"/> instance containing the event data.</param>
+        public delegate void SpacewireMsgEventHandler(object sender, BaseMsgEventArgs e);
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Обработка time-tick-сообщений.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SpacewireTimeTickMsgEventArgs"/> instance containing the event data.</param>
         public delegate void SpacewireTimeTickMsgEventHandler(object sender, SpacewireTimeTickMsgEventArgs e);
 
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [получено spacewire-сообщение].
+        /// </summary>
         public event SpacewireMsgEventHandler GotSpacewireMsg;
 
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [получено timetick-сообщение по 1 адресу].
+        /// </summary>
         public event SpacewireTimeTickMsgEventHandler GotSpacewireTimeTick1Msg;
 
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [получено timetick-сообщение по 2 адресу].
+        /// </summary>     
         public event SpacewireTimeTickMsgEventHandler GotSpacewireTimeTick2Msg;
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [получено сообщение по USB].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="msg">The <see cref="ProtocolMsgEventArgs"/> instance containing the event data.</param>
+        /// <exception cref="System.ContextMarshalException">Не удалось "опознать" spacewire сообщение.</exception>
         public void OnMessageFunc(object sender, ProtocolMsgEventArgs msg)
         {
             if (msg != null)
@@ -117,7 +121,7 @@ namespace EGSE.Protocols
                 }
                 else if (_eop == msg.Addr)
                 {
-                    MsgBase pack = null;                  
+                    BaseMsgEventArgs pack = null;                  
                     byte[] arr = _buf.ToArray();
                     try
                     {
@@ -155,6 +159,7 @@ namespace EGSE.Protocols
                     {
                         OnSpacewireMsg(this, pack);
                     }
+
                     _buf.Clear();
                 }
                 else if (_time1 == msg.Addr)
@@ -170,12 +175,12 @@ namespace EGSE.Protocols
             }
         }
 
-        
-        
-        
-        
-        
-        protected virtual void OnSpacewireMsg(object sender, MsgBase e)
+        /// <summary>
+        /// Вызывается когда [сформировано spacewire-сообщение].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="BaseMsgEventArgs"/> instance containing the event data.</param>
+        protected virtual void OnSpacewireMsg(object sender, BaseMsgEventArgs e)
         {
             if (this.GotSpacewireMsg != null)
             {
@@ -183,11 +188,11 @@ namespace EGSE.Protocols
             }
         }
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [сформировано timetick-сообщение по первому адресу.].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SpacewireTimeTickMsgEventArgs"/> instance containing the event data.</param>
         protected virtual void OnTimeTick1Msg(object sender, SpacewireTimeTickMsgEventArgs e)
         {
             if (this.GotSpacewireTimeTick1Msg != null)
@@ -196,11 +201,11 @@ namespace EGSE.Protocols
             }
         }
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Вызывается когда [сформировано timetick-сообщение по второму адресу.].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="SpacewireTimeTickMsgEventArgs"/> instance containing the event data.</param>                          
         protected virtual void OnTimeTick2Msg(object sender, SpacewireTimeTickMsgEventArgs e)
         {
             if (this.GotSpacewireTimeTick2Msg != null)
@@ -210,233 +215,46 @@ namespace EGSE.Protocols
         }
     }
 
-    
-    
-    
+    /// <summary>
+    /// Обмен сообщениями по протоколу Icd.
+    /// </summary>
     public class SpacewireIcdMsgEventArgs : SpacewireSptpMsgEventArgs
     {
         /// <summary>
-        /// Агрегат доступа к заголовку сообщения Icd.
+        /// Агрегат доступа к заголовку icd-сообщения.
         /// </summary>
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Icd
-        {
-            private static readonly BitVector32.Section apidHiSection = BitVector32.CreateSection(0x07);
-            private static readonly BitVector32.Section flagSection = BitVector32.CreateSection(0x01, apidHiSection);
-            private static readonly BitVector32.Section typeSection = BitVector32.CreateSection(0x01, flagSection);
-            private static readonly BitVector32.Section versionSection = BitVector32.CreateSection(0x07, typeSection);
-            private static readonly BitVector32.Section apidLoSection = BitVector32.CreateSection(0xFF, versionSection);
-            private static readonly BitVector32.Section counterHiSection = BitVector32.CreateSection(0x3F, apidLoSection);
-            private static readonly BitVector32.Section segmentSection = BitVector32.CreateSection(0x03, counterHiSection);
-            private static readonly BitVector32.Section counterLoSection = BitVector32.CreateSection(0xFF, segmentSection);
-
-            private SpacewireSptpMsgEventArgs.Sptp _sptpHeader;
-
-            internal BitVector32 _header;
-
-            private ushort _size;
-
-            /// <summary>
-            /// Получает или задает агрегат доступа к заголовку sptp сообщения.
-            /// </summary>
-            /// <value>
-            /// Агрегат доступа к заголовку sptp сообщения.
-            /// </value>
-            public SpacewireSptpMsgEventArgs.Sptp SptpInfo
-            {
-                get
-                {
-                    return _sptpHeader;
-                }
-
-                set
-                {
-                    _sptpHeader = value;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает icd-поле "номер версии".
-            /// </summary>
-            /// <value>
-            /// Значение icd-поля "номер версии".
-            /// </value>
-            public byte Version
-            {
-                get
-                {
-                    return (byte)_header[versionSection];
-                }
-
-                set
-                {
-                    _header[versionSection] = (int)value;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает icd-поле "тип".
-            /// </summary>
-            /// <value>
-            /// Значение icd-поля "тип".
-            /// </value>
-            public IcdType Type
-            {
-                get
-                {
-                    return (IcdType)_header[typeSection];
-                }
-
-                set
-                {
-                    _header[typeSection] = (int)value;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает icd-поле "флаг заголовка данных".
-            /// </summary>
-            /// <value>
-            /// Значение icd-поля "флаг заголовка данных".
-            /// </value>
-            public IcdFlag Flag
-            {
-                get
-                {
-                    return (IcdFlag)_header[flagSection];
-                }
-
-                set
-                {
-                    _header[flagSection] = (int)value;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает icd-поле "APID".
-            /// </summary>
-            /// <value>
-            /// Значение icd-поля "APID".
-            /// </value>
-            public short Apid
-            {
-                get
-                {
-                    return (short)((_header[apidHiSection] << 8) | _header[apidLoSection]);
-                }
-
-                set
-                {
-                    _header[apidLoSection] = (byte)value;
-                    _header[apidHiSection] = (byte)(value >> 8);
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает icd-поле "флаг сегментации".
-            /// </summary>
-            /// <value>
-            /// Значение icd-поля "флаг сегментации".
-            /// </value>
-            public byte Segment
-            {
-                get
-                {
-                    return (byte)_header[segmentSection];
-                }
-
-                set
-                {
-                    _header[segmentSection] = (int)value;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает icd-поле "счетчик последовательности".
-            /// </summary>
-            /// <value>
-            /// Значение icd-поля "счетчик последовательности".
-            /// </value>
-            public short Counter
-            {
-                get
-                {
-                    return (short)((_header[counterHiSection] << 8) | _header[counterLoSection]);
-                }
-
-                set
-                {
-                    _header[counterLoSection] = (byte)value;
-                    _header[counterHiSection] = (byte)(value >> 8);
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает icd-поле "длина поля данных".
-            /// </summary>
-            /// <value>
-            /// Значение icd-поля "длина поля данных".
-            /// </value>
-            public ushort Size
-            {
-                get
-                {
-                    return (ushort)((_size >> 8) | (_size << 8));
-                }
-
-                set
-                {
-                    _size = (ushort)((value >> 8) | (value << 8));
-                }
-            }
-
-            public override string ToString()
-            {
-                return string.Format(Resource.Get(@"stIcdStringExt"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo);
-            }
-
-            public string ToString(bool extended)
-            {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo.ToString(extended));
-            }
-        }
-
         private Icd _icdInfo;
 
-        public new static bool Test(byte[] data)
-        {
-            return (null != data ? 9 < data.Length : false);
-        }
-
         /// <summary>
-        /// Получает истинное значение CRC для текущего сообщения.
+        /// Данные icd-сообщения.
         /// </summary>
-        /// <value>
-        /// Истинное значение CRC для текущего сообщения.
-        /// </value>
-        protected override ushort NeededCrc
-        {
-            get
-            {
-                return base.NeededCrc;
-            }
-        }
-
-        /// <summary>
-        /// Получает агрегат доступа к заголовку icd сообщения.
-        /// </summary>
-        /// <value>
-        /// Агрегат доступа к заголовку icd сообщения.
-        /// </value>
-        public Icd IcdInfo
-        {
-            get
-            {
-                return _icdInfo;
-            }
-        }
-
         private byte[] _data;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireIcdMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
+        public SpacewireIcdMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data, time1, time2, error)
+        {
+            if (10 > data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireIcdData"));
+            }
+            
+            try
+            {
+                _icdInfo = Converter.MarshalTo<Icd>(data, out _data);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
 
         /// <summary>
         /// Тип сообщения Icd.
@@ -480,42 +298,55 @@ namespace EGSE.Protocols
         {
             get
             {
-                
                 return _data;
             }
         }
 
-        
-        
-        
-        
-        
-        
-        
-        public SpacewireIcdMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
+        /// <summary>
+        /// Получает агрегат доступа к заголовку icd сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку icd сообщения.
+        /// </value>
+        public Icd IcdInfo
         {
-            if (10 > data.Length)
+            get
             {
-                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireIcdData"));
-            }
-
-            
-            try
-            {
-                _icdInfo = Converter.MarshalTo<Icd>(data, out _data);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
+                return _icdInfo;
             }
         }
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Получает истинное значение CRC для текущего сообщения.
+        /// </summary>
+        /// <value>
+        /// Истинное значение CRC для текущего сообщения.
+        /// </value>
+        protected override ushort NeededCrc
+        {
+            get
+            {
+                return base.NeededCrc;
+            }
+        }
+
+        /// <summary>
+        /// "Сырая" проверка на принадлежность к Icd-сообщению.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
+        {
+            return null != data ? 9 < data.Length : false;
+        }
+
+        /// <summary>
+        /// Преобразует массив байт к целому.
+        /// TODO что-то не понял зачем сделал len!!!
+        /// </summary>
+        /// <param name="array">Массив байт.</param>
+        /// <param name="len">Количество учитываемых байт от начала массива.</param>
+        /// <returns>Полученное целое, знаковое.</returns>
         public static int ConvertToInt(byte[] array, int len = 0)
         {
             if (0 == len)
@@ -534,29 +365,384 @@ namespace EGSE.Protocols
             return result;
         }
 
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Получить "сырое" представление посылки.
+        /// </summary>
+        /// <returns>Массив байт.</returns>
         public override byte[] ToArray()
         {
             return base.ToArray();
         }
+
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения Icd.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Icd
+        {
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: APID.
+            /// </summary>
+            private static readonly BitVector32.Section ApidHiSection = BitVector32.CreateSection(0x07);
+
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: Флаг заголовка данных.
+            /// </summary>
+            private static readonly BitVector32.Section FlagSection = BitVector32.CreateSection(0x01, ApidHiSection);
+
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: Тип.
+            /// </summary>
+            private static readonly BitVector32.Section TypeSection = BitVector32.CreateSection(0x01, FlagSection);
+
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: Номер версии.
+            /// </summary>
+            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, TypeSection);
+
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: APID.
+            /// </summary>
+            private static readonly BitVector32.Section ApidLoSection = BitVector32.CreateSection(0xFF, VersionSection);
+
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: Счетчик последовательности.
+            /// </summary>
+            private static readonly BitVector32.Section CounterHiSection = BitVector32.CreateSection(0x3F, ApidLoSection);
+
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: Флаг сегментации.
+            /// </summary>
+            private static readonly BitVector32.Section SegmentSection = BitVector32.CreateSection(0x03, CounterHiSection);
+
+            /// <summary>
+            /// Маска поля заголовка: идентификатор пакета: Счетчик последовательности.
+            /// </summary>
+            private static readonly BitVector32.Section CounterLoSection = BitVector32.CreateSection(0xFF, SegmentSection);
+
+            /// <summary>
+            /// Агрегат доступа к заголовку sptp-сообщения.
+            /// </summary>
+            private SpacewireSptpMsgEventArgs.Sptp _sptpHeader;
+
+            /// <summary>
+            /// Заголовок icd.
+            /// </summary>
+            private BitVector32 _header;
+
+            /// <summary>
+            /// Размер поля данных icd.
+            /// </summary>
+            private ushort _size;
+
+            /// <summary>
+            /// Получает или задает агрегат доступа к заголовку sptp сообщения.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку sptp сообщения.
+            /// </value>
+            public SpacewireSptpMsgEventArgs.Sptp SptpInfo
+            {
+                get
+                {
+                    return _sptpHeader;
+                }
+
+                set
+                {
+                    _sptpHeader = value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает icd-поле "номер версии".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "номер версии".
+            /// </value>
+            public byte Version
+            {
+                get
+                {
+                    return (byte)_header[VersionSection];
+                }
+
+                set
+                {
+                    _header[VersionSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает icd-поле "тип".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "тип".
+            /// </value>
+            public IcdType Type
+            {
+                get
+                {
+                    return (IcdType)_header[TypeSection];
+                }
+
+                set
+                {
+                    _header[TypeSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает icd-поле "флаг заголовка данных".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "флаг заголовка данных".
+            /// </value>
+            public IcdFlag Flag
+            {
+                get
+                {
+                    return (IcdFlag)_header[FlagSection];
+                }
+
+                set
+                {
+                    _header[FlagSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает icd-поле "APID".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "APID".
+            /// </value>
+            public short Apid
+            {
+                get
+                {
+                    return (short)((_header[ApidHiSection] << 8) | _header[ApidLoSection]);
+                }
+
+                set
+                {
+                    _header[ApidLoSection] = (byte)value;
+                    _header[ApidHiSection] = (byte)(value >> 8);
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает icd-поле "флаг сегментации".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "флаг сегментации".
+            /// </value>
+            public byte Segment
+            {
+                get
+                {
+                    return (byte)_header[SegmentSection];
+                }
+
+                set
+                {
+                    _header[SegmentSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает icd-поле "счетчик последовательности".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "счетчик последовательности".
+            /// </value>
+            public short Counter
+            {
+                get
+                {
+                    return (short)((_header[CounterHiSection] << 8) | _header[CounterLoSection]);
+                }
+
+                set
+                {
+                    _header[CounterLoSection] = (byte)value;
+                    _header[CounterHiSection] = (byte)(value >> 8);
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает icd-поле "длина поля данных".
+            /// </summary>
+            /// <value>
+            /// Значение icd-поля "длина поля данных".
+            /// </value>
+            public ushort Size
+            {
+                get
+                {
+                    return (ushort)((_size >> 8) | (_size << 8));
+                }
+
+                set
+                {
+                    _size = (ushort)((value >> 8) | (value << 8));
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает заголовок Icd сообщения.
+            /// </summary>
+            /// <value>
+            /// Заголовок Icd сообщения.
+            /// </value>
+            public BitVector32 Header
+            {
+                get
+                {
+                    return _header;
+                }
+
+                set
+                {
+                    _header = value;
+                }
+            }
+
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
+            public override string ToString()
+            {
+                return string.Format(Resource.Get(@"stIcdStringExt"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo);
+            }
+
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <param name="extended">if set to <c>true</c> [extended].</param>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
+            public string ToString(bool extended)
+            {
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo.ToString(extended));
+            }
+        }
     }
 
-    
-    
-    
+    /// <summary>
+    /// Обмен сообщениями КБВ по протоколу Spacewire.
+    /// </summary>
     public class SpacewireObtMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        /// <summary>
+        /// Агрегат доступа к заголовку кбв сообщения.
+        /// </summary>
+        private Obt _obtInfo;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireObtMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
+        public SpacewireObtMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data, time1, time2, error)
+        {
+            if (16 != data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSpacewireObtData"));
+            }
+            
+            try
+            {
+                byte[] nop;
+                _obtInfo = Converter.MarshalTo<Obt>(data, out nop);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Получает агрегат доступа к заголовку obt сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку obt сообщения.
+        /// </value>
+        public Obt ObtInfo
+        {
+            get
+            {
+                return _obtInfo;
+            }
+        }
+
+        /// <summary>
+        /// Проверка на принадлежность к КБВ-сообщению.
+        /// </summary>
+        /// <param name="data">"сырые" данные посылки.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
+        {
+            if (null != data ? 16 == data.Length : false)
+            {
+                byte[] raw = data.Skip(4).Take(4).ToArray();
+                BitVector32 head = new BitVector32(ConvertToInt(raw));
+                Icd icdInfo = new Icd();
+                icdInfo.Header = head;
+                return icdInfo.Version == 0
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderEmpty;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Получить "сырое" представление посылки.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
+        public override byte[] ToArray()
+        {
+            return base.ToArray();
+        }
+
         /// <summary>
         /// Агрегат доступа к заголовку сообщения Obt(код бортового времени).
         /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Obt
-        {          
+        {
+            /// <summary>
+            /// Агрегат доступа к заголовку icd.
+            /// </summary>
             private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+
+            /// <summary>
+            /// Значение поля Р: нормальное.
+            /// </summary>
+            private byte _normal;
+
+            /// <summary>
+            /// Значение поля Р: расширенное.
+            /// </summary>
+            private byte _extended;
+
+            /// <summary>
+            /// Значение поля Т: КБВ.
+            /// </summary>
+            private uint _obt;
 
             /// <summary>
             /// Получает или задает агрегат доступа к заголовку icd сообщения.
@@ -576,12 +762,6 @@ namespace EGSE.Protocols
                     _icdHeader = value;
                 }
             }
-
-            private byte _normal;
-
-            private byte _extended;
-
-            private uint _obt;
 
             /// <summary>
             /// Получает или задает obt-поле "Поле P: нормальное".
@@ -640,43 +820,42 @@ namespace EGSE.Protocols
                 }
             }
         }
+    }
 
-        private Obt _obtInfo;
+    /// <summary>
+    /// Обмен сообщениями телеметрии по протоколу Spacewire.
+    /// </summary>
+    public class SpacewireTmMsgEventArgs : SpacewireIcdMsgEventArgs
+    {
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения телеметрии.
+        /// </summary>
+        private Tm _telemetroInfo;
 
         /// <summary>
-        /// Получает агрегат доступа к заголовку obt сообщения.
+        /// Данные сообщения телеметрии.
         /// </summary>
-        /// <value>
-        /// Агрегат доступа к заголовку obt сообщения.
-        /// </value>
-        public Obt ObtInfo
-        {
-            get
-            {
-                return _obtInfo;
-            }
-        }
+        private byte[] _data;
 
-        
-        
-        
-        
-        
-        
-        
-        public SpacewireObtMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTmMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
+        public SpacewireTmMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
-            if (16 != data.Length)
+            if (16 > data.Length)
             {
-                throw new ContextMarshalException(Resource.Get(@"eSpacewireObtData"));
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTmData"));
             }
 
-            
             try
             {
-                byte[] nop;
-                _obtInfo = Converter.MarshalTo<Obt>(data, out nop);
+                _telemetroInfo = Converter.MarshalTo<Tm>(data, out _data);
             }
             catch (Exception e)
             {
@@ -684,17 +863,78 @@ namespace EGSE.Protocols
             }
         }
 
-        public new static bool Test(byte[] data)
+        /// <summary>
+        /// Получает агрегат доступа к заголовку tm сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку tm сообщения.
+        /// </value>
+        public Tm TmInfo
         {
-            if (null != data ? 16 == data.Length : false)
+            get
+            {
+                return _telemetroInfo;
+            }
+        }
+
+        /// <summary>
+        /// Получает данные сообщения телеметрии.
+        /// </summary>
+        /// <value>
+        /// Данные сообщения телеметрии.
+        /// </value>
+        public new byte[] Data
+        {
+            get
+            {
+                return _data.Take(_data.Length - 2).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Получает значение CRC из сообщения.
+        /// </summary>
+        /// <value>
+        /// Значение CRC из сообщения.
+        /// </value>
+        public ushort Crc
+        {
+            get
+            {
+                return (ushort)((_data[_data.Length - 2] << 8) | _data[_data.Length - 1]);
+            }
+        }
+
+        /// <summary>
+        /// Получает истинное значение CRC для текущего сообщения.
+        /// </summary>
+        /// <value>
+        /// Истинное значение CRC для текущего сообщения.
+        /// </value>
+        public new ushort NeededCrc
+        {
+            get
+            {
+                return base.NeededCrc;
+            }
+        }
+
+        /// <summary>
+        /// Проверка на принадлежность к сообщению телеметрии.
+        /// </summary>
+        /// <param name="data">"сырые" данные посылки.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
+        {
+            if (null != data ? 9 < data.Length : false)
             {
                 byte[] raw = data.Skip(4).Take(4).ToArray();
                 BitVector32 head = new BitVector32(ConvertToInt(raw));
                 Icd icdInfo = new Icd();
-                icdInfo._header = head;
+                icdInfo.Header = head;
                 return icdInfo.Version == 0
-                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
-                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderEmpty;
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill;
             }
             else
             {
@@ -702,30 +942,31 @@ namespace EGSE.Protocols
             }
         }
 
-        
-        
-        
-        
-     
+        /// <summary>
+        /// Получить "сырое" представление посылки.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
         public override byte[] ToArray()
         {
             return base.ToArray();
         }
-    }
 
-    
-    
-    
-    public class SpacewireTmMsgEventArgs : SpacewireIcdMsgEventArgs
-    {
         /// <summary>
         /// Агрегат доступа к заголовку сообщения Tm(телеметрии).
         /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tm
         {
+            /// <summary>
+            /// Агрегат доступа к заголовку icd.
+            /// </summary>
             private SpacewireIcdMsgEventArgs.Icd _icdHeader;
 
+            /// <summary>
+            /// Заголовок сообщения телеметрии.
+            /// </summary>
             private BitVector32 _header;
 
             /// <summary>
@@ -747,196 +988,59 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
             public override string ToString()
             {
                 return string.Format(Resource.Get(@"stTmStringExt"), IcdInfo);
             }
 
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <param name="extended">if set to <c>true</c> [extended].</param>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
             public string ToString(bool extended)
             {
                 return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), IcdInfo);
             }
-
-        }
-
-        private Tm _tmInfo;
-
-        private byte[] _data;
-
-        /// <summary>
-        /// Получает агрегат доступа к заголовку tm сообщения.
-        /// </summary>
-        /// <value>
-        /// Агрегат доступа к заголовку tm сообщения.
-        /// </value>
-        public Tm TmInfo
-        {
-            get
-            {
-                return _tmInfo;
-            }
-        }
-
-        public new byte[] Data
-        {
-            get
-            {
-                return _data.Take(_data.Length - 2).ToArray();
-            }
-        }
-                
-     
-        public SpacewireTmMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
-        {
-            if (16 > data.Length)
-            {
-                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTmData"));
-            }
-
-
-            try
-            {
-                _tmInfo = Converter.MarshalTo<Tm>(data, out _data);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }
-
-        public new static bool Test(byte[] data)
-        {
-            if (null != data ? 9 < data.Length : false)
-            {
-                byte[] raw = data.Skip(4).Take(4).ToArray();
-                BitVector32 head = new BitVector32(ConvertToInt(raw));
-                Icd icdInfo = new Icd();
-                icdInfo._header = head;
-                return icdInfo.Version == 0
-                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
-                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public ushort Crc
-        {
-            get
-            {
-                return (ushort)((_data[_data.Length - 2] << 8) | (_data[_data.Length - 1]));
-            }
-        }
-
-        public new ushort NeededCrc
-        {
-            get
-            {
-                return base.NeededCrc;
-            }
-        }
-        
-        
-        
-        
-        
-        
-        public override byte[] ToArray()
-        {
-            return base.ToArray();
-        }
-
-        public bool CrcCheck()
-        {
-            return false;
         }
     }
 
-    
-    
-    
+    /// <summary>
+    /// Обмен сообщениями телекоманд по протоколу Spacewire.
+    /// </summary>
     public class SpacewireTkMsgEventArgs : SpacewireIcdMsgEventArgs
     {
         /// <summary>
-        /// Агрегат доступа к заголовку сообщения Tk(телекоманды).
+        /// Для счетчика последовательности телекоманд.
         /// </summary>
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Tk
-        {
-            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+        private static Dictionary<short, AutoCounter> _dict;
 
-            private BitVector32 _header;
+        /// <summary>
+        /// Агрегат доступа к заголовку телекоманды.
+        /// </summary>
+        private Tk _telecmdInfo;
 
-            public SpacewireIcdMsgEventArgs.Icd IcdInfo
-            {
-                get
-                {
-                    return _icdHeader;
-                }
-
-                set
-                {
-                    _icdHeader = value;
-                }
-            }
-
-            public override string ToString()
-            {
-                return string.Format(Resource.Get(@"stTkStringExt"), IcdInfo);
-            }
-
-            public string ToString(bool extended)
-            {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), IcdInfo.ToString(extended));
-            }
-        }
-
-        private Tk _tkInfo;
-
+        /// <summary>
+        /// Данные телекоманды.
+        /// </summary>
         private byte[] _data;
 
-        public Tk TkInfo
-        {
-            get
-            {
-                return _tkInfo;
-            }
-        }
-
-        public new byte[] Data
-        {
-            get
-            {
-                
-                return _data.Take(_data.Length - 2).ToArray();
-            }
-        }
-
-        public ushort Crc
-        {
-            get
-            {
-                return (ushort)((_data[_data.Length - 2] << 8) | (_data[_data.Length - 1]));
-            }
-        }
-
-        public new ushort NeededCrc
-        {
-            get
-            {
-                return base.NeededCrc;
-            }
-        }
-
-        
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTkMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
         public SpacewireTkMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
@@ -944,11 +1048,10 @@ namespace EGSE.Protocols
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTkData"));
             }
-
             
             try
             {
-                _tkInfo = Converter.MarshalTo<Tk>(data, out _data);
+                _telecmdInfo = Converter.MarshalTo<Tk>(data, out _data);
             }
             catch (Exception e)
             {
@@ -956,14 +1059,75 @@ namespace EGSE.Protocols
             }
         }
 
-        public new static bool Test(byte[] data)
+        /// <summary>
+        /// Получает агрегат доступа к заголовку сообщения телекоманды.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку сообщения телекоманды.
+        /// </value>
+        public Tk TkInfo
+        {
+            get
+            {
+                return _telecmdInfo;
+            }
+        }
+
+        /// <summary>
+        /// Получает данные сообщения телекоманды.
+        /// </summary>
+        /// <value>
+        /// Данные сообщения телекоманды.
+        /// </value>
+        public new byte[] Data
+        {
+            get
+            {
+                return _data.Take(_data.Length - 2).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Получает значение CRC из сообщения.
+        /// </summary>
+        /// <value>
+        /// Значение CRC из сообщения.
+        /// </value>
+        public ushort Crc
+        {
+            get
+            {
+                return (ushort)((_data[_data.Length - 2] << 8) | _data[_data.Length - 1]);
+            }
+        }
+
+        /// <summary>
+        /// Получает истинное значение CRC для текущего сообщения.
+        /// </summary>
+        /// <value>
+        /// Истинное значение CRC для текущего сообщения.
+        /// </value>
+        public new ushort NeededCrc
+        {
+            get
+            {
+                return base.NeededCrc;
+            }
+        }
+
+        /// <summary>
+        /// Проверка на принадлежность к сообщению телекоманды.
+        /// </summary>
+        /// <param name="data">"сырые" данные посылки.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
         {
             if (null != data ? 9 < data.Length : false)
             {
                 byte[] raw = data.Skip(4).Take(4).ToArray();
                 BitVector32 head = new BitVector32(ConvertToInt(raw));
                 Icd icdInfo = new Icd();
-                icdInfo._header = head;
+                icdInfo.Header = head;
                 return icdInfo.Version == 0
                        && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
                        && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill;
@@ -971,11 +1135,17 @@ namespace EGSE.Protocols
             else
             {
                 return false;
-            }       
+            }
         }
 
-        private static Dictionary<short, AutoCounter> _dict;
-
+        /// <summary>
+        /// Формирует телекоманду в виде посылки.
+        /// </summary>
+        /// <param name="data">Данные телекоманды.</param>
+        /// <param name="to">Адрес прибора назначения.</param>
+        /// <param name="from">Адрес прибора инициатора.</param>
+        /// <param name="apid">Apid прибора назначения.</param>
+        /// <returns>Сформированное spacewire-сообщение телекоманды.</returns>
         public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, short apid)
         {
             if (null == _dict)
@@ -998,15 +1168,16 @@ namespace EGSE.Protocols
             icdInfo.SptpInfo = sptpInfo;
             icdInfo.Size = (ushort)data.Length;
             if (!_dict.ContainsKey(apid))
-                {
-                   _dict.Add(apid, new AutoCounter());
-                }            
+            {
+                _dict.Add(apid, new AutoCounter());
+            }
+
             icdInfo.Counter = (short)_dict[apid];
 
-            Tk tkInfo = new Tk();
-            tkInfo.IcdInfo = icdInfo;
+            Tk telecmdInfo = new Tk();
+            telecmdInfo.IcdInfo = icdInfo;
 
-            byte[] rawData = Converter.MarshalFrom<Tk>(tkInfo, ref data);
+            byte[] rawData = Converter.MarshalFrom<Tk>(telecmdInfo, ref data);
 
             ushort crc = Crc16.Get(rawData, rawData.Length, 4);
             Array.Resize(ref rawData, rawData.Length + 2);
@@ -1015,27 +1186,115 @@ namespace EGSE.Protocols
             return new SpacewireTkMsgEventArgs(rawData, 0x00, 0x00);
         }
 
-        
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Получить "сырое" представление посылки.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
         public override byte[] ToArray()
         {
             return base.ToArray();
-        }        
+        }  
+
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения Tk(телекоманды).
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Tk
+        {
+            /// <summary>
+            /// Агрегат доступа к icd заголовку.
+            /// </summary>
+            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+
+            /// <summary>
+            /// Заголовок телекоманды.
+            /// </summary>
+            private BitVector32 _header;
+
+            /// <summary>
+            /// Получает или задает агрегат доступа к заголовку icd.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку icd.
+            /// </value>
+            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            {
+                get
+                {
+                    return _icdHeader;
+                }
+
+                set
+                {
+                    _icdHeader = value;
+                }
+            }
+
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
+            public override string ToString()
+            {
+                return string.Format(Resource.Get(@"stTkStringExt"), IcdInfo);
+            }
+
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <param name="extended">if set to <c>true</c> [extended].</param>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
+            public string ToString(bool extended)
+            {
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), IcdInfo.ToString(extended));
+            }
+        }      
     }
 
-    public class SpacewireErrorMsgEventArgs : MsgBase
+    /// <summary>
+    /// Обмен сообщениями об ошибках по протоколу Spacewire.
+    /// </summary>
+    public class SpacewireErrorMsgEventArgs : BaseMsgEventArgs
     {
-        private  string _errorMsg;
+        /// <summary>
+        /// Сообщение об ошибке.
+        /// </summary>
+        private string _errorMsg;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireErrorMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <param name="msg">Сообщение об ошибке.</param>
         public SpacewireErrorMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00, string msg = null)
             : base(data)
         {
-             _errorMsg = (null == msg ? string.Empty : msg);   
+             _errorMsg = null == msg ? string.Empty : msg;   
         }
 
+        /// <summary>
+        /// Получает длину сообщения.
+        /// </summary>
+        public new int DataLen
+        {
+            get
+            {
+                return base.DataLen;
+            }
+        }
+
+        /// <summary>
+        /// Получает данные сообщения.
+        /// </summary>
         public new byte[] Data
         {
             get
@@ -1044,135 +1303,39 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Сообщение об ошибке.
+        /// </summary>
+        /// <returns>Строка сообщения об ошибке.</returns>
         public string ErrorMessage()
         {
             return _errorMsg;
         }
-
-        public new int DataLen
-        {
-            get
-            {
-                return base.DataLen;
-            }
-        }
     }
 
-    
-    
-    
-    public class SpacewireSptpMsgEventArgs : MsgBase
+    /// <summary>
+    /// Обмен сообщениями по протоколу Sptp.
+    /// </summary>
+    public class SpacewireSptpMsgEventArgs : BaseMsgEventArgs
     {
         /// <summary>
-        /// Агрегат доступа к заголовку сообщения Sptp.
+        /// Агрегат доступа к заголовку sptp-сообщения.
         /// </summary>
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct Sptp
-        {
-            private static readonly BitVector32.Section toSection = BitVector32.CreateSection(0xFF);
-            private static readonly BitVector32.Section protocolIdSection = BitVector32.CreateSection(0xFF, toSection);
-            private static readonly BitVector32.Section msgTypeSection = BitVector32.CreateSection(0xFF, protocolIdSection);
-            private static readonly BitVector32.Section fromSection = BitVector32.CreateSection(0xFF, msgTypeSection);
-
-            private BitVector32 _header;
-
-            public byte To
-            {
-                get 
-                {
-                    return (byte)_header[toSection];
-                }
-
-                set
-                {
-                    _header[toSection] = (int)value;
-                }
-            }
-
-            public SptpProtocol ProtocolId 
-            {
-                get
-                {
-                    return (SptpProtocol)_header[protocolIdSection];
-                }
-
-                set
-                {
-                    _header[protocolIdSection] = (int)value;
-                }
-            }
-
-            public SptpType MsgType
-            {
-                get
-                {
-                    return (SptpType)_header[msgTypeSection];
-                }
-
-                set
-                {
-                    _header[msgTypeSection] = (int)value;
-                }
-            }
-
-            public byte From
-            {
-                get
-                {
-                    return (byte)_header[fromSection];
-                }
-
-                set
-                {
-                    _header[fromSection] = (int)value;
-                }
-            }
-
-            public override string ToString()
-            {
-                return string.Format(Resource.Get(@"stSptpStringExt"), To, ProtocolId, MsgType, From);
-            }
-
-            public string ToString(bool extended)
-            {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stSptpString"), To, ProtocolId, MsgType, From);
-            }
-        }
-
         private Sptp _sptpInfo;
 
-        public Sptp SptpInfo
-        {
-            get
-            {
-                return _sptpInfo;
-            }
-        }
-
+        /// <summary>
+        /// Данные сообщения.
+        /// </summary>
         private byte[] _data;
 
-        public new byte[] Data
-        {
-            get
-            {
-                
-                return _data;
-            }
-        }
-
-        protected override ushort NeededCrc
-        {
-            get
-            {
-                return Crc16.Get(Data, Data.Length - 2);
-            }
-        }
-
-        public new static bool Test(byte[] data)
-        {
-            return (null != data ? 3 < data.Length : false);
-        }
-
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
         public SpacewireSptpMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data)
         {
@@ -1180,7 +1343,6 @@ namespace EGSE.Protocols
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
             }
-
             
             try
             { 
@@ -1191,20 +1353,6 @@ namespace EGSE.Protocols
                 MessageBox.Show(e.Message);
             }
         }
-
-        public static SpacewireSptpMsgEventArgs GetNew(byte[] data, byte to, byte from)
-        {
-            Sptp sptpInfo = new Sptp();
-            sptpInfo.From = from;
-            sptpInfo.MsgType = SptpType.Data;
-            sptpInfo.ProtocolId = SptpProtocol.Standard;
-            sptpInfo.To = to;
-
-            byte[] rawData = Converter.MarshalFrom<Sptp>(sptpInfo, ref data);
-
-            return new SpacewireSptpMsgEventArgs(rawData, 0x00, 0x00);
-        }
-
 
         /// <summary>
         /// Протокол сообщения sptp.
@@ -1231,88 +1379,267 @@ namespace EGSE.Protocols
             /// Сообщение "предоставление квоты".
             /// </summary>
             Reply = 0xC0,
-            
+
             /// <summary>
             /// Сообщение "передача данных".
             /// </summary>                        
             Data = 0x00
         }
 
-        
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Получает агрегат доступа к заголовку Sptp.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку Sptp.
+        /// </value>
+        public Sptp SptpInfo
+        {
+            get
+            {
+                return _sptpInfo;
+            }
+        }
+
+        /// <summary>
+        /// Получает данные сообщения.
+        /// </summary>
+        public new byte[] Data
+        {
+            get
+            {
+                return _data;
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение поля: ERROR.
+        /// </summary>
+        /// <value>
+        /// Значение поля: ERROR.
+        /// </value>
         public byte Error { get; set; }
 
-        
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Получает или задает значение поля: TIMETICK1.
+        /// </summary>
+        /// <value>
+        /// Значение поля: TIMETICK1.
+        /// </value>
         public byte Time1 { get; set; }
 
-        
-        
-        
-        
-        
-        
+        /// <summary>
+        /// Получает или задает значение поля: TIMETICK2.
+        /// </summary>
+        /// <value>
+        /// Значение поля: TIMETICK2.
+        /// </value>
         public byte Time2 { get; set; }
 
-        
-        
-        
-        
+        /// <summary>
+        /// Получает значение CRC, сгенерированного для данного сообщения.
+        /// </summary>
+        /// <value>
+        /// Значение CRC, сгенерированного для данного сообщения.
+        /// </value>
+        protected override ushort NeededCrc
+        {
+            get
+            {
+                return Crc16.Get(Data, Data.Length - 2);
+            }
+        }
+
+        /// <summary>
+        /// Формирует sptp-сообщение.
+        /// </summary>
+        /// <param name="data">Данные sptp-сообщения.</param>
+        /// <param name="to">Адрес прибора назначения.</param>
+        /// <param name="from">Адрес прибора инициатора.</param>
+        /// <returns>Сформированное spacewire-сообщение.</returns>
+        public static SpacewireSptpMsgEventArgs GetNew(byte[] data, byte to, byte from)
+        {
+            Sptp sptpInfo = new Sptp();
+            sptpInfo.From = from;
+            sptpInfo.MsgType = SptpType.Data;
+            sptpInfo.ProtocolId = SptpProtocol.Standard;
+            sptpInfo.To = to;
+
+            byte[] rawData = Converter.MarshalFrom<Sptp>(sptpInfo, ref data);
+
+            return new SpacewireSptpMsgEventArgs(rawData, 0x00, 0x00);
+        }
+
+        /// <summary>
+        /// "Сырая" проверка на принадлежность к sptp-сообщению.
+        /// </summary>
+        /// <param name="data">"сырые" данные посылки.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
+        {
+            return null != data ? 3 < data.Length : false;
+        }
+
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
         public override byte[] ToArray()
         {
             return base.Data;
         }
-    }
 
-    
-    
-    
-    public class SpacewireTimeTickMsgEventArgs : MsgBase
-    {
         /// <summary>
-        /// Агрегат доступа к заголовку сообщения TimeTick.
+        /// Агрегат доступа к заголовку сообщения Sptp.
         /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct TimeTick
+        public struct Sptp
         {
-            private byte _tick;
+            /// <summary>
+            /// Маска поля заголовка: адрес прибора назначения.
+            /// </summary>
+            private static readonly BitVector32.Section ToSection = BitVector32.CreateSection(0xFF);
 
-            public byte Value
+            /// <summary>
+            /// Маска поля заголовка: идентификатор протокола.
+            /// </summary>
+            private static readonly BitVector32.Section ProtocolIdSection = BitVector32.CreateSection(0xFF, ToSection);
+
+            /// <summary>
+            /// Маска поля заголовка: тип сообщения.
+            /// </summary>
+            private static readonly BitVector32.Section MsgTypeSection = BitVector32.CreateSection(0xFF, ProtocolIdSection);
+
+            /// <summary>
+            /// Маска поля заголовка: адрес прибора инициатора.
+            /// </summary>
+            private static readonly BitVector32.Section FromSection = BitVector32.CreateSection(0xFF, MsgTypeSection);
+
+            /// <summary>
+            /// Заголовок sptp-сообщения.
+            /// </summary>
+            private BitVector32 _header;
+
+            /// <summary>
+            /// Получает или задает значение поля: Адрес прибора назначения.
+            /// </summary>
+            /// <value>
+            /// Значение поля: Адрес прибора назначения.
+            /// </value>
+            public byte To
             {
                 get
                 {
-                    return _tick;
+                    return (byte)_header[ToSection];
                 }
 
                 set
                 {
-                    _tick = value;
+                    _header[ToSection] = (int)value;
                 }
             }
-        }
 
-        private TimeTick _timeTickInfo;
-
-        public TimeTick TimeTickInfo
-        {
-            get
+            /// <summary>
+            /// Получает или задает значение поля: протокол передачи.
+            /// </summary>
+            /// <value>
+            /// Значение поля: протокол передачи.
+            /// </value>
+            public SptpProtocol ProtocolId
             {
-                return _timeTickInfo;
+                get
+                {
+                    return (SptpProtocol)_header[ProtocolIdSection];
+                }
+
+                set
+                {
+                    _header[ProtocolIdSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение поля: тип сообщения.
+            /// </summary>
+            /// <value>
+            /// Значение поля: тип сообщения.
+            /// </value>
+            public SptpType MsgType
+            {
+                get
+                {
+                    return (SptpType)_header[MsgTypeSection];
+                }
+
+                set
+                {
+                    _header[MsgTypeSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Получает или задает значение поля: Адрес прибора инициатора.
+            /// </summary>
+            /// <value>
+            /// Значение поля: Адрес прибора инициатора.
+            /// </value>
+            public byte From
+            {
+                get
+                {
+                    return (byte)_header[FromSection];
+                }
+
+                set
+                {
+                    _header[FromSection] = (int)value;
+                }
+            }
+
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
+            public override string ToString()
+            {
+                return string.Format(Resource.Get(@"stSptpStringExt"), To, ProtocolId, MsgType, From);
+            }
+
+            /// <summary>
+            /// Returns a <see cref="System.String" /> that represents this instance.
+            /// </summary>
+            /// <param name="extended">if set to <c>true</c> [extended].</param>
+            /// <returns>
+            /// A <see cref="System.String" /> that represents this instance.
+            /// </returns>
+            public string ToString(bool extended)
+            {
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stSptpString"), To, ProtocolId, MsgType, From);
             }
         }
+    }
 
-        
-        
-        
-        
+    /// <summary>
+    /// Обмен сообщениями TimeTick по протоколу Spacewire.
+    /// </summary>
+    public class SpacewireTimeTickMsgEventArgs : BaseMsgEventArgs
+    {
+        /// <summary>
+        /// Агрегат доступа к заголовку timetick-сообщения.
+        /// </summary>
+        private TimeTick _timeTickInfo;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireTimeTickMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
         public SpacewireTimeTickMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data)
         {
@@ -1320,7 +1647,6 @@ namespace EGSE.Protocols
             {
                 throw new ContextMarshalException(Resource.Get(@"eTickTimeSpacewireData"));
             }
-
             
             try
             {
@@ -1333,9 +1659,60 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает агрегат доступа к заголовку timetick-сообщения.
+        /// </summary>
+        /// <value>
+        /// Агрегат доступа к заголовку timetick-сообщения.
+        /// </value>
+        public TimeTick TimeTickInfo
+        {
+            get
+            {
+                return _timeTickInfo;
+            }
+        }
+
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
         public override byte[] ToArray()
         {
-            return base.Data;
+            return Data;
         }
+
+        /// <summary>
+        /// Агрегат доступа к заголовку сообщения TimeTick.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct TimeTick
+        {
+            /// <summary>
+            /// Значение поля: Tick time.
+            /// </summary>
+            private byte _tick;
+
+            /// <summary>
+            /// Получает или задает значение Time tick.
+            /// </summary>
+            /// <value>
+            /// Значение Time tick.
+            /// </value>
+            public byte Value
+            {
+                get
+                {
+                    return _tick;
+                }
+
+                set
+                {
+                    _tick = value;
+                }
+            }
+        }       
     }
 }

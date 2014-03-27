@@ -15,9 +15,8 @@ namespace EGSE.Protocols
 
     /// <summary>
     /// Базовый класс сообщения.
-    /// TODO возможно, его вывести выше в иерархии, и использовать как базу для всего.
     /// </summary>
-    public class MsgBase : EventArgs
+    public class BaseMsgEventArgs : EventArgs
     {
         /// <summary>
         /// Данные сообщения.
@@ -29,23 +28,25 @@ namespace EGSE.Protocols
         /// </summary>
         private int _dataLen;
 
-        internal protected static bool Test(byte[] data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public MsgBase()
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="BaseMsgEventArgs" />.
+        /// </summary>
+        public BaseMsgEventArgs()
         {
         }
 
-        public MsgBase(byte[] data)
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="BaseMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        public BaseMsgEventArgs(byte[] data)
         {
             new { data }.CheckNotNull();
 
             Data = data;
             DataLen = data.Length;
         }
-
+      
         /// <summary>
         /// Получает или задает данные сообщения.
         /// </summary>
@@ -79,14 +80,11 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Преобразует данные экземпляра к массиву байт.
+        /// Получает значение CRC, сгенерированного для данного сообщения.
         /// </summary>
-        /// <returns>Массив байт.</returns>
-        public virtual byte[] ToArray()
-        {           
-            return _data;
-        }
-
+        /// <value>
+        /// Значение CRC, сгенерированного для данного сообщения.
+        /// </value>
         protected virtual ushort NeededCrc
         {
             get
@@ -94,12 +92,32 @@ namespace EGSE.Protocols
                 return Crc16.Get(this._data, this._data.Length);
             }
         }
+
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>Массив байт.</returns>
+        public virtual byte[] ToArray()
+        {
+            return _data;
+        }
+
+        /// <summary>
+        /// Все посылки удовлетворяют условию.
+        /// </summary>
+        /// <param name="data">"сырые" данные посылки.</param>
+        /// <returns><c>true</c> всегда.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        protected internal static bool Test(byte[] data)
+        {
+            return true;
+        }
     }
 
     /// <summary>
     /// Класс обмена сообщениями по протоколам USB.
     /// </summary>
-    public class ProtocolMsgEventArgs : MsgBase
+    public class ProtocolMsgEventArgs : BaseMsgEventArgs
     {
         /// <summary>
         /// Адрес, по которому пришло сообщение.
@@ -118,6 +136,9 @@ namespace EGSE.Protocols
             Addr = 0;
         }
 
+        /// <summary>
+        /// Получает данные сообщения.
+        /// </summary>
         public new byte[] Data 
         {
             get
@@ -126,6 +147,9 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает или задает длину сообщения.
+        /// </summary>
         public new int DataLen
         {
             get
@@ -159,7 +183,7 @@ namespace EGSE.Protocols
     /// <summary>
     /// Класс ошибки кодера
     /// </summary>
-    public class ProtocolErrorEventArgs : MsgBase
+    public class ProtocolErrorEventArgs : BaseMsgEventArgs
     {
         /// <summary>
         /// Позиция ошибки в буфере
@@ -183,6 +207,9 @@ namespace EGSE.Protocols
             ErrorPos = 0;
         }
 
+        /// <summary>
+        /// Получает данные сообщения.
+        /// </summary>
         public new byte[] Data
         {
             get
@@ -191,6 +218,9 @@ namespace EGSE.Protocols
             }
         }
 
+        /// <summary>
+        /// Получает длину сообщения.
+        /// </summary>
         public new int DataLen
         {
             get

@@ -25,31 +25,6 @@ namespace EGSE.Utilites
     using System.Windows;
     using EGSE.Protocols;
 
-    public class RandomBufferGenerator
-    {
-        private readonly Random _random = new Random();
-        private readonly byte[] _seedBuffer;
-
-        public RandomBufferGenerator(int maxBufferSize)
-        {
-            _seedBuffer = new byte[maxBufferSize];
-
-            _random.NextBytes(_seedBuffer);
-        }
-
-        public byte[] GenerateBufferFromSeed(int size)
-        {
-            int randomWindow = _random.Next(0, size);
-
-            byte[] buffer = new byte[size];
-
-            Buffer.BlockCopy(_seedBuffer, randomWindow, buffer, 0, size - randomWindow);
-            Buffer.BlockCopy(_seedBuffer, 0, buffer, size - randomWindow, randomWindow);
-
-            return buffer;
-        }
-    }
-
     /// <summary>
     /// Предоставляет проверку контроля CRC-16.
     /// </summary>
@@ -120,28 +95,53 @@ namespace EGSE.Utilites
     /// </summary>
     public static class MsgWorker
     {
-        // приведение к типу сообщения от "сырых" массивов данных
-
+        // приведение к типу сообщения от "сырых" массивов данных   
+    
+        /// <summary>
+        /// Декодировать как spacewire icd сообщение.
+        /// </summary>
+        /// <param name="obj">"сырые" данные послыки.</param>
+        /// <returns>Icd spacewire-сообщение.</returns>
         public static SpacewireIcdMsgEventArgs AsIcd(this byte[] obj)
         {
             return new SpacewireIcdMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Декодировать как spacewire кбв сообщение.
+        /// </summary>
+        /// <param name="obj">"сырые" данные послыки.</param>
+        /// <returns>КБВ spacewire-сообщение.</returns>
         public static SpacewireObtMsgEventArgs AsKbv(this byte[] obj)
         {
             return new SpacewireObtMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Декодировать как spacewire сообщение телеметрии.
+        /// </summary>
+        /// <param name="obj">"сырые" данные послыки.</param>
+        /// <returns>spacewire-сообщение телеметрии.</returns>
         public static SpacewireTmMsgEventArgs AsTm(this byte[] obj)
         {
             return new SpacewireTmMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Декодировать как spacewire сообщение телекоманды.
+        /// </summary>
+        /// <param name="obj">"сырые" данные послыки.</param>
+        /// <returns>spacewire-сообщение телекоманды.</returns>
         public static SpacewireTkMsgEventArgs AsTk(this byte[] obj)
         {
             return new SpacewireTkMsgEventArgs(obj, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Декодировать как spacewire sptp сообщение.
+        /// </summary>
+        /// <param name="obj">"сырые" данные послыки.</param>
+        /// <returns>sptp spacewire-сообщение.</returns>
         public static SpacewireSptpMsgEventArgs AsSptp(this byte[] obj)
         {
             return new SpacewireTkMsgEventArgs(obj, 0x00, 0x00, 0x00);
@@ -149,14 +149,31 @@ namespace EGSE.Utilites
 
         // создание новых сообщений
 
+        /// <summary>
+        /// Сформировать spacewire-сообщение sptp протокола.
+        /// </summary>
+        /// <param name="obj">"сырые" данные послыки.</param>
+        /// <param name="to">Адрес прибора назначения.</param>
+        /// <param name="from">Адрес прибора инициатора.</param>
+        /// <returns>sptp spacewire-сообщение.</returns>
         public static SpacewireSptpMsgEventArgs ToSptp(this byte[] obj, byte to, byte from)
         {
             return SpacewireSptpMsgEventArgs.GetNew(obj, to, from);
         }
 
-        public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, short apid/*, Dictionary<short, AutoCounter> dict*/)
+        /// <summary>
+        /// Сформировать spacewire телекоманду.
+        /// </summary>
+        /// <param name="obj">"сырые" данные послыки.</param>
+        /// <param name="to">Адрес прибора назначения.</param>
+        /// <param name="from">Адрес прибора инициатора.</param>
+        /// <param name="apid">APID прибора назначения.</param>
+        /// <returns>
+        /// spacewire-сообщение телекоманды.
+        /// </returns>
+        public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, short apid)
         {
-            return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid/*, dict*/);
+            return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid);
         }
     }
 
@@ -612,52 +629,15 @@ namespace EGSE.Utilites
     /// </summary>
     public static class Converter
     {
+        /// <summary>
+        /// Обращение байт в беззнаковом целом.
+        /// </summary>
+        /// <param name="value">Беззнаковое целое, в котором необходимо обратить байты.</param>
+        /// <returns>Беззнаковое целое, с обращенными байтами.</returns>
         public static uint ReverseBytes(this uint value)
         {
             return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
                    (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
-        }
-
-        internal static byte[] MarshalFrom<T1>(T1 data, ref byte[] dynData)
-        {
-            int rawSize = Marshal.SizeOf(typeof(T1));
-            IntPtr buf = Marshal.AllocHGlobal(rawSize);
-            Marshal.StructureToPtr(data, buf, true);
-            byte[] rawData = new byte[rawSize + (null != dynData ? dynData.Length : 0)];
-            Marshal.Copy(buf, rawData, 0, rawSize);
-            Marshal.FreeHGlobal(buf);
-            if (null != dynData)
-            {
-                Array.Copy(dynData, 0, rawData, rawSize, dynData.Length);
-            }
-            return rawData;
-        }
-
-        internal static T1 MarshalTo<T1>(byte[] data, out byte[] dynData)
-        {
-            GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
-            {
-                var structure = Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));
-                IntPtr ptr = new IntPtr(pinnedInfo.AddrOfPinnedObject().ToInt32() + Marshal.SizeOf(typeof(T1)));
-                if (0 < data.Length - Marshal.SizeOf(typeof(T1)))
-                {
-                    dynData = new byte[data.Length - Marshal.SizeOf(typeof(T1))];
-                    Marshal.Copy(ptr, dynData, 0, dynData.Length);
-                }
-                else
-                {
-                    dynData = new byte[] { };
-                }
-                return (T1)structure;
-            }
-            finally
-            {
-                if (pinnedInfo.IsAllocated)
-                {
-                    pinnedInfo.Free();
-                }
-            }
         }
 
         /// <summary>
@@ -718,15 +698,28 @@ namespace EGSE.Utilites
         /// </summary>
         /// <param name="data">Массив байт.</param>
         /// <param name="delimeter">Разделитель между байтами в строке.</param>
-        /// <returns>Результирующая строка, возвращает пустую строку, если data = null.</returns>
-        public static string ByteArrayToHexStr(byte[] data, string delimeter = " ")
+        /// <param name="isSmart">если установлено <c>true</c> [попытается сократить строку].</param>
+        /// <returns>
+        /// Результирующая строка, возвращает пустую строку, если data = null.
+        /// </returns>
+        public static string ByteArrayToHexStr(byte[] data, string delimeter = " ", bool isSmart = false)
         {
-            if (data == null)
+            if ((data == null) || (0 <= data.Length))
             {
                 return string.Empty;
             }
 
-            string hex = BitConverter.ToString(data);
+            string hex;
+
+            if (isSmart && (20 < data.Length))
+            {
+                hex = BitConverter.ToString(data.Take(10).ToArray()) + "..." + BitConverter.ToString(data.Skip(data.Length - 10).ToArray());
+            }
+            else
+            {
+                hex = BitConverter.ToString(data);
+            }
+
             hex = hex.Replace("-", delimeter);
             return hex;
         }
@@ -778,6 +771,64 @@ namespace EGSE.Utilites
             else
             {
                 return fileSizeInBytes.ToString() + " байт";
+            }
+        }
+
+        /// <summary>
+        /// Преобразует структуру к массиву байт.
+        /// </summary>
+        /// <typeparam name="T1">Тип структуры необходимой для преобразования.</typeparam>
+        /// <param name="data">Структура для преобразования в массив байты.</param>
+        /// <param name="dynData">Если есть данные в сообщение, они сохранятся тут.</param>
+        /// <returns>Образованный массив байт.</returns>
+        internal static byte[] MarshalFrom<T1>(T1 data, ref byte[] dynData)
+        {
+            int rawSize = Marshal.SizeOf(typeof(T1));
+            IntPtr buf = Marshal.AllocHGlobal(rawSize);
+            Marshal.StructureToPtr(data, buf, true);
+            byte[] rawData = new byte[rawSize + (null != dynData ? dynData.Length : 0)];
+            Marshal.Copy(buf, rawData, 0, rawSize);
+            Marshal.FreeHGlobal(buf);
+            if (null != dynData)
+            {
+                Array.Copy(dynData, 0, rawData, rawSize, dynData.Length);
+            }
+
+            return rawData;
+        }
+
+        /// <summary>
+        /// Преобразует байты к конкретной структуре.
+        /// </summary>
+        /// <typeparam name="T1">Тип необходимой структуры.</typeparam>
+        /// <param name="data">Массив байт для преобразования.</param>
+        /// <param name="dynData">Если есть динамические данные они сохранятся тут.</param>
+        /// <returns>Полученная структура после преобразования.</returns>
+        internal static T1 MarshalTo<T1>(byte[] data, out byte[] dynData)
+        {
+            GCHandle pinnedInfo = GCHandle.Alloc(data, GCHandleType.Pinned);
+            try
+            {
+                var structure = Marshal.PtrToStructure(pinnedInfo.AddrOfPinnedObject(), typeof(T1));
+                IntPtr ptr = new IntPtr(pinnedInfo.AddrOfPinnedObject().ToInt32() + Marshal.SizeOf(typeof(T1)));
+                if (0 < data.Length - Marshal.SizeOf(typeof(T1)))
+                {
+                    dynData = new byte[data.Length - Marshal.SizeOf(typeof(T1))];
+                    Marshal.Copy(ptr, dynData, 0, dynData.Length);
+                }
+                else
+                {
+                    dynData = new byte[] { };
+                }
+
+                return (T1)structure;
+            }
+            finally
+            {
+                if (pinnedInfo.IsAllocated)
+                {
+                    pinnedInfo.Free();
+                }
             }
         }
     }
@@ -1044,6 +1095,50 @@ namespace EGSE.Utilites
         public static implicit operator short(AutoCounter obj)
         {
             return obj.Counter;
+        }
+    }
+
+    /// <summary>
+    /// Генерация случайного набора данных.
+    /// </summary>
+    public class RandomBufferGenerator
+    {
+        /// <summary>
+        /// Экземпляр класса формирования псевдо-случайных чисел.
+        /// </summary>
+        private readonly Random _random = new Random();
+       
+        /// <summary>
+        /// "зерно" для формирования случайных байт.
+        /// </summary>
+        private readonly byte[] _seedBuffer;
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="RandomBufferGenerator" />.
+        /// </summary>
+        /// <param name="bufferSize">Размер буфера для генерации случайных байт.</param>
+        public RandomBufferGenerator(int bufferSize)
+        {
+            _seedBuffer = new byte[bufferSize];
+
+            _random.NextBytes(_seedBuffer);
+        }
+
+        /// <summary>
+        /// Формирует массив случайных байт.
+        /// </summary>
+        /// <param name="size">Размер массива случайных байт.</param>
+        /// <returns>Массив случайных байт.</returns>
+        public byte[] GenerateBufferFromSeed(int size)
+        {
+            int randomWindow = _random.Next(0, size);
+
+            byte[] buffer = new byte[size];
+
+            Buffer.BlockCopy(_seedBuffer, randomWindow, buffer, 0, size - randomWindow);
+            Buffer.BlockCopy(_seedBuffer, 0, buffer, size - randomWindow, randomWindow);
+
+            return buffer;
         }
     }
 

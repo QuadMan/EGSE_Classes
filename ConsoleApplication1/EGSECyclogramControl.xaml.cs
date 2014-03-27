@@ -58,7 +58,6 @@ namespace EGSE.Cyclogram
             SetButtonsByState(CurState.cycloNone);
             _cycCommandsAvailable.AddCommand("aa6e98173bf04ae1aa63e95751bbb856", new CyclogramLine("NOP", NopTest, NopExec, string.Empty));
             _cycCommandsAvailable.AddCommand("b05d3add0acd436da6f8ac89e105d1f3", new CyclogramLine("STOP", StopTest, StopExec, string.Empty));
-            // cycCommandsAvailable.AddCommand("LOOP", new CyclogramLine("LOOP", LoopTest, LoopExec, string.Empty));
         }
 
         /// <summary>
@@ -122,28 +121,6 @@ namespace EGSE.Cyclogram
         {
             return true;
         }
-
-        ///// <summary>
-        ///// Loops the test.
-        ///// </summary>
-        ///// <param name="setParams">The set parameters.</param>
-        ///// <param name="errstring">The errstring.</param>
-        ///// <returns>True всегда</returns>
-        //public bool LoopTest(string[] setParams, out string errstring)
-        //{
-        //    errstring = string.Empty;
-        //    return true;
-        //}
-
-        ///// <summary>
-        ///// Loops the execute.
-        ///// </summary>
-        ///// <param name="setParams">The set parameters.</param>
-        ///// <returns>True всегда</returns>
-        //public bool LoopExec(string[] setParams)
-        //{
-        //    return true;
-        //}
 
         /// <summary>
         /// Вызывается когда [выполнение циклограммы окончено].

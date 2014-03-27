@@ -237,6 +237,9 @@ namespace EGSE.Devices
         /// </summary>
         private const int HSI2ControlAddr = 0x31;
 
+        /// <summary>
+        /// Адресный байт "Дополнительные байты".
+        /// </summary>
         private const int HSIStateAddr = 0x48;
 
         /// <summary>
@@ -244,9 +247,24 @@ namespace EGSE.Devices
         /// </summary>
         private const int SimHSIControlAddr = 0x36;
 
+        /// <summary>
+        /// Адресный байт "Датчики затворов".
+        /// </summary>
         private const int ShutterLoAddr = 0x44;
+
+        /// <summary>
+        /// Адресный байт "Датчики затворов".
+        /// </summary>
         private const int ShutterHiAddr = 0x45;
+
+        /// <summary>
+        /// Адресный байт "Бит выдачи релейных команд для установки затворов".
+        /// </summary>
         private const int ShutterSendAddr = 0x46;
+
+        /// <summary>
+        /// Адресный байт "Бит выбора режима".
+        /// </summary>
         private const int ShutterAutoAddr = 0x47;
 
         /// <summary>
@@ -815,12 +833,15 @@ namespace EGSE.Devices
             SendToUSB(HSI2ControlAddr, new byte[1] { (byte)value });
         }
 
+        /// <summary>
+        /// Команда [управления ВСИ статусом].
+        /// </summary>
+        /// <param name="value">Байт управления.</param>
         internal void CmdHSIState(int value)
         {
             SendToUSB(HSIStateAddr, new byte[1] { (byte)value });
         }
         
-
         /// <summary>
         /// Команда [управления имитатором ВСИ].
         /// </summary>
@@ -830,6 +851,10 @@ namespace EGSE.Devices
             SendToUSB(SimHSIControlAddr, new byte[1] { (byte)value });
         }
 
+        /// <summary>
+        /// Команда [управления датчиками затворов].
+        /// </summary>
+        /// <param name="value">Слово управления.</param>
         internal void CmdShutters(int value)
         {
             SendToUSB(ShutterLoAddr, new byte[1] { (byte)value });
@@ -837,6 +862,10 @@ namespace EGSE.Devices
             SendToUSB(ShutterSendAddr, new byte[1] { 1 });    
         }
 
+        /// <summary>
+        /// Команда [включения автоматического управления датчиками затворов].
+        /// </summary>
+        /// <param name="value">Бит управления.</param>
         internal void CmdAutoShutters(int value)
         {
             byte x;
@@ -848,6 +877,7 @@ namespace EGSE.Devices
             {
                 x = 0;
             }
+
             SendToUSB(ShutterAutoAddr, new byte[1] { x });
         }
 
@@ -1039,6 +1069,46 @@ namespace EGSE.Devices
         private EgseTime _deviceTime;
 
         /// <summary>
+        /// Отображать ли [окно "монитор USB"].
+        /// </summary>
+        private bool _isShowUsbSendsMonitor;
+
+        /// <summary>
+        /// Датчики затворов: бит выбора режима.
+        /// </summary>
+        private bool _isIssueManualShutter = true;
+
+        /// <summary>
+        /// СДЩ: Датчики затворов: закрытия.
+        /// </summary>
+        private DevEnabled _issueSdchshClose = DevEnabled.Off;
+
+        /// <summary>
+        /// СДЩ: Датчики затворов: открытия.
+        /// </summary>
+        private DevEnabled _issueSdchshOpen = DevEnabled.Off;
+
+        /// <summary>
+        /// ВУФЕС: Датчики затворов: закрытия.
+        /// </summary>
+        private DevEnabled _issueVufesClose = DevEnabled.Off;
+
+        /// <summary>
+        /// ВУФЕС: Датчики затворов: открытия.
+        /// </summary>
+        private DevEnabled _issueVufesOpen = DevEnabled.Off;
+
+        /// <summary>
+        /// УФЕС: Датчики затворов: закрытия.
+        /// </summary>
+        private DevEnabled _issueUfesClose = DevEnabled.Off;
+
+        /// <summary>
+        /// УФЕС: Датчики затворов: открытия.
+        /// </summary>
+        private DevEnabled _issueUfesOpen = DevEnabled.Off;
+        
+        /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseBukNotify" />.
         /// </summary>
         public EgseBukNotify()
@@ -1132,89 +1202,6 @@ namespace EGSE.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
-        private bool _isShowUsbSendsMonitor;
-        private DevEnabled _issueSdchshClose = DevEnabled.Off;
-        private DevEnabled _issueSdchshOpen = DevEnabled.Off;
-        private DevEnabled _issueVufesClose = DevEnabled.Off;
-        private DevEnabled _issueVufesOpen = DevEnabled.Off;
-        private DevEnabled _issueUfesClose = DevEnabled.Off;
-        private DevEnabled _issueUfesOpen = DevEnabled.Off;
-        private bool _isIssueManualShutter = true;
-
-        /// <summary>
-        /// Получает или задает нотификатор self-теста.
-        /// </summary>
-        /// <value>
-        /// Экземпляр нотификатора.
-        /// </value>
-        public UITest UITestNotify { get; set; }
-
-        /// <summary>
-        /// Получает или задает нотификатор телеметрии.
-        /// </summary>
-        /// <value>
-        /// Экземпляр нотификатора.
-        /// </value>
-        public Telemetry TelemetryNotify { get; set; }
-
-        /// <summary>
-        /// Получает или задает нотификатор ВСИ интерфейса.
-        /// </summary>
-        /// <value>
-        /// Экземпляр нотификатора.
-        /// </value>
-        public HSI HSINotify { get; set; }
-
-        /// <summary>
-        /// Получает или задает нотификатор spacewire1.
-        /// </summary>
-        /// <value>
-        /// Экземпляр нотификатора.
-        /// </value>
-        public Spacewire1 Spacewire1Notify { get; set; }
-
-        /// <summary>
-        /// Получает или задает нотификатор spacewire2.
-        /// </summary>
-        /// <value>
-        /// Экземпляр нотификатора.
-        /// </value>
-        public Spacewire2 Spacewire2Notify { get; set; }
-
-        /// <summary>
-        /// Получает или задает нотификатор spacewire3.
-        /// </summary>
-        /// <value>
-        /// Экземпляр нотификатора.
-        /// </value>
-        public Spacewire3 Spacewire3Notify { get; set; }
-
-        /// <summary>
-        /// Получает или задает нотификатор spacewire4.
-        /// </summary>
-        /// <value>
-        /// Экземпляр нотификатора.
-        /// </value>
-        public Spacewire4 Spacewire4Notify { get; set; }
-
-        /// <summary>
-        /// Получает или задает доступ к USB прибора.
-        /// </summary>
-        public EgseBuk Device { get; set; }
-
-        /// <summary>
-        /// Получает количество байт доступных для считывания из USB.
-        /// </summary>
-        /// <value>
-        /// Количество байт доступных для считывания из USB.
-        /// </value>
-        public int BytesAvailable
-        {
-            get
-            {
-                return Device.BytesAvailable;
-            }
-        }
 
         /// <summary>
         /// Состояние прибора.
@@ -1233,7 +1220,82 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает значение, показывающее, что [включено ручное управление датчиками затворов].
+        /// Получает нотификатор self-теста.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public UITest UITestNotify { get; private set; }
+
+        /// <summary>
+        /// Получает нотификатор телеметрии.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public Telemetry TelemetryNotify { get; private set; }
+
+        /// <summary>
+        /// Получает нотификатор ВСИ интерфейса.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public HSI HSINotify { get; private set; }
+
+        /// <summary>
+        /// Получает нотификатор spacewire1.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public Spacewire1 Spacewire1Notify { get; private set; }
+
+        /// <summary>
+        /// Получает нотификатор spacewire2.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public Spacewire2 Spacewire2Notify { get; private set; }
+
+        /// <summary>
+        /// Получает нотификатор spacewire3.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public Spacewire3 Spacewire3Notify { get; private set; }
+
+        /// <summary>
+        /// Получает нотификатор spacewire4.
+        /// </summary>
+        /// <value>
+        /// Экземпляр нотификатора.
+        /// </value>
+        public Spacewire4 Spacewire4Notify { get; private set; }
+
+        /// <summary>
+        /// Получает доступ к USB прибора.
+        /// </summary>
+        public EgseBuk Device { get; private set; }     
+
+        /// <summary>
+        /// Получает количество байт доступных для считывания из USB.
+        /// </summary>
+        /// <value>
+        /// Количество байт доступных для считывания из USB.
+        /// </value>
+        public int BytesAvailable
+        {
+            get
+            {
+                return Device.BytesAvailable;
+            }
+        }
+
+        /// <summary>
+        /// Получает значение, показывающее, что [включено ручное управление датчиками затворов].
         /// </summary>
         /// <value>
         ///   <c>true</c> если [включено ручное управление датчиками затворов]; иначе, <c>false</c>.
@@ -1245,7 +1307,7 @@ namespace EGSE.Devices
                 return _isIssueManualShutter;
             }
 
-            set
+            private set 
             {
                 _isIssueManualShutter = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.Auto, Convert.ToInt32(!value));
@@ -1253,18 +1315,8 @@ namespace EGSE.Devices
             } 
         }
 
-        private void SetShutters(DevEnabled state)
-        {
-            IssueSdchshOpen = state;
-            IssueSdchshClose = state;
-            IssueUfesOpen = state;
-            IssueUfesClose = state;
-            IssueVufesOpen = state;
-            IssueVufesClose = state;
-        }
-
         /// <summary>
-        /// Получает или задает команду на [включение датчика открытия для НП УФЕС].
+        /// Получает команду на [включение датчика открытия для НП УФЕС].
         /// </summary>
         /// <value>
         /// Команда на [включение датчика открытия для НП УФЕС].
@@ -1276,7 +1328,7 @@ namespace EGSE.Devices
                 return _issueUfesOpen;
             }
 
-            set
+            private set 
             {
                 _issueUfesOpen = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.UfesOpen, (int)value);
@@ -1285,7 +1337,7 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает команду на [включение датчика закрытия для НП УФЕС].
+        /// Получает команду на [включение датчика закрытия для НП УФЕС].
         /// </summary>
         /// <value>
         /// Команда на [включение датчика закрытия для НП УФЕС].
@@ -1297,7 +1349,7 @@ namespace EGSE.Devices
                 return _issueUfesClose;
             }
 
-            set
+            private set 
             {
                 _issueUfesClose = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.UfesClose, (int)value);
@@ -1306,7 +1358,7 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает команду на [включение датчика открытия для НП ВУФЕС].
+        /// Получает команду на [включение датчика открытия для НП ВУФЕС].
         /// </summary>
         /// <value>
         /// Команда на [включение датчика открытия для НП ВУФЕС].
@@ -1318,7 +1370,7 @@ namespace EGSE.Devices
                 return _issueVufesOpen;
             }
 
-            set
+            private set 
             {
                 _issueVufesOpen = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.VufesOpen, (int)value);
@@ -1327,7 +1379,7 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает команду на [включение датчика закрытия для НП ВУФЕС].
+        /// Получает команду на [включение датчика закрытия для НП ВУФЕС].
         /// </summary>
         /// <value>
         /// Команда на [включение датчика закрытия для НП ВУФЕС].
@@ -1339,7 +1391,7 @@ namespace EGSE.Devices
                 return _issueVufesClose;
             }
 
-            set
+            private set 
             {
                 _issueVufesClose = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.VufesClose, (int)value);
@@ -1348,7 +1400,7 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает команду на [включение датчика открытия для НП СДЩ].
+        /// Получает команду на [включение датчика открытия для НП СДЩ].
         /// </summary>
         /// <value>
         /// Команда на [включение датчика открытия для НП СДЩ].
@@ -1360,7 +1412,7 @@ namespace EGSE.Devices
                 return _issueSdchshOpen;
             }
 
-            set
+            private set 
             {
                 _issueSdchshOpen = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.SdchshOpen, (int)value);
@@ -1369,7 +1421,7 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает команду на [включение датчика закрытия для НП СДЩ].
+        /// Получает команду на [включение датчика закрытия для НП СДЩ].
         /// </summary>
         /// <value>
         /// Команда на [включение датчика закрытия для НП СДЩ].
@@ -1381,7 +1433,7 @@ namespace EGSE.Devices
                 return _issueSdchshClose;
             }
 
-            set
+            private set 
             {
                 _issueSdchshClose = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.SdchshClose, (int)value);
@@ -1402,7 +1454,7 @@ namespace EGSE.Devices
                 return _isConnected;
             }
 
-            private set
+            private set 
             {
                 _isConnected = value;
                 FirePropertyChangedEvent();
@@ -1422,7 +1474,7 @@ namespace EGSE.Devices
                 return _isShowHSI;
             }
 
-            private set
+            private set 
             {
                 _isShowHSI = value;
                 FirePropertyChangedEvent();
@@ -1442,7 +1494,7 @@ namespace EGSE.Devices
                 return _isShowSpacewire;
             }
 
-            private set
+            private set 
             {
                 _isShowSpacewire = value;
                 FirePropertyChangedEvent();
@@ -1462,7 +1514,7 @@ namespace EGSE.Devices
                 return _isShowSD;
             }
 
-            private set
+            private set 
             {
                 _isShowSD = value;
                 FirePropertyChangedEvent();
@@ -1482,7 +1534,7 @@ namespace EGSE.Devices
                 return _isShowSimHSI;
             }
 
-            private set
+            private set 
             {
                 _isShowSimHSI = value;
                 FirePropertyChangedEvent();
@@ -1502,7 +1554,7 @@ namespace EGSE.Devices
                 return _isShowUsbSendsMonitor;
             }
 
-            private set
+            private set 
             {
                 _isShowUsbSendsMonitor = value;
                 FirePropertyChangedEvent();
@@ -1522,7 +1574,7 @@ namespace EGSE.Devices
                 return _isShowSimSpacewire;
             }
 
-            private set
+            private set 
             {
                 _isShowSimSpacewire = value;
                 FirePropertyChangedEvent();
@@ -1542,7 +1594,7 @@ namespace EGSE.Devices
                 return _isShowSimSD;
             }
 
-            private set
+            private set 
             {
                 _isShowSimSD = value;
                 FirePropertyChangedEvent();
@@ -1578,7 +1630,7 @@ namespace EGSE.Devices
         }
 
         /// <summary>
-        /// Получает или задает время, пришедшее от прибора.
+        /// Получает время, пришедшее от прибора.
         /// </summary>       
         public EgseTime DeviceTime
         {
@@ -1587,16 +1639,16 @@ namespace EGSE.Devices
                 return _deviceTime;                
             }
 
-            set
+            private set 
             {
                 _deviceTime = value;                
             }
         }
 
         /// <summary>
-        /// Получает или задает список управляющих элементов.
+        /// Получает список управляющих элементов.
         /// </summary>
-        public Dictionary<string, ControlValue> ControlValuesList { get; set; }
+        public Dictionary<string, ControlValue> ControlValuesList { get; private set; }
 
         /// <summary>
         /// Получает сообщение об ошибке в объекте.
@@ -1704,11 +1756,11 @@ namespace EGSE.Devices
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnSpacewire2Msg(object sender, MsgBase e)
+        protected virtual void OnSpacewire2Msg(object sender, BaseMsgEventArgs e)
         {
             if (this.GotSpacewire2Msg != null)
             {
-                if ((e is SpacewireSptpMsgEventArgs) && (IsRequestSpacewireMsg(e as SpacewireSptpMsgEventArgs)))
+                if ((e is SpacewireSptpMsgEventArgs) && IsRequestSpacewireMsg(e as SpacewireSptpMsgEventArgs))
                 {
                     if (Spacewire2Notify.LogicBusk == (e as SpacewireSptpMsgEventArgs).SptpInfo.From)
                     {
@@ -1723,7 +1775,7 @@ namespace EGSE.Devices
                         this.GotSpacewire2Msg(sender, e);
                     }
                 }
-                else if ((e is SpacewireSptpMsgEventArgs) && (IsReplySpacewireMsg(e as SpacewireSptpMsgEventArgs)))
+                else if ((e is SpacewireSptpMsgEventArgs) && IsReplySpacewireMsg(e as SpacewireSptpMsgEventArgs))
                 {
                     if (Spacewire2Notify.LogicBusk == (e as SpacewireSptpMsgEventArgs).SptpInfo.From)
                     {
@@ -1792,6 +1844,7 @@ namespace EGSE.Devices
                         {
                             HSINotify.CmdCounter2++;
                         }
+
                         this.GotHsiCmdMsg(sender, e);
                     }
                 }
@@ -1807,7 +1860,7 @@ namespace EGSE.Devices
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        protected virtual void OnSpacewire3Msg(object sender, MsgBase e)
+        protected virtual void OnSpacewire3Msg(object sender, BaseMsgEventArgs e)
         {
             if (this.GotSpacewire3Msg != null)
             {
@@ -1862,12 +1915,17 @@ namespace EGSE.Devices
         /// Определяет когда [сообщение по ВСИ] [является УКС].
         /// </summary>
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        /// <returns><c>true</c> если сообщение "УКС"</returns>
+        /// <returns><c>true</c> если сообщение "УКС", иначе <c>false</c>.</returns>
         private bool IsHsiCmdMsg(HsiMsgEventArgs msg)
         {
             return HsiMsgEventArgs.Type.Cmd == msg.Info.Flag;
         }
 
+        /// <summary>
+        /// Определяет когда [сообщение по ВСИ] [пришло от первого полукомплекта].
+        /// </summary>
+        /// <param name="msg">The <see cref="HsiMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns><c>true</c> если сообщение [пришло от первого полукомплекта], иначе <c>false</c>.</returns>
         private bool IsCmdFromSet1(HsiMsgEventArgs msg)
         {            
             if (0 < msg.Data.Length)
@@ -1880,6 +1938,11 @@ namespace EGSE.Devices
             }                    
         }
 
+        /// <summary>
+        /// Определяет когда [сообщение по ВСИ] [пришло от второго полукомплекта].
+        /// </summary>
+        /// <param name="msg">The <see cref="HsiMsgEventArgs"/> instance containing the event data.</param>
+        /// <returns><c>true</c> если сообщение [пришло от второго полукомплекта], иначе <c>false</c>.</returns>
         private bool IsCmdFromSet2(HsiMsgEventArgs msg)
         {
             if (0 < msg.Data.Length)
@@ -2178,7 +2241,7 @@ namespace EGSE.Devices
             private long _requestDataMain;
 
             /// <summary>
-            /// Количество переданных УКС.
+            /// Количество переданных УКС ПК1.
             /// </summary>
             private long _cmdCounter1;
 
@@ -2226,14 +2289,50 @@ namespace EGSE.Devices
             /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
             private ICommand _issueCmdCommand;
+
+            /// <summary>
+            /// Количество переданных УКС ПК2.
+            /// </summary>
             private long _cmdCounter2;
+
+            /// <summary>
+            /// ПК1 статус: готов.
+            /// </summary>
             private bool _isIssueReady1;
+
+            /// <summary>
+            /// ПК2 статус: готов.
+            /// </summary>
             private bool _isIssueReady2;
+
+            /// <summary>
+            /// ПК2 статус: busy.
+            /// </summary>
             private bool _isIssueBusy2;
+
+            /// <summary>
+            /// ПК1 статус: busy.
+            /// </summary>
             private bool _isIssueBusy1;
+
+            /// <summary>
+            /// ПК2 статус: me.
+            /// </summary>
             private bool _isIssueMe2;
+
+            /// <summary>
+            /// ПК1 статус: me.
+            /// </summary>
             private bool _isIssueMe1;
+
+            /// <summary>
+            /// Активность первого полукомплекта.
+            /// </summary>
             private bool _isActive1;
+
+            /// <summary>
+            /// Активность второго полукомплекта.
+            /// </summary>
             private bool _isActive2;
                         
             /// <summary>
@@ -2295,6 +2394,12 @@ namespace EGSE.Devices
             /// </value>
             public byte[] Data { get; set; }
 
+            /// <summary>
+            /// Получает значение, показывающее, [состояние статуса ПК1: готов].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [состояние статуса ПК1: готов]; иначе, <c>false</c>.
+            /// </value>
             public bool IsIssueReady1
             {
                 get
@@ -2302,7 +2407,7 @@ namespace EGSE.Devices
                     return _isIssueReady1;
                 }
 
-                set
+                private set 
                 {
                     _isIssueReady1 = value;
                     ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueReady1, Convert.ToInt32(value));
@@ -2310,6 +2415,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, [состояние статуса ПК2: готов].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [состояние статуса ПК2: готов]; иначе, <c>false</c>.
+            /// </value>
             public bool IsIssueReady2
             {
                 get
@@ -2317,7 +2428,7 @@ namespace EGSE.Devices
                     return _isIssueReady2;
                 }
 
-                set
+                private set 
                 {
                     _isIssueReady2 = value;
                     ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueReady2, Convert.ToInt32(value));
@@ -2325,6 +2436,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, [состояние статуса ПК1: занят].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [состояние статуса ПК1: занят]; иначе, <c>false</c>.
+            /// </value>
             public bool IsIssueBusy1
             {
                 get
@@ -2332,7 +2449,7 @@ namespace EGSE.Devices
                     return _isIssueBusy1;
                 }
 
-                set
+                private set 
                 {
                     _isIssueBusy1 = value;
                     ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueBusy1, Convert.ToInt32(value));
@@ -2340,6 +2457,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, [состояние статуса ПК2: занят].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [состояние статуса ПК2: занят]; иначе, <c>false</c>.
+            /// </value>
             public bool IsIssueBusy2
             {
                 get
@@ -2347,7 +2470,7 @@ namespace EGSE.Devices
                     return _isIssueBusy2;
                 }
 
-                set
+                private set 
                 {
                     _isIssueBusy2 = value;
                     ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueBusy2, Convert.ToInt32(value));
@@ -2355,6 +2478,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, [состояние статуса ПК1: me].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [состояние статуса ПК1: me]; иначе, <c>false</c>.
+            /// </value>
             public bool IsIssueMe1
             {
                 get
@@ -2362,7 +2491,7 @@ namespace EGSE.Devices
                     return _isIssueMe1;
                 }
 
-                set
+                private set 
                 {
                     _isIssueMe1 = value;
                     ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueMe1, Convert.ToInt32(value));
@@ -2370,6 +2499,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, [состояние статуса ПК2: me].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [состояние статуса ПК2: me]; иначе, <c>false</c>.
+            /// </value>
             public bool IsIssueMe2
             {
                 get
@@ -2377,7 +2512,7 @@ namespace EGSE.Devices
                     return _isIssueMe2;
                 }
 
-                set
+                private set 
                 {
                     _isIssueMe2 = value;
                     ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueMe2, Convert.ToInt32(value));
@@ -2386,7 +2521,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [вкл КВВ ПК1].
+            /// Получает значение, показывающее, что [вкл КВВ ПК1].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [вкл КВВ ПК1]; иначе, <c>false</c>.
@@ -2398,7 +2533,7 @@ namespace EGSE.Devices
                     return _isIssueEnable1;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEnable1 = value;
                     ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueEnable, Convert.ToInt32(value));
@@ -2426,7 +2561,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [включен КВВ ПК2].
+            /// Получает значение, показывающее, что [включен КВВ ПК2].
             /// </summary>
             /// <value>
             /// <c>true</c> если [включен КВВ ПК2]; иначе, <c>false</c>.
@@ -2438,7 +2573,7 @@ namespace EGSE.Devices
                     return _isIssueEnable2;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEnable2 = value;
                     ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueEnable, Convert.ToInt32(value));
@@ -2466,7 +2601,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество выданных статусов по первому полукомплекту.
+            /// Получает количество выданных статусов по первому полукомплекту.
             /// </summary>
             /// <value>
             /// Количество выданных статусов.
@@ -2478,7 +2613,7 @@ namespace EGSE.Devices
                     return _stateCounter1;
                 }
 
-                set
+                private set 
                 {
                     _stateCounter1 = value;
                     FirePropertyChangedEvent();
@@ -2486,7 +2621,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает наименование файла для записи.
+            /// Получает наименование файла для записи.
             /// </summary>
             /// <value>
             /// Наименование файла для записи.
@@ -2498,7 +2633,7 @@ namespace EGSE.Devices
                     return _rawDataFile;
                 }
 
-                set
+                private set 
                 {
                     _rawDataFile = value;
                     if (string.Empty != value)
@@ -2528,7 +2663,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что запись в файл включена.
+            /// Получает значение, показывающее, что запись в файл включена.
             /// </summary>
             /// <value>
             /// <c>true</c> если требуется запись данных в файл; иначе, <c>false</c>.
@@ -2540,7 +2675,7 @@ namespace EGSE.Devices
                     return _isSaveRawData;
                 }
 
-                set 
+                private set  
                 {
                     _isSaveRawData = value;
                     if (value)
@@ -2576,7 +2711,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество выданных кадров по первому полукомплекту.
+            /// Получает количество выданных кадров по первому полукомплекту.
             /// </summary>
             /// <value>
             /// Количество выданных кадров.
@@ -2588,7 +2723,7 @@ namespace EGSE.Devices
                     return _frameCounter1;
                 }
 
-                set
+                private set 
                 {
                     _frameCounter1 = value;
                     FirePropertyChangedEvent();
@@ -2596,7 +2731,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество выданных статусов по второму полукомплекту.
+            /// Получает количество выданных статусов по второму полукомплекту.
             /// </summary>
             /// <value>
             /// Количество выданных статусов.
@@ -2608,7 +2743,7 @@ namespace EGSE.Devices
                     return _stateCounter2;
                 }
 
-                set
+                private set 
                 {
                     _stateCounter2 = value;
                     FirePropertyChangedEvent();
@@ -2616,7 +2751,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество выданных кадров по второму полукомплекту.
+            /// Получает количество выданных кадров по второму полукомплекту.
             /// </summary>
             /// <value>
             /// Количество выданных кадров.
@@ -2628,7 +2763,7 @@ namespace EGSE.Devices
                     return _frameCounter2;
                 }
 
-                set
+                private set 
                 {
                     _frameCounter2 = value;
                     FirePropertyChangedEvent();
@@ -2636,7 +2771,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает линию передачи ПК1.
+            /// Получает линию передачи ПК1.
             /// </summary>
             /// <value>
             /// Линия передачи ПК1.
@@ -2648,7 +2783,7 @@ namespace EGSE.Devices
                     return _line1;
                 }
 
-                set
+                private set 
                 {
                     _line1 = value;
                     ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.Line, Convert.ToInt32(value));
@@ -2656,6 +2791,12 @@ namespace EGSE.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, что [ПК1 активен].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [ПК1 активен]; иначе, <c>false</c>.
+            /// </value>
             public bool IsActive1
             {
                 get
@@ -2663,13 +2804,19 @@ namespace EGSE.Devices
                     return _isActive1;
                 }
 
-                private set
+                private set 
                 {
                     _isActive1 = value;
                     FirePropertyChangedEvent();
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, что [ПК2 активен].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [ПК2 активен]; иначе, <c>false</c>.
+            /// </value>
             public bool IsActive2
             {
                 get
@@ -2677,7 +2824,7 @@ namespace EGSE.Devices
                     return _isActive2;
                 }
 
-                private set
+                private set 
                 {
                     _isActive2 = value;
                     FirePropertyChangedEvent();
@@ -2685,7 +2832,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает линию передачи ПК2.
+            /// Получает линию передачи ПК2.
             /// </summary>
             /// <value>
             /// Линия передачи ПК2.
@@ -2697,7 +2844,7 @@ namespace EGSE.Devices
                     return _line2;
                 }
 
-                set
+                private set 
                 {
                     _line2 = value;
                     ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.Line, Convert.ToInt32(value));
@@ -2706,7 +2853,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает линию приема.
+            /// Получает линию приема.
             /// </summary>
             /// <value>
             /// Линия приема.
@@ -2718,7 +2865,7 @@ namespace EGSE.Devices
                     return _lineIn;
                 }
 
-                set
+                private set 
                 {
                     _lineIn = value;
                     ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineIn, Convert.ToInt32(value));
@@ -2727,7 +2874,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает линию передачи.
+            /// Получает линию передачи.
             /// </summary>
             /// <value>
             /// Линия передачи.
@@ -2739,7 +2886,7 @@ namespace EGSE.Devices
                     return _lineOut;
                 }
 
-                set
+                private set 
                 {
                     _lineOut = value;
                     ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineOut, Convert.ToInt32(value));
@@ -2748,7 +2895,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [включен опрос данных].
+            /// Получает значение, показывающее, что [включен опрос данных].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [включен опрос данных]; иначе, <c>false</c>.
@@ -2760,7 +2907,7 @@ namespace EGSE.Devices
                     return _isIssueRequest;
                 }
 
-                set
+                private set 
                 {
                     _isIssueRequest = value;
                     ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.IssueRequest, Convert.ToInt32(value));
@@ -2788,7 +2935,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выдан УКС].
+            /// Получает значение, показывающее, что [выдан УКС].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [выдан УКС]; иначе, <c>false</c>.
@@ -2800,7 +2947,7 @@ namespace EGSE.Devices
                     return _isIssueCmd;
                 }
 
-                set
+                private set 
                 {
                     _isIssueCmd = value;                   
                     FirePropertyChangedEvent();
@@ -2915,7 +3062,7 @@ namespace EGSE.Devices
                     return _requestStateMain;
                 }
 
-                set
+                set 
                 {
                     _requestStateMain = value;
                     FirePropertyChangedEvent();
@@ -2935,7 +3082,7 @@ namespace EGSE.Devices
                     return _requestStateResv;
                 }
 
-                set
+                set 
                 {
                     _requestStateResv = value;
                     FirePropertyChangedEvent();
@@ -2955,7 +3102,7 @@ namespace EGSE.Devices
                     return _requestDataMain;
                 }
 
-                set
+                set 
                 {
                     _requestDataMain = value;
                     FirePropertyChangedEvent();
@@ -2975,7 +3122,7 @@ namespace EGSE.Devices
                     return _requestDataResv;
                 }
 
-                set
+                set 
                 {
                     _requestDataResv = value;
                     FirePropertyChangedEvent();
@@ -2995,7 +3142,7 @@ namespace EGSE.Devices
                     return _cmdCounter1;
                 }
 
-                set
+                set 
                 {
                     _cmdCounter1 = value;
                     FirePropertyChangedEvent();
@@ -3015,7 +3162,7 @@ namespace EGSE.Devices
                     return _cmdCounter2;
                 }
 
-                set
+                set 
                 {
                     _cmdCounter2 = value;
                     FirePropertyChangedEvent();
@@ -3133,8 +3280,15 @@ namespace EGSE.Devices
         /// </summary>
         public class UITest : SubNotify, IDataErrorInfo
         {
+            /// <summary>
+            /// Путь к usb-лог файлу.
+            /// </summary>
             private string _usbLogFile;
 
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="UITest" />.
+            /// </summary>
+            /// <param name="owner">The owner.</param>
             public UITest(EgseBukNotify owner)
                 : base(owner)
             {
@@ -3153,7 +3307,7 @@ namespace EGSE.Devices
                     return _usbLogFile;
                 }
 
-                set
+                set 
                 {
                     _usbLogFile = value;
                     FirePropertyChangedEvent();
@@ -3368,7 +3522,7 @@ namespace EGSE.Devices
                     return _isBuskLineA;
                 }
 
-                private set
+                private set 
                 {
                     _isBuskLineA = value;
                     FirePropertyChangedEvent();
@@ -3388,7 +3542,7 @@ namespace EGSE.Devices
                     return _isBuskLineB;
                 }
 
-                private set
+                private set 
                 {
                     _isBuskLineB = value;
                     FirePropertyChangedEvent();
@@ -3408,7 +3562,7 @@ namespace EGSE.Devices
                     return _isBundLineA;
                 }
 
-                private set
+                private set 
                 {
                     _isBundLineA = value;
                     FirePropertyChangedEvent();
@@ -3428,7 +3582,7 @@ namespace EGSE.Devices
                     return _isBundLineB;
                 }
 
-                private set
+                private set 
                 {
                     _isBundLineB = value;
                     FirePropertyChangedEvent();
@@ -3436,7 +3590,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, есть ли [питание первого полукомплекта БУСК].
+            /// Получает значение, показывающее, есть ли [питание первого полукомплекта БУСК].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание первого полукомплекта БУСК]; иначе, <c>false</c>.
@@ -3448,7 +3602,7 @@ namespace EGSE.Devices
                     return _isPowerBusk1;
                 }
 
-                set
+                private set 
                 {
                     _isPowerBusk1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!value), false);
@@ -3476,7 +3630,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, есть ли [питание второго полукомплекта БУСК].
+            /// Получает значение, показывающее, есть ли [питание второго полукомплекта БУСК].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание второго полукомплекта БУСК]; иначе, <c>false</c>.
@@ -3488,7 +3642,7 @@ namespace EGSE.Devices
                     return _isPowerBusk2;
                 }
 
-                set
+                private set 
                 {
                     _isPowerBusk2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!value), false);
@@ -3516,7 +3670,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, есть ли [питание первого полукомплекта БУНД].
+            /// Получает значение, показывающее, есть ли [питание первого полукомплекта БУНД].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание первого полукомплекта БУНД]; иначе, <c>false</c>.
@@ -3528,7 +3682,7 @@ namespace EGSE.Devices
                     return _powerBund1;
                 }
 
-                set
+                private set 
                 {
                     _powerBund1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!value), false);
@@ -3556,7 +3710,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, есть ли [питание второго полукомплекта БУНД].
+            /// Получает значение, показывающее, есть ли [питание второго полукомплекта БУНД].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [питание второго полукомплекта БУНД]; иначе, <c>false</c>.
@@ -3568,7 +3722,7 @@ namespace EGSE.Devices
                     return _isPowerBund2;
                 }
 
-                set
+                private set 
                 {
                     _isPowerBund2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!value), false);
@@ -3596,7 +3750,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, включен ли [затвор прибора УФЕС ОСН].
+            /// Получает значение, показывающее, включен ли [затвор прибора УФЕС ОСН].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [затвор прибора УФЕС ОСН] включен; иначе, <c>false</c>.
@@ -3608,7 +3762,7 @@ namespace EGSE.Devices
                     return _ufesLock1;
                 }
 
-                set
+                private set 
                 {
                     _ufesLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock1, Convert.ToInt32(value));
@@ -3617,7 +3771,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, включен ли [затвор прибора УФЕС РЕЗ].
+            /// Получает значение, показывающее, включен ли [затвор прибора УФЕС РЕЗ].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [затвор прибора УФЕС РЕЗ] включен; иначе, <c>false</c>.
@@ -3629,7 +3783,7 @@ namespace EGSE.Devices
                     return _ufesLock2;
                 }
 
-                set
+                private set 
                 {
                     _ufesLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock2, Convert.ToInt32(value));
@@ -3638,7 +3792,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, включен ли [затвор прибора ВУФЕС ОСН].
+            /// Получает значение, показывающее, включен ли [затвор прибора ВУФЕС ОСН].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [затвор прибора ВУФЕС ОСН] включен; иначе, <c>false</c>.
@@ -3650,7 +3804,7 @@ namespace EGSE.Devices
                     return _vufesLock1;
                 }
 
-                set
+                private set 
                 {
                     _vufesLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock1, Convert.ToInt32(value));
@@ -3659,7 +3813,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, включен ли [затвор прибора ВУФЕС РЕЗ].
+            /// Получает значение, показывающее, включен ли [затвор прибора ВУФЕС РЕЗ].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [затвор прибора ВУФЕС РЕЗ] включен; иначе, <c>false</c>.
@@ -3671,7 +3825,7 @@ namespace EGSE.Devices
                     return _vufesLock2;
                 }
 
-                set
+                private set 
                 {
                     _vufesLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock2, Convert.ToInt32(value));
@@ -3680,7 +3834,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, включен ли [затвор прибора СДЩ ОСН].
+            /// Получает значение, показывающее, включен ли [затвор прибора СДЩ ОСН].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [затвор прибора СДЩ ОСН] включен; иначе, <c>false</c>.
@@ -3692,7 +3846,7 @@ namespace EGSE.Devices
                     return _sdchshLock1;
                 }
 
-                set
+                private set 
                 {
                     _sdchshLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock1, Convert.ToInt32(value));
@@ -3701,7 +3855,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, включен ли [затвор прибора СДЩ РЕЗ].
+            /// Получает значение, показывающее, включен ли [затвор прибора СДЩ РЕЗ].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [затвор прибора СДЩ РЕЗ] включен; иначе, <c>false</c>.
@@ -3713,7 +3867,7 @@ namespace EGSE.Devices
                     return _sdchshLock2;
                 }
 
-                set
+                private set 
                 {
                     _sdchshLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock2, Convert.ToInt32(value));
@@ -3734,7 +3888,7 @@ namespace EGSE.Devices
                     return _ufesPower1;
                 }
 
-                private set
+                private set 
                 {
                     _ufesPower1 = value;
                     FirePropertyChangedEvent();
@@ -3754,7 +3908,7 @@ namespace EGSE.Devices
                     return _ufesPower2;
                 }
 
-                private set
+                private set 
                 {
                     _ufesPower2 = value;
                     FirePropertyChangedEvent();
@@ -3774,7 +3928,7 @@ namespace EGSE.Devices
                     return _vufesPower1;
                 }
 
-                private set
+                private set 
                 {
                     _vufesPower1 = value;
                     FirePropertyChangedEvent();
@@ -3794,7 +3948,7 @@ namespace EGSE.Devices
                     return _vufesPower2;
                 }
 
-                private set
+                private set 
                 {
                     _vufesPower2 = value;
                     FirePropertyChangedEvent();
@@ -3814,7 +3968,7 @@ namespace EGSE.Devices
                     return _sdchshPower1;
                 }
 
-                private set
+                private set 
                 {
                     _sdchshPower1 = value;
                     FirePropertyChangedEvent();
@@ -3834,7 +3988,7 @@ namespace EGSE.Devices
                     return _sdchshPower2;
                 }
 
-                private set
+                private set 
                 {
                     _sdchshPower2 = value;
                     FirePropertyChangedEvent();
@@ -3854,7 +4008,7 @@ namespace EGSE.Devices
                     return _ufesLight1;
                 }
 
-                private set
+                private set 
                 {
                     _ufesLight1 = value;
                     FirePropertyChangedEvent();
@@ -3874,7 +4028,7 @@ namespace EGSE.Devices
                     return _ufesLight2;
                 }
 
-                private set
+                private set 
                 {
                     _ufesLight2 = value;
                     FirePropertyChangedEvent();
@@ -3894,7 +4048,7 @@ namespace EGSE.Devices
                     return _vufesLight1;
                 }
 
-                private set
+                private set 
                 {
                     _vufesLight1 = value;
                     FirePropertyChangedEvent();
@@ -3914,7 +4068,7 @@ namespace EGSE.Devices
                     return _vufesLight2;
                 }
 
-                private set
+                private set 
                 {
                     _vufesLight2 = value;
                     FirePropertyChangedEvent();
@@ -3934,7 +4088,7 @@ namespace EGSE.Devices
                     return _sdchshLight1;
                 }
 
-                private set
+                private set 
                 {
                     _sdchshLight1 = value;
                     FirePropertyChangedEvent();
@@ -3954,7 +4108,7 @@ namespace EGSE.Devices
                     return _sdchshLight2;
                 }
 
-                private set
+                private set 
                 {
                     _sdchshLight2 = value;
                     FirePropertyChangedEvent();
@@ -4144,12 +4298,12 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает буфер данных для передачи в USB.
+            /// Получает буфер данных для передачи в USB.
             /// </summary>
             /// <value>
             /// Буфер данных.
             /// </value>
-            public byte[] Data { get; set; }
+            public byte[] Data { get; private set; }
 
             /// <summary>
             /// Получает строку представления [логический адрес БУСК].
@@ -4164,7 +4318,7 @@ namespace EGSE.Devices
                     return string.Format(Resource.Get(@"stShowSimLogicBusk"), LogicBusk.ToString(/*"X2"*/));
                 }
 
-                private set
+                private set 
                 {
                     FirePropertyChangedEvent();
                 }
@@ -4183,7 +4337,7 @@ namespace EGSE.Devices
                     return _logicBusk;
                 }
 
-                set
+                set 
                 {
                     _logicBusk = value;
                     ControlValuesList[Global.Spacewire1.BuskLogic].SetProperty(Global.Spacewire1.BuskLogic, value);                    
@@ -4205,7 +4359,7 @@ namespace EGSE.Devices
                     return string.Format(Resource.Get(@"stShowSimLogicSD1"), LogicSD1.ToString(/*"X2"*/));
                 }
 
-                private set
+                private set 
                 { 
                     FirePropertyChangedEvent(); 
                 }
@@ -4224,7 +4378,7 @@ namespace EGSE.Devices
                     return _logicSD1;
                 }
 
-                set
+                set 
                 {
                     _logicSD1 = value;
                     ControlValuesList[Global.Spacewire1.SD1Logic].SetProperty(Global.Spacewire1.SD1Logic, value);
@@ -4234,7 +4388,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [интерфейс SpaceWire1 включен].
+            /// Получает значение, показывающее, что [интерфейс SpaceWire1 включен].
             /// </summary>
             /// <value>
             /// <c>true</c> если [интерфейс SpaceWire1 включен]; иначе, <c>false</c>.
@@ -4246,7 +4400,7 @@ namespace EGSE.Devices
                     return _isIssueEnable;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEnable = value;
                     ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.IssueEnable, Convert.ToInt32(value));
@@ -4275,7 +4429,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
+            /// Получает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
             /// </summary>
             /// <value>
             /// <c>true</c> если [установлена связь по интерфейсу Spacewire]; иначе, <c>false</c>.
@@ -4287,7 +4441,7 @@ namespace EGSE.Devices
                     return _isConnect;
                 }
 
-                set
+                private set 
                 {
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.Connect, Convert.ToInt32(value));
@@ -4296,7 +4450,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [включен обмен для прибора НП1].
+            /// Получает значение, показывающее, что [включен обмен для прибора НП1].
             /// </summary>
             /// <value>
             /// <c>true</c> если [включен обмен для прибора НП1]; иначе, <c>false</c>.
@@ -4308,7 +4462,7 @@ namespace EGSE.Devices
                     return _isSD1Trans;
                 }
 
-                set
+                private set 
                 {
                     _isSD1Trans = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD1Trans, Convert.ToInt32(value));
@@ -4336,7 +4490,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [включен обмен для прибора НП2].
+            /// Получает значение, показывающее, что [включен обмен для прибора НП2].
             /// </summary>
             /// <value>
             /// <c>true</c> если [включен обмен для прибора НП2]; иначе, <c>false</c>.
@@ -4348,7 +4502,7 @@ namespace EGSE.Devices
                     return _isSD2Trans;
                 }
 
-                set
+                private set 
                 {
                     _isSD2Trans = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD2Trans, Convert.ToInt32(value));
@@ -4376,7 +4530,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в НП1].
+            /// Получает значение, показывающее, что [можно выдавать пакеты данных в НП1].
             /// </summary>
             /// <value>
             /// <c>true</c> если [можно выдавать пакеты данных в НП1]; иначе, <c>false</c>.
@@ -4388,7 +4542,7 @@ namespace EGSE.Devices
                     return _isSD1TransData;
                 }
 
-                set
+                private set 
                 {
                     _isSD1TransData = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD1TransData, Convert.ToInt32(value));
@@ -4416,7 +4570,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в НП2].
+            /// Получает значение, показывающее, что [можно выдавать пакеты данных в НП2].
             /// </summary>
             /// <value>
             /// <c>true</c> если [можно выдавать пакеты данных в НП2]; иначе, <c>false</c>.
@@ -4428,7 +4582,7 @@ namespace EGSE.Devices
                     return _isSD2TransData;
                 }
 
-                set
+                private set 
                 {
                     _isSD2TransData = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD2TransData, Convert.ToInt32(value));
@@ -4456,7 +4610,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение [Счетчик миллисекунд для НП1 (через сколько готовы данные)].
+            /// Получает значение [Счетчик миллисекунд для НП1 (через сколько готовы данные)].
             /// </summary>
             /// <value>
             /// Счетчик миллисекунд для НП1 (через сколько готовы данные).
@@ -4468,7 +4622,7 @@ namespace EGSE.Devices
                     return _sd1SendTime;
                 }
 
-                set
+                private set 
                 {
                     _sd1SendTime = value;
                     ControlValuesList[Global.Spacewire1.SD1SendTime].SetProperty(Global.Spacewire1.SD1SendTime, Convert.ToInt32(value));
@@ -4477,7 +4631,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение [Счетчик миллисекунд для НП2 (через сколько готовы данные)].
+            /// Получает значение [Счетчик миллисекунд для НП2 (через сколько готовы данные)].
             /// </summary>
             /// <value>
             /// Счетчик миллисекунд для НП2 (через сколько готовы данные).
@@ -4489,7 +4643,7 @@ namespace EGSE.Devices
                     return _sd2SendTime;
                 }
 
-                set
+                private set 
                 {
                     _sd2SendTime = value;
                     ControlValuesList[Global.Spacewire1.SD2SendTime].SetProperty(Global.Spacewire1.SD2SendTime, Convert.ToInt32(value));
@@ -4498,7 +4652,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение [Кол-во байт в пакете НП1].
+            /// Получает значение [кол-во байт в пакете НП1].
             /// </summary>
             /// <value>
             /// Кол-во байт в пакете НП1.
@@ -4510,7 +4664,7 @@ namespace EGSE.Devices
                     return _sd1DataSize;
                 }
 
-                set
+                private set 
                 {
                     _sd1DataSize = value;
                     ControlValuesList[Global.Spacewire1.SD1DataSize].SetProperty(Global.Spacewire1.SD1DataSize, Convert.ToInt32(value));
@@ -4519,7 +4673,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение [Кол-во байт в пакете НП2].
+            /// Получает значение [кол-во байт в пакете НП2].
             /// </summary>
             /// <value>
             /// Кол-во байт в пакете НП2.
@@ -4531,7 +4685,7 @@ namespace EGSE.Devices
                     return _sd2DataSize;
                 }
 
-                set
+                private set 
                 {
                     _sd2DataSize = value;
                     ControlValuesList[Global.Spacewire1.SD2DataSize].SetProperty(Global.Spacewire1.SD2DataSize, Convert.ToInt32(value));
@@ -4540,7 +4694,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Бит занятости записи - 1].
+            /// Получает значение, показывающее, что [Бит занятости записи - 1].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [Бит занятости записи - 1]; иначе, <c>false</c>.
@@ -4552,7 +4706,7 @@ namespace EGSE.Devices
                     return _isRecordBusy || IsIssuePackage;
                 }
 
-                set
+                private set 
                 {
                     _isRecordBusy = value;
                     FirePropertyChangedEvent();
@@ -4560,7 +4714,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Бит выдачи посылки - 1].
+            /// Получает значение, показывающее, что [Бит выдачи посылки - 1].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [Бит выдачи посылки - 1]; иначе, <c>false</c>.
@@ -4572,7 +4726,7 @@ namespace EGSE.Devices
                     return _isRecordSend;
                 }
 
-                set
+                private set 
                 {
                     _isRecordSend = value;
                     FirePropertyChangedEvent();
@@ -4947,12 +5101,12 @@ namespace EGSE.Devices
             }       
 
             /// <summary>
-            /// Получает или задает буфер данных для передачи в USB.
+            /// Получает буфер данных для передачи в USB.
             /// </summary>
             /// <value>
             /// Буфер данных.
             /// </value>
-            public byte[] Data { get; set; }
+            public byte[] Data { get; private set; }
 
             /// <summary>
             /// Получает или задает количество запросов кредита от БУСК.
@@ -4967,7 +5121,7 @@ namespace EGSE.Devices
                     return _requestQueueFromBusk;
                 }
 
-                set
+                set 
                 {
                     _requestQueueFromBusk = value;
                     FirePropertyChangedEvent();
@@ -4987,7 +5141,7 @@ namespace EGSE.Devices
                     return _buskTickTime1;
                 }
 
-                set
+                set 
                 {
                     _buskTickTime1 = value;
                     FirePropertyChangedEvent();
@@ -4995,7 +5149,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает наименование файла для записи данных.
+            /// Получает наименование файла для записи данных.
             /// </summary>
             /// <value>
             /// Наименование файла для записи данных.
@@ -5007,7 +5161,7 @@ namespace EGSE.Devices
                     return _rawDataFile;
                 }
 
-                set
+                private set 
                 {
                     _rawDataFile = value;
                     if (string.Empty != value)
@@ -5037,7 +5191,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что включена запись данных в файл.
+            /// Получает значение, показывающее, что включена запись данных в файл.
             /// </summary>
             /// <value>
             /// <c>true</c> исли запись данных включена; иначе, <c>false</c>.
@@ -5049,7 +5203,7 @@ namespace EGSE.Devices
                     return _isSaveRawData;
                 }
 
-                set
+                private set 
                 {
                     _isSaveRawData = value;
                     if (value)
@@ -5097,7 +5251,7 @@ namespace EGSE.Devices
                     return _buskTickTime2;
                 }
 
-                set
+                set 
                 {
                     _buskTickTime2 = value;
                     FirePropertyChangedEvent();
@@ -5117,7 +5271,7 @@ namespace EGSE.Devices
                     return _bukTickTime1;
                 }
 
-                set
+                set 
                 {
                     _bukTickTime1 = value;
                     FirePropertyChangedEvent();
@@ -5137,7 +5291,7 @@ namespace EGSE.Devices
                     return _bukTickTime2;
                 }
 
-                set
+                set 
                 {
                     _bukTickTime2 = value;
                     FirePropertyChangedEvent();
@@ -5145,12 +5299,12 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение [Счетчик телекоманд].
+            /// Получает значение [Счетчик телекоманд].
             /// </summary>
             /// <value>
             /// [Счетчик телекоманд].
             /// </value>
-            public Dictionary<short, AutoCounter> CounterIcd { get; set; }
+            public Dictionary<short, AutoCounter> CounterIcd { get; private set; }
 
             /// <summary>
             /// Получает значение, показывающее, что [выбран первый полукомплект БУК].
@@ -5193,7 +5347,7 @@ namespace EGSE.Devices
                     return _replyQueueFromBusk;
                 }
 
-                set
+                set 
                 {
                     _replyQueueFromBusk = value;
                     FirePropertyChangedEvent();
@@ -5213,7 +5367,7 @@ namespace EGSE.Devices
                     return _requestQueueFromBuk;
                 }
 
-                set
+                set 
                 {
                     _requestQueueFromBuk = value;
                     FirePropertyChangedEvent();
@@ -5233,7 +5387,7 @@ namespace EGSE.Devices
                     return _replyQueueFromBuk;
                 }
 
-                set
+                set 
                 {
                     _replyQueueFromBuk = value;
                     FirePropertyChangedEvent();
@@ -5253,7 +5407,7 @@ namespace EGSE.Devices
                     return _codeOnboardTime;
                 }
 
-                set
+                set 
                 {
                     _codeOnboardTime = value;
                     FirePropertyChangedEvent();
@@ -5261,7 +5415,7 @@ namespace EGSE.Devices
             }        
 
             /// <summary>
-            /// Получает или задает канал имитатора БМ-4.
+            /// Получает канал имитатора БМ-4.
             /// </summary>
             /// <value>
             /// Канал имитатора БМ-4.
@@ -5273,7 +5427,7 @@ namespace EGSE.Devices
                     return _spacewireChannel;
                 }
 
-                set
+                private set 
                 {
                     if (value == _spacewireChannel)
                     {
@@ -5300,7 +5454,7 @@ namespace EGSE.Devices
                     return string.Format(Resource.Get(@"stShowLogicBusk"), LogicBusk.ToString(/*"X2"*/));
                 }
 
-                private set
+                private set 
                 {
                     FirePropertyChangedEvent();
                 }
@@ -5319,7 +5473,7 @@ namespace EGSE.Devices
                     return _logicBusk;
                 }
 
-                set
+                set 
                 {
                     _logicBusk = value;
                     ControlValuesList[Global.Spacewire2.BuskLogic].SetProperty(Global.Spacewire2.BuskLogic, value);
@@ -5341,7 +5495,7 @@ namespace EGSE.Devices
                     return string.Format(Resource.Get(@"stShowLogicBuk"), LogicBuk.ToString(/*"X2"*/));
                 }
 
-                private set
+                private set 
                 {
                     FirePropertyChangedEvent();
                 }
@@ -5360,7 +5514,7 @@ namespace EGSE.Devices
                     return _logicBuk;
                 }
 
-                set
+                set 
                 {
                     _logicBuk = value;
                     ControlValuesList[Global.Spacewire2.BukLogic].SetProperty(Global.Spacewire2.BukLogic, value);
@@ -5370,7 +5524,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
+            /// Получает значение, показывающее, что [интерфейс Spacewire включен].
             /// </summary>
             /// <value>
             /// <c>true</c> если [интерфейс Spacewire включен]; иначе, <c>false</c>.
@@ -5382,7 +5536,7 @@ namespace EGSE.Devices
                     return _isIssueEnable;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEnable = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.IssueEnable, Convert.ToInt32(value));
@@ -5410,7 +5564,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
+            /// Получает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
             /// </summary>
             /// <value>
             /// <c>true</c> если [связь по интерфейсу Spacewire установлена]; иначе, <c>false</c>.
@@ -5422,7 +5576,7 @@ namespace EGSE.Devices
                     return _isConnect;
                 }
 
-                set
+                private set 
                 {
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(value));
@@ -5431,7 +5585,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Бит отправки RMAP посылки - 1].
+            /// Получает значение, показывающее, что [Бит отправки RMAP посылки - 1].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [Бит отправки RMAP посылки - 1]; иначе, <c>false</c>.
@@ -5443,7 +5597,7 @@ namespace EGSE.Devices
                     return _isIssueRMap;
                 }
 
-                set
+                private set 
                 {
                     _isIssueRMap = value;                    
                     FirePropertyChangedEvent();
@@ -5503,7 +5657,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [необходимо формировать посылку телекоманды].
+            /// Получает значение, показывающее, что [необходимо формировать посылку телекоманды].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [необходимо формировать посылку телекоманды]; иначе, <c>false</c>.
@@ -5515,7 +5669,7 @@ namespace EGSE.Devices
                     return _isMakeTK;
                 }
 
-                set
+                private set 
                 {
                     _isMakeTK = value;
                     FirePropertyChangedEvent();
@@ -5542,7 +5696,7 @@ namespace EGSE.Devices
             }
             
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Бит отправки посылки в БУК - 1].
+            /// Получает значение, показывающее, что [Бит отправки посылки в БУК - 1].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [Бит отправки посылки в БУК - 1]; иначе, <c>false</c>.
@@ -5554,7 +5708,7 @@ namespace EGSE.Devices
                     return _isIssuePackage;
                 }
 
-                set
+                private set 
                 {
                     _isIssuePackage = value;                    
                     FirePropertyChangedEvent();
@@ -5581,7 +5735,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выдаются метки времени приборам].
+            /// Получает значение, показывающее, что [выдаются метки времени приборам].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдаются метки времени приборам]; иначе, <c>false</c>.
@@ -5593,7 +5747,7 @@ namespace EGSE.Devices
                     return _isIssueTimeMark;
                 }
 
-                set
+                private set 
                 {
                     _isIssueTimeMark = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueTimeMark, Convert.ToInt32(value));
@@ -5621,7 +5775,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [включен обмен для прибора БУК].
+            /// Получает значение, показывающее, что [включен обмен для прибора БУК].
             /// </summary>
             /// <value>
             /// <c>true</c> если [включен обмен для прибора БУК]; иначе, <c>false</c>.
@@ -5633,7 +5787,7 @@ namespace EGSE.Devices
                     return _isIssueTrans;
                 }
 
-                set
+                private set 
                 {
                     _isIssueTrans = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueTrans, Convert.ToInt32(value));
@@ -5661,7 +5815,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выдается КБВ для прибора БУК].
+            /// Получает значение, показывающее, что [выдается КБВ для прибора БУК].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдается КБВ для прибора БУК]; иначе, <c>false</c>.
@@ -5673,7 +5827,7 @@ namespace EGSE.Devices
                     return _isIssueKbv;
                 }
 
-                set
+                private set 
                 {
                     _isIssueKbv = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueKbv, Convert.ToInt32(value));
@@ -5701,7 +5855,7 @@ namespace EGSE.Devices
             }
             
             /// <summary>
-            /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в БУК].
+            /// Получает значение, показывающее, что [можно выдавать пакеты данных в БУК].
             /// </summary>
             /// <value>
             /// <c>true</c> если [можно выдавать пакеты данных в БУК]; иначе, <c>false</c>.
@@ -5713,7 +5867,7 @@ namespace EGSE.Devices
                     return _isTransData;
                 }
 
-                set
+                private set 
                 {
                     _isTransData = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.TransData, Convert.ToInt32(value));
@@ -5722,7 +5876,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает текущий APID для формирования посылки.
+            /// Получает текущий APID для формирования посылки.
             /// </summary>
             /// <value>
             /// Текущий APID для формирования посылки.
@@ -5734,7 +5888,7 @@ namespace EGSE.Devices
                     return _setApid;
                 }
 
-                set
+                private set 
                 {
                     _setApid = value;
                     FirePropertyChangedEvent();
@@ -5784,7 +5938,7 @@ namespace EGSE.Devices
             /// </summary>
             /// <param name="sender">The sender.</param>
             /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-            public virtual void OnSpacewire2MsgRawSave(object sender, MsgBase e)
+            public virtual void OnSpacewire2MsgRawSave(object sender, BaseMsgEventArgs e)
             {
                 if (null != _rawDataStream)
                 {
@@ -6046,7 +6200,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
+            /// Получает значение, показывающее, что [интерфейс Spacewire включен].
             /// </summary>
             /// <value>
             /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
@@ -6058,7 +6212,7 @@ namespace EGSE.Devices
                     return _isIssueEnable;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEnable = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.IssueEnable, Convert.ToInt32(value));
@@ -6087,7 +6241,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
+            /// Получает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
             /// </summary>
             /// <value>
             /// <c>true</c> если [связь по интерфейсу SpaceWire установлена]; иначе, <c>false</c>.
@@ -6099,7 +6253,7 @@ namespace EGSE.Devices
                     return _isConnect;
                 }
 
-                set
+                private set 
                 {
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(value));
@@ -6108,7 +6262,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [передаются кадры данных].
+            /// Получает значение, показывающее, что [передаются кадры данных].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [передаются кадры данных]; иначе, <c>false</c>.
@@ -6120,7 +6274,7 @@ namespace EGSE.Devices
                     return _isIssueTransmission;
                 }
 
-                set
+                private set 
                 {
                     _isIssueTransmission = value;
                     FirePropertyChangedEvent();
@@ -6128,7 +6282,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает полукомплект прибора.
+            /// Получает полукомплект прибора.
             /// </summary>
             /// <value>
             /// Полукомплект прибора.
@@ -6140,7 +6294,7 @@ namespace EGSE.Devices
                     return _workDeviceHalfSet;
                 }
 
-                set
+                private set 
                 {
                     _workDeviceHalfSet = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.HalfSet, (int)value);
@@ -6149,7 +6303,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает рабочий прибор.
+            /// Получает рабочий прибор.
             /// </summary>
             /// <value>
             /// Рабочий прибор.
@@ -6161,7 +6315,7 @@ namespace EGSE.Devices
                     return _workDevice;
                 }
 
-                set
+                private set 
                 {
                     _workDevice = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.WorkDevice, (int)value);
@@ -6170,7 +6324,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает наименование файла для записи данных.
+            /// Получает наименование файла для записи данных.
             /// </summary>
             /// <value>
             /// Наименование файла для записи данных.
@@ -6182,7 +6336,7 @@ namespace EGSE.Devices
                     return _rawDataFile;
                 }
 
-                set
+                private set 
                 {
                     _rawDataFile = value;
                     if (string.Empty != value)
@@ -6212,7 +6366,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что активна запись данных в файл.
+            /// Получает значение, показывающее, что активна запись данных в файл.
             /// </summary>
             /// <value>
             /// <c>true</c> если активна запись данных в файл; иначе, <c>false</c>.
@@ -6224,7 +6378,7 @@ namespace EGSE.Devices
                     return _isSaveRawData;
                 }
 
-                set
+                private set 
                 {
                     _isSaveRawData = value;
                     if (value)
@@ -6260,7 +6414,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество запросов квот от БУК.
+            /// Получает количество запросов квот от БУК.
             /// </summary>
             /// <value>
             /// Количество запросов квот от БУК.
@@ -6272,7 +6426,7 @@ namespace EGSE.Devices
                     return _requestQueueFromBuk;
                 }
 
-                set
+                private set 
                 {
                     _requestQueueFromBuk = value;
                     FirePropertyChangedEvent();
@@ -6280,7 +6434,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество предоставления квот от БУК.
+            /// Получает количество предоставления квот от БУК.
             /// </summary>
             /// <value>
             /// Количество предоставления квот от БУК.
@@ -6292,7 +6446,7 @@ namespace EGSE.Devices
                     return _replyQueueFromBuk;
                 }
 
-                set
+                private set 
                 {
                     _replyQueueFromBuk = value;
                     FirePropertyChangedEvent();
@@ -6300,7 +6454,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество запросов квот от НП.
+            /// Получает количество запросов квот от НП.
             /// </summary>
             /// <value>
             /// Количество запросов квот от НП.
@@ -6312,7 +6466,7 @@ namespace EGSE.Devices
                     return _requestQueueFromSD;
                 }
 
-                set
+                private set 
                 {
                     _requestQueueFromSD = value;
                     FirePropertyChangedEvent();
@@ -6320,7 +6474,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает количество предоставления квот от НП.
+            /// Получает количество предоставления квот от НП.
             /// </summary>
             /// <value>
             /// Количество предоставления квот от НП.
@@ -6332,7 +6486,7 @@ namespace EGSE.Devices
                     return _replyQueueFromSD;
                 }
 
-                set
+                private set 
                 {
                     _replyQueueFromSD = value;
                     FirePropertyChangedEvent();
@@ -6352,7 +6506,7 @@ namespace EGSE.Devices
                     return _scidevTickTime1;
                 }
 
-                set
+                set 
                 {
                     _scidevTickTime1 = value;
                     FirePropertyChangedEvent();
@@ -6372,7 +6526,7 @@ namespace EGSE.Devices
                     return _scidevTickTime2;
                 }
 
-                set
+                set 
                 {
                     _scidevTickTime2 = value;
                     FirePropertyChangedEvent();
@@ -6392,7 +6546,7 @@ namespace EGSE.Devices
                     return _bukTickTime1;
                 }
 
-                set
+                set 
                 {
                     _bukTickTime1 = value;
                     FirePropertyChangedEvent();
@@ -6412,7 +6566,7 @@ namespace EGSE.Devices
                     return _bukTickTime2;
                 }
 
-                set
+                set 
                 {
                     _bukTickTime2 = value;
                     FirePropertyChangedEvent();
@@ -6454,7 +6608,7 @@ namespace EGSE.Devices
             /// </summary>
             /// <param name="sender">The sender.</param>
             /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-            public virtual void OnSpacewire3MsgRawSave(object sender, MsgBase e)
+            public virtual void OnSpacewire3MsgRawSave(object sender, BaseMsgEventArgs e)
             {
                 if (null != _rawDataStream)
                 {
@@ -6585,15 +6739,15 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает буфер данных для передачи в USB.
+            /// Получает буфер данных для передачи в USB.
             /// </summary>
             /// <value>
             /// Буфер данных.
             /// </value>
-            public byte[] Data { get; set; }
+            public byte[] Data { get; private set; }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [интерфейс Spacewire включен].
+            /// Получает значение, показывающее, что [интерфейс Spacewire включен].
             /// </summary>
             /// <value>
             /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
@@ -6605,7 +6759,7 @@ namespace EGSE.Devices
                     return _isIssueEnable;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEnable = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.IssueEnable, Convert.ToInt32(value));
@@ -6634,7 +6788,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
+            /// Получает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
             /// </summary>
             /// <value>
             /// <c>true</c> если [установлена связь по интерфейсу Spacewire]; иначе, <c>false</c>.
@@ -6646,7 +6800,7 @@ namespace EGSE.Devices
                     return _isConnect;
                 }
 
-                set
+                private set 
                 {
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(value));
@@ -6655,7 +6809,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выдается метка времени].
+            /// Получает значение, показывающее, что [выдается метка времени].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдается метка времени]; иначе, <c>false</c>.
@@ -6667,7 +6821,7 @@ namespace EGSE.Devices
                     return _isIssueTimeMark;
                 }
 
-                set
+                private set 
                 {
                     _isIssueTimeMark = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.TimeMark, Convert.ToInt32(_isIssueTimeMark));
@@ -6695,7 +6849,7 @@ namespace EGSE.Devices
             }
             
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выдается EEP].
+            /// Получает значение, показывающее, что [выдается EEP].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдается EEP]; иначе, <c>false</c>.
@@ -6707,7 +6861,7 @@ namespace EGSE.Devices
                     return _isIssueEEP;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEEP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueEEP, Convert.ToInt32(value));
@@ -6735,7 +6889,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выдается EOP].
+            /// Получает значение, показывающее, что [выдается EOP].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдается EOP]; иначе, <c>false</c>.
@@ -6747,7 +6901,7 @@ namespace EGSE.Devices
                     return _isIssueEOP;
                 }
 
-                set
+                private set 
                 {
                     _isIssueEOP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.EOPSend, Convert.ToInt32(value));
@@ -6794,7 +6948,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [включена автоматическая выдача посылки].
+            /// Получает значение, показывающее, что [включена автоматическая выдача посылки].
             /// </summary>
             /// <value>
             /// <c>true</c> если [включена автоматическая выдача посылки]; иначе, <c>false</c>.
@@ -6806,7 +6960,7 @@ namespace EGSE.Devices
                     return _isIssueAuto;
                 }
 
-                set
+                private set 
                 {
                     _isIssueAuto = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueAuto, Convert.ToInt32(value));
@@ -6834,7 +6988,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Бит занятости записи - 1].
+            /// Получает значение, показывающее, что [Бит занятости записи - 1].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [Бит занятости записи - 1]; иначе, <c>false</c>.
@@ -6846,7 +7000,7 @@ namespace EGSE.Devices
                     return _isRecordBusy || IsIssuePackage;
                 }
 
-                set
+                private set 
                 {
                     _isRecordBusy = value;
                     FirePropertyChangedEvent();                    
@@ -6854,7 +7008,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [Бит выдачи посылки - 1].
+            /// Получает значение, показывающее, что [Бит выдачи посылки - 1].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [Бит выдачи посылки - 1]; иначе, <c>false</c>.
@@ -6866,7 +7020,7 @@ namespace EGSE.Devices
                     return _isIssuePackage;
                 }
 
-                set
+                private set 
                 {
                     _isIssuePackage = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssuePackage, Convert.ToInt32(value));

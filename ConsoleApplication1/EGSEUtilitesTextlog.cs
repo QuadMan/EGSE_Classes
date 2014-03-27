@@ -62,13 +62,12 @@ namespace EGSE.Utilites
             _sw = new StreamWriter(_fileName, true);
         }
 
-        /*public double LogTime
-        {
-            get { return seconds / 3600; }
-            set { seconds = value * 3600; }
-
-        }*/
-
+        /// <summary>
+        /// Получает наименование лог-файла.
+        /// </summary>
+        /// <value>
+        /// Наименование лог-файла.
+        /// </value>
         public string FileName
         {
             get

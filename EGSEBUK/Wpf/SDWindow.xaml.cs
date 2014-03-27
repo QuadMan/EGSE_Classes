@@ -59,7 +59,7 @@ namespace EGSE.Defaults
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        public void OnSpacewireMsg(object sender, MsgBase msg)
+        public void OnSpacewireMsg(object sender, BaseMsgEventArgs msg)
         {
             new { msg }.CheckNotNull();
             string spacewireMsg = string.Empty;
@@ -75,7 +75,6 @@ namespace EGSE.Defaults
                 {
                     spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + " " + Converter.ByteArrayToHexStr(sptpMsg.Data);
                 }
-
             }
             else if (msg is SpacewireErrorMsgEventArgs)
             {

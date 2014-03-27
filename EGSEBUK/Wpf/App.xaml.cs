@@ -7,8 +7,6 @@
 
 namespace EGSE.WPF
 {
-    using EGSE.Defaults;
-    using EGSE.Utilites;
     using System;
     using System.Collections.Generic;
     using System.Configuration;
@@ -17,6 +15,8 @@ namespace EGSE.WPF
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
+    using EGSE.Defaults;
+    using EGSE.Utilites;
 
     /// <summary>
     /// Interaction logic for App.xaml

@@ -23,10 +23,26 @@ namespace EGSE.Cyclogram.Command
     /// </summary>
     public class CyclogramCommandBuk
     {
+         /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="CyclogramCommandBuk" />.
+        /// </summary>
+        public CyclogramCommandBuk()
+        {
+            CyclogramCommandsAvailable = new CyclogramCommands();
+            CyclogramCommandsAvailable.AddCommand("62ac720d56ce449d86ca2cde439ba75a", new CyclogramLine("POWER", PowerTest, PowerExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("efc854841c554c529966abe5f1e6c2d7", new CyclogramLine("GATE", GateTest, GateExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("b1f06daf0810463892707e7edf5d93be", new CyclogramLine("KVV_IMIT", KvvImitTest, KvvImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("e333bfb23a204e748699528fb787012c", new CyclogramLine("BUSK_IMIT", BuskImitTest, BuskImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("9e3e94f708eb44819a8ea9d01aa321e9", new CyclogramLine("BUSK_IMIT_CMD", BuskImitCmdTest, BuskImitCmdExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("2e92651815794233bc062365b3e8278b", new CyclogramLine("BUSK_IMIT_CMD_FILE", BuskImitCmdFileTest, BuskImitCmdFileExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("ec4d4c82d1044d3fbcad59d4403c54aa", new CyclogramLine("BUSK_IMIT_LOGIC", BuskImitLogicTest, BuskImitLogicExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("bdeae631daf8489983760003e615852a", new CyclogramLine("SCIDEV_IMIT", ScidevImitTest, ScidevImitExec, string.Empty));
+        }
+      
         /// <summary>
         /// Аргумент "переключатель состояния".
         /// </summary>
-        private enum switcher
+        private enum Switcher
         {
             /// <summary>
             /// Параметр "включения/активации" аргумента.
@@ -42,7 +58,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "выбор устройства".
         /// </summary>
-        private enum device
+        private enum Device
         {
             /// <summary>
             /// Параметр "устройство БУСК" аргумента.
@@ -63,7 +79,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "выбор НП".
         /// </summary>
-        private enum scidev
+        private enum Scidev
         {
             /// <summary>
             /// Параметр "НП УФЕС" аргумента.
@@ -84,7 +100,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "выбор линии передачи".
         /// </summary>
-        private enum halfset 
+        private enum Halfset
         {
             /// <summary>
             /// Параметр "основная линия" аргумента.
@@ -110,7 +126,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "выбор линии выдачи релейной команды".
         /// </summary>
-        private enum line
+        private enum Line
         {
             /// <summary>
             /// Параметр "выдача релейной команды по линии A" аргумента.
@@ -131,7 +147,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "выбор канала spacewire".
         /// </summary>
-        private enum channel
+        private enum Channel
         {
             /// <summary>
             /// Параметр "канал spacewire БУК ПК1 - БУСК ПК1" аргумента.
@@ -157,7 +173,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "выбор формируемую команду".
         /// </summary>
-        private enum command
+        private enum Command
         {
             /// <summary>
             /// Параметр "сформировать команду RMAP" аргумента.
@@ -173,7 +189,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "обмен с прибором".
         /// </summary>
-        private enum transmit
+        private enum Transmit
         {
             /// <summary>
             /// Параметр "включить обмен с прибором" аргумента.
@@ -189,7 +205,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "секундная метка".
         /// </summary>
-        private enum ticktime
+        private enum Ticktime
         {
             /// <summary>
             /// Параметр "включить выдачу секундной метки" аргумента.
@@ -205,7 +221,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "КБВ".
         /// </summary>
-        private enum onboardtime
+        private enum Onboardtime
         {
             /// <summary>
             /// Параметр "включить выдачу КБВ" аргумента.
@@ -221,7 +237,7 @@ namespace EGSE.Cyclogram.Command
         /// <summary>
         /// Аргумент "выбор полукомплекта".
         /// </summary>
-        private enum set
+        private enum Sets
         {
             /// <summary>
             /// Параметр "выбрать первый полукомплект" аргумента.
@@ -235,26 +251,33 @@ namespace EGSE.Cyclogram.Command
         }
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="CyclogramCommandBuk" />.
+        /// Получает набор доступных цикломанд для устройства.
         /// </summary>
-        public CyclogramCommandBuk()
-        {
-            CyclogramCommandsAvailable = new CyclogramCommands();
-            CyclogramCommandsAvailable.AddCommand("62ac720d56ce449d86ca2cde439ba75a", new CyclogramLine("POWER", PowerTest, PowerExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("efc854841c554c529966abe5f1e6c2d7", new CyclogramLine("GATE", GateTest, GateExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("b1f06daf0810463892707e7edf5d93be", new CyclogramLine("KVV_IMIT", KvvImitTest, KvvImitExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("e333bfb23a204e748699528fb787012c", new CyclogramLine("BUSK_IMIT", BuskImitTest, BuskImitExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("9e3e94f708eb44819a8ea9d01aa321e9", new CyclogramLine("BUSK_IMIT_CMD", BuskImitCmdTest, BuskImitCmdExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("2e92651815794233bc062365b3e8278b", new CyclogramLine("BUSK_IMIT_CMD_FILE", BuskImitCmdFileTest, BuskImitCmdFileExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("ec4d4c82d1044d3fbcad59d4403c54aa", new CyclogramLine("BUSK_IMIT_LOGIC", BuskImitLogicTest, BuskImitLogicExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("bdeae631daf8489983760003e615852a", new CyclogramLine("SCIDEV_IMIT", ScidevImitTest, ScidevImitExec, string.Empty));
-        }
+        public CyclogramCommands CyclogramCommandsAvailable { get; private set; }
 
+        /// <summary>
+        /// Получает или задает ссылку на экземпляр устройства.
+        /// </summary>
+        public EgseBukNotify BukNotify { get; set; }
+
+        /// <summary>
+        /// Проверка существования параметров у команды.
+        /// </summary>
+        /// <typeparam name="TEnum">Перечисление параметров.</typeparam>
+        /// <param name="cmd">Наименование команды.</param>
+        /// <param name="exclude">Список исключенных параметров.</param>
+        /// <returns><c>true</c> если параметры существуют, иначе <c>false</c></returns>
         private bool IncludeTest<TEnum>(string cmd, TEnum[] exclude = null)
         {
             return GetAllList<TEnum>(exclude).Exists(x => x == cmd);
         }
 
+        /// <summary>
+        /// Формируем список всех параметров для данной команды.
+        /// </summary>
+        /// <typeparam name="TEnum">Перечисление параметров.</typeparam>
+        /// <param name="exclude">Список исключенных параметров.</param>
+        /// <returns>Список наименований параметров, для данной команды.</returns>
         private List<string> GetAllList<TEnum>(TEnum[] exclude = null)
         {
             if (null != exclude)
@@ -267,6 +290,14 @@ namespace EGSE.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// TODO описание
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns>
+        /// <c>true</c> если проверка успешно пройдена, иначе <c>false</c>.
+        /// </returns>
         private bool PowerTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -274,18 +305,19 @@ namespace EGSE.Cyclogram.Command
             {
                 case 3:
                     {
-                        if (!IncludeTest<device>(cmdParams[0], new device[1] { device.BUK }))
+                        if (!IncludeTest<Device>(cmdParams[0], new Device[1] { Device.BUK }))
                         {
-                            errString = string.Format(Resource.Get(@"eArg1"), string.Join(" или ", GetAllList<device>(new device[1] { device.BUK }).ToArray()));
+                            errString = string.Format(Resource.Get(@"eArg1"), string.Join(" или ", GetAllList<Device>(new Device[1] { Device.BUK }).ToArray()));
                             return false;
                         }
 
-                        if (!IncludeTest<set>(cmdParams[1]))
+                        if (!IncludeTest<Sets>(cmdParams[1]))
                         {
-                            errString = string.Format(Resource.Get(@"eArg2"), string.Join(" или ", GetAllList<set>().ToArray()));
+                            errString = string.Format(Resource.Get(@"eArg2"), string.Join(" или ", GetAllList<Sets>().ToArray()));
                             return false;
                         }  
                     }
+
                     break;
                 case 4:
                     break;
@@ -293,14 +325,27 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool PowerExec(string[] Params)
+        /// <summary>
+        /// Powers the execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool PowerExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gates the test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool GateTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -312,14 +357,27 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool GateExec(string[] Params)
+        /// <summary>
+        /// Gates the execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool GateExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// KVVs the imit test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool KvvImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -335,14 +393,27 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool KvvImitExec(string[] Params)
+        /// <summary>
+        /// KVVs the imit execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool KvvImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Busks the imit test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool BuskImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -362,14 +433,27 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool BuskImitExec(string[] Params)
+        /// <summary>
+        /// Busks the imit execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool BuskImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Busks the imit command test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool BuskImitCmdTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -383,14 +467,27 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool BuskImitCmdExec(string[] Params)
+        /// <summary>
+        /// Busks the imit command execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool BuskImitCmdExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Busks the imit command file test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool BuskImitCmdFileTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -402,14 +499,27 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool BuskImitCmdFileExec(string[] Params)
+        /// <summary>
+        /// Busks the imit command file execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool BuskImitCmdFileExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Busks the imit logic test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool BuskImitLogicTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -421,14 +531,27 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool BuskImitLogicExec(string[] Params)
+        /// <summary>
+        /// Busks the imit logic execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool BuskImitLogicExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Scidevs the imit test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool ScidevImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
@@ -444,244 +567,19 @@ namespace EGSE.Cyclogram.Command
                     errString = Resource.Get(@"eParamCount");
                     return false;
             }
+
             return true;
         }
 
-        private bool ScidevImitExec(string[] Params)
+        /// <summary>
+        /// Scidevs the imit execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
+        /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
+        private bool ScidevImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// Получает набор доступных цикломанд для устройства.
-        /// </summary>
-        public CyclogramCommands CyclogramCommandsAvailable { get; private set; }
-
-        /// <summary>
-        /// Получает или задает ссылку на экземпляр устройства.
-        /// </summary>
-        public EgseBukNotify BukNotify { get; set; }
-
-        /// <summary>
-        /// Команда XSAN 
-        /// ON|OFF 
-        /// CMD_CH_NONE|CMD_CH_MAIN|CMD_CH_RES|CMD_CH_MAIN_RES 
-        /// DAT_CH_NONE|DAT_CH_MAIN|DAT_CH_RES|DAT_CH_MAIN_RES 
-        /// BUSY_ON|BUSY_OFF
-        /// ME_ON|ME_OFF
-        /// В случае использования параметра XSAN ON необходимо прописать все значения
-        /// В случае XSAN OFF ничего писать не нужно
-        /// </summary>
-        /// <param name="cmdParams">Передаваемые параметры</param>
-        ///// <param name="errString">Сообщение об ошибке (в случае таковой)</param>
-        ///// <returns>False - если произошла ошибка</returns>
-        //public bool BUKControlTest(string[] cmdParams, out string errString)
-        //{
-        //    errString = string.Empty;
-        //    switch (cmdParams.Length)
-        //    {
-        //        case 5:
-        //            if ((cmdParams[0] != "ON") && (cmdParams[0] != "OFF"))
-        //            {
-        //                errString = "Ошибка параметра: должно быть ON или OFF";
-        //                return false;                        
-        //            }
-
-        //            int idx = _channelCMD.IndexOf(cmdParams[1]);
-        //            if (idx == -1)
-        //            {
-        //                errString = "Ошибка параметра: должно быть " + string.Join(" ", _channelCMD.ToArray());
-        //                return false;
-        //            }
-
-        //            idx = _channelDAT.IndexOf(cmdParams[2]);
-        //            if (idx == -1)
-        //            {
-        //                errString = "Ошибка параметра: должно быть " + string.Join(" ", _channelDAT.ToArray());
-        //                return false;
-        //            }
-
-        //            if ((cmdParams[3] != "BUSY_ON") && (cmdParams[3] != "BUSY_OFF"))
-        //            {
-        //                errString = "Ошибка параметра: должно быть BUSY_ON или BUSY_OFF";
-        //                return false;                        
-        //            }
-
-        //            if ((cmdParams[4] != "ME_ON") && (cmdParams[4] != "ME_OFF"))
-        //            {
-        //                errString = "Ошибка параметра: должно быть ME_ON или ME_OFF";
-        //                return false;
-        //            }
-
-        //            break;
-        //        default:
-        //            errString = "Ошибочное количество параметров команды!";
-        //            return false;
-        //    }
-
-        //    return true;
-        //}
-
-        /// <summary>
-        /// Выполнение управления
-        /// </summary>
-        /// <param name="cmdParams">Передаваемые параметры</param>
-        /// <returns>False - если ошибка</returns>
-       /* public bool BUKControlExec(string[] cmdParams)
-        {
-            switch (cmdParams.Length)
-            {
-                case 5:
-                    int onOffParam = cmdParams[0] == "ON" ? 1 : 0;
-                    BUK.ControlValuesList[BUKConst.BUKCTRL].RefreshGetValue();  // вызываем для обновления галочек на экране
-                    break;
-                default:
-                    return false;
-            }
-
-            return true;
-        }
-
-        /*
-        const string BUNI_CMD_FORMAT_STR = "BUNI ON|OFF CMD_CH_MAIN|CMD_CH_RES DAT_CH_NONE|DAT_CH_MAIN|DAT_CH_RES|DAT_CH_MAIN_RES TIME_ON|TIME_OFF OBT_ON|OBT_OFF";
-
-        /// <summary>
-        /// Команда BUNI
-        /// ON|OFF 
-        /// CMD_CH_MAIN|CMD_CH_RES
-        /// DAT_CH_NONE|DAT_CH_MAIN|DAT_CH_RES|DAT_CH_MAIN_RES 
-        /// TIME_ON|TIME_OFF
-        /// OBT_ON|OBT_OFF
-        /// В случае использования параметра BUNI ON необходимо прописать все значения
-        /// В случае BUNI OFF ничего писать не нужно
-        /// </summary>
-        /// <param name="Params"></param>
-        /// <param name="errString"></param>
-        /// <returns></returns>
-        public bool BuniControlTest(string[] Params, out string errString)
-        {
-            errString = String.Empty;
-            switch (Params.Length)
-            {
-                case 5:
-                    if ((Params[0] != "ON") && (Params[0] != "OFF"))
-                    {
-                        errString = "Первый параметр должен быть ON или OFF";
-                        return false;
-                    }
-
-                    int idx = BUKCMD.IndexOf(Params[1]);
-                    if (idx == -1)
-                    {
-                        errString = "Второй параметр должен быть " + string.Join(" ", BUKCMD.ToArray());
-                        return false;
-                    }
-
-                    idx = BUKDAT.IndexOf(Params[2]);
-                    if (idx == -1)
-                    {
-                        errString = "Третий параметр должен быть " + string.Join(" ", BUKDAT.ToArray());
-                        return false;
-                    }
-
-                    if ((Params[3] != "TIME_ON") && (Params[3] != "TIME_OFF"))
-                    {
-                        errString = "Четвертый параметр должен быть TIME_ON | TIME_OFF";
-                        return false;
-                    }
-
-                    if ((Params[4] != "OBT_ON") && (Params[4] != "OBT_OFF"))
-                    {
-                        errString = "Пятый параметр должен быть OBT_ON|OBT_OFF";
-                        return false;
-                    }
-
-                    break;
-                default:
-                    errString = "Ошибочное количество параметров команды: " + BUNI_CMD_FORMAT_STR;
-                    return false;
-            }
-
-            return true;
-        }
-        
-        public bool BuniControlExec(string[] Params)
-        {
-            switch (Params.Length)
-            {
-                case 5:
-                    int onOffParam = Params[0] == "ON" ? 1 : 0;
-                    /*BUK.ControlValuesList[BUKConst.BUNI_CTRL_IDX].SetProperty(BUKConst.PROPERTY_BUNI_ON_IDX, onOffParam, false);
-                    BUK.ControlValuesList[BUKConst.BUNI_CTRL_IDX].SetProperty(BUKConst.PROPERTY_BUNI_CMD_CH_IDX, BUNI_CMD_LIST.IndexOf(Params[1]), false);
-                    BUK.ControlValuesList[BUKConst.BUNI_CTRL_IDX].SetProperty(BUKConst.PROPERTY_BUNI_DAT_CH_IDX, XSAN_DAT_LIST.IndexOf(Params[2]), false);
-                    BUK.ControlValuesList[BUKConst.BUNI_CTRL_IDX].SetProperty(BUKConst.PROPERTY_BUNI_HZ_IDX, Convert.ToInt16(Params[3] == "TIME_ON"), false);
-                    BUK.ControlValuesList[BUKConst.BUNI_CTRL_IDX].SetProperty(BUKConst.PROPERTY_BUNI_KBV_IDX, Convert.ToInt16(Params[4] == "OBT_ON"));
-                    BUK.ControlValuesList[BUKConst.BUNI_CTRL_IDX].RefreshGetValue();
-                    break;
-                default:
-                    return false;
-            }
-            return true;
-        }*/
-
-        /// <summary>
-        /// Проверка на корректность УКС.
-        /// Команда UKS - Выдача УКС.
-        /// </summary>
-        /// <param name="cmdParams">Передаваемые параметры УКС: BYTE1..BYTE62</param>
-        ///// <param name="errString">Сообщение об ошибке.</param>
-        ///// <returns>False - если ошибка.</returns>
-        //public bool UksTest(string[] cmdParams, out string errString)
-        //{
-        //    errString = string.Empty;
-        //    if ((cmdParams == null) || (cmdParams.Length > 62) || (cmdParams.Length < 1))
-        //    {
-        //        errString = "Должно быть задано от 1 до 62 байт данных УКС";
-        //        return false;
-        //    }
-
-        //    try
-        //    {
-        //        EGSE.Utilites.Converter.HexStrToByteArray(cmdParams);
-        //    }
-        //    catch
-        //    {
-        //        errString = "Ошибка преобразования значений УКС";
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
-
-        /////// <summary>
-        /////// Выполнить УКС.
-        /////// </summary>
-        /////// <param name="cmdParams">Команда УКС</param>
-        /////// <returns>True - всегда!!!</returns>
-        ////public bool UksExec(string[] cmdParams)
-        ////{
-        ////    byte[] uksData = EGSE.Utilites.Converter.HexStrToByteArray(cmdParams);
-        ////    BUK.Device.CmdSendUKS(uksData);
-
-        ////    return true;
-        ////}
-        
-        /// <summary>
-        /// Команда POWER - выдача питания устройства.
-        /// </summary>
-        /// <param name="cmdParams">Возможные ON|OFF.</param>
-        /// <param name="errString">Сообщение об ошибке.</param>
-        /// <returns>False - если ошибка.</returns>
-        //public bool PowerTest(string[] cmdParams, out string errString)
-        //{
-        //    errString = string.Empty;
-        //    if (!((cmdParams.Length == 1) && ((cmdParams[0] == "ON") || (cmdParams[0] == "OFF"))))
-        //    {
-        //        errString = "Ошибка формата команды: должно быть указано ON или OFF";
-        //        return false;
-        //    }
-
-        //    return true;
-        //}
     }
 }

@@ -9,13 +9,19 @@ namespace EGSE.Protocols.UnitTest
 {
     using System;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using EGSE.Protocols;
     using EGSE.Utilites;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    /// <summary>
+    /// Организует тестирование ВСИ декодера.
+    /// </summary>
     [TestClass]
     public class HsiMsgEventArgsTest
     {
+        /// <summary>
+        /// Hsis the MSG event args_ income3 bytes_ exception thrown.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ContextMarshalException))]
         public void HsiMsgEventArgs_Income3Bytes_ExceptionThrown()
@@ -25,6 +31,9 @@ namespace EGSE.Protocols.UnitTest
             HsiMsgEventArgs msg = new HsiMsgEventArgs(buf, buf.Length);
         }
 
+        /// <summary>
+        /// Hsis the MSG event args_ income4 bytes_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void HsiMsgEventArgs_Income4Bytes_ReturnsEqualTokenValue()
         {
@@ -37,10 +46,13 @@ namespace EGSE.Protocols.UnitTest
 
             // проверяем результаты парсинга заголовка
             Assert.AreEqual((HsiMsgEventArgs.Type)flag, msg.Info.Flag, "Ошибка в парсинге свойства Flag");
-            Assert.AreEqual((size & 0x7FFF), msg.Info.Size, "Ошибка в парсинге свойства Size");
+            Assert.AreEqual(size & 0x7FFF, msg.Info.Size, "Ошибка в парсинге свойства Size");
             Assert.AreEqual((HsiMsgEventArgs.HsiLine)(size >> 15), msg.Info.Line, "Ошибка в парсинге свойства Line");            
         }
 
+        /// <summary>
+        /// Hsis the MSG event args_ income5 bytes_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void HsiMsgEventArgs_Income5Bytes_ReturnsEqualTokenValue()
         {
@@ -55,13 +67,16 @@ namespace EGSE.Protocols.UnitTest
 
             // проверяем результаты парсинга заголовка
             Assert.AreEqual((HsiMsgEventArgs.Type)flag, msg.Info.Flag, "Ошибка в парсинге свойства Flag");
-            Assert.AreEqual((size & 0x7FFF), msg.Info.Size, "Ошибка в парсинге свойства Size");
+            Assert.AreEqual(size & 0x7FFF, msg.Info.Size, "Ошибка в парсинге свойства Size");
             Assert.AreEqual((HsiMsgEventArgs.HsiLine)(size >> 15), msg.Info.Line, "Ошибка в парсинге свойства Line"); 
 
             // проверяем результат парсинга данных кадра
             CollectionAssert.AreEqual(new byte[1] { customData }, msg.Data, "Ошибка в парсинге данных кадра");
         }
 
+        /// <summary>
+        /// Hsis the MSG event args_ income0 bytes_ exception thrown.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ContextMarshalException))]
         public void HsiMsgEventArgs_Income0Bytes_ExceptionThrown()
@@ -71,6 +86,9 @@ namespace EGSE.Protocols.UnitTest
             HsiMsgEventArgs msg = new HsiMsgEventArgs(buf, buf.Length);
         }
 
+        /// <summary>
+        /// Hsis the MSG event args_1 argument null_ exception thrown.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void HsiMsgEventArgs_1ArgNull_ExceptionThrown()
@@ -79,11 +97,15 @@ namespace EGSE.Protocols.UnitTest
             HsiMsgEventArgs msg = new HsiMsgEventArgs(null, 0);
         }
 
+        /// <summary>
+        /// Hsis the MSG event args_ income65540 bytes_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void HsiMsgEventArgs_Income65540Bytes_ReturnsEqualTokenValue()
         {
             RandomBufferGenerator generator = new RandomBufferGenerator(65535);
             byte[] buf = generator.GenerateBufferFromSeed(65535);
+
             // формируем максимально допустимую посылку для протокола spacewire.
             HsiMsgEventArgs msg = new HsiMsgEventArgs(buf, buf.Length);
 
@@ -91,11 +113,15 @@ namespace EGSE.Protocols.UnitTest
             CollectionAssert.AreEqual(buf.Skip(4).ToArray(), msg.Data, "Ошибка в парсинге данных кадра");
         }
 
+        /// <summary>
+        /// Spacewires the SPTP MSG event args_ to array_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void SpacewireSptpMsgEventArgs_ToArray_ReturnsEqualTokenValue()
         {
             RandomBufferGenerator generator = new RandomBufferGenerator(65535);
             byte[] buf = generator.GenerateBufferFromSeed(65535);
+
             // формируем максимально допустимую посылку для протокола spacewire.
             HsiMsgEventArgs msg = new HsiMsgEventArgs(buf, buf.Length);
 

@@ -198,24 +198,56 @@ namespace EGSE.Constants
                 }
             }
 
+            /// <summary>
+            /// Индексы свойств [Дополнительные байты].
+            /// </summary>
             public class CVState
             {
+                /// <summary>
+                /// Индекс свойства [ПК1 статус: готов].
+                /// </summary>
                 public readonly string IssueReady1 = "1c1652b38a0a49678353b28ebdabdad9";
 
+                /// <summary>
+                /// Индекс свойства [ПК1 статус: busy].
+                /// </summary>
                 public readonly string IssueBusy1 = "29de114f373d4db9a52a90c91c840902";
 
+                /// <summary>
+                /// Индекс свойства [ПК1 статус: me].
+                /// </summary>
                 public readonly string IssueMe1 = "4085abfce08a4ba9b1bf0203b6797a3e";
 
+                /// <summary>
+                /// Индекс свойства [ПК1 активен].
+                /// </summary>
                 public readonly string Active1 = "4085abfce08a4ba9b1bf0203b6797a3e";
 
+                /// <summary>
+                /// Индекс свойства [ПК2 статус: готов].
+                /// </summary>
                 public readonly string IssueReady2 = "06309fea00e74ab8ac6680f37525d71b";
 
+                /// <summary>
+                /// Индекс свойства [ПК2 статус: busy].
+                /// </summary>
                 public readonly string IssueBusy2 = "3f8b05b055cd46a3af3c190c6d188e13";
 
+                /// <summary>
+                /// Индекс свойства [ПК2 статус: me].
+                /// </summary>
                 public readonly string IssueMe2 = "f25b4a223abf4e338aeaa700f0d866a4";
 
+                /// <summary>
+                /// Индекс свойства [ПК2 активен].
+                /// </summary>
                 public readonly string Active2 = "83e3d1f5d0af49d1a37063a618ada8a9";
 
+                /// <summary>
+                /// Неявно преобразует объект к типу "строка". 
+                /// </summary>
+                /// <param name="obj">Объект для преобразования.</param>
+                /// <returns>Возвращает строковое представления объекта.</returns>
                 public static implicit operator string(CVState obj)
                 {
                     return "29dd3908502f41a4905676f89be55b0d";
@@ -231,7 +263,6 @@ namespace EGSE.Constants
                 /// Индекс свойства [Вкл/выкл].
                 /// </summary>
                 public readonly string IssueEnable = "c7837417edd743eabe09ff6733c333e3";
-
 
                 /// <summary>
                 /// Индекс свойства [Линия передачи].
@@ -1214,20 +1245,44 @@ namespace EGSE.Constants
             }
         }
 
+        /// <summary>
+        /// Индексы свойств [Датчики затворов].
+        /// </summary>
         internal class CVShutters
         {
+            /// <summary>
+            /// Индекс свойства [Датчики затворов: автоматическое управление].
+            /// </summary>
             public readonly string Auto = "0dd027489d2841b393f27bd24e1ba827";
 
+            /// <summary>
+            /// Индекс свойства [УФЕС: Датчики затворов: открытие].
+            /// </summary>
             public readonly string UfesOpen = "1a9eaeba16f746abbd76879400733dd6";
 
+            /// <summary>
+            /// Индекс свойства [УФЕС: Датчики затворов: закрытие].
+            /// </summary>
             public readonly string UfesClose = "014d72354f774310b3c2d2c05980e72c";
 
+            /// <summary>
+            /// Индекс свойства [ВУФЕС: Датчики затворов: открытие].
+            /// </summary>
             public readonly string VufesOpen = "b80a1dc893ad4489866979d2a76f0724";
 
+            /// <summary>
+            /// Индекс свойства [ВУФЕС: Датчики затворов: закрытие].
+            /// </summary>
             public readonly string VufesClose = "ec63f6626d73473ca4dc227a0ba1fb59";
 
+            /// <summary>
+            /// Индекс свойства [СДЩ: Датчики затворов: открытие].
+            /// </summary>
             public readonly string SdchshOpen = "29b4bbd9acbd4976a67a9198abd093d7";
 
+            /// <summary>
+            /// Индекс свойства [СДЩ: Датчики затворов: закрытие].
+            /// </summary>
             public readonly string SdchshClose = "f45ba7d713994f2f80e67c92b67cbe87";
 
             /// <summary>
