@@ -41,7 +41,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+WorkDevice}}}" 
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueWorkDevice}"  
-                      SelectedValuePath="Value"/>
+                      SelectedValuePath="Value" TabIndex="1"/>
             <Label Grid.Row="2"
             	Content="Полукомплект"
             	Template="{StaticResource FlatLabel}"/>
@@ -51,7 +51,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+HalfSet}}}" 
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueHalfSet}"  
-                      SelectedValuePath="Value"/>
+                      SelectedValuePath="Value" TabIndex="2"/>
            <!-- <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -91,7 +91,7 @@
             	Grid.Row="3"  
             	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnableCommand}"
-            	Template="{StaticResource FlatButtonCheck}"/>
+            	Template="{StaticResource FlatButtonCheck}" TabIndex="3"/>
             <Label Grid.Row="4" 
             	Grid.ColumnSpan="2"
             	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
@@ -121,12 +121,12 @@
             		Template="{StaticResource FlatLabel}"/>
                 <CheckBox DockPanel.Dock="Left"   VerticalAlignment="Center"    Margin="1"                                                   
             		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
-            		Command="{Binding SaveRawDataCommand}"/>
+            		Command="{Binding SaveRawDataCommand}" TabIndex="4"/>
                 <TextBox              
                     IsReadOnly="True"
             		Template="{StaticResource FilePreviewer}"
             		Style="{StaticResource TextBoxInError}"                    
-            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"/>
+            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
             </DockPanel>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
@@ -198,7 +198,7 @@
         		Margin="1"
         		BorderThickness="0"/>
             <Button Grid.Row="4"  
-                Content="Очистить монитор Spacewire" Click="Button_Click"/>
+                Content="Очистить монитор Spacewire" Click="Button_Click" TabIndex="5"/>
         </Grid>
     </Grid>
 </Window>

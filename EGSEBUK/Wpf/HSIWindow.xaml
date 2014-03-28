@@ -82,7 +82,7 @@
 				Grid.Row="3"                                                            
 				Tag="{Binding IsIssueEnable1, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable1Command}"
-                Template="{StaticResource FlatButtonCheck}"/>
+                Template="{StaticResource FlatButtonCheck}" TabIndex="1"/>
             <Label Grid.Row="3" 
             	Grid.Column="2"
             	Tag="{Binding IsActive1, Converter={StaticResource BoolToIndexConverter}}"     
@@ -93,7 +93,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+HSI+Line}}}" 
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueLine1}"  
-                      SelectedValuePath="Value"/>
+                      SelectedValuePath="Value" TabIndex="2"/>
             <!--
             <Grid Grid.Column="3"                               
 				Grid.Row="3">
@@ -132,15 +132,15 @@
                 <Label Template="{StaticResource FlatLabel}"/>
                 <CheckBox VerticalAlignment="Center"    
                           HorizontalAlignment="Center"
-                          IsChecked="{Binding IsIssueReady1}"/>
+                          IsChecked="{Binding IsIssueReady1}" TabIndex="3"/>
                 <Label Grid.Column="1" Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="1"  VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                            				                                                            
-				IsChecked="{Binding IsIssueBusy1}"/>
+				IsChecked="{Binding IsIssueBusy1}" TabIndex="4"/>
                 <Label Grid.Column="2" Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="2"  VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                            				                                                            
-				IsChecked="{Binding IsIssueMe1}"/>
+				IsChecked="{Binding IsIssueMe1}" TabIndex="5"/>
             </Grid>
             <Label Grid.Row="4" 
             	Content="ПК2"
@@ -149,7 +149,7 @@
             	Grid.Row="4"                                                            		
             	Tag="{Binding IsIssueEnable2, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnable2Command}"
-            	Template="{StaticResource FlatButtonCheck}"/>
+            	Template="{StaticResource FlatButtonCheck}" TabIndex="6"/>
             <Label Grid.Row="4" 
             	Grid.Column="2"
             	Tag="{Binding IsActive2, Converter={StaticResource BoolToIndexConverter}}"     
@@ -160,7 +160,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+HSI+Line}}}" 
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueLine2}"  
-                      SelectedValuePath="Value"/>
+                      SelectedValuePath="Value" TabIndex="7"/>
             <!--<Grid Grid.Column="3"                               
 				Grid.Row="4">
                 <Grid.ColumnDefinitions>
@@ -198,15 +198,15 @@
                 <Label Template="{StaticResource FlatLabel}"/>
                 <CheckBox     VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                       				                                                            
-                              IsChecked="{Binding IsIssueReady2}"/>
+                              IsChecked="{Binding IsIssueReady2}" TabIndex="8"/>
                 <Label Grid.Column="1"  Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="1"     VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                             				                                                            
-				IsChecked="{Binding IsIssueBusy2}"/>
+				IsChecked="{Binding IsIssueBusy2}" TabIndex="9"/>
                 <Label Grid.Column="2"  Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Column="2"   VerticalAlignment="Center"    
                           HorizontalAlignment="Center"                             				                                                            
-				IsChecked="{Binding IsIssueMe2}"/>
+				IsChecked="{Binding IsIssueMe2}" TabIndex="10"/>
             </Grid>
 
         </Grid>
@@ -229,12 +229,12 @@
             		Template="{StaticResource FlatLabel}"/>
                 <CheckBox DockPanel.Dock="Left"     VerticalAlignment="Center"    Margin="1"                                                 
             		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
-            		Command="{Binding SaveRawDataCommand}"/>
+            		Command="{Binding SaveRawDataCommand}" TabIndex="11"/>
                 <TextBox              
                     IsReadOnly="True"
             		Template="{StaticResource FilePreviewer}"
             		Style="{StaticResource TextBoxInError}"                    
-            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"/>
+            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
             </DockPanel>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
@@ -363,9 +363,9 @@
 				BorderThickness="0"/>
             <Button Grid.Row="4"  
                 Content="Очистить монитор ВСИ"
-        		Click="Button_Click"/>
+        		Click="Button_Click" TabIndex="12"/>
         </Grid>
-        <GridSplitter Grid.Row="2" Height="16" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Row="2" Height="16" VerticalAlignment="Center" HorizontalAlignment="Stretch" TabIndex="13"/>
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -387,7 +387,7 @@
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="2"
                 Content="Очистить монитор УКС"
-        	 Click="Button_Click_1"/>
+        	 Click="Button_Click_1" TabIndex="14"/>
         </Grid>
     </Grid>
 </Window>

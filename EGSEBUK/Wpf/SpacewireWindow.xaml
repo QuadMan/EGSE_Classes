@@ -46,7 +46,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire2+Channel}}}" 
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueSpacewireChannel}"  
-                      SelectedValuePath="Value"/>
+                      SelectedValuePath="Value" TabIndex="1"/>
           <!--  <StackPanel Grid.Row="1"
             	Grid.Column="1">
                 <RadioButton Content="БУК 1ПК :: БМ-4 1ПК"
@@ -78,7 +78,7 @@
 
             	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnableCommand}"
-            	Template="{StaticResource FlatButtonCheck}"/>
+            	Template="{StaticResource FlatButtonCheck}" TabIndex="2"/>
             <Label Grid.Row="3" 
             	Grid.ColumnSpan="3"
             	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
@@ -103,7 +103,7 @@
 
                  IsChecked="{Binding IsIssueTimeMark}"
             	
-                Command="{Binding IssueTimeMarkCommand}"/>
+                Command="{Binding IssueTimeMarkCommand}" TabIndex="4"/>
             <Label Grid.Row="7"
                    Grid.ColumnSpan="2"
             	Content="Выдавать КБВ прибору"
@@ -115,7 +115,7 @@
                 Grid.Column="2"                                           	
 IsChecked="{Binding IsIssueKbv}"
             	Tag="{Binding IsIssueKbv, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueKbvCommand}"/>
+                Command="{Binding IssueKbvCommand}" TabIndex="5"/>
             <Label Grid.Row="5"
                    Grid.ColumnSpan="2"
             	Content="Обмен с прибором"
@@ -127,7 +127,7 @@ IsChecked="{Binding IsIssueKbv}"
 
                       IsChecked="{Binding IsIssueTrans}"
             	                    
-                Command="{Binding IssueTransCommand}"
+                Command="{Binding IssueTransCommand}" TabIndex="3"
             	/>
             <Label Grid.Row="8"                                				    
             	Grid.ColumnSpan="3"
@@ -162,7 +162,7 @@ IsChecked="{Binding IsIssueKbv}"
                    Style="{StaticResource FlatHeader}"/>
                 <Button Grid.Column="3"  
                     Content="из файла..."
-                     Command="{Binding FromFileCommand}"/>
+                     Command="{Binding FromFileCommand}" TabIndex="6"/>
                 <Label Grid.Row="1"
             	Content="Формировать телекоманду"
             	Template="{StaticResource FlatLabel}"/>
@@ -173,7 +173,7 @@ IsChecked="{Binding IsIssueKbv}"
                 Grid.Column="1"                
                           IsChecked="{Binding IsMakeTK}"
 
-                Command="{Binding IssueMakeTKCommand}"/>
+                Command="{Binding IssueMakeTKCommand}" TabIndex="7"/>
                 <Label Grid.Row="1"
                    Grid.Column="2"
             	Content="APID"
@@ -182,18 +182,18 @@ IsChecked="{Binding IsIssueKbv}"
                 Grid.Column="3"
 			    Template="{StaticResource NumberInError}"
 			    Style="{StaticResource TextBoxInError}"
-			    Text="{Binding CurApid}"/>
+			    Text="{Binding CurApid}" TabIndex="8"/>
             </Grid>            
             <TextBox Grid.Row="1"
                      Grid.ColumnSpan="3"                     
                      Template="{StaticResource DataSendInError}"
                      Style="{StaticResource TextBoxInError}"
-                     Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+                     Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="9"/>
             <Button Grid.Row="3" 
                     Grid.ColumnSpan="3"
                      
                     Command="{Binding IssuePackageCommand}"
-                    Content="Передать в БУК"/>
+                    Content="Передать в БУК" TabIndex="10"/>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
@@ -215,12 +215,12 @@ IsChecked="{Binding IsIssueKbv}"
             		Template="{StaticResource FlatLabel}"/>
                 <CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
             		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
-            		Command="{Binding SaveRawDataCommand}"/>
+            		Command="{Binding SaveRawDataCommand}" TabIndex="11"/>
                 <TextBox              
                     IsReadOnly="True"
             		Template="{StaticResource FilePreviewer}"
             		Style="{StaticResource TextBoxInError}"                    
-            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"/>
+            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
             </DockPanel>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
@@ -303,7 +303,7 @@ IsChecked="{Binding IsIssueKbv}"
                      BorderThickness="0"/>
             <Button Grid.Row="4"  
                 Content="Очистить монитор Spacewire"
-        		Click="Button_Click"/>
+        		Click="Button_Click" TabIndex="12"/>
         </Grid>
     </Grid>
 </Window>

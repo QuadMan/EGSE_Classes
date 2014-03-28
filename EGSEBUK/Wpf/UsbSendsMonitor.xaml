@@ -19,10 +19,10 @@
         <TextBox IsReadOnly="True"
             Template="{StaticResource FilePreviewer}"
             Style="{StaticResource TextBoxInError}"                    
-            Text="{Binding UsbLogFile, ValidatesOnDataErrors=True}"/>
+            Text="{Binding UsbLogFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
         <Button Grid.Row="1"
 				Content="Обновить"
-				 Click="Button_Click_2"/>
+				 Click="Button_Click_2" TabIndex="1"/>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
@@ -44,7 +44,7 @@
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="2"
                 Content="Очистить"
-        		Click="Button_Click"/>
+        		Click="Button_Click" TabIndex="2"/>
         </Grid>
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
@@ -67,7 +67,7 @@
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="2"
                 Content="Очистить"
-        		Click="Button_Click_1"/>
+        		Click="Button_Click_1" TabIndex="3"/>
         </Grid>
     </Grid>
 </Window>

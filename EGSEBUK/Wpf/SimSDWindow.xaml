@@ -36,7 +36,7 @@
             	Grid.Row="1"    
             	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnableCommand}"
-            	Template="{StaticResource FlatButtonCheck}"/>
+            	Template="{StaticResource FlatButtonCheck}" TabIndex="1"/>
             <Label Grid.Row="2" 
             	Grid.ColumnSpan="2"
             	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
@@ -49,7 +49,7 @@
             <CheckBox Grid.Column="1"      VerticalAlignment="Center" HorizontalAlignment="Center"                         
     			Grid.Row="3"    
                   IsChecked="{Binding IsIssueTimeMark}"
-                Command="{Binding IssueTimeMarkCommand}"/>
+                Command="{Binding IssueTimeMarkCommand}" TabIndex="2"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -69,12 +69,12 @@
     			Style="{StaticResource FlatHeader}"/>
             <Button Grid.Column="2"    
                 Command="{Binding FromFileCommand}"
-    			Content="из файла..."/>
+    			Content="из файла..." TabIndex="3"/>
             <TextBox Grid.Row="1"
     			Grid.ColumnSpan="3"
     			Template="{StaticResource DataSendInError}"
     			Style="{StaticResource TextBoxInError}"
-    			Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+    			Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="4"/>
             <Label Grid.Row="2"   
     			Grid.ColumnSpan="2"	
     			Content="Выдавать ошибку EEP"
@@ -86,7 +86,7 @@
                       HorizontalAlignment="Center"
     			Grid.Column="2"  
                 IsChecked="{Binding IsIssueEEP}"
-                Command="{Binding IssueEEPCommand}"/>
+                Command="{Binding IssueEEPCommand}" TabIndex="5"/>
             <Label Grid.Row="3"   
     			Grid.ColumnSpan="2"	
     			Content="Выдавать в конце посылки EOP или EEP"
@@ -96,11 +96,11 @@
             <CheckBox Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Center" 
     			Grid.Column="2"            
                       IsChecked="{Binding IsIssueEOP}"
-                Command="{Binding IssueEOPCommand}"/>
+                Command="{Binding IssueEOPCommand}" TabIndex="6"/>
             <Button Grid.Row="4"  
     			Grid.ColumnSpan="3"    	
                 Content="Передать посылку"
-                Command="{Binding IssuePackageCommand}"/>           
+                Command="{Binding IssuePackageCommand}" TabIndex="7"/>           
         </Grid>
 
     </Grid>

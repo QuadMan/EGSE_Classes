@@ -63,7 +63,7 @@
                 Grid.Column="1"                                           	 
             	Grid.ColumnSpan="2"
                       IsChecked="{Binding IsSD1Trans}"
-                Command="{Binding IssueSD1TransCommand}"  />
+                Command="{Binding IssueSD1TransCommand}" TabIndex="1"  />
             <Label Grid.Row="5"
             	Content="Выдавать пакеты данных в прибор"
             	Template="{StaticResource FlatLabel}"/>
@@ -73,7 +73,7 @@
                 Grid.Column="1"                               			    
 			    Grid.ColumnSpan="2"
                       IsChecked="{Binding IsSD1TransData}"
-                Command="{Binding IssueSD1TransDataCommand}"/>
+                Command="{Binding IssueSD1TransDataCommand}" TabIndex="2"/>
             <Label Grid.Row="6"
             	Content="Счетчик миллисекунд (готовность данных)"
             	Template="{StaticResource FlatLabel}"/>
@@ -82,7 +82,7 @@
 			    Grid.ColumnSpan="2"
 			    Template="{StaticResource NumberInError}"
 			    Style="{StaticResource TextBoxInError}"
-			    Text="{Binding SD1SendTime}"/>
+			    Text="{Binding SD1SendTime}" TabIndex="3"/>
             <Label Grid.Row="7"
             	Content="Количество байт в пакете данных"
             	Template="{StaticResource FlatLabel}" Visibility="Hidden"/>
