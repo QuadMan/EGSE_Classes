@@ -33,12 +33,12 @@
             <Label Grid.ColumnSpan="3"
 				Content="Управление"
 				Style="{StaticResource FlatHeader}"/>
-            <Label Grid.Row="1" 
+            <Label Grid.Row="1" Grid.ColumnSpan="2"
             	Content="{Binding ShowLogicBusk}"
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="1"
-            	Grid.Column="1"                               
-            	Grid.ColumnSpan="2"	
+            	Grid.Column="2"                               
+
             	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnableCommand}"   
             	Template="{StaticResource FlatButtonCheck}"/>
@@ -47,39 +47,40 @@
             	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="3" 
+                   Grid.ColumnSpan="2"
             	Content="Прибор"
             	Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="3" 
-            	Grid.Column="1"
-            	Grid.ColumnSpan="2"
+            	Grid.Column="2"
+
             	Content="{Binding ShowLogicSD1}"
             	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="4" 
+            <Label Grid.Row="4" Grid.ColumnSpan="2"
             	Content="Обмен с прибором"
             	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
+            <Label Grid.Row="4" Grid.Column="2" 
             	Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Row="4"   VerticalAlignment="Center" HorizontalAlignment="Center"
-                Grid.Column="1"                                           	 
-            	Grid.ColumnSpan="2"
+                Grid.Column="2"                                           	 
+
                       IsChecked="{Binding IsSD1Trans}"
                 Command="{Binding IssueSD1TransCommand}" TabIndex="1"  />
-            <Label Grid.Row="5"
+            <Label Grid.Row="5" Grid.ColumnSpan="2"
             	Content="Выдавать пакеты данных в прибор"
             	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+            <Label Grid.Row="5" Grid.Column="2"
             	Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center"
-                Grid.Column="1"                               			    
-			    Grid.ColumnSpan="2"
+                Grid.Column="2"                               			    
+
                       IsChecked="{Binding IsSD1TransData}"
                 Command="{Binding IssueSD1TransDataCommand}" TabIndex="2"/>
-            <Label Grid.Row="6"
+            <Label Grid.Row="6" Grid.ColumnSpan="2"
             	Content="Счетчик миллисекунд (готовность данных)"
             	Template="{StaticResource FlatLabel}"/>
             <TextBox Grid.Row="6"  
-                Grid.Column="1"
-			    Grid.ColumnSpan="2"
+                Grid.Column="2"
+
 			    Template="{StaticResource NumberInError}"
 			    Style="{StaticResource TextBoxInError}"
 			    Text="{Binding SD1SendTime}" TabIndex="3"/>

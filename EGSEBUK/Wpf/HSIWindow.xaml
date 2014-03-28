@@ -225,7 +225,7 @@
                 Style="{StaticResource FlatHeader}"/>
             <DockPanel Grid.Row="1"
             	LastChildFill="True">
-                <Label DockPanel.Dock="Left" Content="Запись УКС в файл"
+                <Label DockPanel.Dock="Left" Content="Запись УКС в файл "
             		Template="{StaticResource FlatLabel}"/>
                 <CheckBox DockPanel.Dock="Left"     VerticalAlignment="Center"    Margin="1"                                                 
             		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
