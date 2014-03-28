@@ -1,6 +1,7 @@
 ﻿<Window x:Class="EGSE.Defaults.SimSDWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"     
+         xmlns:l="clr-namespace:EGSE.Defaults"
         Title="Имитатор БУК (для каналов БС)"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
@@ -43,11 +44,12 @@
             <Label Grid.Row="3" 
             	Content="Выдавать секундные метки"
             	Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Column="1"                               
+            <Label Grid.Row="3" Grid.Column="1"
+            	Template="{StaticResource FlatLabel}"/>
+            <CheckBox Grid.Column="1"      VerticalAlignment="Center" HorizontalAlignment="Center"                         
     			Grid.Row="3"    
-    			Tag="{Binding IsIssueTimeMark, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueTimeMarkCommand}"
-    			Template="{StaticResource FlatButtonCheck}"/>
+                  IsChecked="{Binding IsIssueTimeMark}"
+                Command="{Binding IssueTimeMarkCommand}"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -65,8 +67,7 @@
             <Label Grid.ColumnSpan="2"
     			Content="Передать данные"
     			Style="{StaticResource FlatHeader}"/>
-            <Button Grid.Column="2"  
-    			Template="{StaticResource FlatButtonClick}"     
+            <Button Grid.Column="2"    
                 Command="{Binding FromFileCommand}"
     			Content="из файла..."/>
             <TextBox Grid.Row="1"
@@ -78,25 +79,28 @@
     			Grid.ColumnSpan="2"	
     			Content="Выдавать ошибку EEP"
     			Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Row="2"   
-    			Grid.Column="2"                         
-    			Tag="{Binding IsIssueEEP, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueEEPCommand}"
-    			Template="{StaticResource FlatButtonCheck}"/>
+            <Label Grid.Row="2" Grid.Column="2"
+            	Template="{StaticResource FlatLabel}"/>
+            <CheckBox Grid.Row="2"   
+                      VerticalAlignment="Center" 
+                      HorizontalAlignment="Center"
+    			Grid.Column="2"  
+                IsChecked="{Binding IsIssueEEP}"
+                Command="{Binding IssueEEPCommand}"/>
             <Label Grid.Row="3"   
     			Grid.ColumnSpan="2"	
     			Content="Выдавать в конце посылки EOP или EEP"
     			Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Row="3"   
-    			Grid.Column="2"                         
-    			Tag="{Binding IsIssueEOP, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueEOPCommand}"
-    			Template="{StaticResource FlatButtonCheck}"/>
+            <Label Grid.Row="3" Grid.Column="2"
+            	Template="{StaticResource FlatLabel}"/>
+            <CheckBox Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Center" 
+    			Grid.Column="2"            
+                      IsChecked="{Binding IsIssueEOP}"
+                Command="{Binding IssueEOPCommand}"/>
             <Button Grid.Row="4"  
     			Grid.ColumnSpan="3"    	
                 Content="Передать посылку"
-                Command="{Binding IssuePackageCommand}"
-    			Template="{StaticResource FlatButtonClickBusy}"/>           
+                Command="{Binding IssuePackageCommand}"/>           
         </Grid>
 
     </Grid>

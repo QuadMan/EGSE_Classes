@@ -2352,21 +2352,25 @@ namespace EGSE.Devices
                 /// <summary>
                 /// Линия передачи: отсутствует (оснавная и резервная заблокирована).
                 /// </summary>
+                [Description("Отключена")]
                 Off = 0x03,
-
+                
                 /// <summary>
                 /// Линия передачи: только по основной (резервная заблокирована).
                 /// </summary>
+                [Description("Основная")]
                 Main = 0x02,
 
                 /// <summary>
                 /// Линия передачи: только по резервной (основная заблокирована).
                 /// </summary>
+                [Description("Резервная")]
                 Resv = 0x01,
 
                 /// <summary>
                 /// Линия передачи: основная + резервная.
                 /// </summary>
+                [Description("Основная + резервная")]
                 MainResv = 0x00
             }
 
@@ -2378,11 +2382,13 @@ namespace EGSE.Devices
                 /// <summary>
                 /// Основная линия.
                 /// </summary>
+                [Description("Основная")]
                 Main = 0x00,
 
                 /// <summary>
                 /// Резервная линия.
                 /// </summary>
+                [Description("Резервная")]
                 Resv = 0x01
             }
 
@@ -5036,21 +5042,25 @@ namespace EGSE.Devices
                 /// <summary>
                 /// Канал "БУК ПК1 - БМ-4 ПК1".
                 /// </summary>
+                [Description("БМ-4 ПК1 <-> БУК ПК1")]
                 BUK1BM1 = 0x00,
 
                 /// <summary>
                 /// Канал "БУК ПК1 - БМ-4 ПК2".
                 /// </summary>
+                [Description("БМ-4 ПК2 <-> БУК ПК1")]
                 BUK1BM2 = 0x02,
 
                 /// <summary>
                 /// Канал "БУК ПК2 - БМ-4 ПК1".
                 /// </summary>
+                [Description("БМ-4 ПК1 <-> БУК ПК2")]
                 BUK2BM1 = 0x01,
 
                 /// <summary>
                 /// Канал "БУК ПК2 - БМ-4 ПК2".
                 /// </summary>
+                [Description("БМ-4 ПК2 <-> БУК ПК2")]
                 BUK2BM2 = 0x03
             }
 
@@ -6124,11 +6134,13 @@ namespace EGSE.Devices
                 /// <summary>
                 /// Первый полукомплект.
                 /// </summary>
+                [Description("Первый полукомплект")]
                 First = 0x00,
 
                 /// <summary>
                 /// Второй полукомплект.
                 /// </summary>
+                [Description("Второй полукомплект")]
                 Second = 0x01
             }
 
@@ -6140,16 +6152,19 @@ namespace EGSE.Devices
                 /// <summary>
                 /// Рабочий прибор "УФЕС".
                 /// </summary>
+                [Description("УФЕС")]
                 Ufes = 0x00,
 
                 /// <summary>
                 /// Рабочий прибор "ВУФЕС".
                 /// </summary>
+                [Description("ВУФЕС")]
                 Vufes = 0x01,
 
                 /// <summary>
                 /// Рабочий прибор "СДЩ".
                 /// </summary>
+                [Description("СДЩ")]
                 Sdchsh = 0x02
             }
 

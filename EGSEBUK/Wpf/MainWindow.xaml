@@ -34,10 +34,10 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
 				Content="О программе"
-				Template="{StaticResource FlatButtonClickDefault}"/>
+				/>
             <Button Grid.Column="1" 
 				Content="Выход"
-				Template="{StaticResource FlatButtonClickDefault}" Click="CloseButton_Click"/>
+			 Click="CloseButton_Click"/>
         </Grid>
         <StackPanel Grid.Row="1" 
 			Grid.Column="0">
@@ -369,10 +369,10 @@
 							Grid.Row="4"                            
 							Tag="{Binding SdchshPower2, Converter={StaticResource BoolToIndexConverter}}"
 							Template="{StaticResource FlatLabelCheck}" Visibility="Collapsed"/>
-                        <Label Grid.Column="2"
-							Grid.Row="1"                            
+                        <Label Grid.Column="3"
+							Grid.Row="2"                            
 							Tag="{Binding UfesLight1, Converter={StaticResource BoolToIndexConverter}}"
-							Template="{StaticResource FlatLabelCheck}" Grid.ColumnSpan="3" Height="18" Margin="26,17.4,38.2,0" Grid.RowSpan="3" VerticalAlignment="Top"/>
+							Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="3"
 							Grid.Row="3"                            
 							Tag="{Binding VufesLight1, Converter={StaticResource BoolToIndexConverter}}"

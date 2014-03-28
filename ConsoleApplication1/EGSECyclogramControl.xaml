@@ -73,16 +73,16 @@
                 </DataGrid.Columns>
             </DataGrid>
             <DockPanel Grid.Column="1" Grid.Row="0">
-                <Button x:Name="LoadBtn" Content="Загрузить" Width="70" Click="LoadBtn_Click" Template="{StaticResource FlatButtonClickDefault}"/>
+                <Button x:Name="LoadBtn" Content="Загрузить" Width="70" Click="LoadBtn_Click"/>
                 <Label x:Name="StatusLabel" 
                        Background="LightBlue"
                        Margin="1"
                        VerticalContentAlignment="Center"/>
         </DockPanel>
         <StackPanel Grid.Column="1" Margin="10,0" Grid.Row="2" Orientation="Horizontal">
-                <Button x:Name="StartBtn" Content="Старт" Width="68" Margin="5,7" Click="StartBtn_Click" Template="{StaticResource FlatButtonClickDefault}"/>
-                <Button x:Name="StopBtn" Content="Стоп" Width="68" Margin="5,7" Click="StopBtn_Click" Template="{StaticResource FlatButtonClickDefault}"/>
-                <Button x:Name="StepBtn" Content="Шаг" Width="68" Margin="5,7" Click="StepBtn_Click" Template="{StaticResource FlatButtonClickDefault}"/>
+                <Button x:Name="StartBtn" Content="Старт" Width="68" Margin="5,7" Click="StartBtn_Click"/>
+                <Button x:Name="StopBtn" Content="Стоп" Width="68" Margin="5,7" Click="StopBtn_Click"/>
+                <Button x:Name="StepBtn" Content="Шаг" Width="68" Margin="5,7" Click="StepBtn_Click"/>
             <CheckBox x:Name="TrackingModeCB" Content="Текущий шаг" Margin="30,13,5,7" Checked="TrackingModeCB_Checked" IsChecked="True"/>
             <Label Content="Повторить" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,0,0"/>
             <ComboBox Width="72" Margin="5,7" SelectedIndex="0" VerticalContentAlignment="Center">

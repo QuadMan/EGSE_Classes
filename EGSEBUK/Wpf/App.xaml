@@ -191,7 +191,7 @@
         </ControlTemplate>
         <ControlTemplate x:Key="FlatLabelCheck" TargetType="{x:Type Label}">
             <Border x:Name="Border"
-        	Background="{StaticResource UnConnectedBrush}"                                          
+        	Background="{StaticResource UnActiveBrush}"                                          
         	BorderThickness="0"
         	Margin="1">
                 <ContentPresenter HorizontalAlignment="Center"

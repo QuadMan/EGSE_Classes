@@ -1,6 +1,7 @@
 ﻿<Window x:Class="EGSE.Defaults.HSIWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:EGSE.Defaults"
         xmlns:d="clr-namespace:EGSE.Devices" 
         Title="Имитатор КВВ"
         FontFamily="{StaticResource BaseFontFamily}"
@@ -36,12 +37,12 @@
 				Style="{StaticResource FlatHeader}"/>
             <Label Grid.Row="1" 
                    Grid.RowSpan="2"
-				Content="П/К"
+				Content="  П/К  "
 				Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1" 
 				Grid.Column="1"
                    Grid.RowSpan="2"
-				Content="Вкл/Выкл"
+				Content="  Вкл/Выкл  "
 				Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="1" 
 				Grid.Column="2"
@@ -52,11 +53,7 @@
 				Grid.Column="3"
                    Grid.RowSpan="2"
 				Content="Линии передач"
-				Template="{StaticResource FlatLabel}"/>
-            
-            
-            
-               
+				Template="{StaticResource FlatLabel}"/>                                                   
             <Grid Grid.Row="1" 
 				Grid.Column="4" Grid.RowSpan="2">
                 <Grid.RowDefinitions>
@@ -79,7 +76,7 @@
             </Grid>
             
             <Label Grid.Row="3" 
-            	Content="ПК 1"
+            	Content="ПК1"
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
 				Grid.Row="3"                                                            
@@ -90,6 +87,14 @@
             	Grid.Column="2"
             	Tag="{Binding IsActive1, Converter={StaticResource BoolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelActived}"/>
+            <ComboBox Grid.Column="3"                               
+                      Grid.Row="3" 
+                      Margin="1"
+                      ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+HSI+Line}}}" 
+                      DisplayMemberPath="Description" 
+                      SelectedValue="{Binding IssueLine1}"  
+                      SelectedValuePath="Value"/>
+            <!--
             <Grid Grid.Column="3"                               
 				Grid.Row="3">
                 <Grid.ColumnDefinitions>
@@ -97,7 +102,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
-                </Grid.ColumnDefinitions>                
+                </Grid.ColumnDefinitions>
                 <RadioButton  Content="Основная" 
             		GroupName="lineHalfSet1"            		
                     Template="{StaticResource FlatRadioButton}"
@@ -114,8 +119,8 @@
             		GroupName="lineHalfSet1"            		
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
-            </Grid>
-           
+                </Grid>
+           -->
             <Grid Grid.Row="3" 
                   Grid.ColumnSpan="3"
 				Grid.Column="4">
@@ -138,7 +143,7 @@
 				IsChecked="{Binding IsIssueMe1}"/>
             </Grid>
             <Label Grid.Row="4" 
-            	Content="ПК 2"
+            	Content="ПК2"
             	Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="1"                               
             	Grid.Row="4"                                                            		
@@ -149,7 +154,14 @@
             	Grid.Column="2"
             	Tag="{Binding IsActive2, Converter={StaticResource BoolToIndexConverter}}"     
             	Template="{StaticResource FlatLabelActived}"/>
-            <Grid Grid.Column="3"                               
+            <ComboBox Grid.Column="3"                               
+                      Grid.Row="4" 
+                      Margin="1"
+                      ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+HSI+Line}}}" 
+                      DisplayMemberPath="Description" 
+                      SelectedValue="{Binding IssueLine2}"  
+                      SelectedValuePath="Value"/>
+            <!--<Grid Grid.Column="3"                               
 				Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -174,7 +186,7 @@
                     Template="{StaticResource FlatRadioButton}"
                     IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
             </Grid>
-            
+            -->
             <Grid Grid.Row="4" 
                   Grid.ColumnSpan="3"
 				Grid.Column="4">
@@ -215,10 +227,9 @@
             	LastChildFill="True">
                 <Label DockPanel.Dock="Left" Content="Запись УКС в файл"
             		Template="{StaticResource FlatLabel}"/>
-                <Button DockPanel.Dock="Left"                                                    
+                <CheckBox DockPanel.Dock="Left"     VerticalAlignment="Center"    Margin="1"                                                 
             		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
-            		Command="{Binding SaveRawDataCommand}"
-            		Template="{StaticResource FlatButtonCheck}"/>
+            		Command="{Binding SaveRawDataCommand}"/>
                 <TextBox              
                     IsReadOnly="True"
             		Template="{StaticResource FilePreviewer}"
@@ -352,7 +363,7 @@
 				BorderThickness="0"/>
             <Button Grid.Row="4"  
                 Content="Очистить монитор ВСИ"
-        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click"/>
+        		Click="Button_Click"/>
         </Grid>
         <GridSplitter Grid.Row="2" Height="16" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
         <Grid Grid.Row="3">
@@ -376,7 +387,7 @@
             <Button Grid.Row="2"  
         		Grid.ColumnSpan="2"
                 Content="Очистить монитор УКС"
-        		Template="{StaticResource FlatButtonClickBusy}" Click="Button_Click_1"/>
+        	 Click="Button_Click_1"/>
         </Grid>
     </Grid>
 </Window>
