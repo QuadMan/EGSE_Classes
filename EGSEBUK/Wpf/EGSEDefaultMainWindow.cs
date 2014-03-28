@@ -111,8 +111,6 @@ namespace EGSE.Defaults
                 // DefaultScreenInit();
                 // hsiWin.Clear
             }
-             
-            // SpeedLabel.Content = Converter.SpeedToStr(_EGSE.Device.Speed) + " [" + _EGSE.Device.GlobalBufferSize.ToString() + "]";
         }
 
         /// <summary>
