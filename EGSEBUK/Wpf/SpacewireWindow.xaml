@@ -183,7 +183,9 @@ IsChecked="{Binding IsIssueKbv}"
 			    Template="{StaticResource NumberInError}"
 			    Style="{StaticResource TextBoxInError}"
 			    Text="{Binding CurApid}" TabIndex="8"/>
-            </Grid>            
+            </Grid>
+            <ComboBox Grid.Row="1"
+                      Grid.ColumnSpan="3"/>
             <TextBox Grid.Row="1"
                      Grid.ColumnSpan="3"                     
                      Template="{StaticResource DataSendInError}"

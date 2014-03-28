@@ -985,4 +985,73 @@ namespace EGSE.Protocols.UnitTest
             CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");
         }       
     }
+
+    /// <summary>
+    /// Организует тестирование EmptyProto сообщений.
+    /// </summary>
+    [TestClass]
+    public class SpacewireEmptyProtoMsgEventArgsTest
+    {
+
+        [TestMethod]
+        public void SpacewireEmptyProtoMsgEventArgs_Income5Bytes_ReturnsEqualTokenValue()
+        {
+            byte from = 0x33;
+            byte to = 0x32;
+            byte protocolId = 0xf2;
+            byte msgType = 0x00;
+
+            byte customData = 0xAB;
+
+            // формируем массив из 5 байт и проверяем формирование посылки
+            byte[] buf = new byte[5] { to, protocolId, msgType, from, customData };
+            SpacewireEmptyProtoMsgEventArgs msg = new SpacewireEmptyProtoMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результат парсинга данных кадра
+            CollectionAssert.AreEqual(buf, msg.Data, "Ошибка в парсинге данных кадра");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireEmptyProtoMsgEventArgs_Income0Bytes_ExceptionThrown()
+        {
+            // имитируем ошибочку
+            byte[] buf = new byte[] { };
+            SpacewireEmptyProtoMsgEventArgs msg = new SpacewireEmptyProtoMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SpacewireEmptyProtoMsgEventArgs_1ArgNull_ExceptionThrown()
+        {
+            // имитируем ошибочку
+            SpacewireEmptyProtoMsgEventArgs msg = new SpacewireEmptyProtoMsgEventArgs(null, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        public void SpacewireEmptyProtoMsgEventArgs_Income65540Bytes_ReturnsEqualTokenValue()
+        {
+            RandomBufferGenerator generator = new RandomBufferGenerator(65540);
+            byte[] buf = generator.GenerateBufferFromSeed(65540);
+
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireEmptyProtoMsgEventArgs msg = new SpacewireEmptyProtoMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результат парсинга данных кадра
+            CollectionAssert.AreEqual(buf.ToArray(), msg.Data, "Ошибка в парсинге данных кадра");
+        }
+
+        [TestMethod]
+        public void SpacewireEmptyProtoMsgEventArgs_ToArray_ReturnsEqualTokenValue()
+        {
+            RandomBufferGenerator generator = new RandomBufferGenerator(65540);
+            byte[] buf = generator.GenerateBufferFromSeed(65540);
+
+            // формируем максимально допустимую посылку для протокола spacewire.
+            SpacewireEmptyProtoMsgEventArgs msg = new SpacewireEmptyProtoMsgEventArgs(buf, 0x00, 0x00, 0x00);
+
+            // проверяем результат преобразования к массиву
+            CollectionAssert.AreEqual(buf, msg.ToArray(), "Ошибка в преобразовании к массиву");
+        }
+    }
 }

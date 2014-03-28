@@ -57,6 +57,8 @@ namespace EGSE.Protocols
         /// </summary>
         private byte _currentTime2;
 
+        private bool _isEmptyProto = false;
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="ProtocolSpacewire" />.
         /// </summary>
@@ -64,12 +66,14 @@ namespace EGSE.Protocols
         /// <param name="eop">Адресный байт: метка EOP.</param>
         /// <param name="time1">Адресный байт: Time tick 1.</param>
         /// <param name="time2">Адресный байт: Time tick 2.</param>
-        public ProtocolSpacewire(uint data, uint eop, uint time1, uint time2)
+        /// <param name="isEmptyProto">Если установлено <c>true</c> [декодирование протокола отсутствует].</param>
+        public ProtocolSpacewire(uint data, uint eop, uint time1, uint time2, bool isEmptyProto = false)
         {
             _data = data;
             _eop = eop;
             _time1 = time1;
             _time2 = time2;
+            _isEmptyProto = isEmptyProto;
             _buf = new List<byte>();
         }
 
@@ -125,7 +129,11 @@ namespace EGSE.Protocols
                     byte[] arr = _buf.ToArray();
                     try
                     {
-                        if (SpacewireTkMsgEventArgs.Test(arr))
+                        if (_isEmptyProto)
+                        {
+                            pack = new SpacewireEmptyProtoMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
+                        }
+                        else if (SpacewireTkMsgEventArgs.Test(arr))
                         {
                             pack = new SpacewireTkMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
                         }
@@ -1310,6 +1318,51 @@ namespace EGSE.Protocols
         public string ErrorMessage()
         {
             return _errorMsg;
+        }
+    }
+
+    public class SpacewireEmptyProtoMsgEventArgs : BaseMsgEventArgs
+    {
+
+        /// <summary>
+        /// Получает данные сообщения.
+        /// </summary>
+        public new byte[] Data
+        {
+            get
+            {
+                return base.Data;
+            }
+        }
+
+        public SpacewireEmptyProtoMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data)
+        {
+            if (0 >= data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
+            }
+        }
+
+        /// <summary>
+        /// "Сырая" проверка на принадлежность к sptp-сообщению.
+        /// </summary>
+        /// <param name="data">"сырые" данные посылки.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
+        {
+            return null != data ? 0 <= data.Length : false;
+        }
+
+        /// <summary>
+        /// Преобразует данные экземпляра к массиву байт.
+        /// </summary>
+        /// <returns>
+        /// Массив байт.
+        /// </returns>
+        public override byte[] ToArray()
+        {
+            return base.Data;
         }
     }
 

@@ -459,8 +459,16 @@ namespace EGSE.Defaults
 
     public class EnumerationExtension : MarkupExtension
     {
+        /// <summary>
+        /// The _enum type
+        /// </summary>
         private Type _enumType;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EnumerationExtension"/> class.
+        /// </summary>
+        /// <param name="enumType">Type of the enum.</param>
+        /// <exception cref="System.ArgumentNullException">enumType</exception>
         public EnumerationExtension(Type enumType)
         {
             if (null == enumType)
@@ -471,6 +479,13 @@ namespace EGSE.Defaults
             EnumType = enumType;
         }
 
+        /// <summary>
+        /// Gets the type of the enum.
+        /// </summary>
+        /// <value>
+        /// The type of the enum.
+        /// </value>
+        /// <exception cref="System.ArgumentException">Type must be an Enum.</exception>
         public Type EnumType
         {
             get 
@@ -494,18 +509,33 @@ namespace EGSE.Defaults
             }
         }
 
+        /// <summary>
+        /// When implemented in a derived class, returns an object that is provided as the value of the target property for this markup extension.
+        /// </summary>
+        /// <param name="serviceProvider">A service provider helper that can provide services for the markup extension.</param>
+        /// <returns>
+        /// The object value to set on the property where the extension is applied.
+        /// </returns>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             var enumValues = Enum.GetValues(EnumType);
             return (from object enumValue in enumValues select new EnumerationMember{ Value = enumValue, Description = GetDescription(enumValue) }).ToArray();
         }
 
+        /// <summary>
+        /// Gets the description.
+        /// </summary>
+        /// <param name="enumValue">The enum value.</param>
+        /// <returns></returns>
         private string GetDescription(object enumValue)
         {
             var descriptionAttribute = EnumType.GetField(enumValue.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
             return null != descriptionAttribute ? descriptionAttribute.Description : enumValue.ToString();
         }
 
+        /// <summary>
+        /// Организация вывода в список.
+        /// </summary>
         public class EnumerationMember
         {
             public string Description { get; set; }

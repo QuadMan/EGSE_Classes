@@ -705,7 +705,7 @@ namespace EGSE.Utilites
         /// </returns>
         public static string ByteArrayToHexStr(byte[] data, string delimeter = " ", bool isSmart = false)
         {
-            if ((data == null) || (0 <= data.Length))
+            if ((data == null) || (0 >= data.Length))
             {
                 return string.Empty;
             }

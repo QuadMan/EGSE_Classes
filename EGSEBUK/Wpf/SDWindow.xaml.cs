@@ -64,16 +64,16 @@ namespace EGSE.Defaults
             new { msg }.CheckNotNull();
             string spacewireMsg = string.Empty;
 
-            if (msg is SpacewireSptpMsgEventArgs)
+            if (msg is SpacewireEmptyProtoMsgEventArgs)
             {
-                SpacewireSptpMsgEventArgs sptpMsg = msg as SpacewireSptpMsgEventArgs;
-                if (sptpMsg.Data.Length > 30)
+                SpacewireEmptyProtoMsgEventArgs emptyMsg = msg as SpacewireEmptyProtoMsgEventArgs;
+                if (emptyMsg.Data.Length > 30)
                 {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + " " + Converter.ByteArrayToHexStr(sptpMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(sptpMsg.Data.Skip<byte>(sptpMsg.Data.Length - 10).ToArray());
+                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + emptyMsg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(emptyMsg.Data, isSmart: true);
                 }
                 else
                 {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.From.ToString() + "-" + sptpMsg.SptpInfo.MsgType.ToString() + "->" + sptpMsg.SptpInfo.To.ToString() + " " + Converter.ByteArrayToHexStr(sptpMsg.Data);
+                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + emptyMsg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(emptyMsg.Data);
                 }
             }
             else if (msg is SpacewireErrorMsgEventArgs)
