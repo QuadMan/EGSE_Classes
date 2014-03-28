@@ -164,7 +164,7 @@ namespace EGSE.Utilites
                 return false;
             }
 
-            _dictionaryCV.Add(idx, new CVProperty(bitIdx, bitLen, setUsbEvent, changeEvent, isIndicate));
+            _dictionaryCV.Add(idx, new CVProperty(bitIdx, bitLen, setUsbEvent, changeEvent, isIndicate));            
             _hasIndicate = true;
             return true;
         }

@@ -102,8 +102,7 @@
                 Grid.Column="2"                                           	  
 
                  IsChecked="{Binding IsIssueTimeMark}"
-            	
-                Command="{Binding IssueTimeMarkCommand}" TabIndex="4"/>
+            	TabIndex="4"/>
             <Label Grid.Row="7"
                    Grid.ColumnSpan="2"
             	Content="Выдавать КБВ прибору"
@@ -115,7 +114,7 @@
                 Grid.Column="2"                                           	
 IsChecked="{Binding IsIssueKbv}"
             	Tag="{Binding IsIssueKbv, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueKbvCommand}" TabIndex="5"/>
+                TabIndex="5"/>
             <Label Grid.Row="5"
                    Grid.ColumnSpan="2"
             	Content="Обмен с прибором"
@@ -125,9 +124,9 @@ IsChecked="{Binding IsIssueKbv}"
             <CheckBox Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center"  
                 Grid.Column="2"                                           	
 
-                      IsChecked="{Binding IsIssueTrans}"
+                IsChecked="{Binding IsIssueTrans}"
             	                    
-                Command="{Binding IssueTransCommand}" TabIndex="3"
+                TabIndex="3"
             	/>
             <Label Grid.Row="8"                                				    
             	Grid.ColumnSpan="3"
@@ -171,9 +170,8 @@ IsChecked="{Binding IsIssueKbv}"
             	Template="{StaticResource FlatLabel}"/>
                 <CheckBox Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
                 Grid.Column="1"                
-                          IsChecked="{Binding IsMakeTK}"
-
-                Command="{Binding IssueMakeTKCommand}" TabIndex="7"/>
+                IsChecked="{Binding IsMakeTK}"
+                TabIndex="7"/>
                 <Label Grid.Row="1"
                    Grid.Column="2"
             	Content="APID"
@@ -216,8 +214,8 @@ IsChecked="{Binding IsIssueKbv}"
                 <Label DockPanel.Dock="Left" Content="Запись в файл "
             		Template="{StaticResource FlatLabel}"/>
                 <CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
-            		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
-            		Command="{Binding SaveRawDataCommand}" TabIndex="11"/>
+            		IsChecked="{Binding IsSaveRawData}"
+                    TabIndex="11"/>
                 <TextBox              
                     IsReadOnly="True"
             		Template="{StaticResource FilePreviewer}"

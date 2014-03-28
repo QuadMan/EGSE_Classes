@@ -154,15 +154,15 @@
     <value>SPTP(Идентификатор пакета[Назначение:{0},Протокол:0x{1:X},Тип:{2},Инициатор:{3}])</value>
   </data>
   <data name="stTkString" xml:space="preserve">
-    <value>{0} - TK[]</value>
+    <value>{6} - TK[{0},{1},{2},{3},{4},{5}]</value>
   </data>
   <data name="stTkStringExt" xml:space="preserve">
-    <value>{0} - TK()</value>
+    <value>{6} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4},Резерв:{5})</value>
   </data>
   <data name="stTmString" xml:space="preserve">
-    <value>{0} - TM[]</value>
+    <value>{7} - TM[{0},{1},{2},{3},{4},{5},{6}]</value>
   </data>
   <data name="stTmStringExt" xml:space="preserve">
-    <value>{0} - TM()</value>
+    <value>{7} - TM(Резерв:{0},Номер версии ТМ-пакета PUS:{1},Резерв:{2},Тип сервиса:{3},Подтип сервиса:{4},Резерв (п/о):{5},Время:{6})</value>
   </data>
 </root>

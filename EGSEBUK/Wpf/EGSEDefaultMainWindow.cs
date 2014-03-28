@@ -233,7 +233,7 @@ namespace EGSE.Defaults
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value as EgseTime).ToString();
+            return ((EgseTime)value).ToString();
         }
 
         /// <summary>

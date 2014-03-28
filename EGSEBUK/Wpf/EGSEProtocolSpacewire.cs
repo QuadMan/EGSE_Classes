@@ -859,7 +859,7 @@ namespace EGSE.Protocols
         public SpacewireTmMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
-            if (16 > data.Length)
+            if (22 > data.Length)
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTmData"));
             }
@@ -964,12 +964,29 @@ namespace EGSE.Protocols
             return base.ToArray();
         }
 
+        public struct EgseTimeStruct
+        {
+            public byte b1;
+            public byte b2;
+            public byte b3;
+            public byte b4;
+            public byte b5;
+            public byte b6;
+        }
+
         /// <summary>
         /// Агрегат доступа к заголовку сообщения Tm(телеметрии).
         /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tm
         {
+            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF);
+            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ReserveSection);
+            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, SubServiceSection);
+            private static readonly BitVector32.Section BitReserveSection = BitVector32.CreateSection(0x01, ServiceSection);
+            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, BitReserveSection);
+            private static readonly BitVector32.Section SubBitReserveSection = BitVector32.CreateSection(0x0F, VersionSection);
+
             /// <summary>
             /// Агрегат доступа к заголовку icd.
             /// </summary>
@@ -979,6 +996,10 @@ namespace EGSE.Protocols
             /// Заголовок сообщения телеметрии.
             /// </summary>
             private BitVector32 _header;
+
+            //private EgseTimeStruct _egseTime;
+
+            private EgseTime _egseTime;
 
             /// <summary>
             /// Получает или задает агрегат доступа к заголовку icd сообщения.
@@ -999,6 +1020,94 @@ namespace EGSE.Protocols
                 }
             }
 
+            public byte Reserve
+            {
+                get
+                {
+                    return (byte)_header[ReserveSection];
+                }
+
+                set
+                {
+                    _header[ReserveSection] = (int)value;
+                }
+            }
+
+            public byte Service
+            {
+                get
+                {
+                    return (byte)_header[ServiceSection];
+                }
+
+                set
+                {
+                    _header[ServiceSection] = (int)value;
+                }
+            }
+
+            public byte SubService
+            {
+                get
+                {
+                    return (byte)_header[SubServiceSection];
+                }
+
+                set
+                {
+                    _header[SubServiceSection] = (int)value;
+                }
+            }
+
+            public byte BitReserve
+            {
+                get
+                {
+                    return (byte)_header[BitReserveSection];
+                }
+
+                set
+                {
+                    _header[BitReserveSection] = (int)value;
+                }
+            }
+
+            public byte Version
+            {
+                get
+                {
+                    return (byte)_header[VersionSection];
+                }
+
+                set
+                {
+                    _header[VersionSection] = (int)value;
+                }
+            }
+
+            public byte SubBitReserve
+            {
+                get
+                {
+                    return (byte)_header[SubBitReserveSection];
+                }
+
+                set
+                {
+                    _header[SubBitReserveSection] = (int)value;
+                }
+            }
+
+            public EgseTime PackTime
+            {
+                get
+                {
+                    //EgseTime tmp = new EgseTime();
+                    //tmp.Data = new byte[6] { _egseTime.b1, _egseTime.b2, _egseTime.b3, _egseTime.b4, _egseTime.b5, _egseTime.b6 };
+                    return _egseTime;                    
+                }
+            }
+            
             /// <summary>
             /// Returns a <see cref="System.String" /> that represents this instance.
             /// </summary>
@@ -1007,7 +1116,7 @@ namespace EGSE.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stTmStringExt"), IcdInfo);
+                return string.Format(Resource.Get(@"stTmStringExt"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, PackTime.ToString(), IcdInfo);
             }
 
             /// <summary>
@@ -1019,7 +1128,7 @@ namespace EGSE.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), IcdInfo);
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, PackTime.ToString(), IcdInfo.ToString(extended));
             }
         }
     }
@@ -1214,6 +1323,13 @@ namespace EGSE.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tk
         {
+            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF);
+            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ReserveSection);
+            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, SubServiceSection);
+            private static readonly BitVector32.Section AcknowledgmentSection = BitVector32.CreateSection(0x0F, ServiceSection);
+            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, AcknowledgmentSection);
+            private static readonly BitVector32.Section FlagSection = BitVector32.CreateSection(0x01, VersionSection);
+
             /// <summary>
             /// Агрегат доступа к icd заголовку.
             /// </summary>
@@ -1243,6 +1359,85 @@ namespace EGSE.Protocols
                 }
             }
 
+
+            public byte Reserve
+            {
+                get
+                {
+                    return (byte)_header[ReserveSection];
+                }
+
+                set
+                {
+                    _header[ReserveSection] = (int)value;
+                }
+            }
+
+            public byte Service
+            {
+                get
+                {
+                    return (byte)_header[ServiceSection];
+                }
+
+                set
+                {
+                    _header[ServiceSection] = (int)value;
+                }
+            }
+
+            public byte SubService
+            {
+                get
+                {
+                    return (byte)_header[SubServiceSection];
+                }
+
+                set
+                {
+                    _header[SubServiceSection] = (int)value;
+                }
+            }
+
+            public byte Acknowledgment
+            {
+                get
+                {
+                    return (byte)_header[AcknowledgmentSection];
+                }
+
+                set
+                {
+                    _header[AcknowledgmentSection] = (int)value;
+                }
+            }
+
+            public byte Version
+            {
+                get
+                {
+                    return (byte)_header[VersionSection];
+                }
+
+                set
+                {
+                    _header[VersionSection] = (int)value;
+                }
+            }
+
+            public byte Flag
+            {
+                get
+                {
+                    return (byte)_header[FlagSection];
+                }
+
+                set
+                {
+                    _header[FlagSection] = (int)value;
+                }
+            }
+
             /// <summary>
             /// Returns a <see cref="System.String" /> that represents this instance.
             /// </summary>
@@ -1251,7 +1446,7 @@ namespace EGSE.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stTkStringExt"), IcdInfo);
+                return string.Format(Resource.Get(@"stTkStringExt"), Flag, Version, Acknowledgment, Service, SubService, Reserve, IcdInfo);
             }
 
             /// <summary>
@@ -1263,7 +1458,7 @@ namespace EGSE.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), IcdInfo.ToString(extended));
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), Flag, Version, Acknowledgment, Service, SubService, Reserve, IcdInfo.ToString(extended));
             }
         }      
     }
@@ -1364,7 +1559,7 @@ namespace EGSE.Protocols
         /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
         public static new bool Test(byte[] data)
         {
-            return null != data ? 0 >= data.Length : false;
+            return null != data ? 0 <= data.Length : false;
         }
 
         /// <summary>

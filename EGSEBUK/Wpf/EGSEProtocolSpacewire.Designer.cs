@@ -169,7 +169,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - TK[].
+        ///   Looks up a localized string similar to {6} - TK[{0},{1},{2},{3},{4},{5}].
         /// </summary>
         internal static string stTkString {
             get {
@@ -178,7 +178,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - TK().
+        ///   Looks up a localized string similar to {6} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4},Резерв:{5}).
         /// </summary>
         internal static string stTkStringExt {
             get {
@@ -187,7 +187,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - TM[].
+        ///   Looks up a localized string similar to {7} - TM[{0},{1},{2},{3},{4},{5},{6}].
         /// </summary>
         internal static string stTmString {
             get {
@@ -196,7 +196,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - TM().
+        ///   Looks up a localized string similar to {7} - TM(Резерв:{0},Номер версии ТМ-пакета PUS:{1},Резерв:{2},Тип сервиса:{3},Подтип сервиса:{4},Резерв (п/о):{5},Время:{6}).
         /// </summary>
         internal static string stTmStringExt {
             get {

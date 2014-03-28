@@ -23,11 +23,43 @@ namespace EGSE.Protocols.UnitTest
         /// Spacewires the tm MSG event args_ income18 bytes_ returns equal token value.
         /// </summary>
         [TestMethod]
-        public void SpacewireTmMsgEventArgs_Income18Bytes_ReturnsEqualTokenValue()
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income18Bytes_ExceptionThrown()
         {
             // формируем массив из 10 байт и проверяем формирование посылки
             Random rnd = new Random();
             byte[] buf = new byte[18];
+            rnd.NextBytes(buf);
+            buf[8] = 0x00;
+            buf[9] = 0x02;
+            byte[] testCrc = buf.Skip(4).ToArray().Take(buf.Length - 6).ToArray();
+            buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
+            buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income21Bytes_ExceptionThrown()
+        {
+            // формируем массив из 10 байт и проверяем формирование посылки
+            Random rnd = new Random();
+            byte[] buf = new byte[21];
+            rnd.NextBytes(buf);
+            buf[8] = 0x00;
+            buf[9] = 0x02;
+            byte[] testCrc = buf.Skip(4).ToArray().Take(buf.Length - 6).ToArray();
+            buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
+            buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
+            SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
+        }
+
+        [TestMethod]
+        public void SpacewireTmMsgEventArgs_Income22Bytes_ReturnsEqualTokenValue()
+        {
+            // формируем массив из 10 байт и проверяем формирование посылки
+            Random rnd = new Random();
+            byte[] buf = new byte[22];
             rnd.NextBytes(buf);
             buf[8] = 0x00;
             buf[9] = 0x02;
@@ -42,8 +74,7 @@ namespace EGSE.Protocols.UnitTest
 
             Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
 
-            byte[] test = buf.Skip(14).ToArray().Take(2).ToArray();
-            CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
+            string str = msg.TmInfo.ToString(false);
         }
 
         /// <summary>
@@ -65,7 +96,8 @@ namespace EGSE.Protocols.UnitTest
         /// Spacewires the tm MSG event args_ income17 bytes_ returns equal token value.
         /// </summary>
         [TestMethod]
-        public void SpacewireTmMsgEventArgs_Income17Bytes_ReturnsEqualTokenValue()
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void SpacewireTmMsgEventArgs_Income17Bytes_ExceptionThrown()
         {
             // формируем массив из 10 байт и проверяем формирование посылки
             Random rnd = new Random();
@@ -195,7 +227,7 @@ namespace EGSE.Protocols.UnitTest
             SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат парсинга данных кадра
-            byte[] test = buf.Skip(14).ToArray().Take(0xff4).ToArray();
+            byte[] test = buf.Skip(20).ToArray().Take(0xfee).ToArray();
             CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
         }
 

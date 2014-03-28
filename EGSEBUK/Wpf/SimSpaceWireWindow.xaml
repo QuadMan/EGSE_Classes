@@ -63,8 +63,7 @@
             <CheckBox Grid.Row="4"   VerticalAlignment="Center" HorizontalAlignment="Center"
                 Grid.Column="2"                                           	 
 
-                      IsChecked="{Binding IsSD1Trans}"
-                Command="{Binding IssueSD1TransCommand}" TabIndex="1"  />
+                      IsChecked="{Binding IsSD1Trans}" TabIndex="1"  />
             <Label Grid.Row="5" Grid.ColumnSpan="2"
             	Content="Выдавать пакеты данных в прибор"
             	Template="{StaticResource FlatLabel}"/>
@@ -73,8 +72,7 @@
             <CheckBox Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center"
                 Grid.Column="2"                               			    
 
-                      IsChecked="{Binding IsSD1TransData}"
-                Command="{Binding IssueSD1TransDataCommand}" TabIndex="2"/>
+                 IsChecked="{Binding IsSD1TransData}" TabIndex="2"/>
             <Label Grid.Row="6" Grid.ColumnSpan="2"
             	Content="Счетчик миллисекунд (готовность данных)"
             	Template="{StaticResource FlatLabel}"/>

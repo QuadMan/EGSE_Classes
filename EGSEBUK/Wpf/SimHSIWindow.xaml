@@ -80,9 +80,7 @@
             	Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"
                 Grid.Column="2"       
-                      IsChecked="{Binding IsIssueRequest}"
-
-                Command="{Binding IssueRequestCommand}" TabIndex="3"/>            
+                      IsChecked="{Binding IsIssueRequest}" TabIndex="3"/>            
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>

@@ -630,6 +630,11 @@ namespace EGSE.Utilites
     /// </summary>
     public static class Converter
     {
+        public static EgseTime AsEgseTime(this byte[] obj)
+        {
+            return MarshalTo<EgseTime>(obj);
+        }
+
         /// <summary>
         /// Обращение байт в беззнаковом целом.
         /// </summary>
@@ -798,6 +803,12 @@ namespace EGSE.Utilites
             return rawData;
         }
 
+        internal static T1 MarshalTo<T1>(byte[] data)
+        {
+            byte[] buf;
+            return MarshalTo<T1>(data, out buf);
+        }
+
         /// <summary>
         /// Преобразует байты к конкретной структуре.
         /// </summary>
@@ -864,108 +875,184 @@ namespace EGSE.Utilites
         }
     }
 
-    /// <summary>
-    /// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время.
-    /// Необходимо заполнить поле данных времени data (6 байт).
-    /// </summary>
-    public class EgseTime
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct EgseTime
     {
-        /// <summary>
-        /// Размер кадра "Время" устройства (в байтах).
-        /// </summary>
-        private const int DefaultTimeSize = 6;
+        private byte b0;
+        private byte b1;
+        private byte b2;
+        private byte b3;
+        private byte b4;
+        private byte b5;
 
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="EgseTime" />.
-        /// </summary>
-        public EgseTime()
-        {
-            Data = new byte[DefaultTimeSize];
-            Day = 0;
-            Hour = 0;
-            Min = 0;
-            Sec = 0;
-            Msec = 0;
-            Mcsec = 0;
+        public int Day 
+        { 
+            get
+            {
+                return (b0 << 3) | (b1 >> 5);
+            }            
         }
 
-        /// <summary>
-        /// Получает или задает данные времени (6 байт).
-        /// </summary>
-        public byte[] Data { get; set; }
-
-        /// <summary>
-        /// Получает параметр: День.
-        /// </summary>
-        public uint Day { get; private set; }
-
-        /// <summary>
-        /// Получает параметр: Час.
-        /// </summary>
-        public uint Hour { get; private set; }
-
-        /// <summary>
-        /// Получает параметр: Минута.
-        /// </summary>
-        public uint Min { get; private set; }
-
-        /// <summary>
-        /// Получает параметр: Секунда.
-        /// </summary>
-        public uint Sec { get; private set; }
-
-        /// <summary>
-        /// Получает параметр: Миллисекунда.
-        /// </summary>
-        public uint Msec { get; private set; }
-
-        /// <summary>
-        /// Получает параметр: Микросекунда.
-        /// </summary>
-        public uint Mcsec { get; private set; }
-
-        /// <summary>
-        /// Декодируем время из буфера в поля
-        /// </summary>
-        public void Decode()
-        {
-            Day = ((uint)Data[0] << 3) | ((uint)Data[1] >> 5);
-            Hour = (uint)Data[1] & 0x1F;
-            Min = (uint)Data[2] >> 2;
-            Sec = ((uint)(Data[2] & 3) << 4) | ((uint)Data[3] >> 4);
-            Msec = ((uint)(Data[3] & 0xF) << 4) | ((uint)Data[4] >> 6);
-            Mcsec = ((uint)(Data[4] & 3) << 8) | (uint)Data[5];
+        public int Hour 
+        { 
+            get
+            {
+                return b1 & 0x1F;
+            }            
         }
 
-        /// <summary>
-        /// Кодируем текущее время в буфер.
-        /// </summary>
-        public void Encode()
+        public int Minute 
+        { 
+            get
+            {
+                return b2 >> 2;
+            }            
+        }
+
+        public int Second 
+        { 
+            get
+            {
+                return ((b2 & 0x03) << 4) | (b3 >> 4);
+            }            
+        }
+
+        public int Millisecond 
+        { 
+            get
+            {
+                return ((b3 & 0xF) << 4) | (b4 >> 6);
+            }            
+        }
+
+        public int Microsecond 
+        { 
+            get
+            {
+                return ((b4 & 0x03) << 8) | b5;
+            }            
+        }
+
+        public override string ToString()
         {
+            return string.Format("{0:D2}#{1:D2}:{2:D2}:{3:D2}.{4:D3}.{5:D3}", Day, Hour, Minute, Second, Millisecond, Microsecond);
+        }
+
+        public static EgseTime Now()
+        {          
             DateTime now = DateTime.Now;
-            Data[0] = 0;
-            Data[1] = (byte)now.Hour;
-            Data[2] = (byte)(now.Minute << 2);
-            Data[2] |= (byte)(now.Second >> 4);
-            Data[3] = (byte)(now.Second << 4);
-            Data[3] |= (byte)(now.Millisecond >> 6);
-            Data[4] = (byte)(now.Millisecond << 2);
-            Data[5] = 0;
+            byte[] buf = new byte[6] { 0, (byte)now.Hour, (byte)((byte)(now.Minute << 2) | (byte)(now.Second >> 4)), (byte)((byte)(now.Second << 4) | (byte)(now.Millisecond >> 6)), (byte)(now.Millisecond << 2), 0 };
+            return buf.AsEgseTime();
         }
 
-        /// <summary>
-        /// Преобразуем время в строку.
-        /// </summary>
-        /// <returns>Cтроку в виде DD:HH:MM:SS:MSS:MCS</returns>
-        public new string ToString()
+        public byte[] ToArray()
         {
-            Decode();
-            StringBuilder sb = new StringBuilder();
-            sb.Clear();
-            sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}.{3:D3}.{4:D3}", Hour, Min, Sec, Msec, Mcsec);
-            return sb.ToString();
+            return new byte[6] { b0, b1, b2, b3, b4, b5 };
         }
     }
+
+    ///// <summary>
+    ///// Класс работы с временем в КИА - позволяет декодировать и преобразовывать в строку заданное время.
+    ///// Необходимо заполнить поле данных времени data (6 байт).
+    ///// </summary>
+    //public class EgseTime
+    //{
+    //    /// <summary>
+    //    /// Размер кадра "Время" устройства (в байтах).
+    //    /// </summary>
+    //    private const int DefaultTimeSize = 6;
+
+    //    /// <summary>
+    //    /// Инициализирует новый экземпляр класса <see cref="EgseTime" />.
+    //    /// </summary>
+    //    public EgseTime()
+    //    {
+    //        Data = new byte[DefaultTimeSize];
+    //        Day = 0;
+    //        Hour = 0;
+    //        Min = 0;
+    //        Sec = 0;
+    //        Msec = 0;
+    //        Mcsec = 0;
+    //    }
+
+    //    /// <summary>
+    //    /// Получает или задает данные времени (6 байт).
+    //    /// </summary>
+    //    public byte[] Data { get; set; }
+
+    //    /// <summary>
+    //    /// Получает параметр: День.
+    //    /// </summary>
+    //    public uint Day { get; private set; }
+
+    //    /// <summary>
+    //    /// Получает параметр: Час.
+    //    /// </summary>
+    //    public uint Hour { get; private set; }
+
+    //    /// <summary>
+    //    /// Получает параметр: Минута.
+    //    /// </summary>
+    //    public uint Min { get; private set; }
+
+    //    /// <summary>
+    //    /// Получает параметр: Секунда.
+    //    /// </summary>
+    //    public uint Sec { get; private set; }
+
+    //    /// <summary>
+    //    /// Получает параметр: Миллисекунда.
+    //    /// </summary>
+    //    public uint Msec { get; private set; }
+
+    //    /// <summary>
+    //    /// Получает параметр: Микросекунда.
+    //    /// </summary>
+    //    public uint Mcsec { get; private set; }
+
+    //    /// <summary>
+    //    /// Декодируем время из буфера в поля
+    //    /// </summary>
+    //    public void Decode()
+    //    {
+    //        Day = ((uint)Data[0] << 3) | ((uint)Data[1] >> 5);
+    //        Hour = (uint)Data[1] & 0x1F;
+    //        Min = (uint)Data[2] >> 2;
+    //        Sec = ((uint)(Data[2] & 3) << 4) | ((uint)Data[3] >> 4);
+    //        Msec = ((uint)(Data[3] & 0xF) << 4) | ((uint)Data[4] >> 6);
+    //        Mcsec = ((uint)(Data[4] & 3) << 8) | (uint)Data[5];
+    //    }
+
+    //    /// <summary>
+    //    /// Кодируем текущее время в буфер.
+    //    /// </summary>
+    //    public void Encode()
+    //    {
+    //        DateTime now = DateTime.Now;
+    //        Data[0] = 0;
+    //        Data[1] = (byte)now.Hour;
+    //        Data[2] = (byte)(now.Minute << 2);
+    //        Data[2] |= (byte)(now.Second >> 4);
+    //        Data[3] = (byte)(now.Second << 4);
+    //        Data[3] |= (byte)(now.Millisecond >> 6);
+    //        Data[4] = (byte)(now.Millisecond << 2);
+    //        Data[5] = 0;
+    //    }
+
+    //    /// <summary>
+    //    /// Преобразуем время в строку.
+    //    /// </summary>
+    //    /// <returns>Cтроку в виде DD:HH:MM:SS:MSS:MCS</returns>
+    //    public new string ToString()
+    //    {
+    //        Decode();
+    //        StringBuilder sb = new StringBuilder();
+    //        sb.Clear();
+    //        sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}.{3:D3}.{4:D3}", Hour, Min, Sec, Msec, Mcsec);
+    //        return sb.ToString();
+    //    }
+    //}
 
     /// <summary>
     /// Класс работы с ini-файлом

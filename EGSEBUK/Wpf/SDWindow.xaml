@@ -119,9 +119,8 @@
             	LastChildFill="True">
                 <Label DockPanel.Dock="Left" Content="Запись в файл "
             		Template="{StaticResource FlatLabel}"/>
-                <CheckBox DockPanel.Dock="Left"   VerticalAlignment="Center"    Margin="1"                                                   
-            		Tag="{Binding IsSaveRawData, Converter={StaticResource BoolToIndexConverter}}"
-            		Command="{Binding SaveRawDataCommand}" TabIndex="4"/>
+                <CheckBox DockPanel.Dock="Left"   VerticalAlignment="Center"    Margin="1"  
+                          IsChecked="{Binding IsSaveRawData}" TabIndex="4"/>
                 <TextBox              
                     IsReadOnly="True"
             		Template="{StaticResource FilePreviewer}"

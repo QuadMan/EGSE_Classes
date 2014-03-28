@@ -68,35 +68,36 @@ namespace EGSE.Defaults
             if (msg is SpacewireSptpMsgEventArgs)
             {
                 SpacewireSptpMsgEventArgs sptpMsg = msg as SpacewireSptpMsgEventArgs;
-                if (sptpMsg.Data.Length > 30)
-                {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(sptpMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(sptpMsg.Data.Skip<byte>(sptpMsg.Data.Length - 10).ToArray()) + "]";
-                }
-                else
-                {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(sptpMsg.Data) + "]";
-                }
-                    
+                                    
                 // crc check
                 if ((sptpMsg is SpacewireTkMsgEventArgs) || (sptpMsg is SpacewireTmMsgEventArgs))
-                {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false);
+                {                   
                     if (sptpMsg is SpacewireTkMsgEventArgs)
                     {
                         SpacewireTkMsgEventArgs telecmdMsg = sptpMsg as SpacewireTkMsgEventArgs;
-                        spacewireMsg += telecmdMsg.TkInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telecmdMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(telecmdMsg.Data.Skip<byte>(telecmdMsg.Data.Length - 10).ToArray()) + "]";
+                        spacewireMsg += _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + telecmdMsg.TkInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telecmdMsg.Data, isSmart: true) + "]";
                     }
-
-                    if (sptpMsg is SpacewireTmMsgEventArgs)
+                    else if (sptpMsg is SpacewireTmMsgEventArgs)
                     {
                         SpacewireTmMsgEventArgs telemetroMsg = sptpMsg as SpacewireTmMsgEventArgs;
-                        spacewireMsg += telemetroMsg.TmInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telemetroMsg.Data.Take<byte>(10).ToArray()) + "..." + Converter.ByteArrayToHexStr(telemetroMsg.Data.Skip<byte>(telemetroMsg.Data.Length - 10).ToArray()) + "]";
+                        spacewireMsg += _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + telemetroMsg.TmInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telemetroMsg.Data, isSmart: true) + "]";
                     }
 
                     ushort crcInData = msg.ToArray().AsTk().Crc;
                     ushort crcGen = msg.ToArray().AsTk().NeededCrc;
                     spacewireMsg += crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4");
-                }                
+                }      
+                else
+                {
+                    if (sptpMsg.Data.Length > 30)
+                    {
+                        spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(sptpMsg.Data, isSmart: true) + "]";
+                    }
+                    else
+                    {
+                        spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(sptpMsg.Data) + "]";
+                    }
+                }
             }
             else if (msg is SpacewireErrorMsgEventArgs)
             {

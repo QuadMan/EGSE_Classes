@@ -743,12 +743,12 @@ namespace EGSE.Devices
         /// </summary>
         internal void CmdSetDeviceTime()
         {
-            EgseTime time = new EgseTime();
-            time.Encode();
-            byte[] buf = new byte[1] { 1 };
-            SendToUSB(TimeResetAddr, buf);
-            SendToUSB(TimeDataAddr, time.Data);
-            SendToUSB(TimeSetAddr, buf);
+            //EgseTime time = new EgseTime();
+            //time.Encode();
+            //byte[] buf = new byte[1] { 1 };
+            SendToUSB(TimeResetAddr, new byte[1] { 1 });
+            SendToUSB(TimeDataAddr, EgseTime.Now().ToArray());
+            SendToUSB(TimeSetAddr, new byte[1] { 1 });
         }
 
         /// <summary>
@@ -1999,7 +1999,9 @@ namespace EGSE.Devices
                 switch (msg.Addr)
                 {
                     case TimeDataAddr:
-                        Array.Copy(msg.Data, 1, DeviceTime.Data, 0, 6);                                                
+                        byte[] buf = new byte[6];
+                        Array.Copy(msg.Data, 1, buf, 0, 6);
+                        DeviceTime = buf.AsEgseTime();
                         ControlValuesList[Global.Spacewire2.Control].UsbValue = msg.Data[7];
                         ControlValuesList[Global.Spacewire2.Record].UsbValue = msg.Data[10]; 
                         ControlValuesList[Global.Spacewire2.BuskLogic].UsbValue = msg.Data[11];
@@ -6656,11 +6658,11 @@ namespace EGSE.Devices
             /// </summary>
             protected override void InitProperties()
             {                
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.IssueEnable, 0, 1, Device.CmdSpacewire3Control, value => IsIssueEnable = 1 == value);
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value, true);
-                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Transmission, 5, 1, delegate { }, value => IsIssueTransmission = 1 == value, true);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.IssueEnable, 0, 1, Device.CmdSpacewire3Control, value => IsIssueEnable = 1 == value);      
                 ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.HalfSet, 4, 1, Device.CmdSpacewire3Control, value => IssueHalfSet = (HalfSet)value);
                 ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.WorkDevice, 1, 2, Device.CmdSpacewire3Control, value => IssueWorkDevice = (WorkDevice)value);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value, true);
+                ControlValuesList[Global.Spacewire3.Control].AddProperty(Global.Spacewire3.Control.Transmission, 5, 1, delegate { }, value => IsIssueTransmission = 1 == value, true);
             }
         }
 

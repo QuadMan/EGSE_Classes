@@ -48,8 +48,7 @@
             	Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Column="1"      VerticalAlignment="Center" HorizontalAlignment="Center"                         
     			Grid.Row="3"    
-                  IsChecked="{Binding IsIssueTimeMark}"
-                Command="{Binding IssueTimeMarkCommand}" TabIndex="2"/>
+                  IsChecked="{Binding IsIssueTimeMark}" TabIndex="2"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -85,8 +84,7 @@
                       VerticalAlignment="Center" 
                       HorizontalAlignment="Center"
     			Grid.Column="2"  
-                IsChecked="{Binding IsIssueEEP}"
-                Command="{Binding IssueEEPCommand}" TabIndex="5"/>
+                IsChecked="{Binding IsIssueEEP}" TabIndex="5"/>
             <Label Grid.Row="3"   
     			Grid.ColumnSpan="2"	
     			Content="Выдавать в конце посылки EOP или EEP"
@@ -95,8 +93,7 @@
             	Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Center" 
     			Grid.Column="2"            
-                      IsChecked="{Binding IsIssueEOP}"
-                Command="{Binding IssueEOPCommand}" TabIndex="6"/>
+                      IsChecked="{Binding IsIssueEOP}" TabIndex="6"/>
             <Button Grid.Row="4"  
     			Grid.ColumnSpan="3"    	
                 Content="Передать посылку"
