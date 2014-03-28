@@ -21,6 +21,7 @@ namespace EGSE.Defaults
     using System.Windows.Data;
     using System.Windows.Documents;
     using System.Windows.Input;
+    using System.Windows.Markup;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Navigation;
@@ -28,7 +29,6 @@ namespace EGSE.Defaults
     using EGSE.Constants;
     using EGSE.Utilites;
     using EGSE.Utilites.ADC;
-    using System.Windows.Markup;
 
     /// <summary>
     /// Класс, содержащий "неизменяемые" методы и поля-свойства основного окна.
@@ -457,18 +457,21 @@ namespace EGSE.Defaults
         }
     }
 
+    /// <summary>
+    /// Используется для организации вывода в ComboBox элементов перечисления (используя аргументы Description).
+    /// </summary>
     public class EnumerationExtension : MarkupExtension
     {
         /// <summary>
-        /// The _enum type
+        /// Тип перечисления.
         /// </summary>
         private Type _enumType;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="EnumerationExtension"/> class.
+        /// Инициализирует новый экземпляр класса <see cref="EnumerationExtension" />.
         /// </summary>
         /// <param name="enumType">Type of the enum.</param>
-        /// <exception cref="System.ArgumentNullException">enumType</exception>
+        /// <exception cref="System.ArgumentNullException">Ошибка в аргументе.</exception>
         public EnumerationExtension(Type enumType)
         {
             if (null == enumType)
@@ -480,7 +483,7 @@ namespace EGSE.Defaults
         }
 
         /// <summary>
-        /// Gets the type of the enum.
+        /// Получает тип перечисления.
         /// </summary>
         /// <value>
         /// The type of the enum.
@@ -492,6 +495,7 @@ namespace EGSE.Defaults
             { 
                 return _enumType; 
             }
+
             private set
             {
                 if (value == _enumType)
@@ -519,14 +523,14 @@ namespace EGSE.Defaults
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             var enumValues = Enum.GetValues(EnumType);
-            return (from object enumValue in enumValues select new EnumerationMember{ Value = enumValue, Description = GetDescription(enumValue) }).ToArray();
+            return (from object enumValue in enumValues select new EnumerationMember { Value = enumValue, Description = GetDescription(enumValue) }).ToArray();
         }
 
         /// <summary>
-        /// Gets the description.
+        /// Получает описание элемента перечисления.
         /// </summary>
-        /// <param name="enumValue">The enum value.</param>
-        /// <returns></returns>
+        /// <param name="enumValue">Элемент перечисления.</param>
+        /// <returns>Описание элемента перечисления.</returns>
         private string GetDescription(object enumValue)
         {
             var descriptionAttribute = EnumType.GetField(enumValue.ToString()).GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
@@ -538,7 +542,20 @@ namespace EGSE.Defaults
         /// </summary>
         public class EnumerationMember
         {
+            /// <summary>
+            /// Получает или задает описание элемента.
+            /// </summary>
+            /// <value>
+            /// Описание элемента.
+            /// </value>
             public string Description { get; set; }
+
+            /// <summary>
+            /// Получает или задает значение элемента.
+            /// </summary>
+            /// <value>
+            /// Значение элемента.
+            /// </value>
             public object Value { get; set; }
         }
     }

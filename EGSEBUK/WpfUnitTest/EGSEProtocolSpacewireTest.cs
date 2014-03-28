@@ -992,7 +992,9 @@ namespace EGSE.Protocols.UnitTest
     [TestClass]
     public class SpacewireEmptyProtoMsgEventArgsTest
     {
-
+        /// <summary>
+        /// Spacewires the empty proto MSG event args_ income5 bytes_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void SpacewireEmptyProtoMsgEventArgs_Income5Bytes_ReturnsEqualTokenValue()
         {
@@ -1011,6 +1013,9 @@ namespace EGSE.Protocols.UnitTest
             CollectionAssert.AreEqual(buf, msg.Data, "Ошибка в парсинге данных кадра");
         }
 
+        /// <summary>
+        /// Spacewires the empty proto MSG event args_ income0 bytes_ exception thrown.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ContextMarshalException))]
         public void SpacewireEmptyProtoMsgEventArgs_Income0Bytes_ExceptionThrown()
@@ -1020,6 +1025,9 @@ namespace EGSE.Protocols.UnitTest
             SpacewireEmptyProtoMsgEventArgs msg = new SpacewireEmptyProtoMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Spacewires the empty proto MSG event args_1 argument null_ exception thrown.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void SpacewireEmptyProtoMsgEventArgs_1ArgNull_ExceptionThrown()
@@ -1028,6 +1036,9 @@ namespace EGSE.Protocols.UnitTest
             SpacewireEmptyProtoMsgEventArgs msg = new SpacewireEmptyProtoMsgEventArgs(null, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Spacewires the empty proto MSG event args_ income65540 bytes_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void SpacewireEmptyProtoMsgEventArgs_Income65540Bytes_ReturnsEqualTokenValue()
         {
@@ -1041,6 +1052,9 @@ namespace EGSE.Protocols.UnitTest
             CollectionAssert.AreEqual(buf.ToArray(), msg.Data, "Ошибка в парсинге данных кадра");
         }
 
+        /// <summary>
+        /// Spacewires the empty proto MSG event args_ to array_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void SpacewireEmptyProtoMsgEventArgs_ToArray_ReturnsEqualTokenValue()
         {

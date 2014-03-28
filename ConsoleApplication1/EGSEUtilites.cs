@@ -408,7 +408,7 @@ namespace EGSE.Utilites
             try
             {
                 IniFile _ini = new IniFile();
-                //string sectionName = GetPropertyValue(win, Window.TitleProperty);
+                ////string sectionName = GetPropertyValue(win, Window.TitleProperty);
                 string sectionName = win.GetType().ToString();
                 _ini.Write(@"Visibility", GetPropertyValue(win, Window.VisibilityProperty), sectionName);
                 _ini.Write(@"WindowState", GetPropertyValue(win, Window.WindowStateProperty), sectionName);
@@ -434,7 +434,7 @@ namespace EGSE.Utilites
             try
             {
                 IniFile _ini = new IniFile();
-                //string sectionName = GetPropertyValue(win, Window.TitleProperty);
+                ////string sectionName = GetPropertyValue(win, Window.TitleProperty);
                 string sectionName = win.GetType().ToString();
                 if (_ini.IsKeyExists(@"Visibility", sectionName))
                 {

@@ -57,6 +57,9 @@ namespace EGSE.Protocols
         /// </summary>
         private byte _currentTime2;
 
+        /// <summary>
+        /// <c>true</c> если не нужно декодировать протокол.
+        /// </summary>
         private bool _isEmptyProto = false;
 
         /// <summary>
@@ -129,7 +132,7 @@ namespace EGSE.Protocols
                     byte[] arr = _buf.ToArray();
                     try
                     {
-                        if (_isEmptyProto)
+                        if (_isEmptyProto && SpacewireEmptyProtoMsgEventArgs.Test(arr))
                         {
                             pack = new SpacewireEmptyProtoMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
                         }
@@ -1321,8 +1324,27 @@ namespace EGSE.Protocols
         }
     }
 
+    /// <summary>
+    /// Обмен сообщениями по протоколу Spacewire (не используя декодер протоколов).
+    /// </summary>
     public class SpacewireEmptyProtoMsgEventArgs : BaseMsgEventArgs
     {
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="SpacewireEmptyProtoMsgEventArgs" />.
+        /// </summary>
+        /// <param name="data">"сырые" данные сообщения.</param>
+        /// <param name="time1">Значение TimeTick1.</param>
+        /// <param name="time2">Значение TimeTick2.</param>
+        /// <param name="error">Значение Error.</param>
+        /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
+        public SpacewireEmptyProtoMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data)
+        {
+            if (0 >= data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
+            }
+        }
 
         /// <summary>
         /// Получает данные сообщения.
@@ -1335,23 +1357,14 @@ namespace EGSE.Protocols
             }
         }
 
-        public SpacewireEmptyProtoMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data)
-        {
-            if (0 >= data.Length)
-            {
-                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
-            }
-        }
-
         /// <summary>
-        /// "Сырая" проверка на принадлежность к sptp-сообщению.
+        /// "Сырая" проверка на принадлежность к empty-сообщению.
         /// </summary>
         /// <param name="data">"сырые" данные посылки.</param>
         /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
         public static new bool Test(byte[] data)
         {
-            return null != data ? 0 <= data.Length : false;
+            return null != data ? 0 >= data.Length : false;
         }
 
         /// <summary>
