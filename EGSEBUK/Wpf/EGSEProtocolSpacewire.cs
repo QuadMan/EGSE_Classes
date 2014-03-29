@@ -964,27 +964,40 @@ namespace EGSE.Protocols
             return base.ToArray();
         }
 
-        public struct EgseTimeStruct
-        {
-            public byte b1;
-            public byte b2;
-            public byte b3;
-            public byte b4;
-            public byte b5;
-            public byte b6;
-        }
-
         /// <summary>
         /// Агрегат доступа к заголовку сообщения Tm(телеметрии).
         /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tm
         {
+            /// <summary>
+            /// Маска поля заголовка поля данных: Резерв (п/о).
+            /// </summary>
             private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Подтип сервиса.
+            /// </summary>
             private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ReserveSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Тип сервиса.
+            /// </summary>
             private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, SubServiceSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Резерв.
+            /// </summary>
             private static readonly BitVector32.Section BitReserveSection = BitVector32.CreateSection(0x01, ServiceSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Номер версии ТМ-пакета PUS.
+            /// </summary>
             private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, BitReserveSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Резерв.
+            /// </summary>
             private static readonly BitVector32.Section SubBitReserveSection = BitVector32.CreateSection(0x0F, VersionSection);
 
             /// <summary>
@@ -997,8 +1010,9 @@ namespace EGSE.Protocols
             /// </summary>
             private BitVector32 _header;
 
-            //private EgseTimeStruct _egseTime;
-
+            /// <summary>
+            /// Поле заголовка данных: Время.
+            /// </summary>
             private EgseTime _egseTime;
 
             /// <summary>
@@ -1020,6 +1034,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение резервного байта.
+            /// </summary>
+            /// <value>
+            /// Значение резервного байта.
+            /// </value>
             public byte Reserve
             {
                 get
@@ -1033,6 +1053,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает тип сервиса.
+            /// </summary>
+            /// <value>
+            /// Тип сервиса.
+            /// </value>
             public byte Service
             {
                 get
@@ -1046,6 +1072,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает подтип сервиса.
+            /// </summary>
+            /// <value>
+            /// Подтип сервиса.
+            /// </value>
             public byte SubService
             {
                 get
@@ -1059,6 +1091,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение резервного бита.
+            /// </summary>
+            /// <value>
+            /// Хначение резервного бита.
+            /// </value>
             public byte BitReserve
             {
                 get
@@ -1072,6 +1110,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает номер версии ТМ-пакета PUS.
+            /// </summary>
+            /// <value>
+            /// Номер версии ТМ-пакета PUS.
+            /// </value>
             public byte Version
             {
                 get
@@ -1085,6 +1129,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение резервного бита.
+            /// </summary>
+            /// <value>
+            /// Значение резервного бита.
+            /// </value>
             public byte SubBitReserve
             {
                 get
@@ -1098,13 +1148,22 @@ namespace EGSE.Protocols
                 }
             }
 
-            public EgseTime PackTime
+            /// <summary>
+            /// Получает или задает опорное бортовое время пакета.
+            /// </summary>
+            /// <value>
+            /// Опорное бортовое время пакета.
+            /// </value>
+            public EgseTime Time
             {
                 get
                 {
-                    //EgseTime tmp = new EgseTime();
-                    //tmp.Data = new byte[6] { _egseTime.b1, _egseTime.b2, _egseTime.b3, _egseTime.b4, _egseTime.b5, _egseTime.b6 };
                     return _egseTime;                    
+                }
+
+                set
+                {
+                    _egseTime = value;
                 }
             }
             
@@ -1116,7 +1175,7 @@ namespace EGSE.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stTmStringExt"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, PackTime.ToString(), IcdInfo);
+                return string.Format(Resource.Get(@"stTmStringExt"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, Time.ToString(), IcdInfo);
             }
 
             /// <summary>
@@ -1128,7 +1187,7 @@ namespace EGSE.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, PackTime.ToString(), IcdInfo.ToString(extended));
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, Time.ToString(), IcdInfo.ToString(extended));
             }
         }
     }
@@ -1323,11 +1382,34 @@ namespace EGSE.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tk
         {
+            /// <summary>
+            /// Маска поля заголовка поля данных: Резерв.
+            /// </summary>
             private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Подтип сервиса.
+            /// </summary>
             private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ReserveSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Тип сервиса.
+            /// </summary>
             private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, SubServiceSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Тип квитирования.
+            /// </summary>
             private static readonly BitVector32.Section AcknowledgmentSection = BitVector32.CreateSection(0x0F, ServiceSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Номер версии ТМ-пакета PUS.
+            /// </summary>
             private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, AcknowledgmentSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Флаг вторичного заголовка CCSDS.
+            /// </summary>
             private static readonly BitVector32.Section FlagSection = BitVector32.CreateSection(0x01, VersionSection);
 
             /// <summary>
@@ -1359,7 +1441,12 @@ namespace EGSE.Protocols
                 }
             }
 
-
+            /// <summary>
+            /// Получает или задает значение резервного байта.
+            /// </summary>
+            /// <value>
+            /// Значение резервного байта.
+            /// </value>
             public byte Reserve
             {
                 get
@@ -1373,6 +1460,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает тип сервиса.
+            /// </summary>
+            /// <value>
+            /// Тип сервиса.
+            /// </value>
             public byte Service
             {
                 get
@@ -1386,6 +1479,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает подтип сервиса.
+            /// </summary>
+            /// <value>
+            /// Подтип сервиса.
+            /// </value>
             public byte SubService
             {
                 get
@@ -1399,6 +1498,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает тип квитирования.
+            /// </summary>
+            /// <value>
+            /// Тип квитирования.
+            /// </value>
             public byte Acknowledgment
             {
                 get
@@ -1412,6 +1517,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает новер версии ТК-пакета PUS.
+            /// </summary>
+            /// <value>
+            /// Номер версии ТК-пакета PUS.
+            /// </value>
             public byte Version
             {
                 get
@@ -1425,6 +1536,12 @@ namespace EGSE.Protocols
                 }
             }
 
+            /// <summary>
+            /// Получает или задает флаг вторичного заголовка CCSDS.
+            /// </summary>
+            /// <value>
+            /// Флаг вторичного заголовка CCSDS.
+            /// </value>
             public byte Flag
             {
                 get
@@ -1563,7 +1680,7 @@ namespace EGSE.Protocols
         }
 
         /// <summary>
-        /// Преобразует данные экземпляра к массиву байт.
+        /// Возвращает данные экземпляра как массив байт.
         /// </summary>
         /// <returns>
         /// Массив байт.

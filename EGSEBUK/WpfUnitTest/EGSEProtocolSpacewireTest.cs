@@ -38,6 +38,9 @@ namespace EGSE.Protocols.UnitTest
             SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Spacewires the tm MSG event args_ income21 bytes_ exception thrown.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(ContextMarshalException))]
         public void SpacewireTmMsgEventArgs_Income21Bytes_ExceptionThrown()
@@ -54,6 +57,9 @@ namespace EGSE.Protocols.UnitTest
             SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
         }
 
+        /// <summary>
+        /// Spacewires the tm MSG event args_ income22 bytes_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void SpacewireTmMsgEventArgs_Income22Bytes_ReturnsEqualTokenValue()
         {

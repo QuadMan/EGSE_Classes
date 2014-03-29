@@ -743,9 +743,6 @@ namespace EGSE.Devices
         /// </summary>
         internal void CmdSetDeviceTime()
         {
-            //EgseTime time = new EgseTime();
-            //time.Encode();
-            //byte[] buf = new byte[1] { 1 };
             SendToUSB(TimeResetAddr, new byte[1] { 1 });
             SendToUSB(TimeDataAddr, EgseTime.Now().ToArray());
             SendToUSB(TimeSetAddr, new byte[1] { 1 });

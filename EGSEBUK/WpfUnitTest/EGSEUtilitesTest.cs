@@ -13,9 +13,48 @@ namespace EGSE.Utilites.UnitTest
     using EGSE.Utilites;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    /// <summary>
+    /// Тест структуры EgseTime.
+    /// </summary>
     [TestClass]
     public class ConverterTest
     {
+        /// <summary>
+        /// Egses the time_ income5 bytes_ exception thrown.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void EgseTime_Income5Bytes_ExceptionThrown()
+        {
+            byte[] b = new byte[5] { 0, 0, 0, 0, 0 };         
+            EgseTime test = b.AsEgseTime();
+        }
+
+        /// <summary>
+        /// Egses the time_ income null_ exception thrown.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void EgseTime_IncomeNull_ExceptionThrown()
+        {
+            byte[] b = null;
+            EgseTime test = b.AsEgseTime();
+        }
+
+        /// <summary>
+        /// Egses the time_ income0 bytes_ exception thrown.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(ContextMarshalException))]
+        public void EgseTime_Income0Bytes_ExceptionThrown()
+        {
+            byte[] b = new byte[] { };
+            EgseTime test = b.AsEgseTime();
+        }
+
+        /// <summary>
+        /// Egses the time_ now_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void EgseTime_Now_ReturnsEqualTokenValue()
         {
@@ -30,6 +69,9 @@ namespace EGSE.Utilites.UnitTest
             Assert.AreEqual(0, test.Microsecond, string.Format(Resource.Get(@"stErrorInProperty"), "Microsecond"));
         }
 
+        /// <summary>
+        /// Egses the time_ to array_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void EgseTime_ToArray_ReturnsEqualTokenValue()
         {
@@ -45,6 +87,9 @@ namespace EGSE.Utilites.UnitTest
             Assert.AreEqual(((b[4] & 0x03) << 8) | b[5], test.Microsecond, string.Format(Resource.Get(@"stErrorInProperty"), "Microsecond"));
         }
 
+        /// <summary>
+        /// Converter_s as egse time_ returns equal token value.
+        /// </summary>
         [TestMethod]
         public void Converter_AsEgseTime_ReturnsEqualTokenValue()
         {
