@@ -279,7 +279,7 @@ namespace EGSE.Utilites
                 {
                     if (checkIndicate && !(pair.Value as CVProperty).IsIndicate)
                     {
-                        return;
+                        continue;
                     }
 
                     pair.Value.ChangeEvent(usbVal);

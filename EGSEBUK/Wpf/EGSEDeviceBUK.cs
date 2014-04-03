@@ -4726,7 +4726,7 @@ namespace EGSE.Devices
             }
 
             /// <summary>
-            /// Получает значение [Счетчик миллисекунд для НП1 (через сколько готовы данные)].
+            /// Получает или задает значение [Счетчик миллисекунд для НП1 (через сколько готовы данные)].
             /// </summary>
             /// <value>
             /// Счетчик миллисекунд для НП1 (через сколько готовы данные).
@@ -6421,6 +6421,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _isIssueTransmission = value;
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Transmission, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }

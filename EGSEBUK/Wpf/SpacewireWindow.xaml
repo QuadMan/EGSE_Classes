@@ -27,7 +27,6 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -105,12 +104,7 @@ IsChecked="{Binding IsIssueKbv}"
 
                 IsChecked="{Binding IsIssueTrans}"
             	                    
-                TabIndex="3"
-            	/>
-            <Label Grid.Row="8"                                				    
-            	Grid.ColumnSpan="3"
-            	Tag="{Binding IsTransData, Converter={StaticResource BoolToIndexConverter}}"
-                Template="{StaticResource FlatLabelTransmission}"/>
+                TabIndex="3"/>          
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
