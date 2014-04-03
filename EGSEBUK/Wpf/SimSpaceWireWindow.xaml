@@ -6,6 +6,7 @@
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
         Closing="Window_Closing"
+        Height="auto"
         Visibility="{Binding IsShowSimSpacewire, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
     <Grid x:Name="GridSimSpacewire"
 		Background="{StaticResource BackBrush}"
@@ -23,7 +24,6 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="0"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -78,7 +78,6 @@
             	Template="{StaticResource FlatLabel}"/>
             <TextBox Grid.Row="6"  
                 Grid.Column="2"
-
 			    Template="{StaticResource NumberInError}"
 			    Style="{StaticResource TextBoxInError}"
 			    Text="{Binding SD1SendTime}" TabIndex="3"/>
@@ -96,7 +95,7 @@
         <Grid Grid.Row="1" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition />
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -121,7 +120,5 @@
                 Command="{Binding IssuePackageCommand}"
         		Template="{StaticResource FlatButtonClickBusy}"/>
         </Grid>
-        <Label Grid.Row="1" 
-             	Template="{StaticResource FlatLabel}"/>
     </Grid>
 </Window>

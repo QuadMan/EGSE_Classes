@@ -34,7 +34,7 @@
 				Content="Управление"
 				Style="{StaticResource FlatHeader}"/>
             <Label Grid.Row="1"
-            	Content="Прибор"
+            	Content="Канал БС"
             	Template="{StaticResource FlatLabel}"/>
             <ComboBox Grid.Column="1"                               
                       Grid.Row="1"
@@ -44,7 +44,7 @@
                       SelectedValue="{Binding IssueWorkDevice}"  
                       SelectedValuePath="Value" TabIndex="1"/>
             <Label Grid.Row="2"
-            	Content="Полукомплект"
+            	Content="Линия передачи"
             	Template="{StaticResource FlatLabel}"/>
             <ComboBox Grid.Column="1"                               
                       Grid.Row="2"
@@ -97,72 +97,7 @@
                     b:WatermarkTextBoxBehavior.Label="Файл отсутствует..."
                     b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
             	    IsTabStop="False"/>
-            </DockPanel>
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Прибор"
-            		Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Column="1"
-                	Content="каналы БС"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Column="2"
-                	Content="БУК"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1"	Content="Time tick"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1"
-                	Grid.Column="1"
-                	Content="{Binding SDTickTime1}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1"
-                	Grid.Column="2"
-                	Content="{Binding BukTickTime1}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="2"
-                	Content="TIME TICK 2"
-                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-                <Label Grid.Row="2" 
-                	Grid.Column="1"
-                	Content="{Binding SDTickTime2}"
-                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-                <Label Grid.Row="2" 
-                	Grid.Column="2"
-                	Content="{Binding BukTickTime2}"
-                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-                <Label Grid.Row="3"
-                	Content="Количество запросов кредита"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="3" 
-                	Grid.Column="1"
-                	Content="{Binding RequestQueueFromSD}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="3"  
-                	Grid.Column="2"
-                	Content="{Binding RequestQueueFromBuk}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="4"
-                	Content="Количество предоставления кредита"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="4" 
-                	Grid.Column="1"
-                	Content="{Binding ReplyQueueFromSD}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="4"  
-                	Grid.Column="2"
-                	Content="{Binding ReplyQueueFromBuk}"
-                	Template="{StaticResource FlatLabel}"/>               
-            </Grid>
+            </DockPanel>          
             <ListBox x:Name="Monitor" 
         		Grid.Row="3"
         		Margin="1"

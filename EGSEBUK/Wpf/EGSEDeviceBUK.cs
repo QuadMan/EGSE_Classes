@@ -1754,8 +1754,9 @@ namespace EGSE.Devices
                 Task.Run(() =>
                 {                 
                     RefreshAllControlsValues();
-                    Task.Delay(1500).Wait();  
+                    Task.Delay(1000).Wait();  
                     Device.CmdSetDeviceLogicAddr();
+                    Spacewire1Notify.SD1SendTime = 1000;
                 });
                                          
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
@@ -4346,7 +4347,7 @@ namespace EGSE.Devices
             /// <summary>
             /// SPTP: Счетчик миллисекунд для НП1 (через сколько готовы данные).
             /// </summary>
-            private int _sd1SendTime = 0;
+            private int _sd1SendTime = 1000;
 
             /// <summary>
             /// SPTP: Счетчик миллисекунд для НП2 (через сколько готовы данные).
@@ -4737,7 +4738,7 @@ namespace EGSE.Devices
                     return _sd1SendTime;
                 }
 
-                private set 
+                set 
                 {
                     _sd1SendTime = value;
                     ControlValuesList[Global.Spacewire1.SD1SendTime].SetProperty(Global.Spacewire1.SD1SendTime, Convert.ToInt32(value));
@@ -6260,15 +6261,15 @@ namespace EGSE.Devices
             public enum HalfSet
             {
                 /// <summary>
-                /// Первый полукомплект.
+                /// Основная линия spacewire.
                 /// </summary>
-                [Description("Первый полукомплект")]
+                [Description("Основная")]
                 First = 0x00,
 
                 /// <summary>
-                /// Второй полукомплект.
+                /// Резервная линия spacewire.
                 /// </summary>
-                [Description("Второй полукомплект")]
+                [Description("Резервная")]
                 Second = 0x01
             }
 
@@ -6820,7 +6821,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Запись данных(до 1 Кбайт): Выдача в конце посылки EOP или EEP.
             /// </summary>
-            private bool _isIssueEOP;
+            private bool _isIssueEOP = true;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Автоматическая выдача.
