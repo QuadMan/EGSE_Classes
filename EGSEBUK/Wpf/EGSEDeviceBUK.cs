@@ -9,6 +9,8 @@ namespace EGSE.Devices
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
     using System.ComponentModel;    
     using System.Diagnostics;    
     using System.IO;
@@ -25,9 +27,7 @@ namespace EGSE.Devices
     using EGSE.USB;
     using EGSE.Utilites;
     using Microsoft.Win32;
-    using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using Wpf.Properties;
+    using Wpf.Properties;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -680,7 +680,6 @@ using Wpf.Properties;
             SendToUSB(Spacewire1RecordSendAddr, new byte[1] { (byte)value });
         }
        
-
         /// <summary>
         /// Команда SpaceWire2: Запись данных(до 1 Кбайт).
         /// </summary>
@@ -1114,21 +1113,6 @@ using Wpf.Properties;
         /// УФЕС: Датчики затворов: открытия.
         /// </summary>
         private DevEnabled _issueUfesOpen = DevEnabled.Off;
-        
-        public void LoadApp()
-        {
-            Spacewire2Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw2Cmds);
-            Spacewire4Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw4Cmds);
-            HsiNotify.LoadDataList(Wpf.Properties.Settings.Default.HsiCmds);
-        }
-
-        public void SaveApp()
-        { 
-            Spacewire2Notify.SaveDataList(Wpf.Properties.Settings.Default.Spw2Cmds);
-            Spacewire4Notify.SaveDataList(Wpf.Properties.Settings.Default.Spw4Cmds);
-            HsiNotify.SaveDataList(Wpf.Properties.Settings.Default.HsiCmds);
-            Wpf.Properties.Settings.Default.Save();
-        }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseBukNotify" />.
@@ -1703,6 +1687,27 @@ using Wpf.Properties;
         }
 
         /// <summary>
+        /// Событие: требуется загрузить настройки.
+        /// </summary>
+        public void LoadAppEvent()
+        {
+            Spacewire2Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw2Cmds);
+            Spacewire4Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw4Cmds);
+            HsiNotify.LoadDataList(Wpf.Properties.Settings.Default.HsiCmds);
+        }
+
+        /// <summary>
+        /// Событие: требуется сохранить настройки.
+        /// </summary>
+        public void SaveAppEvent()
+        {
+            Spacewire2Notify.SaveDataList(Wpf.Properties.Settings.Default.Spw2Cmds);
+            Spacewire4Notify.SaveDataList(Wpf.Properties.Settings.Default.Spw4Cmds);
+            HsiNotify.SaveDataList(Wpf.Properties.Settings.Default.HsiCmds);
+            Wpf.Properties.Settings.Default.Save();
+        }
+
+        /// <summary>
         /// Открывает файл, для предоставления содержимого как массива байт.
         /// </summary>
         /// <returns>Массив байт открытого файла.</returns>
@@ -2082,12 +2087,29 @@ using Wpf.Properties;
             }
         }
 
+        /// <summary>
+        /// Реализует сохранение в user.config файл списков отправленных команд(данных).
+        /// Примечание(особенность работы):
+        /// Жестко привязана к текущей версии программы. Для каждой версии существует отдельный user.config
+        /// </summary>
         public class PropSerializer
         {
+            /// <summary>
+            /// Количество сохраняемых команд(данных) в списке.
+            /// </summary>
             protected const int MaxDataListCount = 15;
-          
+
+            /// <summary>
+            /// Список отправленных команд(данных).
+            /// </summary>
             private ObservableCollection<string> _dataList = new ObservableCollection<string>();
 
+            /// <summary>
+            /// Получает список отправленных команд(данных).
+            /// </summary>
+            /// <value>
+            /// Список отправленных команд(данных).
+            /// </value>
             public ObservableCollection<string> DataList
             {
                 get
@@ -2096,6 +2118,10 @@ using Wpf.Properties;
                 }
             }
 
+            /// <summary>
+            /// Загружает из коллекции в список.
+            /// </summary>
+            /// <param name="collection">Коллекция строк.</param>
             public void LoadDataList(StringCollection collection)
             {
                 if (null != collection)
@@ -2108,6 +2134,10 @@ using Wpf.Properties;
                 }
             }
 
+            /// <summary>
+            /// Сохраняет список команд(данных) в коллекцию.
+            /// </summary>
+            /// <param name="collection">Коллекция строк.</param>
             public void SaveDataList(StringCollection collection)
             {
                 if (0 < DataList.Count)
@@ -2188,20 +2218,6 @@ using Wpf.Properties;
         /// </summary>
         public class HSI : SubNotify, IDataErrorInfo
         {           
-            internal void DataToSaveList()
-            {
-                string str = Converter.ByteArrayToHexStr(Data);
-                if (!DataList.Contains(str))
-                {
-                    if (DataList.Count >= MaxDataListCount)
-                    {
-                        DataList.RemoveAt(DataList.Count - 1);
-                    }
-                    DataList.Insert(0, str);
-                }
-                FirePropertyChangedEvent("DataList");
-            }
-
             /// <summary>
             /// Timeout на запись данных в файл.
             /// </summary>
@@ -3311,6 +3327,25 @@ using Wpf.Properties;
             }
 
             /// <summary>
+            /// Добавляет отправленную команду(данные) в список.
+            /// </summary>
+            internal void DataToSaveList()
+            {
+                string str = Converter.ByteArrayToHexStr(Data);
+                if (!DataList.Contains(str))
+                {
+                    if (DataList.Count >= MaxDataListCount)
+                    {
+                        DataList.RemoveAt(DataList.Count - 1);
+                    }
+
+                    DataList.Insert(0, str);
+                }
+
+                FirePropertyChangedEvent("DataList");
+            }
+
+            /// <summary>
             /// Initializes the control value.
             /// </summary>
             protected override void InitControlValue()
@@ -3352,7 +3387,7 @@ using Wpf.Properties;
                 ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueBusy2, 4, 1, Device.CmdHSIState, value => IsIssueBusy2 = 1 == value);
                 ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueMe1, 2, 1, Device.CmdHSIState, value => IsIssueMe1 = 1 == value);
                 ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueMe2, 5, 1, Device.CmdHSIState, value => IsIssueMe2 = 1 == value);
-            }            
+            }
         }
 
         /// <summary>
@@ -5192,20 +5227,6 @@ using Wpf.Properties;
             /// </value>
             public byte[] Data { get; private set; }
 
-            internal void DataToSaveList()
-            {
-                string str = Converter.ByteArrayToHexStr(Data);
-                if (!DataList.Contains(str))
-                {
-                    if (DataList.Count >= MaxDataListCount)
-                    {
-                        DataList.RemoveAt(DataList.Count - 1);
-                    }
-                    DataList.Insert(0, str);                   
-                }
-                FirePropertyChangedEvent("DataList");
-            }
-
             /// <summary>
             /// Получает или задает количество запросов кредита от БУСК.
             /// </summary>
@@ -6067,6 +6088,25 @@ using Wpf.Properties;
             }
 
             /// <summary>
+            /// Добавляет отправленную команду(данные) в список.
+            /// </summary>
+            internal void DataToSaveList()
+            {
+                string str = Converter.ByteArrayToHexStr(Data);
+                if (!DataList.Contains(str))
+                {
+                    if (DataList.Count >= MaxDataListCount)
+                    {
+                        DataList.RemoveAt(DataList.Count - 1);
+                    }
+
+                    DataList.Insert(0, str);
+                }
+
+                FirePropertyChangedEvent("DataList");
+            }
+
+            /// <summary>
             /// Initializes the control value.
             /// </summary>
             protected override void InitControlValue()
@@ -6103,7 +6143,6 @@ using Wpf.Properties;
         /// </summary>
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
-       
             /// <summary>
             /// Timeout на запись данных в файл.
             /// </summary>
@@ -6758,20 +6797,6 @@ using Wpf.Properties;
         /// </summary>
         public class Spacewire4 : SubNotify, IDataErrorInfo
         {
-            internal void DataToSaveList()
-            {
-                string str = Converter.ByteArrayToHexStr(Data);
-                if (!DataList.Contains(str))
-                {
-                    if (DataList.Count >= MaxDataListCount)
-                    {
-                        DataList.RemoveAt(DataList.Count - 1);
-                    }
-                    DataList.Insert(0, str);
-                }
-                FirePropertyChangedEvent("DataList");
-            }
-
             /// <summary>
             /// Управление: вкл/выкл интерфейса Spacewire.
             /// </summary>
@@ -7211,6 +7236,25 @@ using Wpf.Properties;
             {
                 Data = Owner.OpenFromFile();
                 FirePropertyChangedEvent("Data");
+            }
+
+            /// <summary>
+            /// Добавляет отправленную команду(данные) в список.
+            /// </summary>
+            internal void DataToSaveList()
+            {
+                string str = Converter.ByteArrayToHexStr(Data);
+                if (!DataList.Contains(str))
+                {
+                    if (DataList.Count >= MaxDataListCount)
+                    {
+                        DataList.RemoveAt(DataList.Count - 1);
+                    }
+
+                    DataList.Insert(0, str);
+                }
+
+                FirePropertyChangedEvent("DataList");
             }
 
             /// <summary>

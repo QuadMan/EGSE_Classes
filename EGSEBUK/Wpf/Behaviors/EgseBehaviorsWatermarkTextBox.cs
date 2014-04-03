@@ -28,11 +28,15 @@ namespace EGSE.Behaviors
         /// </summary>
         public static readonly DependencyProperty LabelStyleProperty = DependencyProperty.RegisterAttached("LabelStyle", typeof(Style), typeof(WatermarkTextBoxBehavior));
 
-
         /// <summary>
         /// The enable watermark property.
         /// </summary>
         public static readonly DependencyProperty EnableWatermarkProperty = DependencyProperty.RegisterAttached("EnableWatermark", typeof(bool), typeof(WatermarkTextBoxBehavior), new UIPropertyMetadata(false, OnEnableWatermarkChanged));
+        
+        /// <summary>
+        /// The has text property.
+        /// </summary>
+        public static readonly DependencyProperty HasTextProperty = HasTextPropertyKey.DependencyProperty;
 
         /// <summary>
         /// The watermark text box behavior property.
@@ -42,12 +46,7 @@ namespace EGSE.Behaviors
         /// <summary>
         /// The has text property key.
         /// </summary>
-        private static readonly DependencyPropertyKey HasTextPropertyKey = DependencyProperty.RegisterAttachedReadOnly("HasText", typeof(bool), typeof(WatermarkTextBoxBehavior), new UIPropertyMetadata(false));
-       
-        /// <summary>
-        /// The has text property.
-        /// </summary>
-        public static readonly DependencyProperty HasTextProperty = HasTextPropertyKey.DependencyProperty;
+        private static readonly DependencyPropertyKey HasTextPropertyKey = DependencyProperty.RegisterAttachedReadOnly("HasText", typeof(bool), typeof(WatermarkTextBoxBehavior), new UIPropertyMetadata(false));       
 
         /// <summary>
         /// The text box.

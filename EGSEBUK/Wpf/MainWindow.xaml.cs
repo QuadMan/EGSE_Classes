@@ -9,6 +9,7 @@ namespace EGSE.Defaults
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Configuration;
     using System.Linq;
     using System.Text;
@@ -26,7 +27,6 @@ namespace EGSE.Defaults
     using EGSE.Cyclogram.Command;
     using EGSE.Devices;
     using EGSE.Utilites;
-    using System.Collections.Specialized;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -124,8 +124,8 @@ namespace EGSE.Defaults
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
             DataContext = _intfEGSE;
-            this.GotLoadAppEvent += new Action(_intfEGSE.LoadApp);
-            this.GotSaveAppEvent += new Action(_intfEGSE.SaveApp);
+            this.GotLoadAppEvent += new Action(_intfEGSE.LoadAppEvent);
+            this.GotSaveAppEvent += new Action(_intfEGSE.SaveAppEvent);
             winHSI = new HSIWindow();
             winHSI.Init(_intfEGSE);
             winSpacewire = new SpacewireWindow();

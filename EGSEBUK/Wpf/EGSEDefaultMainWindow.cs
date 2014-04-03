@@ -35,10 +35,6 @@ namespace EGSE.Defaults
     /// </summary>
     public partial class MainWindow : Window
     {
-        public event Action GotLoadAppEvent;
-
-        public event Action GotSaveAppEvent;
-
         /// <summary>
         /// Таймер обновления UI.
         /// </summary>
@@ -64,6 +60,16 @@ namespace EGSE.Defaults
             _dispatcherTimer.Start();
             _intfEGSE.Device.Start();
         }
+
+        /// <summary>
+        /// Occurs when [got load application event].
+        /// </summary>
+        public event Action GotLoadAppEvent;
+
+        /// <summary>
+        /// Occurs when [got save application event].
+        /// </summary>
+        public event Action GotSaveAppEvent;
 
         /// <summary>
         /// Загружаем параметры окон из конфигурационного файла.
