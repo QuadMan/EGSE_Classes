@@ -52,7 +52,7 @@ namespace EGSE.Defaults
             _intfEGSE.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
             _intfEGSE.GotHsiCmdMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiCmdMsg);
             DataContext = _intfEGSE;
-            GridHSI.DataContext = _intfEGSE.HSINotify;
+            GridHSI.DataContext = _intfEGSE.HsiNotify;
         }
 
         /// <summary>

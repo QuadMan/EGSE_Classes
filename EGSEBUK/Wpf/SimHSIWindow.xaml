@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
         xmlns:l="clr-namespace:EGSE.Defaults"
         xmlns:d="clr-namespace:EGSE.Devices" 
+        xmlns:b="clr-namespace:EGSE.Behaviors"
         Title="Имитатор БУК (для КВВ)"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
         Closing="Window_Closing"
+        Height="auto"
         Visibility="{Binding IsShowSimHSI, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
     <Grid x:Name="GridSimHSI"
           Background="{StaticResource BackBrush}"
@@ -85,7 +87,7 @@
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition />
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -101,11 +103,17 @@
             <Button Grid.Column="2"     
                 Command="{Binding FromFileCommand}"
         		Content="из файла..." TabIndex="4"/>
-            <TextBox Grid.Row="1"
-        		Grid.ColumnSpan="3"
-        		Template="{StaticResource DataSendInError}"
-        		Style="{StaticResource TextBoxInError}"
-        		Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="5"/>
+            <ComboBox Grid.Row="1"
+                      Grid.ColumnSpan="3"
+                      IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBoxBehavior.EnableWatermark="True"
+                      b:WatermarkComboBoxBehavior.Label="Введите данные, например: AB 45 FF EE"
+                      b:WatermarkComboBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="5"/>
             <Label Grid.Row="3" 
                 Grid.RowSpan="2"
             	Content="Передать УКС активации"

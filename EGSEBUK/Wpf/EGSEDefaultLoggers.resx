@@ -129,6 +129,9 @@
   <data name="stOperatorLog" xml:space="preserve">
     <value>operator.log</value>
   </data>
+  <data name="stSpacewire2" xml:space="preserve">
+    <value>spacewire2.log</value>
+  </data>
   <data name="stUSBLog" xml:space="preserve">
     <value>usb.log</value>
   </data>

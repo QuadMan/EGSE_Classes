@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
         xmlns:l="clr-namespace:EGSE.Defaults"
         xmlns:d="clr-namespace:EGSE.Devices"  
+        xmlns:b="clr-namespace:EGSE.Behaviors"
         Title="Имитатор каналов БС" 
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
@@ -51,39 +52,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+HalfSet}}}" 
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueHalfSet}"  
-                      SelectedValuePath="Value" TabIndex="2"/>
-           <!-- <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <RadioButton Content="УФЕС"                         
-            		GroupName="WorkDevice"   
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueWorkDevice, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire3+WorkDevice.Ufes}}"/>
-                <RadioButton Grid.Column="1"
-            		Content="ВУФЕС"
-            		GroupName="WorkDevice"   
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueWorkDevice, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire3+WorkDevice.Vufes}}"/>
-                <RadioButton Grid.Column="2"
-            		Content="СДЩ"
-            		GroupName="WorkDevice"   
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueWorkDevice, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire3+WorkDevice.Sdchsh}}"/>
-            </Grid>-->
-         <!--   <StackPanel Grid.Row="1"
-            	Grid.Column="1">
-                <RadioButton Content="ПК1"
-            		GroupName="WorkHalfSet"   
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueHalfSet, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire3+HalfSet.First}}"/>
-                <RadioButton Content="ПК2"
-            		GroupName="WorkHalfSet"   
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueHalfSet, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire3+HalfSet.Second}}"/>
-            </StackPanel>-->
+                      SelectedValuePath="Value" TabIndex="2"/>         
             <Label Grid.Row="3"
             	Content="Интерфейс Spacewire"
             	Template="{StaticResource FlatLabel}"/>
@@ -123,9 +92,11 @@
                           IsChecked="{Binding IsSaveRawData}" TabIndex="4"/>
                 <TextBox              
                     IsReadOnly="True"
-            		Template="{StaticResource FilePreviewer}"
-            		Style="{StaticResource TextBoxInError}"                    
-            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
+                    Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"
+                    b:WatermarkTextBoxBehavior.EnableWatermark="True"
+                    b:WatermarkTextBoxBehavior.Label="Файл отсутствует..."
+                    b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
+            	    IsTabStop="False"/>
             </DockPanel>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>

@@ -17,24 +17,56 @@ namespace EGSE.Utilites.ADC
     public struct CValue
     {
         /// <summary>
-        /// The x value
+        /// Значение по координате X.
         /// </summary>
-        public float XVal;
+        private float _x;
 
         /// <summary>
-        /// The y value
+        /// Значение по координате Y.
         /// </summary>
-        public float YVal;
+        private float _y;
 
         /// <summary>
         /// Инициализирует новый экземпляр структуры <see cref="CValue" />.
         /// </summary>
-        /// <param name="x">The x.</param>
-        /// <param name="y">The y.</param>
+        /// <param name="x">Значение по координате X.</param>
+        /// <param name="y">Значение по координате Y.</param>
         public CValue(float x, float y)
         {
-            XVal = x;
-            YVal = y;
+            _x = x;
+            _y = y;
+        }
+
+        /// <summary>
+        /// Получает или задает значение по координате X.
+        /// </summary>
+        public float XVal 
+        {
+            get
+            {
+                return _x;
+            }
+
+            set
+            {
+                _x = value;
+            }
+        }
+
+        /// <summary>
+        /// Получает или задает значение по координате Y.
+        /// </summary>
+        public float YVal
+        {
+            get
+            {
+                return _y;
+            }
+
+            set
+            {
+                _y = value;
+            }
         }
     }
 

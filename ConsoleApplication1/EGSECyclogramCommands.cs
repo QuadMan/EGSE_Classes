@@ -196,7 +196,7 @@ namespace EGSE.Cyclogram
             {
                 if (IsCommand)
                 {
-                    return _absoluteTime;
+                    return this._absoluteTime;
                 }
                 else
                 {
@@ -206,7 +206,7 @@ namespace EGSE.Cyclogram
 
             set 
             { 
-                _absoluteTime = value;
+                this._absoluteTime = value;
                 FirePropertyChangedEvent("AbsoluteTime"); 
             } 
         }
@@ -292,7 +292,7 @@ namespace EGSE.Cyclogram
             _delayOriginal = 0;
             _delayMs = 0;
             _delayStr = string.Empty;
-            _absoluteTime = string.Empty;
+            this._absoluteTime = string.Empty;
 
             IsCommand = false;
             CmdName = string.Empty;

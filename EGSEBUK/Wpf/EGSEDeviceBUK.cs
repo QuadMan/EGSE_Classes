@@ -25,6 +25,9 @@ namespace EGSE.Devices
     using EGSE.USB;
     using EGSE.Utilites;
     using Microsoft.Win32;
+    using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using Wpf.Properties;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -676,6 +679,7 @@ namespace EGSE.Devices
 
             SendToUSB(Spacewire1RecordSendAddr, new byte[1] { (byte)value });
         }
+       
 
         /// <summary>
         /// Команда SpaceWire2: Запись данных(до 1 Кбайт).
@@ -686,9 +690,11 @@ namespace EGSE.Devices
             SendToUSB(Spacewire2RecordFlushAddr, new byte[1] { 1 });
             if ((null != _intfBUK.Spacewire2Notify.Data) && (0 < _intfBUK.Spacewire2Notify.Data.Length))
             {
+                _intfBUK.Spacewire2Notify.DataToSaveList();
+
                 if (_intfBUK.Spacewire2Notify.IsMakeTK)
                 {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.CurApid/*, _intfBUK.Spacewire2Notify.CounterIcd*/).ToArray());
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.CurApid).ToArray());
                 }
                 else
                 {
@@ -731,7 +737,9 @@ namespace EGSE.Devices
         {
             SendToUSB(Spacewire4RecordFlushAddr, new byte[1] { 1 });
             if ((null != _intfBUK.Spacewire4Notify.Data) && (0 < _intfBUK.Spacewire4Notify.Data.Length))
-            {                
+            {
+                _intfBUK.Spacewire4Notify.DataToSaveList();
+
                 SendToUSB(Spacewire4RecordDataAddr, _intfBUK.Spacewire4Notify.Data);                
             }
 
@@ -885,11 +893,13 @@ namespace EGSE.Devices
         internal void CmdSimHSIRecord(int value)
         {
             SendToUSB(SimHSIRecordTXFlagAddr, new byte[1] { 2 });            
-            if ((null != _intfBUK.HSINotify.Data) && (0 < _intfBUK.HSINotify.Data.Length))
+            if ((null != _intfBUK.HsiNotify.Data) && (0 < _intfBUK.HsiNotify.Data.Length))
             {
-                SendToUSB(SimHSIRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HSINotify.Data.Length) });
+                _intfBUK.HsiNotify.DataToSaveList();
+
+                SendToUSB(SimHSIRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HsiNotify.Data.Length) });
                 SendToUSB(SimHSIRecordFlushAddr, new byte[1] { 1 });
-                SendToUSB(SimHSIRecordDataAddr, _intfBUK.HSINotify.Data);
+                SendToUSB(SimHSIRecordDataAddr, _intfBUK.HsiNotify.Data);
             }
 
             SendToUSB(SimHSIRecordSendAddr, new byte[1] { (byte)value });            
@@ -900,10 +910,10 @@ namespace EGSE.Devices
         /// </summary>
         internal void TempData()
         {
-            if ((null != _intfBUK.HSINotify.Data) && (0 != _intfBUK.HSINotify.Data.Length))
+            if ((null != _intfBUK.HsiNotify.Data) && (0 != _intfBUK.HsiNotify.Data.Length))
             {
-                _tempData = new byte[_intfBUK.HSINotify.Data.Length];
-                Array.Copy(_intfBUK.HSINotify.Data, _tempData, _intfBUK.HSINotify.Data.Length);
+                _tempData = new byte[_intfBUK.HsiNotify.Data.Length];
+                Array.Copy(_intfBUK.HsiNotify.Data, _tempData, _intfBUK.HsiNotify.Data.Length);
             }
         }
 
@@ -914,8 +924,8 @@ namespace EGSE.Devices
         {
             if ((null != _tempData) && (0 != _tempData.Length))
             {
-                _intfBUK.HSINotify.Data = new byte[_tempData.Length];
-                Array.Copy(_tempData, _intfBUK.HSINotify.Data, _tempData.Length);
+                _intfBUK.HsiNotify.Data = new byte[_tempData.Length];
+                Array.Copy(_tempData, _intfBUK.HsiNotify.Data, _tempData.Length);
             }
         }
 
@@ -930,11 +940,11 @@ namespace EGSE.Devices
             TempData();
             if (1 == value)
             {                                
-                _intfBUK.HSINotify.Data = new byte[1] { 0xA1 };
+                _intfBUK.HsiNotify.Data = new byte[1] { 0xA1 };
             }
             else
             {
-                _intfBUK.HSINotify.Data = new byte[1] { 0xFF };
+                _intfBUK.HsiNotify.Data = new byte[1] { 0xFF };
             }
 
             CmdSimHSIRecord(1);
@@ -952,11 +962,11 @@ namespace EGSE.Devices
             TempData();
             if (1 == value)
             {
-                _intfBUK.HSINotify.Data = new byte[1] { 0xA2 };
+                _intfBUK.HsiNotify.Data = new byte[1] { 0xA2 };
             }
             else
             {
-                _intfBUK.HSINotify.Data = new byte[1] { 0xFF };
+                _intfBUK.HsiNotify.Data = new byte[1] { 0xFF };
             }
 
             CmdSimHSIRecord(1);
@@ -1105,6 +1115,21 @@ namespace EGSE.Devices
         /// </summary>
         private DevEnabled _issueUfesOpen = DevEnabled.Off;
         
+        public void LoadApp()
+        {
+            Spacewire2Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw2Cmds);
+            Spacewire4Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw4Cmds);
+            HsiNotify.LoadDataList(Wpf.Properties.Settings.Default.HsiCmds);
+        }
+
+        public void SaveApp()
+        { 
+            Spacewire2Notify.SaveDataList(Wpf.Properties.Settings.Default.Spw2Cmds);
+            Spacewire4Notify.SaveDataList(Wpf.Properties.Settings.Default.Spw4Cmds);
+            HsiNotify.SaveDataList(Wpf.Properties.Settings.Default.HsiCmds);
+            Wpf.Properties.Settings.Default.Save();
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseBukNotify" />.
         /// </summary>
@@ -1122,7 +1147,7 @@ namespace EGSE.Devices
 
             ControlValuesList = new Dictionary<string, ControlValue>();
 
-            HSINotify = new HSI(this);
+            HsiNotify = new HSI(this);
             TelemetryNotify = new Telemetry(this);
             Spacewire1Notify = new Spacewire1(this);
             Spacewire2Notify = new Spacewire2(this);
@@ -1162,7 +1187,7 @@ namespace EGSE.Devices
 
             _decoderHsi = new ProtocolHsi((uint)HSI.Addr);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
-            _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(HSINotify.OnHsiMsgRawSave);
+            _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(HsiNotify.OnHsiMsgRawSave);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderHsi.OnMessageFunc);
 
             ControlValuesList.Add(Global.Shutters, new ControlValue());
@@ -1194,7 +1219,7 @@ namespace EGSE.Devices
         /// Вызывается, когда [получено УКС-сообщение по ВСИ].
         /// </summary>
         public event ProtocolHsi.HsiMsgEventHandler GotHsiCmdMsg;
-        
+
         /// <summary>
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
@@ -1238,7 +1263,7 @@ namespace EGSE.Devices
         /// <value>
         /// Экземпляр нотификатора.
         /// </value>
-        public HSI HSINotify { get; private set; }
+        public HSI HsiNotify { get; private set; }
 
         /// <summary>
         /// Получает нотификатор spacewire1.
@@ -1811,22 +1836,22 @@ namespace EGSE.Devices
                 {
                     if (HsiMsgEventArgs.HsiLine.Main == e.Info.Line)
                     {
-                        HSINotify.RequestStateMain++;
+                        HsiNotify.RequestStateMain++;
                     }
                     else
                     {
-                        HSINotify.RequestStateResv++;
+                        HsiNotify.RequestStateResv++;
                     }
                 }
                 else if (IsHsiRequestDataMsg(e))
                 {
                     if (HsiMsgEventArgs.HsiLine.Main == e.Info.Line)
                     {
-                        HSINotify.RequestDataMain++;
+                        HsiNotify.RequestDataMain++;
                     }
                     else
                     {
-                        HSINotify.RequestDataResv++;
+                        HsiNotify.RequestDataResv++;
                     }
                 }
                 else if (IsHsiCmdMsg(e))
@@ -1835,11 +1860,11 @@ namespace EGSE.Devices
                     {
                         if (IsCmdFromSet1(e))
                         {
-                            HSINotify.CmdCounter1++;
+                            HsiNotify.CmdCounter1++;
                         }
                         else if (IsCmdFromSet2(e))
                         {
-                            HSINotify.CmdCounter2++;
+                            HsiNotify.CmdCounter2++;
                         }
 
                         this.GotHsiCmdMsg(sender, e);
@@ -2057,10 +2082,46 @@ namespace EGSE.Devices
             }
         }
 
+        public class PropSerializer
+        {
+            protected const int MaxDataListCount = 15;
+          
+            private ObservableCollection<string> _dataList = new ObservableCollection<string>();
+
+            public ObservableCollection<string> DataList
+            {
+                get
+                {
+                    return _dataList;
+                }
+            }
+
+            public void LoadDataList(StringCollection collection)
+            {
+                if (null != collection)
+                {
+                    List<string> list = collection.Cast<string>().ToList();
+                    foreach (string cmd in list)
+                    {
+                        DataList.Add(cmd);
+                    }
+                }
+            }
+
+            public void SaveDataList(StringCollection collection)
+            {
+                if (0 < DataList.Count)
+                {
+                    collection.Clear();
+                    collection.AddRange(DataList.ToArray());
+                }
+            }
+        }
+
         /// <summary>
         /// Прототип подкласса нотификатора.
         /// </summary>
-        public class SubNotify : INotifyPropertyChanged
+        public class SubNotify : PropSerializer, INotifyPropertyChanged
         {
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="SubNotify" />.
@@ -2126,7 +2187,21 @@ namespace EGSE.Devices
         /// Нотификатор ВСИ интерфейса.
         /// </summary>
         public class HSI : SubNotify, IDataErrorInfo
-        {
+        {           
+            internal void DataToSaveList()
+            {
+                string str = Converter.ByteArrayToHexStr(Data);
+                if (!DataList.Contains(str))
+                {
+                    if (DataList.Count >= MaxDataListCount)
+                    {
+                        DataList.RemoveAt(DataList.Count - 1);
+                    }
+                    DataList.Insert(0, str);
+                }
+                FirePropertyChangedEvent("DataList");
+            }
+
             /// <summary>
             /// Timeout на запись данных в файл.
             /// </summary>
@@ -4840,7 +4915,7 @@ namespace EGSE.Devices
         /// Нотификатор spacewire2.
         /// </summary>
         public class Spacewire2 : SubNotify, IDataErrorInfo
-        {
+        {         
             /// <summary>
             /// Timeout на запись данных в файл.
             /// </summary>
@@ -5116,6 +5191,20 @@ namespace EGSE.Devices
             /// Буфер данных.
             /// </value>
             public byte[] Data { get; private set; }
+
+            internal void DataToSaveList()
+            {
+                string str = Converter.ByteArrayToHexStr(Data);
+                if (!DataList.Contains(str))
+                {
+                    if (DataList.Count >= MaxDataListCount)
+                    {
+                        DataList.RemoveAt(DataList.Count - 1);
+                    }
+                    DataList.Insert(0, str);                   
+                }
+                FirePropertyChangedEvent("DataList");
+            }
 
             /// <summary>
             /// Получает или задает количество запросов кредита от БУСК.
@@ -6014,6 +6103,7 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
+       
             /// <summary>
             /// Timeout на запись данных в файл.
             /// </summary>
@@ -6668,6 +6758,20 @@ namespace EGSE.Devices
         /// </summary>
         public class Spacewire4 : SubNotify, IDataErrorInfo
         {
+            internal void DataToSaveList()
+            {
+                string str = Converter.ByteArrayToHexStr(Data);
+                if (!DataList.Contains(str))
+                {
+                    if (DataList.Count >= MaxDataListCount)
+                    {
+                        DataList.RemoveAt(DataList.Count - 1);
+                    }
+                    DataList.Insert(0, str);
+                }
+                FirePropertyChangedEvent("DataList");
+            }
+
             /// <summary>
             /// Управление: вкл/выкл интерфейса Spacewire.
             /// </summary>

@@ -18,13 +18,14 @@ namespace EGSE.Defaults
         /// <summary>
         /// Список имен лог-файлов.
         /// </summary>
-        private static string[] logsNames = new string[5] 
+        private static string[] logsNames = new string[6] 
         { 
             Resource.Get("stMainLog"),
             Resource.Get("stOperatorLog"),
             Resource.Get("stHSILog"),
             Resource.Get("stErrorsLog"),
-            Resource.Get("stUSBLog")
+            Resource.Get("stUSBLog"),
+            Resource.Get("stSpacewire2")
         };
 
         /// <summary>
@@ -63,6 +64,17 @@ namespace EGSE.Defaults
             {
                 return Instance._loggers[0];
             }            
+        }
+
+        /// <summary>
+        /// Получает лог для интерфейса spacewire2.
+        /// </summary>
+        public static TxtLogger LogSpacewire2
+        {
+            get
+            {
+                return Instance._loggers[5];
+            }
         }
 
         /// <summary>

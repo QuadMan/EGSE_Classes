@@ -94,7 +94,7 @@ namespace EGSE.Cyclogram
         {
             // !_curLine = 0;
             _wasError = false;
-            _availableCommands = null;
+            this._availableCommands = null;
             _curCommand = new CyclogramLine();
             Commands = new ObservableCollection<CyclogramLine>();
         }

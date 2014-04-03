@@ -35,6 +35,10 @@ namespace EGSE.Defaults
     /// </summary>
     public partial class MainWindow : Window
     {
+        public event Action GotLoadAppEvent;
+
+        public event Action GotSaveAppEvent;
+
         /// <summary>
         /// Таймер обновления UI.
         /// </summary>
@@ -233,7 +237,14 @@ namespace EGSE.Defaults
         /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((EgseTime)value).ToString();
+            if (null != value)
+            {
+                return ((EgseTime)value).ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         /// <summary>

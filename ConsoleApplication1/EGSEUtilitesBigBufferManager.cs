@@ -79,11 +79,11 @@ namespace EGSE.Utilites
         {
             _bufSize = bufSize;
             AData = new byte[_bufSize][];
-            _arrayLen = new int[_bufSize];
+            this._arrayLen = new int[_bufSize];
             for (uint i = 0; i < _bufSize; i++)
             {
                 AData[i] = new byte[FTDIBufferSize];
-                _arrayLen[i] = 0;
+                this._arrayLen[i] = 0;
             }
 
             _lastRPos = 0;

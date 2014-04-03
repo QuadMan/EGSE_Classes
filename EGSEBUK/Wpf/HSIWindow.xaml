@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:l="clr-namespace:EGSE.Defaults"
         xmlns:d="clr-namespace:EGSE.Devices" 
+        xmlns:b="clr-namespace:EGSE.Behaviors"
         Title="Имитатор КВВ"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
@@ -94,33 +95,6 @@
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueLine1}"  
                       SelectedValuePath="Value" TabIndex="2"/>
-            <!--
-            <Grid Grid.Column="3"                               
-				Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <RadioButton  Content="Основная" 
-            		GroupName="lineHalfSet1"            		
-                    Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Main}}"/>
-                <RadioButton Grid.Column="1" Content="Резервная" 
-            		GroupName="lineHalfSet1"
-            		Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Resv}}"/>
-                <RadioButton Grid.Column="2" Content="Осн + Рез" 
-            		GroupName="lineHalfSet1"
-            		Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.MainResv}}"/>
-                <RadioButton Grid.Column="3" Content="Отключена" 
-            		GroupName="lineHalfSet1"            		
-                    Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine1, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
-                </Grid>
-           -->
             <Grid Grid.Row="3" 
                   Grid.ColumnSpan="3"
 				Grid.Column="4">
@@ -161,32 +135,6 @@
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueLine2}"  
                       SelectedValuePath="Value" TabIndex="7"/>
-            <!--<Grid Grid.Column="3"                               
-				Grid.Row="4">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <RadioButton Content="Основная" 
-            		GroupName="lineHalfSet2"
-            		Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Main}}"/>
-                <RadioButton Grid.Column="1" Content="Резервная" 
-            		GroupName="lineHalfSet2"
-            		Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Resv}}"/>
-                <RadioButton Grid.Column="2" Content="Осн + Рез" 
-            		GroupName="lineHalfSet2"
-            		Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.MainResv}}"/>
-                <RadioButton Grid.Column="3" Content="Отключена" 
-            		GroupName="lineHalfSet2"            		
-                    Template="{StaticResource FlatRadioButton}"
-                    IsChecked="{Binding IssueLine2, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+HSI+Line.Off}}"/>
-            </Grid>
-            -->
             <Grid Grid.Row="4" 
                   Grid.ColumnSpan="3"
 				Grid.Column="4">
@@ -231,9 +179,11 @@
                           IsChecked="{Binding IsSaveRawData}" TabIndex="11"/>
                 <TextBox              
                     IsReadOnly="True"
-            		Template="{StaticResource FilePreviewer}"
-            		Style="{StaticResource TextBoxInError}"                    
-            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
+                    Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"
+                    b:WatermarkTextBoxBehavior.EnableWatermark="True"
+                    b:WatermarkTextBoxBehavior.Label="Файл отсутствует..."
+                    b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
+            	    IsTabStop="False"/>
             </DockPanel>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>

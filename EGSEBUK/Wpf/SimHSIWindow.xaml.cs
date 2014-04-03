@@ -48,7 +48,7 @@ namespace EGSE.Defaults
         {
             _intfEGSE = intfEGSE;
             DataContext = _intfEGSE;
-            GridSimHSI.DataContext = _intfEGSE.HSINotify;
+            GridSimHSI.DataContext = _intfEGSE.HsiNotify;
         }
 
         /// <summary>

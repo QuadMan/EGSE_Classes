@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
         xmlns:l="clr-namespace:EGSE.Defaults"
         xmlns:d="clr-namespace:EGSE.Devices" 
+        xmlns:b="clr-namespace:EGSE.Behaviors"
         Title="Имитатор БМ-4 (БУСК, БУНД)"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
@@ -46,29 +47,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire2+Channel}}}" 
                       DisplayMemberPath="Description" 
                       SelectedValue="{Binding IssueSpacewireChannel}"  
-                      SelectedValuePath="Value" TabIndex="1"/>
-          <!--  <StackPanel Grid.Row="1"
-            	Grid.Column="1">
-                <RadioButton Content="БУК 1ПК :: БМ-4 1ПК"
-            		GroupName="SpacewireChannel"   
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK1BM1}}"/>
-                <RadioButton Content="БУК 1ПК :: БМ-4 2ПК"
-            		GroupName="SpacewireChannel"
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK1BM2}}"/>
-            </StackPanel>
-            <StackPanel Grid.Row="1"
-            	Grid.Column="2">
-                <RadioButton Content="БУК 2ПК :: БМ-4 1ПК"
-            		GroupName="SpacewireChannel"
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK2BM1}}"/>
-                <RadioButton Content="БУК 2ПК :: БМ-4 2ПК"
-            		GroupName="SpacewireChannel"
-            		Template="{StaticResource FlatRadioButton}"
-            		IsChecked="{Binding IssueSpacewireChannel, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static d:EgseBukNotify+Spacewire2+Channel.BUK2BM2}}"/>
-            </StackPanel>-->
+                      SelectedValuePath="Value" TabIndex="1"/>         
             <Label Grid.Row="2"
                    Grid.ColumnSpan="2"
             	Content="Интерфейс Spacewire"
@@ -183,15 +162,18 @@ IsChecked="{Binding IsIssueKbv}"
 			    Text="{Binding CurApid}" TabIndex="8"/>
             </Grid>
             <ComboBox Grid.Row="1"
-                      Grid.ColumnSpan="3"/>
-            <TextBox Grid.Row="1"
-                     Grid.ColumnSpan="3"                     
-                     Template="{StaticResource DataSendInError}"
-                     Style="{StaticResource TextBoxInError}"
-                     Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="9"/>
+                      Grid.ColumnSpan="3"
+                      IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBoxBehavior.EnableWatermark="True"
+                      b:WatermarkComboBoxBehavior.Label="Введите данные, например: AB 45 FF EE"
+                      b:WatermarkComboBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
             <Button Grid.Row="3" 
-                    Grid.ColumnSpan="3"
-                     
+                    Grid.ColumnSpan="3"                 
                     Command="{Binding IssuePackageCommand}"
                     Content="Передать в БУК" TabIndex="10"/>
         </Grid>
@@ -210,7 +192,7 @@ IsChecked="{Binding IsIssueKbv}"
                    Style="{StaticResource FlatHeader}"
                    Content="Монитор Spacewire"/>
             <DockPanel Grid.Row="1"
-            	LastChildFill="True">
+            	LastChildFill="True" >
                 <Label DockPanel.Dock="Left" Content="Запись в файл "
             		Template="{StaticResource FlatLabel}"/>
                 <CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
@@ -218,9 +200,11 @@ IsChecked="{Binding IsIssueKbv}"
                     TabIndex="11"/>
                 <TextBox              
                     IsReadOnly="True"
-            		Template="{StaticResource FilePreviewer}"
-            		Style="{StaticResource TextBoxInError}"                    
-            		Text="{Binding RawDataFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
+                    Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"
+                    b:WatermarkTextBoxBehavior.EnableWatermark="True"
+                    b:WatermarkTextBoxBehavior.Label="Файл отсутствует..."
+                    b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
+            	    IsTabStop="False"/>
             </DockPanel>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>

@@ -112,6 +112,7 @@ namespace EGSE.Defaults
                     Monitor.Items.Add(spacewireMsg);
                     Monitor.ScrollIntoView(spacewireMsg);
                 }));
+                LogsClass.LogSpacewire2.LogText = spacewireMsg;
             }
         }
       

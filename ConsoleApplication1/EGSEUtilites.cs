@@ -13,6 +13,7 @@ namespace EGSE.Utilites
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Configuration;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -20,9 +21,12 @@ namespace EGSE.Utilites
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Security;
     using System.Text;
     using System.Windows;
+    using System.Xml;
+    using System.Xml.Serialization;
     using EGSE.Protocols;
 
     /// <summary>
@@ -142,7 +146,14 @@ namespace EGSE.Utilites
         /// </returns>
         public override string ToString()
         {
-            return string.Format("{0:D2}#{1:D2}:{2:D2}:{3:D2}.{4:D3}.{5:D3}", Day, Hour, Minute, Second, Millisecond, Microsecond);
+            if (null != b)
+            {
+                return string.Format(Resource.Get(@"stTimeFormat"), Day, Hour, Minute, Second, Millisecond, Microsecond);
+            }
+            else
+            {
+                return string.Format(Resource.Get(@"stTimeFormat"), 0, 0, 0, 0, 0, 0);                
+            }
         }
 
         /// <summary>
@@ -540,7 +551,6 @@ namespace EGSE.Utilites
             try
             {
                 IniFile _ini = new IniFile();
-                ////string sectionName = GetPropertyValue(win, Window.TitleProperty);
                 string sectionName = win.GetType().ToString();
                 _ini.Write(@"Visibility", GetPropertyValue(win, Window.VisibilityProperty), sectionName);
                 _ini.Write(@"WindowState", GetPropertyValue(win, Window.WindowStateProperty), sectionName);
@@ -566,7 +576,6 @@ namespace EGSE.Utilites
             try
             {
                 IniFile _ini = new IniFile();
-                ////string sectionName = GetPropertyValue(win, Window.TitleProperty);
                 string sectionName = win.GetType().ToString();
                 if (_ini.IsKeyExists(@"Visibility", sectionName))
                 {

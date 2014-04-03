@@ -9,6 +9,7 @@ namespace EGSE.Defaults
 {
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace EGSE.Defaults
     using EGSE.Constants;
     using EGSE.Cyclogram.Command;
     using EGSE.Devices;
+    using EGSE.Utilites;
+    using System.Collections.Specialized;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -97,15 +100,21 @@ namespace EGSE.Defaults
         /// </summary>
         private void SaveAppSettings()
         {
-           // AppSettings.Save("PowerLabel", Convert.ToString(TMGrid.Visibility));
-           // AppSettings.SaveList(hsiWin.UksSendedList, "UksItems");
+            if (this.GotSaveAppEvent != null)
+            {
+                this.GotSaveAppEvent();
+            }
         }
 
         /// <summary>
         /// Загружаем специфичные настройки приложения при загрузке
         /// </summary>
         private void LoadAppSettings()
-        {          
+        {
+            if (this.GotLoadAppEvent != null)
+            {
+                this.GotLoadAppEvent();
+            }
         }
 
         /// <summary>
@@ -115,6 +124,8 @@ namespace EGSE.Defaults
         {
             CycloGrid.AddCycCommands(_bukCycCommands.CyclogramCommandsAvailable);
             DataContext = _intfEGSE;
+            this.GotLoadAppEvent += new Action(_intfEGSE.LoadApp);
+            this.GotSaveAppEvent += new Action(_intfEGSE.SaveApp);
             winHSI = new HSIWindow();
             winHSI.Init(_intfEGSE);
             winSpacewire = new SpacewireWindow();

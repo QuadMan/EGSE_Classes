@@ -33,6 +33,50 @@
         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource ControlEventLog}"/>
         <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource ControlEventLog}"/>
         <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource ControlEventLog}"/>
+        <Style x:Key="WatermarkLabelStyle">
+            <Setter Property="TextBlock.Foreground" Value="{x:Static SystemColors.ControlDarkBrush}" />
+            <Setter Property="FrameworkElement.Opacity" Value="0.8" />
+            <Setter Property="TextBlock.FontSize" Value="{StaticResource BaseFontSize}" />
+            <Setter Property="TextBlock.FontStyle" Value="Italic" />
+            <Setter Property="TextBlock.Margin" Value="4,0,0,0" />
+        </Style>
+        <Style x:Key="FlatHeader" TargetType="Label">
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="{StaticResource HeaderFontSize}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Label}">
+                        <Border x:Name="Border"
+                                Background="{StaticResource TextBrush}"                                          
+                                BorderThickness="0"                   
+        		                Margin="1">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding Content}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ComboBoxInError" TargetType="{x:Type ComboBox}">
+            <Setter Property="Validation.ErrorTemplate">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Border BorderBrush="Red" BorderThickness="2">
+                                <AdornedElementPlaceholder />
+                            </Border>
+                        </DockPanel>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip"
+                            Value="{Binding (Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Setter Property="AcceptsReturn" Value="True"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
@@ -55,31 +99,30 @@
             </Style.Triggers>
         </Style>
         <ControlTemplate x:Key="FlatRadioButton" TargetType="{x:Type ToggleButton}">
-                <Border x:Name="Border" 
+            <Border x:Name="Border" 
         		Background="{StaticResource ClickBrush}"
         		Focusable="False" 
         		BorderThickness="0"
         		Margin="1">
-                    <ContentPresenter HorizontalAlignment="Center"
+                <ContentPresenter HorizontalAlignment="Center"
         			VerticalAlignment="Center"                                        
         			Content="{TemplateBinding Content}"/>
-                </Border>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
-                    </Trigger>
-                    <Trigger Property="IsPressed" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
-                    </Trigger>
-                    <Trigger Property="IsChecked" Value="true">
-                        <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
-                    </Trigger>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource OverBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="Border" Property="Background" Value="{StaticResource SelectBrush}"/>
+                </Trigger>
                 <Trigger Property="IsEnabled" Value="false">
                     <Setter TargetName="Border" Property="Background" Value="{StaticResource UnableBrush}"/>
                 </Trigger>
             </ControlTemplate.Triggers>
-            </ControlTemplate>
-        
+        </ControlTemplate>
         <ControlTemplate x:Key="FlatRadioButton2" TargetType="{x:Type ToggleButton}">
             <Border x:Name="Border" 
         		Background="White"
@@ -105,7 +148,6 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
         <ControlTemplate x:Key="FlatButtonCheck" TargetType="{x:Type Button}">
             <Border x:Name="Border"
         	Background="{StaticResource UnSelectBrush}" 
@@ -222,27 +264,9 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-        <Style x:Key="FlatHeader" TargetType="Label">
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="FontSize" Value="{StaticResource HeaderFontSize}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Label}">
-                        <Border x:Name="Border"
-                                Background="{StaticResource TextBrush}"                                          
-                                BorderThickness="0"                   
-        		                Margin="1">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Content="{TemplateBinding Content}"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
         <ControlTemplate x:Key="DataSendInError" TargetType="{x:Type TextBox}">
             <Border x:Name="Border"
-                Margin="1"
+                Margin="1"                   
                 Background="{StaticResource TextBrush}"
                 BorderThickness="0">
                 <Grid>
