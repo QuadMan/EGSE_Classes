@@ -1136,7 +1136,7 @@ namespace EGSE.Devices
             Spacewire1Notify = new Spacewire1(this);
             Spacewire2Notify = new Spacewire2(this);
             Spacewire3Notify = new Spacewire3(this);
-            Spacewire4Notify = new Spacewire4(this);            
+            Spacewire4Notify = new Spacewire4(this);
 
             UITestNotify = new UITest(this);
             UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
@@ -4007,6 +4007,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _ufesPower1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesPower1, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4027,6 +4028,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _ufesPower2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesPower2, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4047,6 +4049,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _vufesPower1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesPower1, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4067,6 +4070,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _vufesPower2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesPower2, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4087,6 +4091,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _sdchshPower1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshPower1, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4107,6 +4112,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _sdchshPower2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshPower2, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4127,6 +4133,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _ufesLight1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLight1, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4147,6 +4154,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _ufesLight2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLight2, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4167,6 +4175,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _vufesLight1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLight1, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4187,6 +4196,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _vufesLight2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLight2, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4207,6 +4217,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _sdchshLight1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLight1, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -4227,6 +4238,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _sdchshLight2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLight2, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
