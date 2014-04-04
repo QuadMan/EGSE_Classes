@@ -1144,14 +1144,14 @@ namespace EGSE.Devices
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
-            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = e.TimeTickInfo.Value; });
+            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = (byte)(e.TimeTickInfo.Value | Spacewire2Notify.BuskTickTime2); });
             _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime2 = e.TimeTickInfo.Value; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBusk.OnMessageFunc);
 
             _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
             _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
-            _decoderSpacewireBuk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = e.TimeTickInfo.Value; });
+            _decoderSpacewireBuk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = (byte)(e.TimeTickInfo.Value | Spacewire2Notify.BukTickTime2); });
             _decoderSpacewireBuk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.TimeTickInfo.Value; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
 
@@ -6069,11 +6069,16 @@ namespace EGSE.Devices
 
                     if (_rawDataStream.CanWrite)
                     {
-                        if (e is SpacewireSptpMsgEventArgs)
+                        if (e is SpacewireTmMsgEventArgs)
                         {
-                            SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
-                            _rawDataTask = _rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
+                            SpacewireTmMsgEventArgs tm = e as SpacewireTmMsgEventArgs;
+                            _rawDataTask = _rawDataStream.WriteAsync(tm.Data, 0, tm.Data.Length);
                         }
+                        ////if (e is SpacewireSptpMsgEventArgs)
+                        ////{
+                        ////    SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
+                        ////    _rawDataTask = _rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
+                        ////}
                     }
                 }
             }
