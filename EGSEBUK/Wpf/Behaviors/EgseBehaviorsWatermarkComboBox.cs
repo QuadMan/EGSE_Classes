@@ -6,7 +6,7 @@
 // <author>Piotr Włodek, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Behaviors
+namespace Egse.Behaviors
 {
     using System;
     using System.ComponentModel;

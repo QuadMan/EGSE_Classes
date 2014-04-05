@@ -5,10 +5,9 @@
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Defaults
+namespace Egse.Defaults
 {
-    using System;
-    using EGSE.Utilites;
+    using Egse.Utilites;
    
     /// <summary>
     /// Класс логгеров (синглетон)

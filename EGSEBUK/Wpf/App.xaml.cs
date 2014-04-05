@@ -5,18 +5,12 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.WPF
+namespace Egse.WPF
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Configuration;
-    using System.Data;
-    using System.Linq;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using EGSE.Defaults;
-    using EGSE.Utilites;
+    using Egse.Defaults;
+    using Egse.Utilites;
 
     /// <summary>
     /// Interaction logic for App.xaml

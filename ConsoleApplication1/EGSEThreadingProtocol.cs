@@ -5,11 +5,11 @@
 // <author>Семенов Александр</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Threading
+namespace Egse.Threading
 {
     using System.IO;
     using System.Threading;
-    using EGSE.Protocols;
+    using Egse.Protocols;
 
     /// <summary>
     /// Класс потока декодера, читающего из потока USBThread

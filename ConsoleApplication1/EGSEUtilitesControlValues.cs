@@ -5,9 +5,8 @@
 // <author>Семенов Александр</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Utilites
+namespace Egse.Utilites
 {
-    using System;
     using System.Collections.Generic;
 
     /// <summary>

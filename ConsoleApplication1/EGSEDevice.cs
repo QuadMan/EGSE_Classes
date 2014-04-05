@@ -6,12 +6,11 @@
 //-----------------------------------------------------------------------
 
 // TODO продумать, как передавать между потоками сообщение, что декодеру нужно сделать сброс при перепоключении устройства
-namespace EGSE
+namespace Egse
 {
-    using System;
-    using EGSE.Protocols;
-    using EGSE.Threading;
-    using EGSE.USB;
+    using Egse.Protocols;
+    using Egse.Threading;
+    using Egse.USB;
         
     /// <summary>
     /// Общий класс устройства КИА.

@@ -6,7 +6,7 @@
 // <author>Piotr W?odek, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Behaviors
+namespace Egse.Behaviors
 {
     using System.Windows;
     using System.Windows.Input;

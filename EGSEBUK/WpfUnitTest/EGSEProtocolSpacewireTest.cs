@@ -5,12 +5,12 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Protocols.UnitTest
+namespace Egse.Protocols.UnitTest
 {
     using System;
     using System.Linq;
-    using EGSE.Protocols;
-    using EGSE.Utilites;
+    using Egse.Protocols;
+    using Egse.Utilites;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>

@@ -5,30 +5,160 @@
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Defaults
+namespace Egse.Defaults
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Globalization;
     using System.Linq;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
+    using System.Reflection;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
     using System.Windows.Data;
-    using System.Windows.Documents;
-    using System.Windows.Input;
     using System.Windows.Markup;
     using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Navigation;
-    using System.Windows.Shapes;
-    using EGSE.Constants;
-    using EGSE.Utilites;
-    using EGSE.Utilites.ADC;
+    using Egse.Constants;
+    using Egse.Utilites;
+
+    /// <summary>
+    /// Общий класс расширений.
+    /// </summary>
+    public static class Extensions
+    {   
+        /// <summary>
+        /// Для очистки списка монитора.
+        /// </summary>
+        /// <param name="list">Экземпляр монитора ListBox.</param>
+        public delegate void ClearMonitorDelegate(ListBox list);
+
+        /// <summary>
+        /// Для добавления сообщения в список монитора.
+        /// </summary>
+        /// <param name="list">Экземпляр монитора ListBox.</param>
+        /// <param name="msg">Сообщение для добавления.</param>
+        public delegate void AddToMonitorDelegate(ListBox list, string msg);
+
+        /// <summary>
+        /// Для получения атрибута описания элемента перечисления.
+        /// </summary>
+        /// <param name="value">Элемент перечисления.</param>
+        /// <returns>Описания элемента перечисления.</returns>
+        public static string Description(this Enum value)
+        {
+            Type enumType = value.GetType();
+            FieldInfo field = enumType.GetField(value.ToString());
+            object[] attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            return attributes.Length == 0 ? value.ToString() : ((DescriptionAttribute)attributes[0]).Description;
+        }
+
+        /// <summary>
+        /// Безопасно очищает список монитора.
+        /// </summary>
+        /// <param name="list">Экземпляр монитора ListBox.</param>
+        public static void ClearMonitor(ListBox list)
+        {
+            new { list }.CheckNotNull();
+
+            Application.Current.Dispatcher.BeginInvoke(new ClearMonitorDelegate(ClearMonitorInvoke), System.Windows.Threading.DispatcherPriority.DataBind, new object[] { list });
+        }
+
+        /// <summary>
+        /// Безопасно добавляет сообщение в список монитора.
+        /// </summary>
+        /// <param name="list">Экземпляр монитора ListBox.</param>
+        /// <param name="msg">Сообщение для добавления.</param>
+        public static void AddToMonitor(ListBox list, string msg)
+        {
+            new { list }.CheckNotNull();
+
+            Application.Current.Dispatcher.BeginInvoke(new AddToMonitorDelegate(AddToMonitorInvoke), System.Windows.Threading.DispatcherPriority.DataBind, new object[] { list, msg });
+        }
+        
+        /// <summary>
+        /// Получает экземпляр дочернего визуального элемента.
+        /// </summary>
+        /// <typeparam name="T">Тип экземпляра дочернего визуального элемента.</typeparam>
+        /// <param name="referenceVisual">The reference visual.</param>
+        /// <returns>Экземпляр дочернего визуального элемента.</returns>
+        public static T GetVisualChild<T>(this Visual referenceVisual) where T : Visual
+        {
+            Visual child = null;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(referenceVisual); i++)
+            {
+                child = VisualTreeHelper.GetChild(referenceVisual, i) as Visual;
+                if (child != null && child is T)
+                {
+                    break;
+                }
+                else if (child != null)
+                {
+                    child = GetVisualChild<T>(child);
+                    if (child != null && child is T)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return child as T;
+        }
+
+        /// <summary>
+        /// Для очистки монитора.
+        /// Примечание:
+        /// Вызывается в потоке, создавшем экземпляр ListBox.
+        /// </summary>
+        /// <param name="list">Экземпляр монитора ListBox.</param>
+        /// <exception cref="Egse.Defaults.Extensions.NotSupportMonitorListException">Если экземпляр монитора ListBox не инициализировал DataContext.</exception>
+        private static void ClearMonitorInvoke(ListBox list)
+        {
+            if (!(list.DataContext is MonitorListViewModel))
+            {
+                throw new NotSupportMonitorListException(Resource.Get(@"eNotSupportMonitorList"));
+            }
+
+            (list.DataContext as MonitorListViewModel).MonitorListItem.Clear();
+        }
+
+        /// <summary>
+        /// Для добавления сообщения в список монитора.
+        /// Примечание:
+        /// Вызывается в потоке, создавшем экземпляр ListBox.
+        /// </summary>
+        /// <param name="list">Экземпляр монитора ListBox.</param>
+        /// <param name="msg">Сообщение для добавления.</param>
+        /// <exception cref="Egse.Defaults.Extensions.NotSupportMonitorListException">Если экземпляр монитора ListBox не инициализировал DataContext.</exception>
+        private static void AddToMonitorInvoke(ListBox list, string msg)
+        {
+            if (!(list.DataContext is MonitorListViewModel)) 
+            { 
+                throw new NotSupportMonitorListException(Resource.Get(@"eNotSupportMonitorList")); 
+            } 
+            
+            (list.DataContext as MonitorListViewModel).MonitorListItem.Add(msg); 
+            if ((bool)list.GetValue(ListBoxExtensions.IsScrollingProperty)) 
+            { 
+                list.ScrollIntoView(msg); 
+            } 
+        }
+
+        /// <summary>
+        /// Возникает при попытке добавить/очистить список мониторов.
+        /// </summary>
+        internal class NotSupportMonitorListException : ApplicationException
+        {
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="NotSupportMonitorListException" />.
+            /// </summary>
+            /// <param name="message">A message that describes the error.</param>
+            public NotSupportMonitorListException(string message)
+                : base(message)
+            {
+            }
+        }
+    }
 
     /// <summary>
     /// Класс, содержащий "неизменяемые" методы и поля-свойства основного окна.
@@ -574,6 +704,138 @@ namespace EGSE.Defaults
             /// Значение элемента.
             /// </value>
             public object Value { get; set; }
+        }
+    }
+
+    /// <summary>
+    /// Расширение для мониторов ListBox.
+    /// </summary>
+    public class ListBoxExtensions : DependencyObject
+    {
+        /// <summary>
+        /// Свойство показывает, что необходимо прокручивать монитор.
+        /// </summary>
+        public static readonly DependencyProperty IsScrollingProperty = DependencyProperty.RegisterAttached("IsScrolling", typeof(bool), typeof(ListBoxExtensions), new UIPropertyMetadata(default(bool)));
+
+        /// <summary>
+        /// Свойство показывает, что нужно использовать автоматическое прокручивание.
+        /// </summary>
+        public static readonly DependencyProperty IsAutoscrollProperty = DependencyProperty.RegisterAttached("IsAutoscroll", typeof(bool), typeof(ListBoxExtensions), new UIPropertyMetadata(default(bool), OnIsAutoscrollChanged));
+ 
+        /// <summary>
+        /// Gets the is scrolling.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Значение свойства IsSrolling</returns>
+        public static bool GetIsScrolling(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsScrollingProperty);
+        }
+
+        /// <summary>
+        /// Sets the is scrolling.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="value">Новое значение свойства IsScrolling</param>
+        public static void SetIsScrolling(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsScrollingProperty, value);
+        }
+
+        /// <summary>
+        /// Gets the is autoscroll.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Значение свойства IsAutoscroll</returns>
+        public static bool GetIsAutoscroll(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsAutoscrollProperty);
+        }
+
+        /// <summary>
+        /// Sets the is autoscroll.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="value">Новое значение свойства IsAutoscroll</param>
+        public static void SetIsAutoscroll(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsAutoscrollProperty, value);
+        }
+
+        /// <summary>
+        /// Called when [is autoscroll changed].
+        /// </summary>
+        /// <param name="s">Экземпляр ListBox</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
+        /// <exception cref="System.ArgumentException">Если экземпляр связанного объекта не является ListBox</exception>
+        public static void OnIsAutoscrollChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
+        {
+            if (!(s is ListBox))
+            {
+                throw new ArgumentException("s");
+            }
+
+            ListBox listBox = s as ListBox;
+            
+            if ((bool)e.NewValue) 
+            {
+                listBox.Loaded += (sender, m) =>
+                {
+                    ScrollViewer scrollViewer = listBox.GetVisualChild<ScrollViewer>();
+                    if (scrollViewer != null)
+                    {
+                        ScrollBar scrollBar = scrollViewer.Template.FindName("PART_VerticalScrollBar", scrollViewer) as ScrollBar;
+                        if (scrollBar != null)
+                        {
+                            s.SetValue(IsScrollingProperty, true);
+                            scrollBar.ValueChanged += delegate
+                            {
+                                s.SetValue(IsScrollingProperty, scrollViewer.VerticalOffset + scrollViewer.ViewportHeight >= listBox.Items.Count - 2);
+                            };
+                        }
+                    }
+                };
+            }
+        }
+    }
+
+    /// <summary>
+    /// MVVM для мониторов ListBox.
+    /// </summary>
+    public class MonitorListViewModel
+    {
+        /// <summary>
+        /// The maximum count item in monitor list.
+        /// </summary>
+        private const int MaxCountItemInMonitorList = 10000;
+
+        /// <summary>
+        /// The _monitor list
+        /// </summary>
+        private ObservableCollection<string> monitorList;
+
+        /// <summary>
+        /// Получает список данных/команд монитора spacewire/hsi.
+        /// </summary>
+        /// <value>
+        /// Список данных/команд монитора spacewire/hsi.
+        /// </value>
+        public ObservableCollection<string> MonitorListItem
+        {
+            get
+            {
+                if (null == this.monitorList)
+                {
+                    this.monitorList = new ObservableCollection<string>();
+                }
+
+                if (MaxCountItemInMonitorList < monitorList.Count)
+                {
+                    this.monitorList.RemoveAt(0);
+                }
+
+                return this.monitorList;
+            }
         }
     }
 }

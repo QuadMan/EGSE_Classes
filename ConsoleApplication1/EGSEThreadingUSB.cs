@@ -7,13 +7,13 @@
 
 // TODO нужно доделать очередь команд в USB
 // TODO ввести фоновые потоки, чтобы они закрывались при выходе из основной программы
-namespace EGSE.Threading
+namespace Egse.Threading
 {
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using EGSE.USB;
-    using EGSE.Utilites;
+    using Egse.USB;
+    using Egse.Utilites;
 
     /// <summary>
     /// Класс потока чтения данных из USB в большой кольцевой буфер и записи команд в USB

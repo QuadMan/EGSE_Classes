@@ -5,24 +5,13 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Defaults
+namespace Egse.Defaults
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Shapes;
-    using EGSE.Devices;    
-    using EGSE.Protocols;
-    using EGSE.Utilites;
+    using Egse.Devices;
+    using Egse.Protocols;
+    using Egse.Utilites;
 
     /// <summary>
     /// Interaction logic for HSIWindow.xaml
@@ -53,6 +42,8 @@ namespace EGSE.Defaults
             _intfEGSE.GotHsiCmdMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiCmdMsg);
             DataContext = _intfEGSE;
             GridHSI.DataContext = _intfEGSE.HsiNotify;
+            MonitorList.DataContext = new MonitorListViewModel();
+            MonitorListCmd.DataContext = new MonitorListViewModel();    
         }
 
         /// <summary>
@@ -66,20 +57,23 @@ namespace EGSE.Defaults
             string hsiMsg;
             if (msg.Data.Length > 30)
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
             }
             else
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
-            if (null != Monitor && Visibility.Visible == this.Visibility)
+            if (null != MonitorList && Visibility.Visible == this.Visibility)
             {
-                Monitor.Dispatcher.Invoke(new Action(delegate
+                try
                 {
-                    Monitor.Items.Add(hsiMsg);
-                    Monitor.ScrollIntoView(hsiMsg);
-                }));
+                    Extensions.AddToMonitor(MonitorList, hsiMsg);
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message);
+                }
             }
         }
 
@@ -94,20 +88,23 @@ namespace EGSE.Defaults
             string hsiMsg;
             if (msg.Data.Length > 30)
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
             }
             else
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.ToString() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
-            if (null != Monitor && Visibility.Visible == this.Visibility)
+            if (null != MonitorListCmd && Visibility.Visible == this.Visibility)
             {
-                MonitorCmd.Dispatcher.Invoke(new Action(delegate
+                try
                 {
-                    MonitorCmd.Items.Add(hsiMsg);
-                    MonitorCmd.ScrollIntoView(hsiMsg);
-                }));
+                    Extensions.AddToMonitor(MonitorListCmd, hsiMsg);
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message);
+                }
             }        
         } 
 
@@ -129,7 +126,14 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Monitor.Items.Clear();
+            try
+            {
+                Extensions.ClearMonitor(MonitorList);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
         }
 
         /// <summary>
@@ -139,7 +143,14 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MonitorCmd.Items.Clear();
+            try
+            {
+                Extensions.ClearMonitor(MonitorListCmd);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }
         }
     }
 }

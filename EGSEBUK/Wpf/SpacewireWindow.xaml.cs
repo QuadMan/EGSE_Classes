@@ -5,25 +5,13 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Defaults
+namespace Egse.Defaults
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Shapes;
-    using EGSE.Constants;
-    using EGSE.Devices;
-    using EGSE.Protocols;
-    using EGSE.Utilites;
+    using Egse.Devices;
+    using Egse.Protocols;
+    using Egse.Utilites;
 
     /// <summary>
     /// Interaction logic for SimRouterWindow.xaml
@@ -42,7 +30,7 @@ namespace EGSE.Defaults
         {
             InitializeComponent();
         }
-
+        
         /// <summary>
         /// Инициализирует интерфейс управления прибором.
         /// </summary>
@@ -53,7 +41,8 @@ namespace EGSE.Defaults
             _intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
             DataContext = _intfEGSE;
             GridSpacewire.DataContext = _intfEGSE.Spacewire2Notify;
-        }
+            MonitorList.DataContext = new MonitorListViewModel();
+        }       
 
         /// <summary>
         /// Вызывается когда [пришло сообщение по протоколу spacewire].
@@ -105,17 +94,21 @@ namespace EGSE.Defaults
                 spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка: " + err.ErrorMessage();
             }
 
-            if (null != Monitor && Visibility.Visible == this.Visibility)
+            if (null != MonitorList && Visibility.Visible == this.Visibility)
             {
-                Monitor.Dispatcher.Invoke(new Action(delegate
+                try
                 {
-                    Monitor.Items.Add(spacewireMsg);
-                    Monitor.ScrollIntoView(spacewireMsg);
-                }));
+                    Extensions.AddToMonitor(MonitorList, spacewireMsg);
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message);
+                }   
+     
                 LogsClass.LogSpacewire2.LogText = spacewireMsg;
             }
         }
-      
+
         /// <summary>
         /// Handles the Closing event of the Window control.
         /// </summary>
@@ -134,7 +127,14 @@ namespace EGSE.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Monitor.Items.Clear();
+            try
+            {
+                Extensions.ClearMonitor(MonitorList);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }            
         }
     }
 }

@@ -5,25 +5,10 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Defaults
+namespace Egse.Defaults
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Shapes;
-    using EGSE.Constants;
-    using EGSE.Devices;
-    using EGSE.Protocols;
-    using EGSE.Utilites;
+    using Egse.Devices;
 
     /// <summary>
     /// Interaction logic for SpaceWireWindow.xaml

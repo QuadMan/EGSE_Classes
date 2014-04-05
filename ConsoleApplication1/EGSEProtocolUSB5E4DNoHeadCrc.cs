@@ -5,12 +5,11 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Protocols
+namespace Egse.Protocols
 {
     using System;
     using System.IO;
-
-    using EGSE.Utilites;
+    using Egse.Utilites;
 
     /// <summary>
     /// класс декодера по протоколу 5E4D, без CRC8 заголовка.

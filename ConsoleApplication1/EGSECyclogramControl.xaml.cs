@@ -5,25 +5,13 @@
 // <author>Семенов Александр</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Cyclogram
+namespace Egse.Cyclogram
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Navigation;
-    using System.Windows.Shapes;
-    using EGSE.Cyclogram;
-    using EGSE.Threading;
-    using EGSE.Utilites;
+    using Egse.Threading;
 
     /// <summary>
     /// Interaction logic for CyclogramControl.xaml

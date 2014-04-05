@@ -5,29 +5,25 @@
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Devices
+namespace Egse.Devices
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
-    using System.ComponentModel;    
-    using System.Diagnostics;    
+    using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Text;
     using System.Threading.Tasks;
-    using System.Windows;
     using System.Windows.Input;
-    using EGSE;
-    using EGSE.Constants;
-    using EGSE.Defaults;
-    using EGSE.Protocols;
-    using EGSE.USB;
-    using EGSE.Utilites;
-    using Microsoft.Win32;
-    using Wpf.Properties;
+    using Egse;
+    using Egse.Constants;
+    using Egse.Defaults;
+    using Egse.Protocols;
+    using Egse.USB;
+    using Egse.Utilites;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -2904,6 +2900,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _isActive1 = value;
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.Active1, Convert.ToInt32(value), false);                    
                     FirePropertyChangedEvent();
                 }
             }
@@ -2924,6 +2921,7 @@ namespace EGSE.Devices
                 private set 
                 {
                     _isActive2 = value;
+                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.Active2, Convert.ToInt32(value), false);  
                     FirePropertyChangedEvent();
                 }
             }
@@ -3291,6 +3289,14 @@ namespace EGSE.Devices
                 get
                 {
                     string result = null;
+
+                    if (name == "Data")
+                    {
+                        if ((null != Data) && (0 == Data.Length))
+                        {
+                            result = "Некорректный ввод данных! Повторите ввод.";
+                        }
+                    }
 
                     return result;
                 }
@@ -5077,7 +5083,7 @@ namespace EGSE.Devices
             /// <summary>
             /// Формировать телекоманду.
             /// </summary>
-            private bool _isMakeTK;
+            private bool _isMakeTK = true;
 
             /// <summary>
             /// Сохранять данные в файл.

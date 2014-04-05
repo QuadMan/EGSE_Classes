@@ -5,12 +5,12 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Protocols.UnitTest
+namespace Egse.Protocols.UnitTest
 {
     using System;
     using System.Linq;
-    using EGSE.Protocols;
-    using EGSE.Utilites;
+    using Egse.Protocols;
+    using Egse.Utilites;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
@@ -56,8 +56,8 @@ namespace EGSE.Protocols.UnitTest
         [TestMethod]
         public void HsiMsgEventArgs_Income5Bytes_ReturnsEqualTokenValue()
         {
-            byte flag = 0x33;
-            ushort size = 0xfFF2;
+            byte flag = 0x03;
+            ushort size = 0x8000;
 
             byte customData = 0xAB;
 
@@ -66,6 +66,7 @@ namespace EGSE.Protocols.UnitTest
             HsiMsgEventArgs msg = new HsiMsgEventArgs(buf, buf.Length);
 
             // проверяем результаты парсинга заголовка
+            Assert.AreEqual((HsiMsgEventArgs.HsiLine)((size & 0x8000) >> 15), msg.Info.Line, "Ошибка в парсинге свойства Line");
             Assert.AreEqual((HsiMsgEventArgs.Type)flag, msg.Info.Flag, "Ошибка в парсинге свойства Flag");
             Assert.AreEqual(size & 0x7FFF, msg.Info.Size, "Ошибка в парсинге свойства Size");
             Assert.AreEqual((HsiMsgEventArgs.HsiLine)(size >> 15), msg.Info.Line, "Ошибка в парсинге свойства Line"); 

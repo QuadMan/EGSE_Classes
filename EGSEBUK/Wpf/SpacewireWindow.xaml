@@ -1,287 +1,277 @@
-﻿<Window x:Class="EGSE.Defaults.SpacewireWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-        xmlns:l="clr-namespace:EGSE.Defaults"
-        xmlns:d="clr-namespace:EGSE.Devices" 
-        xmlns:b="clr-namespace:EGSE.Behaviors"
-        Title="Имитатор БМ-4 (БУСК, БУНД)"
-        FontFamily="{StaticResource BaseFontFamily}"
-        FontSize="{StaticResource BaseFontSize}"
-        Closing="Window_Closing"
-        Visibility="{Binding IsShowSpacewire, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
-    <Grid x:Name="GridSpacewire"
-          Background="{StaticResource BackBrush}"
-          Margin="4">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="3"
+﻿<Window x:Class="Egse.Defaults.SpacewireWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
+		xmlns:l="clr-namespace:Egse.Defaults"
+		xmlns:d="clr-namespace:Egse.Devices" 
+		xmlns:b="clr-namespace:Egse.Behaviors"
+		Title="Имитатор БМ-4 (БУСК, БУНД)"
+		FontFamily="{StaticResource BaseFontFamily}"
+		FontSize="{StaticResource BaseFontSize}"
+		Closing="Window_Closing"
+		Visibility="{Binding IsShowSpacewire, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+	<Grid x:Name="GridSpacewire"
+		  Background="{StaticResource BackBrush}"
+		  Margin="4">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto"/>
+			<RowDefinition Height="auto"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Label Grid.ColumnSpan="3"
 				Content="Управление"
 				Style="{StaticResource FlatHeader}"/>
-            <Label Grid.Row="1"
-                   Grid.ColumnSpan="2"
-                Content="{Binding ShowLogicBusk}"
-            	Template="{StaticResource FlatLabel}"/>
-            <ComboBox Grid.Column="2"                               
-                      Grid.Row="1"
-                      Margin="1"
-                      ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire2+Channel}}}" 
-                      DisplayMemberPath="Description" 
-                      SelectedValue="{Binding IssueSpacewireChannel}"  
-                      SelectedValuePath="Value" TabIndex="1"/>         
-            <Label Grid.Row="2"
-                   Grid.ColumnSpan="2"
-            	Content="Интерфейс Spacewire"
-            	Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Row="2"  
-            	Grid.Column="2"                               				    
+			<Label Grid.Row="1"
+				   Grid.ColumnSpan="2"
+				Content="{Binding ShowLogicBusk}"
+				Template="{StaticResource FlatLabel}"/>
+			<ComboBox Grid.Column="2"                               
+					  Grid.Row="1"
+					  Margin="1"
+					  ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire2+Channel}}}" 
+					  DisplayMemberPath="Description" 
+					  SelectedValue="{Binding IssueSpacewireChannel}"  
+					  SelectedValuePath="Value" TabIndex="1"/>         
+			<Label Grid.Row="2"
+				   Grid.ColumnSpan="2"
+				Content="Интерфейс Spacewire"
+				Template="{StaticResource FlatLabel}"/>
+			<Button Grid.Row="2"  
+				Grid.Column="2"                               				    
 
-            	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueEnableCommand}"
-            	Template="{StaticResource FlatButtonCheck}" TabIndex="2"/>
-            <Label Grid.Row="3" 
-            	Grid.ColumnSpan="3"
-            	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
-            	Template="{StaticResource FlatLabelConnected}"/>
-            <Label Grid.Row="4"
-                   Grid.ColumnSpan="2"
-            	Content="Прибор"
-            	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="4"
-            	Grid.Column="2"   
-            	Content="{Binding ShowLogicBuk}"
-            	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="6"
-                   Grid.ColumnSpan="2"
-            	Content="Выдавать метки времени"
-            	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="6" Grid.Column="2"
+				Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
+				Command="{Binding IssueEnableCommand}"
+				Template="{StaticResource FlatButtonCheck}" TabIndex="2"/>
+			<Label Grid.Row="3" 
+				Grid.ColumnSpan="3"
+				Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
+				Template="{StaticResource FlatLabelConnected}"/>
+			<Label Grid.Row="4"
+				   Grid.ColumnSpan="2"
+				Content="Прибор"
+				Template="{StaticResource FlatLabel}"/>
+			<Label Grid.Row="4"
+				Grid.Column="2"   
+				Content="{Binding ShowLogicBuk}"
+				Template="{StaticResource FlatLabel}"/>
+			<Label Grid.Row="6"
+				   Grid.ColumnSpan="2"
+				Content="Выдавать метки времени"
+				Template="{StaticResource FlatLabel}"/>
+			<Label Grid.Row="6" Grid.Column="2"
 
-            	Template="{StaticResource FlatLabel}"/>
-            <CheckBox Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Center"
-                Grid.Column="2"                                           	  
+				Template="{StaticResource FlatLabel}"/>
+			<CheckBox Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Center"
+				Grid.Column="2"                                           	  
 
-                 IsChecked="{Binding IsIssueTimeMark}"
-            	TabIndex="4"/>
-            <Label Grid.Row="7"
-                   Grid.ColumnSpan="2"
-            	Content="Выдавать КБВ прибору"
-            	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="7" Grid.Column="2"
+				 IsChecked="{Binding IsIssueTimeMark}"
+				TabIndex="4"/>
+			<Label Grid.Row="7"
+				   Grid.ColumnSpan="2"
+				Content="Выдавать КБВ прибору"
+				Template="{StaticResource FlatLabel}"/>
+			<Label Grid.Row="7" Grid.Column="2"
 
-            	Template="{StaticResource FlatLabel}"/>
-            <CheckBox Grid.Row="7"  VerticalAlignment="Center" HorizontalAlignment="Center"
-                Grid.Column="2"                                           	
+				Template="{StaticResource FlatLabel}"/>
+			<CheckBox Grid.Row="7"  VerticalAlignment="Center" HorizontalAlignment="Center"
+				Grid.Column="2"                                           	
 IsChecked="{Binding IsIssueKbv}"
-            	Tag="{Binding IsIssueKbv, Converter={StaticResource BoolToIndexConverter}}"
-                TabIndex="5"/>
-            <Label Grid.Row="5"
-                   Grid.ColumnSpan="2"
-            	Content="Обмен с прибором"
-            	Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="5" Grid.Column="2"
-            	Template="{StaticResource FlatLabel}"/>
-            <CheckBox Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center"  
-                Grid.Column="2"                                           	
+				Tag="{Binding IsIssueKbv, Converter={StaticResource BoolToIndexConverter}}"
+				TabIndex="5"/>
+			<Label Grid.Row="5"
+				   Grid.ColumnSpan="2"
+				Content="Обмен с прибором"
+				Template="{StaticResource FlatLabel}"/>
+			<Label Grid.Row="5" Grid.Column="2"
+				Template="{StaticResource FlatLabel}"/>
+			<CheckBox Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center"  
+				Grid.Column="2"                                           	
 
-                IsChecked="{Binding IsIssueTrans}"
-            	                    
-                TabIndex="3"/>          
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.ColumnSpan="3">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Label Grid.ColumnSpan="3"
-                   Content="Передать данные прибору"
-                   Style="{StaticResource FlatHeader}"/>
-                <Button Grid.Column="3"  
-                    Content="из файла..."
-                     Command="{Binding FromFileCommand}" TabIndex="6"/>
-                <Label Grid.Row="1"
-            	Content="Формировать телекоманду"
-            	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1" Grid.Column="1"
+				IsChecked="{Binding IsIssueTrans}"
+									
+				TabIndex="3"/>          
+		</Grid>
+		<Grid Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid Grid.ColumnSpan="3">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Label Grid.ColumnSpan="3"
+				   Content="Передать данные прибору"
+				   Style="{StaticResource FlatHeader}"/>
+				<Button Grid.Column="3"  
+					Content="из файла..."
+					 Command="{Binding FromFileCommand}" TabIndex="6"/>
+				<Label Grid.Row="1"
+				Content="Формировать телекоманду"
+				Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="1" Grid.Column="1"
 
-            	Template="{StaticResource FlatLabel}"/>
-                <CheckBox Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                Grid.Column="1"                
-                IsChecked="{Binding IsMakeTK}"
-                TabIndex="7"/>
-                <Label Grid.Row="1"
-                   Grid.Column="2"
-            	Content="APID"
-            	Template="{StaticResource FlatLabel}"/>
-                <TextBox Grid.Row="1"  
-                Grid.Column="3"
-			    Template="{StaticResource NumberInError}"
-			    Style="{StaticResource TextBoxInError}"
-			    Text="{Binding CurApid}" TabIndex="8"/>
-            </Grid>
-            <ComboBox Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                      IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBoxBehavior.EnableWatermark="True"
-                      b:WatermarkComboBoxBehavior.Label="Введите данные, например: AB 45 FF EE"
-                      b:WatermarkComboBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
-            <Button Grid.Row="3" 
-                    Grid.ColumnSpan="3"                 
-                    Command="{Binding IssuePackageCommand}"
-                    Content="Передать в БУК" TabIndex="10"/>
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.ColumnSpan="6"
-                   Style="{StaticResource FlatHeader}"
-                   Content="Монитор Spacewire"/>
-            <DockPanel Grid.Row="1"
-            	LastChildFill="True" >
-                <Label DockPanel.Dock="Left" Content="Запись в файл "
-            		Template="{StaticResource FlatLabel}"/>
-                <CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
-            		IsChecked="{Binding IsSaveRawData}"
-                    TabIndex="11"/>
-                <TextBox              
-                    IsReadOnly="True"
-                    Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"
-                    b:WatermarkTextBoxBehavior.EnableWatermark="True"
-                    b:WatermarkTextBoxBehavior.Label="Файл отсутствует..."
-                    b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
-            	    IsTabStop="False"/>
-            </DockPanel>
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Прибор"
-            		Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Column="1"
-                	Content="БУСК"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Column="2"
-                	Content="БУК"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1"
-                	Content="Time tick"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1" 
-                	Grid.Column="1"
-                	Content="{Binding BuskTickTime1}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="1" 
-                	Grid.Column="2"
-                	Content="{Binding BukTickTime1}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="2"
-                	Content="TIME TICK 2"
-                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-                <Label Grid.Row="2" 
-                	Grid.Column="1"
-                	Content="{Binding BuskTickTime2}"
-                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-                <Label Grid.Row="2" 
-                	Grid.Column="2"
-                	Content="{Binding BukTickTime2}"
-                	Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-                <Label Grid.Row="3"
-                	Content="Количество запросов кредита"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="3" 
-                	Grid.Column="1"
-                	Content="{Binding RequestQueueFromBusk}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="3"  
-                	Grid.Column="2"
-                	Content="{Binding RequestQueueFromBuk}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="4"
-                	Content="Количество предоставления кредита"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="4" 
-                	Grid.Column="1"
-                	Content="{Binding ReplyQueueFromBusk}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="4"  
-                	Grid.Column="2"
-                	Content="{Binding ReplyQueueFromBuk}"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="5"
-                	Content="КБВ от прибора"
-                	Template="{StaticResource FlatLabel}"/>
-                <Label Grid.Row="5" 
-                	Grid.Column="1"
-                       Grid.ColumnSpan="2"
-                	Content="{Binding CodeOnboardTime}"
-                	Template="{StaticResource FlatLabel}"/>
-            </Grid>
-            <ListBox x:Name="Monitor" 
-                     Grid.Row="3"
-                     Margin="1"
-                     BorderThickness="0"/>
-            <Button Grid.Row="4"  
-                Content="Очистить монитор Spacewire"
-        		Click="Button_Click" TabIndex="12"/>
-        </Grid>
-    </Grid>
+				Template="{StaticResource FlatLabel}"/>
+				<CheckBox Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
+				Grid.Column="1"                
+				IsChecked="{Binding IsMakeTK}"
+				TabIndex="7"/>
+				<Label Grid.Row="1"
+				   Grid.Column="2"
+				Content="APID"
+				Template="{StaticResource FlatLabel}"/>
+				<TextBox Grid.Row="1"  
+				Grid.Column="3"
+				Template="{StaticResource NumberInError}"
+				Style="{StaticResource TextBoxInError}"
+				Text="{Binding CurApid}" TabIndex="8"/>
+			</Grid>
+			<ComboBox Grid.Row="1"
+					  Grid.ColumnSpan="3"
+					  IsReadOnly="False" 
+					  IsEditable="True"
+					  ItemsSource="{Binding DataList}"
+					  Style="{StaticResource ComboBoxInError}"
+					  b:WatermarkComboBoxBehavior.EnableWatermark="True"
+					  b:WatermarkComboBoxBehavior.Label="Введите данные, например: AB 45 FF EE"
+					  b:WatermarkComboBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"
+					  Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+					  TabIndex="9"/>
+			<Button Grid.Row="3" 
+					Grid.ColumnSpan="3"                 
+					Command="{Binding IssuePackageCommand}"
+					Content="Передать в БУК" TabIndex="10"/>
+		</Grid>
+		<Grid Grid.Row="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
+				<RowDefinition/>
+				<RowDefinition Height="auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Label Grid.ColumnSpan="6"
+				   Style="{StaticResource FlatHeader}"
+				   Content="Монитор Spacewire"/>
+			<DockPanel Grid.Row="1"
+				LastChildFill="True" >
+				<Label DockPanel.Dock="Left" Content="Запись в файл "
+					Template="{StaticResource FlatLabel}"/>
+				<CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
+					IsChecked="{Binding IsSaveRawData}"
+					TabIndex="11"/>
+				<TextBox              
+					IsReadOnly="True"
+					Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"
+					b:WatermarkTextBoxBehavior.EnableWatermark="True"
+					b:WatermarkTextBoxBehavior.Label="Файл отсутствует..."
+					b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
+					IsTabStop="False"/>
+			</DockPanel>
+			<Grid Grid.Row="2">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
+					<RowDefinition Height="auto"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Label Content="Прибор"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Column="1"
+					Content="БУСК"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Column="2"
+					Content="БУК"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="1"
+					Content="Time tick"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="1" 
+					Grid.Column="1"
+					Content="{Binding BuskTickTime1}"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="1" 
+					Grid.Column="2"
+					Content="{Binding BukTickTime1}"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="2"
+					Content="Количество запросов кредита"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="2" 
+					Grid.Column="1"
+					Content="{Binding RequestQueueFromBusk}"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="2"  
+					Grid.Column="2"
+					Content="{Binding RequestQueueFromBuk}"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="3"
+					Content="Количество предоставления кредита"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="3" 
+					Grid.Column="1"
+					Content="{Binding ReplyQueueFromBusk}"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="3"  
+					Grid.Column="2"
+					Content="{Binding ReplyQueueFromBuk}"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="4"
+					Content="КБВ от прибора"
+					Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="4" 
+					Grid.Column="1"
+					   Grid.ColumnSpan="2"
+					Content="{Binding CodeOnboardTime}"
+					Template="{StaticResource FlatLabel}"/>
+			</Grid>
+			<ListBox x:Name="MonitorList"
+					 l:ListBoxExtensions.IsAutoscroll="true"
+					 ItemsSource="{Binding MonitorListItem}"
+					 Grid.Row="3"
+					 Margin="1"                     
+					 BorderThickness="0"/>
+			<Button Grid.Row="4"  
+				Content="Очистить монитор Spacewire"
+				Click="Button_Click" TabIndex="12"/>
+		</Grid>
+	</Grid>
 </Window>

@@ -1,9 +1,9 @@
-﻿<Window x:Class="EGSE.Defaults.SDWindow"
+﻿<Window x:Class="Egse.Defaults.SDWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-        xmlns:l="clr-namespace:EGSE.Defaults"
-        xmlns:d="clr-namespace:EGSE.Devices"  
-        xmlns:b="clr-namespace:EGSE.Behaviors"
+        xmlns:l="clr-namespace:Egse.Defaults"
+        xmlns:d="clr-namespace:Egse.Devices"  
+        xmlns:b="clr-namespace:Egse.Behaviors"
         Title="Имитатор каналов БС" 
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
@@ -98,7 +98,9 @@
                     b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
             	    IsTabStop="False"/>
             </DockPanel>          
-            <ListBox x:Name="Monitor" 
+            <ListBox x:Name="MonitorList" 
+                      l:ListBoxExtensions.IsAutoscroll="true"
+                     ItemsSource="{Binding MonitorListItem}"
         		Grid.Row="3"
         		Margin="1"
         		BorderThickness="0"/>

@@ -5,9 +5,8 @@
 // <author>Семенов Александр</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.USB
+namespace Egse.USB
 {
-    using System;
     using FTD2XXNET;
 
     /// <summary>

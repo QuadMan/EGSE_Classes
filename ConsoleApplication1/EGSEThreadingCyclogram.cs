@@ -5,11 +5,11 @@
 // <author>Семенов Александр</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Threading 
+namespace Egse.Threading 
 {
     using System;
     using System.Threading;
-    using EGSE.Cyclogram;
+    using Egse.Cyclogram;
 
     /// <summary>
     /// Делегат, вызываемый при изменении состояния циклограмм (выполняет, пауза)

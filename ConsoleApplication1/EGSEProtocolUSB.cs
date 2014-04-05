@@ -5,13 +5,10 @@
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Protocols
+namespace Egse.Protocols
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.Linq;
-    using EGSE.Utilites;
+    using Egse.Utilites;
 
     /// <summary>
     /// Базовый класс сообщения.

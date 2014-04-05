@@ -7,13 +7,11 @@
 
 // TODO нужно написать юнит-тест для декодера
 
-namespace EGSE.Protocols 
+namespace Egse.Protocols 
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using EGSE.Protocols;
-    using EGSE.Utilites;
+    using Egse.Utilites;
 
     /// <summary>
     /// Класс USB-протокола формата: 7C6E...

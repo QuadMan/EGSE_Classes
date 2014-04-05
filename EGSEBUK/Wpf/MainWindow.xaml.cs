@@ -5,28 +5,12 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Defaults
+namespace Egse.Defaults
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.Configuration;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Data;
-    using System.Windows.Documents;
-    using System.Windows.Input;
-    using System.Windows.Media;
-    using System.Windows.Media.Imaging;
-    using System.Windows.Navigation;
-    using System.Windows.Shapes;
-    using EGSE.Constants;
-    using EGSE.Cyclogram.Command;
-    using EGSE.Devices;
-    using EGSE.Utilites;
+    using Egse.Cyclogram.Command;
+    using Egse.Devices;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml

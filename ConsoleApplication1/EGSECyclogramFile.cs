@@ -5,14 +5,13 @@
 // <author>Семенов Александр</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Cyclogram
+namespace Egse.Cyclogram
 {
     using System;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
     using System.IO;
-    using System.Linq;    
-    using EGSE.Cyclogram;
+    using System.Linq;
 
     /// <summary>
     /// Специальное исключение при парсинге файла циклограмм.
@@ -516,7 +515,7 @@ namespace EGSE.Cyclogram
         /// <value>
         /// Обработчик команды для очередного шага циклограммы.
         /// </value>
-        public EGSE.Threading.StepEventHandler SetCmdEvent { get; set; }
+        public Egse.Threading.StepEventHandler SetCmdEvent { get; set; }
 
         /// <summary>
         /// Получает значение, показывающее, является ли [текущая команда последняя].

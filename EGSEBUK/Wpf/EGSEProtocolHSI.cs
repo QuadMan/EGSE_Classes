@@ -5,18 +5,14 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Protocols
+namespace Egse.Protocols
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Specialized;
-    using System.Diagnostics;
-    using System.Linq;
+    using System.ComponentModel;
     using System.Runtime.InteropServices;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
-    using EGSE.Utilites;
+    using Egse.Utilites;
 
     /// <summary>
     /// Класс декодера по протоколу ВСИ.
@@ -208,14 +204,16 @@ namespace EGSE.Protocols
             /// <summary>
             /// Основня линия приема/передачи.
             /// </summary>
+            [Description("ОСН")]
             Main = 0x00,
 
             /// <summary>
             /// Резервная линия приема/передачи.
             /// </summary>
+            [Description("РЕЗ")]
             Resv = 0x01
         }
-
+       
         /// <summary>
         /// Тип сообщения ВСИ.
         /// </summary>
@@ -292,27 +290,27 @@ namespace EGSE.Protocols
             /// Маска поля заголовка: начало сообщения (0xA4).
             /// </summary>
             private static readonly BitVector32.Section PackStartSection = BitVector32.CreateSection(0xFF);
-            
+
             /// <summary>
             /// Маска поля заголовка: FLAG.
             /// </summary>
             private static readonly BitVector32.Section FlagSection = BitVector32.CreateSection(0xFF, PackStartSection);
-            
-            /// <summary>
-            /// Маска поля заголовка: линия приема сообщения (1 - резервная, 0 - основная).
-            /// </summary>
-            private static readonly BitVector32.Section LineSection = BitVector32.CreateSection(0x1, FlagSection);
-            
+
             /// <summary>
             /// Маска поля заголовка: HI.
             /// </summary>
-            private static readonly BitVector32.Section SizeHiSection = BitVector32.CreateSection(0x7F, LineSection);
+            private static readonly BitVector32.Section SizeHiSection = BitVector32.CreateSection(0x7F, FlagSection);
+
+            /// <summary>
+            /// Маска поля заголовка: линия приема сообщения (1 - резервная, 0 - основная).
+            /// </summary>
+            private static readonly BitVector32.Section LineSection = BitVector32.CreateSection(0x1, SizeHiSection);
 
             /// <summary>
             /// Маска поля заголовка: LO.
             /// </summary>
-            private static readonly BitVector32.Section SizeLoSection = BitVector32.CreateSection(0xFF, SizeHiSection);
-
+            private static readonly BitVector32.Section SizeLoSection = BitVector32.CreateSection(0xFF, LineSection);
+                                                                        
             /// <summary>
             /// Заголовок ВСИ сообщения.
             /// </summary>
@@ -347,7 +345,7 @@ namespace EGSE.Protocols
             {
                 get
                 {
-                    return (HsiLine)_header[LineSection];
+                    return (HsiLine)(byte)_header[LineSection];
                 }
 
                 set

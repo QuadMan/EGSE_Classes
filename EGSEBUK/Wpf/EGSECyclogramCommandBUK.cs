@@ -5,18 +5,14 @@
 // <author>Семенов Александр, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Cyclogram.Command
-{    
+namespace Egse.Cyclogram.Command
+{
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Linq.Expressions;
-    using System.Text;
-    using System.Threading.Tasks;   
-    using EGSE.Constants;
-    using EGSE.Cyclogram;
-    using EGSE.Devices;
-    using EGSE.Utilites;
+    using Egse.Cyclogram;
+    using Egse.Devices;
+    using Egse.Utilites;
 
     /// <summary>
     /// Инициализирует набор доступных цикломанд для устройства.

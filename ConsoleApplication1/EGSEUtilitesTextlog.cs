@@ -9,14 +9,11 @@
 // TODO указать в конструкторе путь, где создавать структуру директорий в формате ГГММ/ДД/
 // TODO при создании лог-файла необходимо перед расширением добавлять следующий текст "_HHMMSS"
 // TODO при закрытии лог-файла проверяем, если размер его равен 0, то стираем файл
-namespace EGSE.Utilites
+namespace Egse.Utilites
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Класс единичного текстлога

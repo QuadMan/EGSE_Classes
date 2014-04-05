@@ -5,17 +5,10 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Constants
+namespace Egse.Constants
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Windows;
     using System.Windows.Data;
-    using EGSE.Utilites;
+    using Egse.Utilites;
 
     /// <summary>
     /// Основные значения констант прибора.
@@ -216,7 +209,7 @@ namespace EGSE.Constants
                 /// <summary>
                 /// Индекс свойства [ПК1 статус: me].
                 /// </summary>
-                public readonly string IssueMe1 = "4085abfce08a4ba9b1bf0203b6797a3e";
+                public readonly string IssueMe1 = "2ff1d36ac486475d9ed7d6ae033e0ad5";
 
                 /// <summary>
                 /// Индекс свойства [ПК1 активен].

@@ -5,7 +5,7 @@
 // <author>Мурзин Святослав</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Utilites.ADC
+namespace Egse.Utilites.ADC
 {
     using System;
     using System.Collections.Generic;

@@ -7,13 +7,10 @@
 
 // TODO в bigBufferManager ввести признак переполнения буфера!
 // TODO в классе BigBuff попробовать уйти от lock(this) в сторону InterlockedIncrement
-namespace EGSE.Utilites
-{    
+namespace Egse.Utilites
+{
     using System;
     using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.ComponentModel;
-    using System.Configuration;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -21,13 +18,10 @@ namespace EGSE.Utilites
     using System.Reflection;
     using System.Resources;
     using System.Runtime.InteropServices;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Security;
     using System.Text;
     using System.Windows;
-    using System.Xml;
-    using System.Xml.Serialization;
-    using EGSE.Protocols;
+    using Egse.Protocols;
 
     /// <summary>
     /// Отвечает за упаковку времени в посылках данных.

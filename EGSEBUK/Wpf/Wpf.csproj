@@ -123,6 +123,11 @@
     <Compile Include="SDWindow.xaml.cs">
       <DependentUpon>SDWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SDWindow.xaml.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SDWindow.xaml.resx</DependentUpon>
+    </Compile>
     <Compile Include="SimHSIWindow.xaml.cs">
       <DependentUpon>SimHSIWindow.xaml</DependentUpon>
     </Compile>
@@ -323,6 +328,11 @@
     <EmbeddedResource Include="ResourceUnitTest.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourceUnitTest.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SDWindow.xaml.resx">
+      <DependentUpon>SDWindow.xaml.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SDWindow.xaml.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>

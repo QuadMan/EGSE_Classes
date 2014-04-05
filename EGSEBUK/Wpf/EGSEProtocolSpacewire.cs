@@ -5,17 +5,15 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Protocols
+namespace Egse.Protocols
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
-    using System.Linq;   
+    using System.Linq;
     using System.Runtime.InteropServices;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
-    using EGSE.Utilites;
+    using Egse.Utilites;
 
     /// <summary>
     /// Обмен сообщениями по протоколу Spacewire.

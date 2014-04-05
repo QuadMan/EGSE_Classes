@@ -5,13 +5,13 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Utilites.UnitTest
+namespace Egse.Utilites.UnitTest
 {
     using System;
     using System.Configuration;   
     using System.Linq;
     using System.Reflection; 
-    using EGSE.Utilites;
+    using Egse.Utilites;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>

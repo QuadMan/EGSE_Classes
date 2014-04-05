@@ -5,14 +5,8 @@
 // <author>Семенов Александр</author>
 //-----------------------------------------------------------------------
 
-namespace EGSE.Utilites
+namespace Egse.Utilites
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// Значение телеметрического параметра, изменения которого необходимо отслеживать 
     /// (обычно для логгирования изменения состояния - контактные датчики, включени питания и т.д.)
