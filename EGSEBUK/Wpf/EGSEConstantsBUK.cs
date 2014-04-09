@@ -113,12 +113,12 @@ namespace Egse.Constants
         /// <summary>
         /// Индексы свойств [ВСИ (ИМИТАТОР КВВ)]
         /// </summary>
-        public static class HSI
+        public static class Hsi
         {
             /// <summary>
-            /// Инициализирует статические поля класса <see cref="HSI" />.
+            /// Инициализирует статические поля класса <see cref="Hsi" />.
             /// </summary>
-            static HSI()
+            static Hsi()
             {
                 Line1 = new CVLine1();
                 Line1StateCounter = new CVLine1StateCounter();
@@ -341,12 +341,12 @@ namespace Egse.Constants
         /// <summary>
         /// Индексы свойств [ВСИ (ИМИТАТОР БУК)]
         /// </summary>
-        public static class SimHSI
+        public static class SimHsi
         {
             /// <summary>
-            /// Инициализирует статические поля класса <see cref="SimHSI" />.
+            /// Инициализирует статические поля класса <see cref="SimHsi" />.
             /// </summary>
-            static SimHSI()
+            static SimHsi()
             {
                 Control = new CVControl();
                 Record = new CVRecord();

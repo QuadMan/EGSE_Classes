@@ -25,12 +25,12 @@ namespace Egse.Defaults
         /// <summary>
         /// Окно "Имитатор ВСИ".
         /// </summary>
-        private HSIWindow winHSI;
+        private HsiWindow winHsi;
 
         /// <summary>
         /// Окно "Имитатор БУК (для ВСИ)".
         /// </summary>
-        private SimHSIWindow winSimHSI;
+        private SimHsiWindow winSimHsi;
 
         /// <summary>
         /// Окно "Имитатор БУСК".
@@ -110,14 +110,14 @@ namespace Egse.Defaults
             DataContext = _intfEGSE;
             this.GotLoadAppEvent += new Action(_intfEGSE.LoadAppEvent);
             this.GotSaveAppEvent += new Action(_intfEGSE.SaveAppEvent);
-            winHSI = new HSIWindow();
-            winHSI.Init(_intfEGSE);
+            winHsi = new HsiWindow();
+            winHsi.Init(_intfEGSE);
             winSpacewire = new SpacewireWindow();
             winSpacewire.Init(_intfEGSE);
             winSD = new SDWindow();
             winSD.Init(_intfEGSE);
-            winSimHSI = new SimHSIWindow();
-            winSimHSI.Init(_intfEGSE);
+            winSimHsi = new SimHsiWindow();
+            winSimHsi.Init(_intfEGSE);
             winSimSpacewire = new SimSpacewireWindow();
             winSimSpacewire.Init(_intfEGSE);
             winSimSD = new SimSDWindow();
@@ -127,6 +127,17 @@ namespace Egse.Defaults
             GridTelemetry.DataContext = _intfEGSE.TelemetryNotify;
             GridShutter.DataContext = _intfEGSE;
             ManualControlSet.DataContext = _intfEGSE;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _intfEGSE.TelemetryNotify.Deserialize();
+            _intfEGSE.HsiNotify.Deserialize();
+            _intfEGSE.Spacewire1Notify.Deserialize();
+            _intfEGSE.Spacewire2Notify.Deserialize();
+            _intfEGSE.Spacewire3Notify.Deserialize();
+            _intfEGSE.Spacewire4Notify.Deserialize();
+            _intfEGSE.RefreshAllControlsValues();
         }
     }
 }

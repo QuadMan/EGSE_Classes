@@ -128,8 +128,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SDWindow.xaml.resx</DependentUpon>
     </Compile>
-    <Compile Include="SimHSIWindow.xaml.cs">
-      <DependentUpon>SimHSIWindow.xaml</DependentUpon>
+    <Compile Include="SimHsiWindow.xaml.cs">
+      <DependentUpon>SimHsiWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SimSDWindow.xaml.cs">
       <DependentUpon>SimSDWindow.xaml</DependentUpon>
@@ -241,7 +241,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SimHSIWindow.xaml">
+    <Page Include="SimHsiWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

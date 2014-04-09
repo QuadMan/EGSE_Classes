@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="HSIWindow.xaml.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="HsiWindow.xaml.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Коробейщиков Иван</author>
@@ -14,9 +14,9 @@ namespace Egse.Defaults
     using Egse.Utilites;
 
     /// <summary>
-    /// Interaction logic for HSIWindow.xaml
+    /// Interaction logic for HsiWindow.xaml
     /// </summary>
-    public partial class HSIWindow : Window
+    public partial class HsiWindow : Window
     {
         /// <summary>
         /// Интерфейс управления прибором.
@@ -24,9 +24,9 @@ namespace Egse.Defaults
         private EgseBukNotify _intfEGSE;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="HSIWindow" />.
+        /// Инициализирует новый экземпляр класса <see cref="HsiWindow" />.
         /// </summary>
-        public HSIWindow()
+        public HsiWindow()
         {
             InitializeComponent();
         }
@@ -41,7 +41,7 @@ namespace Egse.Defaults
             _intfEGSE.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
             _intfEGSE.GotHsiCmdMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiCmdMsg);
             DataContext = _intfEGSE;
-            GridHSI.DataContext = _intfEGSE.HsiNotify;
+            GridHsi.DataContext = _intfEGSE.HsiNotify;
             MonitorList.DataContext = new MonitorListViewModel();
             MonitorListCmd.DataContext = new MonitorListViewModel();    
         }

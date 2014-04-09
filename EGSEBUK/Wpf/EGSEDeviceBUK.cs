@@ -24,6 +24,10 @@ namespace Egse.Devices
     using Egse.Protocols;
     using Egse.USB;
     using Egse.Utilites;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.Xml.Serialization;
+    using System.Runtime.Serialization;
+    using System.Reflection;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -229,22 +233,22 @@ namespace Egse.Devices
         /// <summary>
         /// Адресный байт "КВВ ПК1".
         /// </summary>
-        private const int HSI1ControlAddr = 0x30;
+        private const int Hsi1ControlAddr = 0x30;
 
         /// <summary>
         /// Адресный байт "КВВ ПК2".
         /// </summary>
-        private const int HSI2ControlAddr = 0x31;
+        private const int Hsi2ControlAddr = 0x31;
 
         /// <summary>
         /// Адресный байт "Дополнительные байты".
         /// </summary>
-        private const int HSIStateAddr = 0x48;
+        private const int HsiStateAddr = 0x48;
 
         /// <summary>
         /// Адресный байт "Управление".
         /// </summary>
-        private const int SimHSIControlAddr = 0x36;
+        private const int SimHsiControlAddr = 0x36;
 
         /// <summary>
         /// Адресный байт "Датчики затворов".
@@ -269,27 +273,27 @@ namespace Egse.Devices
         /// <summary>
         /// Адресный байт "Сброс адреса данных УКС".
         /// </summary>
-        private const int SimHSIRecordFlushAddr = 0x39;
+        private const int SimHsiRecordFlushAddr = 0x39;
 
         /// <summary>
         /// Адресный байт "Данные УКС".
         /// </summary>
-        private const int SimHSIRecordDataAddr = 0x38;
+        private const int SimHsiRecordDataAddr = 0x38;
 
         /// <summary>
         /// Адресный байт "Выдача УКС".
         /// </summary>
-        private const int SimHSIRecordSendAddr = 0x37;
+        private const int SimHsiRecordSendAddr = 0x37;
 
         /// <summary>
         /// Адресный байт "TX_FLAG".
         /// </summary>
-        private const int SimHSIRecordTXFlagAddr = 0x3a;
+        private const int SimHsiRecordTXFlagAddr = 0x3a;
 
         /// <summary>
         /// Адресный байт "TX_BYTE_NUMBER".
         /// </summary>
-        private const int SimHSIRecordByteNumberAddr = 0x3b;
+        private const int SimHsiRecordByteNumberAddr = 0x3b;
 
         /// <summary>
         /// Обеспечивает доступ к интерфейсу устройства. 
@@ -819,36 +823,36 @@ namespace Egse.Devices
         /// Команда [управления ВСИ ПК1].
         /// </summary>
         /// <param name="value">Байт управления.</param>
-        internal void CmdHSILine1(int value)
+        internal void CmdHsiLine1(int value)
         {
-            SendToUSB(HSI1ControlAddr, new byte[1] { (byte)value });
+            SendToUSB(Hsi1ControlAddr, new byte[1] { (byte)value });
         }
 
         /// <summary>
         /// Команда [управления ВСИ ПК2].
         /// </summary>
         /// <param name="value">Байт управления.</param>
-        internal void CmdHSILine2(int value)
+        internal void CmdHsiLine2(int value)
         {
-            SendToUSB(HSI2ControlAddr, new byte[1] { (byte)value });
+            SendToUSB(Hsi2ControlAddr, new byte[1] { (byte)value });
         }
 
         /// <summary>
         /// Команда [управления ВСИ статусом].
         /// </summary>
         /// <param name="value">Байт управления.</param>
-        internal void CmdHSIState(int value)
+        internal void CmdHsiState(int value)
         {
-            SendToUSB(HSIStateAddr, new byte[1] { (byte)value });
+            SendToUSB(HsiStateAddr, new byte[1] { (byte)value });
         }
         
         /// <summary>
         /// Команда [управления имитатором ВСИ].
         /// </summary>
         /// <param name="value">Байт управления.</param>
-        internal void CmdSimHSIControl(int value)
+        internal void CmdSimHsiControl(int value)
         {
-            SendToUSB(SimHSIControlAddr, new byte[1] { (byte)value });
+            SendToUSB(SimHsiControlAddr, new byte[1] { (byte)value });
         }
 
         /// <summary>
@@ -885,19 +889,19 @@ namespace Egse.Devices
         /// Команда [выдачи УКС ВСИ].
         /// </summary>
         /// <param name="value">Байт управления выдачей УКС.</param>
-        internal void CmdSimHSIRecord(int value)
+        internal void CmdSimHsiRecord(int value)
         {
-            SendToUSB(SimHSIRecordTXFlagAddr, new byte[1] { 2 });            
+            SendToUSB(SimHsiRecordTXFlagAddr, new byte[1] { 2 });            
             if ((null != _intfBUK.HsiNotify.Data) && (0 < _intfBUK.HsiNotify.Data.Length))
             {
                 _intfBUK.HsiNotify.DataToSaveList();
 
-                SendToUSB(SimHSIRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HsiNotify.Data.Length) });
-                SendToUSB(SimHSIRecordFlushAddr, new byte[1] { 1 });
-                SendToUSB(SimHSIRecordDataAddr, _intfBUK.HsiNotify.Data);
+                SendToUSB(SimHsiRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HsiNotify.Data.Length) });
+                SendToUSB(SimHsiRecordFlushAddr, new byte[1] { 1 });
+                SendToUSB(SimHsiRecordDataAddr, _intfBUK.HsiNotify.Data);
             }
 
-            SendToUSB(SimHSIRecordSendAddr, new byte[1] { (byte)value });            
+            SendToUSB(SimHsiRecordSendAddr, new byte[1] { (byte)value });            
         }
 
         /// <summary>
@@ -930,7 +934,7 @@ namespace Egse.Devices
         /// Временно подменяет данные УКС в ВСИ нотификаторе для формирования УКС активации.
         /// </summary>
         /// <param name="value">1 - для активации, 0 - деактивация.</param>
-        internal void CmdSimHSI1(int value)
+        internal void CmdSimHsi1(int value)
         { 
             TempData();
             if (1 == value)
@@ -942,7 +946,7 @@ namespace Egse.Devices
                 _intfBUK.HsiNotify.Data = new byte[1] { 0xFF };
             }
 
-            CmdSimHSIRecord(1);
+            CmdSimHsiRecord(1);
             RevertData();
         }
 
@@ -952,7 +956,7 @@ namespace Egse.Devices
         /// Временно подменяет данные УКС в ВСИ нотификаторе для формирования УКС активации.
         /// </summary>
         /// <param name="value">1 - для активации, 0 - деактивация.</param>
-        internal void CmdSimHSI2(int value)
+        internal void CmdSimHsi2(int value)
         {
             TempData();
             if (1 == value)
@@ -964,7 +968,7 @@ namespace Egse.Devices
                 _intfBUK.HsiNotify.Data = new byte[1] { 0xFF };
             }
 
-            CmdSimHSIRecord(1);
+            CmdSimHsiRecord(1);
             RevertData();
         }
 
@@ -993,7 +997,7 @@ namespace Egse.Devices
         /// <summary>
         /// Адресный байт "Данные интерфейса ВСИ".
         /// </summary>
-        private const int HSIDataAddr = 0x14;
+        private const int HsiDataAddr = 0x14;
 
         /// <summary>
         /// Адресный байт "Телеметрия".
@@ -1038,7 +1042,7 @@ namespace Egse.Devices
         /// <summary>
         /// Отображать ли [окно "имитатор ВСИ"].
         /// </summary>
-        private bool _isShowHSI;
+        private bool _isShowHsi;
 
         /// <summary>
         /// Отображать ли [окно "имитатор БУСК"].
@@ -1053,7 +1057,7 @@ namespace Egse.Devices
         /// <summary>
         /// Отображать ли [окно "имитатор БУК (для ВСИ)"].
         /// </summary>
-        private bool _isShowSimHSI;
+        private bool _isShowSimHsi;
 
         /// <summary>
         /// Отображать ли [окно "имитатор БУК (для БУСК)"].
@@ -1127,7 +1131,7 @@ namespace Egse.Devices
 
             ControlValuesList = new Dictionary<string, ControlValue>();
 
-            HsiNotify = new HSI(this);
+            HsiNotify = new Hsi(this);
             TelemetryNotify = new Telemetry(this);
             Spacewire1Notify = new Spacewire1(this);
             Spacewire2Notify = new Spacewire2(this);
@@ -1165,7 +1169,7 @@ namespace Egse.Devices
             _decoderSpacewireSDOut.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime2 = e.TimeTickInfo.Value; });
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDOut.OnMessageFunc);
 
-            _decoderHsi = new ProtocolHsi((uint)HSI.Addr);
+            _decoderHsi = new ProtocolHsi((uint)Hsi.Addr);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(HsiNotify.OnHsiMsgRawSave);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderHsi.OnMessageFunc);
@@ -1243,7 +1247,7 @@ namespace Egse.Devices
         /// <value>
         /// Экземпляр нотификатора.
         /// </value>
-        public HSI HsiNotify { get; private set; }
+        public Hsi HsiNotify { get; private set; }
 
         /// <summary>
         /// Получает нотификатор spacewire1.
@@ -1469,16 +1473,16 @@ namespace Egse.Devices
         /// <value>
         ///   <c>true</c> если [окно "имитатор ВСИ"] открыто; иначе, <c>false</c>.
         /// </value>
-        public bool IsShowHSI
+        public bool IsShowHsi
         {
             get
             {
-                return _isShowHSI;
+                return _isShowHsi;
             }
 
             private set 
             {
-                _isShowHSI = value;
+                _isShowHsi = value;
                 FirePropertyChangedEvent();
             }
         }
@@ -1529,16 +1533,16 @@ namespace Egse.Devices
         /// <value>
         ///   <c>true</c> если [окно "имитатор БУК (для ВСИ)"] открыто; иначе, <c>false</c>.
         /// </value>
-        public bool IsShowSimHSI
+        public bool IsShowSimHsi
         {
             get
             {
-                return _isShowSimHSI;
+                return _isShowSimHsi;
             }
 
             private set 
             {
-                _isShowSimHSI = value;
+                _isShowSimHsi = value;
                 FirePropertyChangedEvent();
             }
         }
@@ -1686,11 +1690,18 @@ namespace Egse.Devices
         /// Событие: требуется загрузить настройки.
         /// </summary>
         public void LoadAppEvent()
-        {
-            Spacewire2Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw2Cmds);
-            Spacewire4Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw4Cmds);
+        {            
+            Spacewire2Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw2Cmds);                     
+            Spacewire4Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw4Cmds);            
             HsiNotify.LoadDataList(Wpf.Properties.Settings.Default.HsiCmds);
+            TelemetryNotify.Serialize();
+            HsiNotify.Serialize();    
+            Spacewire1Notify.Serialize();
+            Spacewire2Notify.Serialize();
+            Spacewire3Notify.Serialize();
+            Spacewire4Notify.Serialize();            
         }
+
 
         /// <summary>
         /// Событие: требуется сохранить настройки.
@@ -1760,6 +1771,7 @@ namespace Egse.Devices
             else
             {
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stDisconnected");
+                
             }
         }
 
@@ -2002,7 +2014,7 @@ namespace Egse.Devices
         /// <summary>
         /// Вызывается при подключении прибора, чтобы все элементы управления обновили свои значения.
         /// </summary>
-        private void RefreshAllControlsValues()
+        public void RefreshAllControlsValues()
         {
             Debug.Assert(ControlValuesList != null, Resource.Get(@"eNotAssigned"));
             foreach (var cv in ControlValuesList)
@@ -2041,16 +2053,16 @@ namespace Egse.Devices
                         ControlValuesList[Global.Spacewire1.SD1DataSize].UsbValue = (msg.Data[28] << 8) | msg.Data[27]; 
                         ControlValuesList[Global.Spacewire4.Control].UsbValue = msg.Data[29];
                         ControlValuesList[Global.Spacewire4.Record].UsbValue = msg.Data[32];
-                        ControlValuesList[Global.HSI.Line1].UsbValue = msg.Data[33];
-                        ControlValuesList[Global.HSI.Line2].UsbValue = msg.Data[34];
-                        ControlValuesList[Global.HSI.Line1StateCounter].UsbValue = (msg.Data[36] << 8) | msg.Data[35];
-                        ControlValuesList[Global.HSI.Line1FrameCounter].UsbValue = (msg.Data[38] << 8) | msg.Data[37];
-                        ControlValuesList[Global.HSI.Line2StateCounter].UsbValue = (msg.Data[40] << 8) | msg.Data[39];
-                        ControlValuesList[Global.HSI.Line2FrameCounter].UsbValue = (msg.Data[42] << 8) | msg.Data[41];
-                        ControlValuesList[Global.SimHSI.Control].UsbValue = msg.Data[43];
-                        ControlValuesList[Global.SimHSI.Record].UsbValue = msg.Data[44];
+                        ControlValuesList[Global.Hsi.Line1].UsbValue = msg.Data[33];
+                        ControlValuesList[Global.Hsi.Line2].UsbValue = msg.Data[34];
+                        ControlValuesList[Global.Hsi.Line1StateCounter].UsbValue = (msg.Data[36] << 8) | msg.Data[35];
+                        ControlValuesList[Global.Hsi.Line1FrameCounter].UsbValue = (msg.Data[38] << 8) | msg.Data[37];
+                        ControlValuesList[Global.Hsi.Line2StateCounter].UsbValue = (msg.Data[40] << 8) | msg.Data[39];
+                        ControlValuesList[Global.Hsi.Line2FrameCounter].UsbValue = (msg.Data[42] << 8) | msg.Data[41];
+                        ControlValuesList[Global.SimHsi.Control].UsbValue = msg.Data[43];
+                        ControlValuesList[Global.SimHsi.Record].UsbValue = msg.Data[44];
                         ControlValuesList[Global.Shutters].UsbValue = (msg.Data[53] << 8) | msg.Data[52];
-                        ControlValuesList[Global.HSI.State].UsbValue = msg.Data[54];
+                        ControlValuesList[Global.Hsi.State].UsbValue = msg.Data[54];
                         break;
                     case TeleDataAddr:
                         ControlValuesList[Global.Telemetry].UsbValue = (msg.Data[2] << 16) | (msg.Data[3] << 8) | msg.Data[4];
@@ -2084,21 +2096,24 @@ namespace Egse.Devices
             }
         }
 
+        
         /// <summary>
         /// Реализует сохранение в user.config файл списков отправленных команд(данных).
         /// Примечание(особенность работы):
         /// Жестко привязана к текущей версии программы. Для каждой версии существует отдельный user.config
         /// </summary>
+        [Serializable()]
         public class PropSerializer
         {
             /// <summary>
             /// Количество сохраняемых команд(данных) в списке.
             /// </summary>
             protected const int MaxDataListCount = 15;
-
+            
             /// <summary>
             /// Список отправленных команд(данных).
             /// </summary>
+            [field: NonSerialized()]
             private ObservableCollection<string> _dataList = new ObservableCollection<string>();
 
             /// <summary>
@@ -2166,9 +2181,11 @@ namespace Egse.Devices
             }
         }
 
+        
         /// <summary>
         /// Прототип подкласса нотификатора.
         /// </summary>
+        [Serializable()]
         public class SubNotify : PropSerializer, INotifyPropertyChanged
         {
             /// <summary>
@@ -2183,26 +2200,116 @@ namespace Egse.Devices
                 InitControlValue();
                 InitProperties();
             }
-
+             
             /// <summary>
             /// Occurs when a property value changes.
-            /// </summary>
+            /// </summary>           
+            [field: NonSerialized()]          
             public event PropertyChangedEventHandler PropertyChanged;
+          
+            [field: NonSerialized()]           
+            protected BinaryFormatter serializer;
+          
+            [field: NonSerialized()]           
+            protected MemoryStream serializeStream = new MemoryStream();
+          
+            [field: NonSerialized()]            
+            private EgseBukNotify owner;
+           
+            [field: NonSerialized()]           
+            private EgseBuk device;
+            
+            [field: NonSerialized()]           
+            private Dictionary<string, ControlValue> controlValuesList;
+           
+            public virtual void Serialize(object obj)
+            {
+                if (null == serializer)
+                {
+                    serializer = new BinaryFormatter();
+                    serializer.FilterLevel = System.Runtime.Serialization.Formatters.TypeFilterLevel.Low;
+                }
+                serializer.Serialize(serializeStream, obj);
+                serializeStream.Flush();
+            }
 
+            public virtual void Deserialize()
+            {
+                if (null != serializer)
+                {
+                    serializeStream.Position = 0;
+                    var defaultObj = serializer.Deserialize(serializeStream);
+                    MemberInfo[] members = FormatterServices.GetSerializableMembers(defaultObj.GetType());
+                    foreach (MemberInfo mi in members)
+                    {
+                        if (mi.MemberType == MemberTypes.Field)
+                        {
+                            FieldInfo fi = mi as FieldInfo;
+                            FieldInfo ownerField = this.GetType().GetField(fi.Name, BindingFlags.NonPublic | BindingFlags.Instance);
+                            if (null != ownerField)
+                            {
+                                var ownerValue = ownerField.GetValue(this);
+                                var defaultValue = fi.GetValue(defaultObj);
+                                if (ownerValue != defaultValue)
+                                {
+                                    ownerField.SetValue(this, defaultValue);
+                                }
+                            }
+                            else
+                            {
+                                throw new NullReferenceException("Не удалось восстановить экземпляр.");
+                            }
+                        }
+                    }
+                }
+            }
+               
             /// <summary>
             /// Получает доступ к интерфейсу устройства. 
             /// </summary>
-            protected EgseBukNotify Owner { get; private set; }
+            protected EgseBukNotify Owner 
+            { 
+                get
+                {
+                    return this.owner;
+                }
+
+                private set
+                {
+                    this.owner = value;
+                }
+            }
 
             /// <summary>
             /// Получает доступ к USB прибора.
             /// </summary>
-            protected EgseBuk Device { get; private set; }
+            protected EgseBuk Device 
+            { 
+                get
+                {
+                    return this.device;
+                }
 
+                private set
+                {
+                    this.device = value;
+                }
+            }
+                       
             /// <summary>
             /// Получает список управляющих элементов.
             /// </summary>
-            protected Dictionary<string, ControlValue> ControlValuesList { get; private set; }
+            protected Dictionary<string, ControlValue> ControlValuesList 
+            { 
+                get
+                {
+                    return this.controlValuesList;
+                }
+                private set
+                {
+                    this.controlValuesList = value;
+                }
+            }
 
             /// <summary>
             /// Fires the property changed event.
@@ -2234,7 +2341,8 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор ВСИ интерфейса.
         /// </summary>
-        public class HSI : SubNotify, IDataErrorInfo
+        [Serializable()]     
+        public class Hsi : SubNotify, IDataErrorInfo
         {           
             /// <summary>
             /// Timeout на запись данных в файл.
@@ -2315,17 +2423,19 @@ namespace Egse.Devices
             /// Имя файла данных.
             /// </summary>
             private string _rawDataFile;
-
+            
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
+            [field: NonSerialized()]
             private FileStream _rawDataStream;
-
+            
             /// <summary>
             /// Квазиасинхронная запись в файл.
             /// Примечание:
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
+            [field: NonSerialized()]
             private Task _rawDataTask;
 
             /// <summary>
@@ -2352,50 +2462,65 @@ namespace Egse.Devices
             /// Количество переданных УКС ПК1.
             /// </summary>
             private long _cmdCounter1;
-
+            
             /// <summary>
             /// Экземпляр команды на [включение КВВ ПК1].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEnable1Command;
-
+            
             /// <summary>
             /// Экземпляр команды на [включение КВВ ПК2].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEnable2Command;
-
+            
             /// <summary>
             /// Экземпляр команды на [включение опроса данных].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueRequestCommand;
 
+            
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _saveRawDataCommand;
 
+            
             /// <summary>
             /// Экземпляр команды на [открытие данных из файла].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _fromFileCommand;
 
+            
             /// <summary>
             /// Экземпляр команды на [выдачу активного УКС активация ПК1 по интерфейсу ВСИ].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueCmdEnable1Command;
 
+            
             /// <summary>
             /// Экземпляр команды на [выдачу активного УКС деактивировать ПК-ы по интерфейсу ВСИ].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueCmdDisableCommand;
 
+            
             /// <summary>
             /// Экземпляр команды на [выдачу активного УКС активация ПК2 по интерфейсу ВСИ].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueCmdEnable2Command;
 
+            
             /// <summary>
             /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueCmdCommand;
 
             /// <summary>
@@ -2443,12 +2568,12 @@ namespace Egse.Devices
             /// </summary>
             private bool _isActive2;
             private bool isSaveTxtData;
-                        
+
             /// <summary>
-            /// Инициализирует новый экземпляр класса <see cref="HSI" />.
+            /// Инициализирует новый экземпляр класса <see cref="Hsi" />.
             /// </summary>
             /// <param name="owner">The owner.</param>
-            public HSI(EgseBukNotify owner)
+            public Hsi(EgseBukNotify owner)
                 : base(owner)
             {
             }
@@ -2481,6 +2606,17 @@ namespace Egse.Devices
                 /// </summary>
                 [Description("Основная + резервная")]
                 MainResv = 0x00
+            }
+
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);                                  
+
+            }
+
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>
@@ -2522,10 +2658,10 @@ namespace Egse.Devices
                     return _isIssueReady1;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueReady1 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueReady1, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2543,10 +2679,10 @@ namespace Egse.Devices
                     return _isIssueReady2;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueReady2 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueReady2, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2564,10 +2700,10 @@ namespace Egse.Devices
                     return _isIssueBusy1;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueBusy1 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueBusy1, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2585,10 +2721,10 @@ namespace Egse.Devices
                     return _isIssueBusy2;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueBusy2 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueBusy2, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2600,7 +2736,7 @@ namespace Egse.Devices
                     return this.isSaveTxtData;
                 }
 
-                private set
+                set
                 {
                     this.isSaveTxtData = value;
                     FirePropertyChangedEvent();
@@ -2627,10 +2763,10 @@ namespace Egse.Devices
                     return _isIssueMe1;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueMe1 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueMe1, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2648,10 +2784,10 @@ namespace Egse.Devices
                     return _isIssueMe2;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueMe2 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueMe2, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2686,10 +2822,10 @@ namespace Egse.Devices
                     return _isIssueEnable1;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueEnable1 = value;
-                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.IssueEnable, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.Line1].SetProperty(Global.Hsi.Line1.IssueEnable, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2726,10 +2862,10 @@ namespace Egse.Devices
                     return _isIssueEnable2;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueEnable2 = value;
-                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.IssueEnable, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.Line2].SetProperty(Global.Hsi.Line2.IssueEnable, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2766,7 +2902,7 @@ namespace Egse.Devices
                     return _stateCounter1;
                 }
 
-                private set 
+                set 
                 {
                     _stateCounter1 = value;
                     FirePropertyChangedEvent();
@@ -2786,7 +2922,7 @@ namespace Egse.Devices
                     return _rawDataFile;
                 }
 
-                private set 
+                set 
                 {
                     _rawDataFile = value;
                     if (string.Empty != value)
@@ -2828,7 +2964,7 @@ namespace Egse.Devices
                     return _isSaveRawData;
                 }
 
-                private set  
+                set  
                 {
                     _isSaveRawData = value;
                     if (value)
@@ -2876,7 +3012,7 @@ namespace Egse.Devices
                     return _frameCounter1;
                 }
 
-                private set 
+                set 
                 {
                     _frameCounter1 = value;
                     FirePropertyChangedEvent();
@@ -2896,7 +3032,7 @@ namespace Egse.Devices
                     return _stateCounter2;
                 }
 
-                private set 
+                set 
                 {
                     _stateCounter2 = value;
                     FirePropertyChangedEvent();
@@ -2916,7 +3052,7 @@ namespace Egse.Devices
                     return _frameCounter2;
                 }
 
-                private set 
+                set 
                 {
                     _frameCounter2 = value;
                     FirePropertyChangedEvent();
@@ -2936,10 +3072,10 @@ namespace Egse.Devices
                     return _line1;
                 }
 
-                private set 
+                set 
                 {
                     _line1 = value;
-                    ControlValuesList[Global.HSI.Line1].SetProperty(Global.HSI.Line1.Line, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.Line1].SetProperty(Global.Hsi.Line1.Line, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -2957,10 +3093,10 @@ namespace Egse.Devices
                     return _isActive1;
                 }
 
-                private set 
+                set 
                 {
                     _isActive1 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.Active1, Convert.ToInt32(value), false);                    
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.Active1, Convert.ToInt32(value), false);                    
                     FirePropertyChangedEvent();
                 }
             }
@@ -2978,10 +3114,10 @@ namespace Egse.Devices
                     return _isActive2;
                 }
 
-                private set 
+                set 
                 {
                     _isActive2 = value;
-                    ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.Active2, Convert.ToInt32(value), false);  
+                    ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.Active2, Convert.ToInt32(value), false);  
                     FirePropertyChangedEvent();
                 }
             }
@@ -2999,10 +3135,10 @@ namespace Egse.Devices
                     return _line2;
                 }
 
-                private set 
+                set 
                 {
                     _line2 = value;
-                    ControlValuesList[Global.HSI.Line2].SetProperty(Global.HSI.Line2.Line, Convert.ToInt32(value));
+                    ControlValuesList[Global.Hsi.Line2].SetProperty(Global.Hsi.Line2.Line, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -3020,10 +3156,10 @@ namespace Egse.Devices
                     return _lineIn;
                 }
 
-                private set 
+                set 
                 {
                     _lineIn = value;
-                    ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineIn, Convert.ToInt32(value));
+                    ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.LineIn, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -3041,10 +3177,10 @@ namespace Egse.Devices
                     return _lineOut;
                 }
 
-                private set 
+                set 
                 {
                     _lineOut = value;
-                    ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.LineOut, Convert.ToInt32(value));
+                    ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.LineOut, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -3062,10 +3198,10 @@ namespace Egse.Devices
                     return _isIssueRequest;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueRequest = value;
-                    ControlValuesList[Global.SimHSI.Control].SetProperty(Global.SimHSI.Control.IssueRequest, Convert.ToInt32(value));
+                    ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.IssueRequest, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
@@ -3102,7 +3238,7 @@ namespace Egse.Devices
                     return _isIssueCmd;
                 }
 
-                private set 
+                set 
                 {
                     _isIssueCmd = value;                   
                     FirePropertyChangedEvent();
@@ -3140,7 +3276,7 @@ namespace Egse.Devices
                 {
                     if (_issueCmdCommand == null)
                     {
-                        _issueCmdCommand = new RelayCommand(obj => { IsIssueCmd = true; ControlValuesList[Global.SimHSI.Record].SetProperty(Global.SimHSI.Record.IssueCmd, 1); }, obj => { return true; });
+                        _issueCmdCommand = new RelayCommand(obj => { IsIssueCmd = true; ControlValuesList[Global.SimHsi.Record].SetProperty(Global.SimHsi.Record.IssueCmd, 1); }, obj => { return true; });
                     }
 
                     return _issueCmdCommand;
@@ -3159,7 +3295,7 @@ namespace Egse.Devices
                 {
                     if (_issueCmdEnable1Command == null)
                     {
-                        _issueCmdEnable1Command = new RelayCommand(obj => { Device.CmdSimHSI1(1); }, obj => { return true; });
+                        _issueCmdEnable1Command = new RelayCommand(obj => { Device.CmdSimHsi1(1); }, obj => { return true; });
                     }
 
                     return _issueCmdEnable1Command;
@@ -3178,7 +3314,7 @@ namespace Egse.Devices
                 {
                     if (_issueCmdDisableCommand == null)
                     {
-                        _issueCmdDisableCommand = new RelayCommand(obj => { Device.CmdSimHSI1(0); }, obj => { return true; });
+                        _issueCmdDisableCommand = new RelayCommand(obj => { Device.CmdSimHsi1(0); }, obj => { return true; });
                     }
 
                     return _issueCmdDisableCommand;
@@ -3197,7 +3333,7 @@ namespace Egse.Devices
                 {
                     if (_issueCmdEnable2Command == null)
                     {
-                        _issueCmdEnable2Command = new RelayCommand(obj => { Device.CmdSimHSI2(1); }, obj => { return true; });
+                        _issueCmdEnable2Command = new RelayCommand(obj => { Device.CmdSimHsi2(1); }, obj => { return true; });
                     }
 
                     return _issueCmdEnable2Command;
@@ -3417,15 +3553,15 @@ namespace Egse.Devices
             /// </summary>
             protected override void InitControlValue()
             {
-                ControlValuesList.Add(Global.HSI.Line1, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line1StateCounter, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line1FrameCounter, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line2, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line2StateCounter, new ControlValue());
-                ControlValuesList.Add(Global.HSI.Line2FrameCounter, new ControlValue());
-                ControlValuesList.Add(Global.SimHSI.Control, new ControlValue());
-                ControlValuesList.Add(Global.SimHSI.Record, new ControlValue());
-                ControlValuesList.Add(Global.HSI.State, new ControlValue());
+                ControlValuesList.Add(Global.Hsi.Line1, new ControlValue());
+                ControlValuesList.Add(Global.Hsi.Line1StateCounter, new ControlValue());
+                ControlValuesList.Add(Global.Hsi.Line1FrameCounter, new ControlValue());
+                ControlValuesList.Add(Global.Hsi.Line2, new ControlValue());
+                ControlValuesList.Add(Global.Hsi.Line2StateCounter, new ControlValue());
+                ControlValuesList.Add(Global.Hsi.Line2FrameCounter, new ControlValue());
+                ControlValuesList.Add(Global.SimHsi.Control, new ControlValue());
+                ControlValuesList.Add(Global.SimHsi.Record, new ControlValue());
+                ControlValuesList.Add(Global.Hsi.State, new ControlValue());
             }
 
             /// <summary>
@@ -3433,27 +3569,27 @@ namespace Egse.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.Line, 1, 2, Device.CmdHSILine1, value => IssueLine1 = (Line)value);
-                ControlValuesList[Global.HSI.Line1].AddProperty(Global.HSI.Line1.IssueEnable, 0, 1, Device.CmdHSILine1, value => IsIssueEnable1 = 1 == value);
-                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.Line, 1, 2, Device.CmdHSILine2, value => IssueLine2 = (Line)value);
-                ControlValuesList[Global.HSI.Line2].AddProperty(Global.HSI.Line2.IssueEnable, 0, 1, Device.CmdHSILine2, value => IsIssueEnable2 = 1 == value);
-                ControlValuesList[Global.HSI.Line1StateCounter].AddProperty(Global.HSI.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value, true);
-                ControlValuesList[Global.HSI.Line1FrameCounter].AddProperty(Global.HSI.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value, true);
-                ControlValuesList[Global.HSI.Line2StateCounter].AddProperty(Global.HSI.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value, true);
-                ControlValuesList[Global.HSI.Line2FrameCounter].AddProperty(Global.HSI.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value, true);
-                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineIn, 2, 1, Device.CmdSimHSIControl, value => IssueLineIn = (SimLine)value);
-                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.LineOut, 1, 1, Device.CmdSimHSIControl, value => IssueLineOut = (SimLine)value);
-                ControlValuesList[Global.SimHSI.Control].AddProperty(Global.SimHSI.Control.IssueRequest, 0, 1, Device.CmdSimHSIControl, value => IsIssueRequest = 1 == value);
-                ControlValuesList[Global.SimHSI.Record].AddProperty(Global.SimHSI.Record.IssueCmd, 0, 1, Device.CmdSimHSIRecord, value => IsIssueCmd = 1 == value);
+                ControlValuesList[Global.Hsi.Line1].AddProperty(Global.Hsi.Line1.Line, 1, 2, Device.CmdHsiLine1, value => IssueLine1 = (Line)value);
+                ControlValuesList[Global.Hsi.Line1].AddProperty(Global.Hsi.Line1.IssueEnable, 0, 1, Device.CmdHsiLine1, value => IsIssueEnable1 = 1 == value);
+                ControlValuesList[Global.Hsi.Line2].AddProperty(Global.Hsi.Line2.Line, 1, 2, Device.CmdHsiLine2, value => IssueLine2 = (Line)value);
+                ControlValuesList[Global.Hsi.Line2].AddProperty(Global.Hsi.Line2.IssueEnable, 0, 1, Device.CmdHsiLine2, value => IsIssueEnable2 = 1 == value);
+                ControlValuesList[Global.Hsi.Line1StateCounter].AddProperty(Global.Hsi.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value, true);
+                ControlValuesList[Global.Hsi.Line1FrameCounter].AddProperty(Global.Hsi.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value, true);
+                ControlValuesList[Global.Hsi.Line2StateCounter].AddProperty(Global.Hsi.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value, true);
+                ControlValuesList[Global.Hsi.Line2FrameCounter].AddProperty(Global.Hsi.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value, true);
+                ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.LineIn, 2, 1, Device.CmdSimHsiControl, value => IssueLineIn = (SimLine)value);
+                ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.LineOut, 1, 1, Device.CmdSimHsiControl, value => IssueLineOut = (SimLine)value);
+                ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.IssueRequest, 0, 1, Device.CmdSimHsiControl, value => IsIssueRequest = 1 == value);
+                ControlValuesList[Global.SimHsi.Record].AddProperty(Global.SimHsi.Record.IssueCmd, 0, 1, Device.CmdSimHsiRecord, value => IsIssueCmd = 1 == value);
 
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.Active1, 6, 1, delegate { }, value => IsActive1 = 1 == value, true);
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.Active2, 7, 1, delegate { }, value => IsActive2 = 1 == value, true);
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueReady1, 0, 1, Device.CmdHSIState, value => IsIssueReady1 = 1 == value);
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueReady2, 3, 1, Device.CmdHSIState, value => IsIssueReady2 = 1 == value);
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueBusy1, 1, 1, Device.CmdHSIState, value => IsIssueBusy1 = 1 == value);
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueBusy2, 4, 1, Device.CmdHSIState, value => IsIssueBusy2 = 1 == value);
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueMe1, 2, 1, Device.CmdHSIState, value => IsIssueMe1 = 1 == value);
-                ControlValuesList[Global.HSI.State].AddProperty(Global.HSI.State.IssueMe2, 5, 1, Device.CmdHSIState, value => IsIssueMe2 = 1 == value);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.Active1, 6, 1, delegate { }, value => IsActive1 = 1 == value, true);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.Active2, 7, 1, delegate { }, value => IsActive2 = 1 == value, true);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueReady1, 0, 1, Device.CmdHsiState, value => IsIssueReady1 = 1 == value);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueReady2, 3, 1, Device.CmdHsiState, value => IsIssueReady2 = 1 == value);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueBusy1, 1, 1, Device.CmdHsiState, value => IsIssueBusy1 = 1 == value);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueBusy2, 4, 1, Device.CmdHsiState, value => IsIssueBusy2 = 1 == value);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueMe1, 2, 1, Device.CmdHsiState, value => IsIssueMe1 = 1 == value);
+                ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueMe2, 5, 1, Device.CmdHsiState, value => IsIssueMe2 = 1 == value);
             }
         }
 
@@ -3530,6 +3666,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор телеметрии.
         /// </summary>
+        [Serializable()]
         public class Telemetry : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -3665,21 +3802,25 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУСК ПК1].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issuePowerBusk1Command;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУСК ПК2].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issuePowerBusk2Command;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУНД ПК1].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issuePowerBund1Command;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУНД ПК2].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issuePowerBund2Command;
 
             /// <summary>
@@ -3689,6 +3830,17 @@ namespace Egse.Devices
             public Telemetry(EgseBukNotify owner)
                 : base(owner)
             {
+            }
+
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+
+            }
+
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>
@@ -4380,6 +4532,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор spacewire1.
         /// </summary>
+        [Serializable()]
         public class Spacewire1 : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -4455,31 +4608,37 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issuePackageCommand;
             
             /// <summary>
             /// Экземпляр команды на [включение обмена для НП1].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueSD1TransCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение обмена для НП2].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueSD2TransCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение выдачи пакетов данных в НП1].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueSD1TransDataCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение выдачи пакетов данных в НП2].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueSD2TransDataCommand;
 
             /// <summary>
@@ -4489,6 +4648,17 @@ namespace Egse.Devices
             public Spacewire1(EgseBukNotify owner)
                 : base(owner)
             {
+            }
+
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+
+            }
+
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>
@@ -5028,6 +5198,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор spacewire2.
         /// </summary>
+        [Serializable()]
         public class Spacewire2 : SubNotify, IDataErrorInfo
         {         
             /// <summary>
@@ -5158,6 +5329,7 @@ namespace Egse.Devices
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
+            [field: NonSerialized()]
             private FileStream _rawDataStream;
 
             /// <summary>
@@ -5165,54 +5337,65 @@ namespace Egse.Devices
             /// Примечание:
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
+            [field: NonSerialized()]
             private Task _rawDataTask;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issuePackageCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки RMAP по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueRMapCommand;
 
             /// <summary>
             /// Экземпляр команды на [формирование посылки телекоманды по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueMakeTKCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение передачи метки времени по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueTimeMarkCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение обмена для прибора БУК].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueTransCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение выдачи КБВ для прибора БУК].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueKbvCommand;
 
             /// <summary>
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _fromFileCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _saveRawDataCommand;
             private bool isConfirmReceipt;
             private bool isConfirmExecution = true;
+            [field: NonSerialized()]
             private ObservableCollection<string> apidList = new ObservableCollection<string>() { "0x610", "0x612", "0x614", "0x616" };
             private bool isSaveTxtData = true;
 
@@ -5224,6 +5407,17 @@ namespace Egse.Devices
                 : base(owner)
             {
                 CounterIcd = new Dictionary<short, AutoCounter>();
+            }
+
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+
+            }
+
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>
@@ -5846,7 +6040,7 @@ namespace Egse.Devices
 
                 private set 
                 {
-                    _isIssueRMap = value;                    
+                    _isIssueRMap = value;
                     FirePropertyChangedEvent();
                 }
             }
@@ -5899,7 +6093,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return IsIssueRMap || IsIssuePackage;
+                    return IsIssueRMap || IsIssuePackage || !IsConnect;
                 }
             }
 
@@ -5985,7 +6179,8 @@ namespace Egse.Devices
 
                 private set 
                 {
-                    _isIssuePackage = value;                    
+                    _isIssuePackage = value;
+                    ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.IssuePackage, Convert.ToInt32(value), false);
                     FirePropertyChangedEvent();
                 }
             }
@@ -6297,7 +6492,7 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.IssueEnable, 0, 1, Device.CmdSpacewire2Control, value => IsIssueEnable = 1 == value);
                 ControlValuesList[Global.Spacewire2.Control].AddProperty(Global.Spacewire2.Control.Connect, 3, 1, delegate { }, value => IsConnect = 1 == value, true);
                 ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.IssueRMap, 0, 1, Device.CmdSpacewire2Record, value => IsIssueRMap = 1 == value);
-                ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.IssuePackage, 1, 1, Device.CmdSpacewire2Record, value => IsIssuePackage = 1 == value);
+                ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.IssuePackage, 1, 1, Device.CmdSpacewire2Record, value => IsIssuePackage = 1 == value, true);
                 ControlValuesList[Global.Spacewire2.BuskLogic].AddProperty(Global.Spacewire2.BuskLogic, 0, 8, Device.CmdSpacewire2LogicBusk, value => LogicBusk = value);
                 ControlValuesList[Global.Spacewire2.BukLogic].AddProperty(Global.Spacewire2.BukLogic, 0, 8, Device.CmdSpacewire2LogicBuk, value => LogicBuk = value);
                 ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.IssueTimeMark, 0, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueTimeMark = 1 == value);
@@ -6310,6 +6505,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор spacewire3.
         /// </summary>
+        [Serializable()]
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -6350,6 +6546,7 @@ namespace Egse.Devices
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
+            [field: NonSerialized()]
             private FileStream _rawDataStream;
 
             /// <summary>
@@ -6357,6 +6554,7 @@ namespace Egse.Devices
             /// Примечание:
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
+            [field: NonSerialized()]
             private Task _rawDataTask;
 
             /// <summary>
@@ -6367,11 +6565,13 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды [включение интерфейса spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _saveRawDataCommand;
 
             /// <summary>
@@ -6422,6 +6622,17 @@ namespace Egse.Devices
             public Spacewire3(EgseBukNotify owner)
                 : base(owner)
             {
+            }
+
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+
+            }
+
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>
@@ -7003,6 +7214,7 @@ namespace Egse.Devices
         /// <summary>
         /// Управление spacewire4.
         /// </summary>
+        [Serializable()]
         public class Spacewire4 : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -7048,36 +7260,43 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение передачи метки времени по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueTimeMarkCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу ошибки EEP по интерфейсу spacewire, при формировании посылки].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEEPCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу EOP по интерфейсу spacewire, при формировании посылки].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueEOPCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issuePackageCommand;
             
             /// <summary>
             /// Экземпляр команды на [включение автоматической выдачи посылки по интерфейсу spacewire].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _issueAutoCommand;
 
             /// <summary>
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
+            [field: NonSerialized()]
             private ICommand _fromFileCommand;
 
             /// <summary>
@@ -7087,6 +7306,17 @@ namespace Egse.Devices
             public Spacewire4(EgseBukNotify owner)
                 : base(owner)
             {
+            }
+
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+
+            }
+
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>

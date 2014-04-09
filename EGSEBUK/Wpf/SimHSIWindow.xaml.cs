@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SimHSIWindow.xaml.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="SimHsiWindow.xaml.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Коробейщиков Иван</author>
@@ -11,9 +11,9 @@ namespace Egse.Defaults
     using Egse.Devices;
 
     /// <summary>
-    /// Interaction logic for SimHSI.xaml
+    /// Interaction logic for SimHsi.xaml
     /// </summary>
-    public partial class SimHSIWindow : Window
+    public partial class SimHsiWindow : Window
     {
         /// <summary>
         /// Интерфейс управления прибором.
@@ -21,9 +21,9 @@ namespace Egse.Defaults
         private EgseBukNotify _intfEGSE;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="SimHSIWindow" />.
+        /// Инициализирует новый экземпляр класса <see cref="SimHsiWindow" />.
         /// </summary>
-        public SimHSIWindow()
+        public SimHsiWindow()
         {
             InitializeComponent();
         }
@@ -36,7 +36,7 @@ namespace Egse.Defaults
         {
             _intfEGSE = intfEGSE;
             DataContext = _intfEGSE;
-            GridSimHSI.DataContext = _intfEGSE.HsiNotify;
+            GridSimHsi.DataContext = _intfEGSE.HsiNotify;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿<Window x:Class="Egse.Defaults.HSIWindow"
+﻿<Window x:Class="Egse.Defaults.HsiWindow"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:l="clr-namespace:Egse.Defaults"
@@ -8,8 +8,8 @@
 		FontFamily="{StaticResource BaseFontFamily}"
 		FontSize="{StaticResource BaseFontSize}"
 		Closing="Window_Closing"
-		Visibility="{Binding IsShowHSI, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
-	<Grid x:Name="GridHSI"
+		Visibility="{Binding IsShowHsi, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+	<Grid x:Name="GridHsi"
 		Background="{StaticResource BackBrush}"
 		Margin="4">
 		<Grid.RowDefinitions>
@@ -91,7 +91,7 @@
 			<ComboBox Grid.Column="3"                               
 					  Grid.Row="3" 
 					  Margin="1"
-					  ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+HSI+Line}}}" 
+					  ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Hsi+Line}}}" 
 					  DisplayMemberPath="Description" 
 					  SelectedValue="{Binding IssueLine1}"  
 					  SelectedValuePath="Value" TabIndex="2"/>
@@ -131,7 +131,7 @@
 			<ComboBox Grid.Column="3"                               
 					  Grid.Row="4" 
 					  Margin="1"
-					  ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+HSI+Line}}}" 
+					  ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Hsi+Line}}}" 
 					  DisplayMemberPath="Description" 
 					  SelectedValue="{Binding IssueLine2}"  
 					  SelectedValuePath="Value" TabIndex="7"/>
