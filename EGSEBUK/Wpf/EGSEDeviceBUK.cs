@@ -2119,7 +2119,7 @@ namespace Egse.Devices
             /// Загружает из коллекции в список.
             /// </summary>
             /// <param name="collection">Коллекция строк.</param>
-            public void LoadDataList(StringCollection collection)
+            public void LoadDataList(StringCollection collection, bool useIniFile = true)
             {
                 if (null != collection)
                 {
@@ -2128,17 +2128,38 @@ namespace Egse.Devices
                     {
                         DataList.Add(cmd);
                     }
-                }
+
+                    if (useIniFile)
+                    {
+                        List<string> listIni = new List<string>();
+                        AppSettings.LoadList(listIni, this.ToString());
+                        if (0 < listIni.Count)
+                        {
+                            DataList.Clear();
+                        }
+
+                        foreach (string cmd in listIni)
+                        {
+                            DataList.Add(cmd);
+                        }
+                    }
+                }                
             }
 
             /// <summary>
             /// Сохраняет список команд(данных) в коллекцию.
             /// </summary>
             /// <param name="collection">Коллекция строк.</param>
-            public void SaveDataList(StringCollection collection)
-            {
+            public void SaveDataList(StringCollection collection, bool useIniFile = true)
+            {                
                 if (0 < DataList.Count)
                 {
+                    if (useIniFile)
+                    {
+                        List<string> list = collection.Cast<string>().ToList();
+                        AppSettings.SaveList(list, this.ToString());
+                    }
+
                     collection.Clear();
                     collection.AddRange(DataList.ToArray());
                 }
