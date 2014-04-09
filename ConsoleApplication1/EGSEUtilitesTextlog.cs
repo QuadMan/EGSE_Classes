@@ -24,7 +24,7 @@ namespace Egse.Utilites
         /// Имя файла
         /// Объект StreamWriter, работающий с log-файлом
         /// </summary>
-        private string _fileName;
+        private string fileName;
 
         /// <summary>
         /// Разрешена/запрещена запись в log-файл
@@ -39,14 +39,15 @@ namespace Egse.Utilites
         /// <summary>
         /// Объект StreamWriter, работающий с log-файлом
         /// </summary>
-        private StreamWriter _sw;
+        private StreamWriter streamWriter;
 
         private bool isNeedNewLog;
 
         /// <summary>
         /// Объект DateTime, хранящий текущее время : (HH:MM:SS:MMS) с log-файлом
         /// </summary>
-        private DateTime _logtime;
+        private DateTime logTime;
+        private string defaultFileName;
         
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="TxtLogger" />.
@@ -56,14 +57,15 @@ namespace Egse.Utilites
         {
             _enableTextWrite = true;
             _enableTimeWrite = true;
-            _logtime = new DateTime();
-            _fileName = MakeLoggerDir() + "\\" + GetLoggerFileName(fileName);
-            _sw = new StreamWriter(_fileName, true);
+            this.defaultFileName = fileName;
+            MakeNewFile(this.defaultFileName);
         }
 
-        public void NewLog()
-        { 
-          
+        private void MakeNewFile(string fileName)
+        {
+            this.logTime = new DateTime();
+            this.fileName = MakeLoggerDir() + "\\" + GetLoggerFileName(fileName);
+            this.streamWriter = new StreamWriter(this.fileName, true);
         }
 
         /// <summary>
@@ -76,7 +78,7 @@ namespace Egse.Utilites
         {
             get
             {
-                return _fileName;
+                return this.fileName;
             }
         }
 
@@ -95,18 +97,25 @@ namespace Egse.Utilites
 
             set
             {
+                if (this.isNeedNewLog)
+                {
+                    this.isNeedNewLog = false;
+                    this.streamWriter.Close();
+                    MakeNewFile(this.defaultFileName);
+                }
+
                 if (_enableTextWrite)
                 {
                     if (_enableTimeWrite)
                     {
-                        _logtime = DateTime.Now;
-                        _sw.Write("{0:d2}:{1:d2}:{2:d2}:{3:d3} ", _logtime.Hour, _logtime.Minute, _logtime.Second, _logtime.Millisecond);
+                        this.logTime = DateTime.Now;
+                        this.streamWriter.Write("{0:d2}:{1:d2}:{2:d2}:{3:d3} ", this.logTime.Hour, this.logTime.Minute, this.logTime.Second, this.logTime.Millisecond);
                     }
 
-                    _sw.WriteLine(value);
+                    this.streamWriter.WriteLine(value);
 
                     // введена для отладки USB, может быть вдальнейшем ввести параметр лога
-                    _sw.Flush();
+                    this.streamWriter.Flush();
                 }
             }
         }
@@ -154,6 +163,12 @@ namespace Egse.Utilites
             GC.SuppressFinalize(this);
         }
 
+        public void NewLog()
+        {
+            this.isNeedNewLog = true;
+            LogText = Resource.Get(@"stNewLog");
+        }
+
         /// <summary>
         /// Метод по имени файла возвращает полное имя файла с текущей датой в имени
         /// </summary>
@@ -164,7 +179,7 @@ namespace Egse.Utilites
             string[] strName;
             string strRes = null;
 
-            _logtime = DateTime.Now;
+            this.logTime = DateTime.Now;
 
             strName = strFileName.Split(new char[] { '.' });
             strRes += strName[0];
@@ -173,7 +188,7 @@ namespace Egse.Utilites
                 strRes += "." + strName[i];
             }
 
-            strRes += string.Format("_{0:d2}_{1:d2}{2:d2}{3:d2}.", _logtime.Day, _logtime.Hour, _logtime.Minute, _logtime.Second);
+            strRes += string.Format("_{0:d2}_{1:d2}{2:d2}{3:d2}.", this.logTime.Day, this.logTime.Hour, this.logTime.Minute, this.logTime.Second);
             strRes += strName[strName.GetLength(0) - 1];
 
             return strRes;
@@ -200,7 +215,7 @@ namespace Egse.Utilites
         {
             string strRes = null;
 
-            _logtime = DateTime.Now;
+            this.logTime = DateTime.Now;
             strRes = Directory.GetCurrentDirectory().ToString();
             if (!strRes.EndsWith("\\") && !strRes.EndsWith("/"))
             {
@@ -208,8 +223,8 @@ namespace Egse.Utilites
             }
 
             strRes += "LOGS\\";
-            strRes += _logtime.Year.ToString().Substring(2);
-            strRes += string.Format("{0:d2}", _logtime.Month);
+            strRes += this.logTime.Year.ToString().Substring(2);
+            strRes += string.Format("{0:d2}", this.logTime.Month);
             return strRes;
         }
 
@@ -222,7 +237,7 @@ namespace Egse.Utilites
             if (disposing)
             {
                 // освобождаем неуправляемые ресурсы
-                _sw.Close();
+                this.streamWriter.Close();
             }
             //// тут освобождаем управляемые ресурсы
         }

@@ -2421,6 +2421,7 @@ namespace Egse.Devices
             /// Активность второго полукомплекта.
             /// </summary>
             private bool _isActive2;
+            private bool isSaveTxtData;
                         
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="HSI" />.
@@ -2571,6 +2572,27 @@ namespace Egse.Devices
                 }
             }
 
+            public bool IsSaveTxtData
+            {
+                get
+                {
+                    return this.isSaveTxtData;
+                }
+
+                private set
+                {
+                    this.isSaveTxtData = value;
+                    FirePropertyChangedEvent();
+
+                    if (value)
+                    {
+                        LogsClass.LogHsi.NewLog();
+                    }
+
+                    FirePropertyChangedEvent("TxtDataFile");
+                }
+            }
+
             /// <summary>
             /// Получает значение, показывающее, [состояние статуса ПК1: me].
             /// </summary>
@@ -2610,6 +2632,23 @@ namespace Egse.Devices
                     _isIssueMe2 = value;
                     ControlValuesList[Global.HSI.State].SetProperty(Global.HSI.State.IssueMe2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+
+            public string TxtDataFile
+            {
+                get
+                {
+                    if (IsSaveTxtData)
+                    {
+                        return LogsClass.LogHsi.FileName;
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+
                 }
             }
 
@@ -5151,24 +5190,11 @@ namespace Egse.Devices
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
             private ICommand _saveRawDataCommand;
-            private string _txtDataFile;
             private bool isConfirmReceipt;
             private bool isConfirmExecution = true;
             private ObservableCollection<string> apidList = new ObservableCollection<string>() { "0x610", "0x612", "0x614", "0x616" };
+            private bool isSaveTxtData = true;
 
-            /// <summary>
-            /// Получает список отправленных команд(данных).
-            /// </summary>
-            /// <value>
-            /// Список отправленных команд(данных).
-            /// </value>
-            public ObservableCollection<string> ApidList
-            {
-                get
-                {
-                    return this.apidList;
-                }
-            }
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
             /// </summary>
@@ -5263,6 +5289,14 @@ namespace Egse.Devices
             /// </value>
             public byte[] Data { get; private set; }
 
+            public ObservableCollection<string> ApidList
+            {
+                get
+                {
+                    return this.apidList;
+                }
+            }
+
             /// <summary>
             /// Получает или задает количество запросов кредита от БУСК.
             /// </summary>
@@ -5307,14 +5341,15 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _txtDataFile;
-                }
+                    if (IsSaveTxtData)
+                    {
+                        return LogsClass.LogSpacewire2.FileName;
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
 
-                private set
-                {
-                    _txtDataFile = value;
-
-                    FirePropertyChangedEvent();
                 }
             }
 
@@ -5357,6 +5392,27 @@ namespace Egse.Devices
                     }
 
                     FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsSaveTxtData
+            {
+                get
+                {
+                    return this.isSaveTxtData;
+                }
+
+                private set
+                {
+                    this.isSaveTxtData = value;
+                    FirePropertyChangedEvent();
+
+                    if (value)
+                    {
+                        LogsClass.LogSpacewire2.NewLog();                        
+                    }
+
+                    FirePropertyChangedEvent("TxtDataFile");
                 }
             }
 
@@ -5874,8 +5930,6 @@ namespace Egse.Devices
                 }
             }
 
-            
-
             /// <summary>
             /// Получает команду на [формирование посылки телекоманды по интерфейсу spacewire].
             /// </summary>
@@ -6072,6 +6126,14 @@ namespace Egse.Devices
                     _isTransData = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.TransData, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+            public int ApidSelected
+            {
+                get
+                {
+                    return 0;
                 }
             }
 
@@ -6330,6 +6392,7 @@ namespace Egse.Devices
             /// Количество предоставления квот от НП.
             /// </summary>
             private long _requestQueueFromSD;
+            private bool isSaveTxtData = true;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
@@ -6487,6 +6550,43 @@ namespace Egse.Devices
                     _isConnect = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
+                }
+            }
+
+            public string TxtDataFile
+            {
+                get
+                {
+                    if (IsSaveTxtData)
+                    {
+                        return LogsClass.LogSpacewire3.FileName;
+                    }
+                    else
+                    {
+                        return string.Empty;
+                    }
+
+                }
+            }
+
+            public bool IsSaveTxtData
+            {
+                get
+                {
+                    return this.isSaveTxtData;
+                }
+
+                private set
+                {
+                    this.isSaveTxtData = value;
+                    FirePropertyChangedEvent();
+
+                    if (value)
+                    {
+                        LogsClass.LogSpacewire3.NewLog();
+                    }
+
+                    FirePropertyChangedEvent("TxtDataFile");
                 }
             }
 

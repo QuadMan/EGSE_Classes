@@ -286,6 +286,10 @@
       <Link>EGSEUtilites.resx</Link>
       <DependentUpon>EGSEUtilites.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\..\ConsoleApplication1\EGSEUtilitesTextlog.resx">
+      <Link>EGSEUtilitesTextlog.resx</Link>
+      <DependentUpon>EGSEUtilitesTextlog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EGSEConstantsBUK.resx">
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>

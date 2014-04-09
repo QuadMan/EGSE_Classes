@@ -23,48 +23,48 @@ namespace Egse.Utilites
     using System.Windows;
     using Egse.Protocols;
 
-    //public class SampleMarshaler : ICustomMarshaler
-    //{
-    //    static SampleMarshaler marshaler;
+    ////public class SampleMarshaler : ICustomMarshaler
+    ////{
+    ////    static SampleMarshaler marshaler;
 
-    //    public object MarshalNativeToManaged(IntPtr pNativeData)
-    //    {
-    //        return null;
-    //    }
+    ////    public object MarshalNativeToManaged(IntPtr pNativeData)
+    ////    {
+    ////        return null;
+    ////    }
 
-    //    public IntPtr MarshalManagedToNative(object managedObj)
-    //    {
-    //        if (managedObj == null)
-    //            return IntPtr.Zero;
-    //        if (!(managedObj is IManaged))
-    //            throw new MarshalDirectiveException("This custom marshaler must be used on a IManaged derived type.");
+    ////    public IntPtr MarshalManagedToNative(object managedObj)
+    ////    {
+    ////        if (managedObj == null)
+    ////            return IntPtr.Zero;
+    ////        if (!(managedObj is IManaged))
+    ////            throw new MarshalDirectiveException("This custom marshaler must be used on a IManaged derived type.");
 
-    //        ManagedIUnmanaged customObject = new ManagedIUnmanaged((IManaged)managedObj);
-    //        return Marshal.GetComInterfaceForObject(customObject, typeof(UCOMIUnmanaged));
-    //    }
+    ////        ManagedIUnmanaged customObject = new ManagedIUnmanaged((IManaged)managedObj);
+    ////        return Marshal.GetComInterfaceForObject(customObject, typeof(UCOMIUnmanaged));
+    ////    }
 
-    //    public void CleanUpNativeData(IntPtr pNativeData)
-    //    {
-    //        Marshal.Release(pNativeData);
-    //    }
+    ////    public void CleanUpNativeData(IntPtr pNativeData)
+    ////    {
+    ////        Marshal.Release(pNativeData);
+    ////    }
 
-    //    public void CleanUpManagedData(object managedObj)
-    //    {
+    ////    public void CleanUpManagedData(object managedObj)
+    ////    {
 
-    //    }
+    ////    }
 
-    //    public int GetNativeDataSize()
-    //    {
-    //        return -1;
-    //    }
+    ////    public int GetNativeDataSize()
+    ////    {
+    ////        return -1;
+    ////    }
 
-    //    public static ICustomMarshaler GetInstance(string cookie)
-    //    {
-    //        if (marshaler == null)
-    //            return marshaler = new SampleMarshaler();
-    //        return marshaler;
-    //    }
-    //}
+    ////    public static ICustomMarshaler GetInstance(string cookie)
+    ////    {
+    ////        if (marshaler == null)
+    ////            return marshaler = new SampleMarshaler();
+    ////        return marshaler;
+    ////    }
+    ////}
 
     /// <summary>
     /// Отвечает за упаковку времени в посылках данных.

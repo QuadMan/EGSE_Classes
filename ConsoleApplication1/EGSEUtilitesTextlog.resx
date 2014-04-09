@@ -117,25 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="stErrorsLog" xml:space="preserve">
-    <value>errors.log</value>
-  </data>
-  <data name="stHsiLog" xml:space="preserve">
-    <value>hsi.log</value>
-  </data>
-  <data name="stMainLog" xml:space="preserve">
-    <value>main.log</value>
-  </data>
-  <data name="stOperatorLog" xml:space="preserve">
-    <value>operator.log</value>
-  </data>
-  <data name="stSpacewire2" xml:space="preserve">
-    <value>spacewire2.log</value>
-  </data>
-  <data name="stSpacewire3" xml:space="preserve">
-    <value>spacewire3.log</value>
-  </data>
-  <data name="stUSBLog" xml:space="preserve">
-    <value>usb.log</value>
+  <data name="stNewLog" xml:space="preserve">
+    <value>Инициализирован новый лог-файл.</value>
   </data>
 </root>

@@ -82,6 +82,11 @@ namespace Egse.Defaults
                 {
                     MessageBox.Show(exc.Message);
                 }
+
+                if (_intfEGSE.Spacewire3Notify.IsSaveTxtData)
+                {
+                    LogsClass.LogSpacewire3.LogText = spacewireMsg;
+                }
             }
         }  
 

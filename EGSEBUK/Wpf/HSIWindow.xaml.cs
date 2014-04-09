@@ -74,6 +74,11 @@ namespace Egse.Defaults
                 {
                     MessageBox.Show(exc.Message);
                 }
+
+                if (_intfEGSE.HsiNotify.IsSaveTxtData)
+                {
+                    LogsClass.LogHsi.LogText = hsiMsg;
+                }
             }
         }
 

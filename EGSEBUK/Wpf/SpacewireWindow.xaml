@@ -167,7 +167,7 @@ IsChecked="{Binding IsIssueKbv}"
 					  b:WatermarkComboBoxBehavior.Label="Введите APID..."
 					  b:WatermarkComboBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"
 					  Text="{Binding Apid, Converter={StaticResource ShortToStrConverter}, ValidatesOnDataErrors=True}"  
-					  TabIndex="8"/>
+					  TabIndex="8" SelectedIndex="{Binding ApidSelected, Mode=OneWay}"/>
 				<Label Grid.Row="1"
 					   Grid.Column="5"
 					   Grid.ColumnSpan="2"
@@ -224,8 +224,8 @@ IsChecked="{Binding IsIssueKbv}"
 				   Content="Монитор Spacewire"/>
 			<DockPanel Grid.Row="1"
 				LastChildFill="True" >
-				<Label DockPanel.Dock="Left" Content="Запись данных "
-					Template="{StaticResource FlatLabel}"/>
+				<Label DockPanel.Dock="Left" Content="Запись данных"
+					Template="{StaticResource FlatLabel}" Width="140"/>
 				<CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
 					IsChecked="{Binding IsSaveRawData}"
 					TabIndex="11"/>
@@ -239,14 +239,14 @@ IsChecked="{Binding IsIssueKbv}"
 			</DockPanel>
 			<DockPanel Grid.Row="2"
 				LastChildFill="True" >
-				<Label DockPanel.Dock="Left" Content="Запись лог-файла "
+				<Label DockPanel.Dock="Left" Content="Запись лог-файла" Width="140"
 					Template="{StaticResource FlatLabel}"/>
-				<CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
+				<CheckBox DockPanel.Dock="Left" VerticalAlignment="Center" Margin="1"                                        
 					IsChecked="{Binding IsSaveTxtData}"
 					TabIndex="11"/>
 				<TextBox              
 					IsReadOnly="True"
-					Text="{Binding TxtDataFile, ValidatesOnDataErrors=True}"
+					Text="{Binding TxtDataFile, ValidatesOnDataErrors=True, Mode=OneWay}"
 					b:WatermarkTextBoxBehavior.EnableWatermark="True"
 					b:WatermarkTextBoxBehavior.Label="Лог-файл отсутствует..."
 					b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		

@@ -441,9 +441,9 @@ namespace Egse.Protocols.UnitTest
             byte from = 0x66;
             short apid = 612;
 
-           // Random rnd = new Random();
+            Random rnd = new Random();
             byte[] buf = new byte[6];
-            //rnd.NextBytes(buf);
+            rnd.NextBytes(buf);
 
             SpacewireTkMsgEventArgs msg = SpacewireTkMsgEventArgs.GetNew(buf, to, from, apid, true, true);
 

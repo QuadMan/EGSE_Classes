@@ -17,14 +17,15 @@ namespace Egse.Defaults
         /// <summary>
         /// Список имен лог-файлов.
         /// </summary>
-        private static string[] logsNames = new string[6] 
+        private static string[] logsNames = new string[7] 
         { 
             Resource.Get("stMainLog"),
             Resource.Get("stOperatorLog"),
-            Resource.Get("stHSILog"),
+            Resource.Get("stHsiLog"),
             Resource.Get("stErrorsLog"),
             Resource.Get("stUSBLog"),
-            Resource.Get("stSpacewire2")
+            Resource.Get("stSpacewire2"),
+            Resource.Get("stSpacewire3")
         };
 
         /// <summary>
@@ -76,6 +77,14 @@ namespace Egse.Defaults
             }
         }
 
+        public static TxtLogger LogSpacewire3
+        {
+            get
+            {
+                return Instance._loggers[6];
+            }
+        }
+
         /// <summary>
         /// Получает лог оператора.
         /// </summary>
@@ -90,7 +99,7 @@ namespace Egse.Defaults
         /// <summary>
         /// Получает лог ВСИ.
         /// </summary>
-        public static TxtLogger LogHSI
+        public static TxtLogger LogHsi
         {
             get
             {

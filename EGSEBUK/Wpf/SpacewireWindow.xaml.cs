@@ -104,8 +104,11 @@ namespace Egse.Defaults
                 {
                     MessageBox.Show(exc.Message);
                 }
-                //LogsClass.LogSpacewire2.NewLog();
-                LogsClass.LogSpacewire2.LogText = spacewireMsg;
+
+                if (_intfEGSE.Spacewire2Notify.IsSaveTxtData)
+                {
+                    LogsClass.LogSpacewire2.LogText = spacewireMsg;
+                }
             }
         }
 

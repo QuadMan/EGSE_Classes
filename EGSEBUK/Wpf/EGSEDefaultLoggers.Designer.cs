@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Wpf
-{
-
-
+namespace Wpf {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -72,9 +72,9 @@ namespace Wpf
         /// <summary>
         ///   Looks up a localized string similar to hsi.log.
         /// </summary>
-        internal static string stHSILog {
+        internal static string stHsiLog {
             get {
-                return ResourceManager.GetString("stHSILog", resourceCulture);
+                return ResourceManager.GetString("stHsiLog", resourceCulture);
             }
         }
         
@@ -102,6 +102,15 @@ namespace Wpf
         internal static string stSpacewire2 {
             get {
                 return ResourceManager.GetString("stSpacewire2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to spacewire3.log.
+        /// </summary>
+        internal static string stSpacewire3 {
+            get {
+                return ResourceManager.GetString("stSpacewire3", resourceCulture);
             }
         }
         
