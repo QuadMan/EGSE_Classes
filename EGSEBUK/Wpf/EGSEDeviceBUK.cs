@@ -687,9 +687,9 @@ namespace Egse.Devices
             {
                 _intfBUK.Spacewire2Notify.DataToSaveList();
 
-                if (_intfBUK.Spacewire2Notify.IsMakeTK)
+                if (_intfBUK.Spacewire2Notify.IsMakeTeleCmd)
                 {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.CurApid).ToArray());
+                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.Apid, _intfBUK.Spacewire2Notify.IsConfirmReceipt, _intfBUK.Spacewire2Notify.IsConfirmExecution).ToArray());
                 }
                 else
                 {
@@ -5083,7 +5083,7 @@ namespace Egse.Devices
             /// <summary>
             /// Формировать телекоманду.
             /// </summary>
-            private bool _isMakeTK = true;
+            private bool isMakeTeleCmd = true;
 
             /// <summary>
             /// Сохранять данные в файл.
@@ -5151,7 +5151,24 @@ namespace Egse.Devices
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
             private ICommand _saveRawDataCommand;
+            private string _txtDataFile;
+            private bool isConfirmReceipt;
+            private bool isConfirmExecution = true;
+            private ObservableCollection<string> apidList = new ObservableCollection<string>() { "0x610", "0x612", "0x614", "0x616" };
 
+            /// <summary>
+            /// Получает список отправленных команд(данных).
+            /// </summary>
+            /// <value>
+            /// Список отправленных команд(данных).
+            /// </value>
+            public ObservableCollection<string> ApidList
+            {
+                get
+                {
+                    return this.apidList;
+                }
+            }
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
             /// </summary>
@@ -5282,6 +5299,21 @@ namespace Egse.Devices
                 set 
                 {
                     _buskTickTime1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public string TxtDataFile
+            {
+                get
+                {
+                    return _txtDataFile;
+                }
+
+                private set
+                {
+                    _txtDataFile = value;
+
                     FirePropertyChangedEvent();
                 }
             }
@@ -5800,19 +5832,49 @@ namespace Egse.Devices
             /// <value>
             ///   <c>true</c> если [необходимо формировать посылку телекоманды]; иначе, <c>false</c>.
             /// </value>
-            public bool IsMakeTK
+            public bool IsMakeTeleCmd
             {
                 get
                 {
-                    return _isMakeTK;
+                    return this.isMakeTeleCmd;
                 }
 
                 private set 
                 {
-                    _isMakeTK = value;
+                    this.isMakeTeleCmd = value;
                     FirePropertyChangedEvent();
                 }
             }
+
+            public bool IsConfirmReceipt
+            {
+                get
+                {
+                    return this.isConfirmReceipt;
+                }
+
+                private set
+                {
+                    this.isConfirmReceipt = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsConfirmExecution 
+            { 
+                get
+                {
+                    return this.isConfirmExecution;
+                }
+
+                private set
+                {
+                    this.isConfirmExecution = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            
 
             /// <summary>
             /// Получает команду на [формирование посылки телекоманды по интерфейсу spacewire].
@@ -5826,7 +5888,7 @@ namespace Egse.Devices
                 {
                     if (_issueMakeTKCommand == null)
                     {
-                        _issueMakeTKCommand = new RelayCommand(obj => { IsMakeTK = !IsMakeTK; }, obj => { return true; });
+                        _issueMakeTKCommand = new RelayCommand(obj => { IsMakeTeleCmd = !IsMakeTeleCmd; }, obj => { return true; });
                     }
 
                     return _issueMakeTKCommand;
@@ -6019,7 +6081,7 @@ namespace Egse.Devices
             /// <value>
             /// Текущий APID для формирования посылки.
             /// </value>
-            public short CurApid
+            public short Apid
             {
                 get
                 {
@@ -6065,7 +6127,7 @@ namespace Egse.Devices
                         {
                             result = "Некорректный ввод данных! Повторите ввод.";
                         }
-                    }
+                    }                   
 
                     return result;
                 }

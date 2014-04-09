@@ -1008,10 +1008,12 @@ namespace Egse.Protocols
             /// </summary>
             private BitVector32 _header;
 
+            private ushort nullTerminated;
+
             /// <summary>
             /// Поле заголовка данных: Время.
             /// </summary>
-            private EgseTime _egseTime;
+            private int icdTime;
 
             /// <summary>
             /// Получает или задает агрегат доступа к заголовку icd сообщения.
@@ -1152,16 +1154,20 @@ namespace Egse.Protocols
             /// <value>
             /// Опорное бортовое время пакета.
             /// </value>
-            public EgseTime Time
+            public int Time
             {
                 get
                 {
-                    return _egseTime;                    
+                    byte[] temp = BitConverter.GetBytes(this.icdTime);
+                    Array.Reverse(temp);
+                    return BitConverter.ToInt32(temp, 0);                   
                 }
 
                 set
                 {
-                    _egseTime = value;
+                    byte[] temp = BitConverter.GetBytes(value);
+                    Array.Reverse(temp);
+                    this.icdTime = BitConverter.ToInt32(temp, 0);
                 }
             }
             
@@ -1173,7 +1179,7 @@ namespace Egse.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stTmStringExt"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, Time.ToString(), IcdInfo);
+                return string.Format(Resource.Get(@"stTmStringExt"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, Time, IcdInfo);
             }
 
             /// <summary>
@@ -1185,7 +1191,7 @@ namespace Egse.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, Time.ToString(), IcdInfo.ToString(extended));
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, Time, IcdInfo.ToString(extended));
             }
         }
     }
@@ -1323,7 +1329,7 @@ namespace Egse.Protocols
         /// <param name="from">Адрес прибора инициатора.</param>
         /// <param name="apid">Apid прибора назначения.</param>
         /// <returns>Сформированное spacewire-сообщение телекоманды.</returns>
-        public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, short apid)
+        public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, short apid, bool isReceipt, bool isExec)
         {
             if (null == _dict)
             {
@@ -1353,6 +1359,8 @@ namespace Egse.Protocols
 
             Tk telecmdInfo = new Tk();
             telecmdInfo.IcdInfo = icdInfo;
+            telecmdInfo.Version = 1;
+            telecmdInfo.Acknowledgment = (byte)((Convert.ToInt32(isReceipt) << 3) | Convert.ToInt32(isExec));
 
             byte[] rawData = Converter.MarshalFrom<Tk>(telecmdInfo, ref data);
 
@@ -1381,34 +1389,34 @@ namespace Egse.Protocols
         public struct Tk
         {
             /// <summary>
-            /// Маска поля заголовка поля данных: Резерв.
-            /// </summary>
-            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Подтип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ReserveSection);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Тип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, SubServiceSection);
-
-            /// <summary>
             /// Маска поля заголовка поля данных: Тип квитирования.
             /// </summary>
-            private static readonly BitVector32.Section AcknowledgmentSection = BitVector32.CreateSection(0x0F, ServiceSection);
+            private static readonly BitVector32.Section AcknowledgmentSection = BitVector32.CreateSection(0x0F);
 
             /// <summary>
             /// Маска поля заголовка поля данных: Номер версии ТМ-пакета PUS.
             /// </summary>
             private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, AcknowledgmentSection);
-
+            
             /// <summary>
             /// Маска поля заголовка поля данных: Флаг вторичного заголовка CCSDS.
             /// </summary>
             private static readonly BitVector32.Section FlagSection = BitVector32.CreateSection(0x01, VersionSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Тип сервиса.
+            /// </summary>
+            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, FlagSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Подтип сервиса.
+            /// </summary>
+            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ServiceSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Резерв.
+            /// </summary>
+            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF, SubServiceSection);
 
             /// <summary>
             /// Агрегат доступа к icd заголовку.

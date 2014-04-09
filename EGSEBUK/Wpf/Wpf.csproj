@@ -395,6 +395,7 @@
       set IVAN_DIR=Z:\Users\Ivan\$(TargetName)
       set ALEXANDR_DIR=Z:\Users\QuadMan\$(TargetName)
       set ANDREW_DIR=Z:\Users\Vitamin\$(TargetName)
+      if exist \\z:\ (
       if %USERDOMAIN%\%USERNAME% == Иван-ПК\Иван (
       if $(ConfigurationName) == Debug (
       echo Debug deploy
@@ -421,6 +422,7 @@
       cmd /x /c mkdir "Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\"
       echo mkdir Deploy dir: Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\
       xcopy /Q /Y "$(TargetPath)" "Z:\Projects\Спектр-УФ БС и БЭ БС\КИА БУК\КИА БУК ПО\%CURRENT_VERSION%\"
+      )
       )
       )
     </PostBuildEvent>

@@ -23,6 +23,49 @@ namespace Egse.Utilites
     using System.Windows;
     using Egse.Protocols;
 
+    //public class SampleMarshaler : ICustomMarshaler
+    //{
+    //    static SampleMarshaler marshaler;
+
+    //    public object MarshalNativeToManaged(IntPtr pNativeData)
+    //    {
+    //        return null;
+    //    }
+
+    //    public IntPtr MarshalManagedToNative(object managedObj)
+    //    {
+    //        if (managedObj == null)
+    //            return IntPtr.Zero;
+    //        if (!(managedObj is IManaged))
+    //            throw new MarshalDirectiveException("This custom marshaler must be used on a IManaged derived type.");
+
+    //        ManagedIUnmanaged customObject = new ManagedIUnmanaged((IManaged)managedObj);
+    //        return Marshal.GetComInterfaceForObject(customObject, typeof(UCOMIUnmanaged));
+    //    }
+
+    //    public void CleanUpNativeData(IntPtr pNativeData)
+    //    {
+    //        Marshal.Release(pNativeData);
+    //    }
+
+    //    public void CleanUpManagedData(object managedObj)
+    //    {
+
+    //    }
+
+    //    public int GetNativeDataSize()
+    //    {
+    //        return -1;
+    //    }
+
+    //    public static ICustomMarshaler GetInstance(string cookie)
+    //    {
+    //        if (marshaler == null)
+    //            return marshaler = new SampleMarshaler();
+    //        return marshaler;
+    //    }
+    //}
+
     /// <summary>
     /// Отвечает за упаковку времени в посылках данных.
     /// </summary>
@@ -142,6 +185,7 @@ namespace Egse.Utilites
         {
             if (null != b)
             {
+                ////return string.Format("( {0:X},{1:X},{2:X},{3:X},{4:X},{5:X} )", b[0], b[1], b[2], b[3], b[4], b[5]);
                 return string.Format(Resource.Get(@"stTimeFormat"), Day, Hour, Minute, Second, Millisecond, Microsecond);
             }
             else
@@ -308,9 +352,9 @@ namespace Egse.Utilites
         /// <returns>
         /// spacewire-сообщение телекоманды.
         /// </returns>
-        public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, short apid)
+        public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, short apid, bool isReceipt, bool isExec)
         {
-            return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid);
+            return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid, isReceipt, isExec);
         }
     }
 

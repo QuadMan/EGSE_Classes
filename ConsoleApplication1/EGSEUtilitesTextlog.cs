@@ -41,6 +41,8 @@ namespace Egse.Utilites
         /// </summary>
         private StreamWriter _sw;
 
+        private bool isNeedNewLog;
+
         /// <summary>
         /// Объект DateTime, хранящий текущее время : (HH:MM:SS:MMS) с log-файлом
         /// </summary>
@@ -57,6 +59,11 @@ namespace Egse.Utilites
             _logtime = new DateTime();
             _fileName = MakeLoggerDir() + "\\" + GetLoggerFileName(fileName);
             _sw = new StreamWriter(_fileName, true);
+        }
+
+        public void NewLog()
+        { 
+          
         }
 
         /// <summary>

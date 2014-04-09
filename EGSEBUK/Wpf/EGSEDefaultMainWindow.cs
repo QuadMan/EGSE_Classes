@@ -308,15 +308,26 @@ namespace Egse.Defaults
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
         }
+    }
 
-        /// <summary>
-        /// Handles the Activated event of the Window control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void Window_Activated(object sender, EventArgs e)
+    public class ShortToStrConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // checkWindowsActivation();
+            return "0x" + ((short)value).ToString("X");            
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            short val;
+            if (short.TryParse(((string)value).TrimStart(new char[] {'0','x'}), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out val))
+            {
+                return val;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 

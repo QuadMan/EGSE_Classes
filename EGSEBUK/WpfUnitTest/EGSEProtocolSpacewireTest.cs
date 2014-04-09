@@ -69,6 +69,16 @@ namespace Egse.Protocols.UnitTest
             rnd.NextBytes(buf);
             buf[8] = 0x00;
             buf[9] = 0x02;
+            buf[10] = 0x01;
+            buf[11] = 0x02;
+            buf[12] = 0x03;
+            buf[13] = 0x04;
+            buf[14] = 0x05;
+            buf[15] = 0x06;
+            buf[16] = 0x00;
+            buf[17] = 0x00;
+            buf[18] = 0x00;
+            buf[19] = 0x09;
             byte[] testCrc = buf.Skip(4).ToArray().Take(buf.Length - 6).ToArray();
             buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
             buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
@@ -429,13 +439,15 @@ namespace Egse.Protocols.UnitTest
         {
             byte to = 0x77;
             byte from = 0x66;
-            short apid = 607;
+            short apid = 612;
 
-            Random rnd = new Random();
+           // Random rnd = new Random();
             byte[] buf = new byte[6];
-            rnd.NextBytes(buf);
+            //rnd.NextBytes(buf);
 
-            SpacewireTkMsgEventArgs msg = SpacewireTkMsgEventArgs.GetNew(buf, to, from, apid);
+            SpacewireTkMsgEventArgs msg = SpacewireTkMsgEventArgs.GetNew(buf, to, from, apid, true, true);
+
+            byte[] buf_new = msg.ToArray();
 
             CollectionAssert.AreEqual(buf, msg.Data, "Ошибка в парсинге данных кадра");
             Assert.AreEqual(to, msg.TkInfo.IcdInfo.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
@@ -449,6 +461,8 @@ namespace Egse.Protocols.UnitTest
             Assert.AreEqual(SpacewireTkMsgEventArgs.IcdFlag.HeaderFill, msg.TkInfo.IcdInfo.Flag, "Ошибка в парсинге свойства IcdInfo.Flag");
             Assert.AreEqual(3, msg.TkInfo.IcdInfo.Segment, "Ошибка в парсинге свойства IcdInfo.Segment");
             Assert.AreEqual(6, msg.TkInfo.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
+
+            Assert.AreEqual((byte)((1 << 3) | 1), msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
 
             string str = msg.TkInfo.ToString(false);
         }

@@ -11,6 +11,7 @@
         <l:DeviceSpeedToStrConverter x:Key="DeviceSpeedToStrConverter" />
         <l:DeviceTraficToStrConverter x:Key="DeviceTraficToStrConverter" />        
         <l:BytesToStrConverter x:Key="BytesToStrConverter" />
+        <l:ShortToStrConverter x:Key="ShortToStrConverter" />        
         <l:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         <SolidColorBrush x:Key="TextBrush" Color="White"/>
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>

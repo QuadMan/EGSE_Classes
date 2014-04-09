@@ -103,8 +103,8 @@ namespace Egse.Defaults
                 catch (Exception exc)
                 {
                     MessageBox.Show(exc.Message);
-                }   
-     
+                }
+                //LogsClass.LogSpacewire2.NewLog();
                 LogsClass.LogSpacewire2.LogText = spacewireMsg;
             }
         }

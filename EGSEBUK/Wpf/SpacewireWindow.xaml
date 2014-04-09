@@ -128,32 +128,68 @@ IsChecked="{Binding IsIssueKbv}"
 					<ColumnDefinition/>
 					<ColumnDefinition/>
 					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
-				<Label Grid.ColumnSpan="3"
+				<Label Grid.ColumnSpan="9"
 				   Content="Передать данные прибору"
 				   Style="{StaticResource FlatHeader}"/>
-				<Button Grid.Column="3"  
+				<Button Grid.Column="9"  
+						Grid.ColumnSpan="2"
 					Content="из файла..."
 					 Command="{Binding FromFileCommand}" TabIndex="6"/>
 				<Label Grid.Row="1"
+					   Grid.ColumnSpan="2"
 				Content="Формировать телекоманду"
 				Template="{StaticResource FlatLabel}"/>
-				<Label Grid.Row="1" Grid.Column="1"
-
+				<Label Grid.Row="1" Grid.Column="2"
 				Template="{StaticResource FlatLabel}"/>
 				<CheckBox Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
-				Grid.Column="1"                
-				IsChecked="{Binding IsMakeTK}"
+				Grid.Column="2"                
+				IsChecked="{Binding IsMakeTeleCmd}"
 				TabIndex="7"/>
 				<Label Grid.Row="1"
-				   Grid.Column="2"
+				   Grid.Column="3"
 				Content="APID"
 				Template="{StaticResource FlatLabel}"/>
-				<TextBox Grid.Row="1"  
-				Grid.Column="3"
-				Template="{StaticResource NumberInError}"
-				Style="{StaticResource TextBoxInError}"
-				Text="{Binding CurApid}" TabIndex="8"/>
+				<ComboBox Grid.Row="1"
+					  Grid.Column="4"
+					  IsReadOnly="False" 
+					  IsEditable="True"					 
+					  ItemsSource="{Binding ApidList}"
+					  Style="{StaticResource ComboBoxInError}"
+					  b:WatermarkComboBoxBehavior.EnableWatermark="True"
+					  b:WatermarkComboBoxBehavior.Label="Введите APID..."
+					  b:WatermarkComboBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"
+					  Text="{Binding Apid, Converter={StaticResource ShortToStrConverter}, ValidatesOnDataErrors=True}"  
+					  TabIndex="8"/>
+				<Label Grid.Row="1"
+					   Grid.Column="5"
+					   Grid.ColumnSpan="2"
+				Content="Подтверждение получения"
+				Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="1" Grid.Column="7"
+				Template="{StaticResource FlatLabel}"/>
+				<CheckBox Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
+				Grid.Column="7"                
+				IsChecked="{Binding IsConfirmReceipt}"
+				TabIndex="7"/>
+				<Label Grid.Row="1"
+					   Grid.Column="8"
+					   Grid.ColumnSpan="2"
+				Content="Подтверждение исполнения"
+				Template="{StaticResource FlatLabel}"/>
+				<Label Grid.Row="1" Grid.Column="10"
+				Template="{StaticResource FlatLabel}"/>
+				<CheckBox Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" 
+				Grid.Column="10"                
+				IsChecked="{Binding IsConfirmExecution}"
+				TabIndex="7"/>
 			</Grid>
 			<ComboBox Grid.Row="1"
 					  Grid.ColumnSpan="3"
@@ -176,6 +212,7 @@ IsChecked="{Binding IsIssueKbv}"
 				<RowDefinition Height="auto"/>
 				<RowDefinition Height="auto"/>
 				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
 				<RowDefinition/>
 				<RowDefinition Height="auto"/>
 			</Grid.RowDefinitions>
@@ -187,7 +224,7 @@ IsChecked="{Binding IsIssueKbv}"
 				   Content="Монитор Spacewire"/>
 			<DockPanel Grid.Row="1"
 				LastChildFill="True" >
-				<Label DockPanel.Dock="Left" Content="Запись в файл "
+				<Label DockPanel.Dock="Left" Content="Запись данных "
 					Template="{StaticResource FlatLabel}"/>
 				<CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
 					IsChecked="{Binding IsSaveRawData}"
@@ -200,7 +237,22 @@ IsChecked="{Binding IsIssueKbv}"
 					b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
 					IsTabStop="False"/>
 			</DockPanel>
-			<Grid Grid.Row="2">
+			<DockPanel Grid.Row="2"
+				LastChildFill="True" >
+				<Label DockPanel.Dock="Left" Content="Запись лог-файла "
+					Template="{StaticResource FlatLabel}"/>
+				<CheckBox DockPanel.Dock="Left"  VerticalAlignment="Center"    Margin="1"                                        
+					IsChecked="{Binding IsSaveTxtData}"
+					TabIndex="11"/>
+				<TextBox              
+					IsReadOnly="True"
+					Text="{Binding TxtDataFile, ValidatesOnDataErrors=True}"
+					b:WatermarkTextBoxBehavior.EnableWatermark="True"
+					b:WatermarkTextBoxBehavior.Label="Лог-файл отсутствует..."
+					b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
+					IsTabStop="False"/>
+			</DockPanel>
+			<Grid Grid.Row="3">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="auto"/>
 					<RowDefinition Height="auto"/>
@@ -266,10 +318,10 @@ IsChecked="{Binding IsIssueKbv}"
 			<ListBox x:Name="MonitorList"
 					 l:ListBoxExtensions.IsAutoscroll="true"
 					 ItemsSource="{Binding MonitorListItem}"
-					 Grid.Row="3"
+					 Grid.Row="4"
 					 Margin="1"                     
 					 BorderThickness="0"/>
-			<Button Grid.Row="4"  
+			<Button Grid.Row="5"  
 				Content="Очистить монитор Spacewire"
 				Click="Button_Click" TabIndex="12"/>
 		</Grid>
