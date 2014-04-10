@@ -43,7 +43,7 @@ namespace Egse.Threading
         /// <summary>
         /// Максимальный размер очереди команд в USB.
         /// </summary>
-        private const int FTDIMaxCMDQueueSize = 5;
+        private const int FTDIMaxCMDQueueSize = 15;
 
         /// <summary>
         /// Очередь команд в USB.

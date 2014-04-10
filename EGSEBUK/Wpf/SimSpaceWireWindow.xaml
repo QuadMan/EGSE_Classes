@@ -9,8 +9,8 @@
         Height="auto"
         Visibility="{Binding IsShowSimSpacewire, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
     <Grid x:Name="GridSimSpacewire"
-		Background="{StaticResource BackBrush}"
-		Margin="4">
+        Background="{StaticResource BackBrush}"
+        Margin="4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
@@ -31,65 +31,66 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="3"
-				Content="Управление"
-				Style="{StaticResource FlatHeader}"/>
+                Content="Управление"
+                Style="{StaticResource FlatHeader}"/>
             <Label Grid.Row="1" Grid.ColumnSpan="2"
-            	Content="{Binding ShowLogicBusk}"
-            	Template="{StaticResource FlatLabel}"/>
+                Content="{Binding ShowLogicBusk}"
+                Template="{StaticResource FlatLabel}"/>
             <Button Grid.Row="1"
-            	Grid.Column="2"                               
+                Grid.Column="2"                               
 
-            	Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
+                Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
                 Command="{Binding IssueEnableCommand}"   
-            	Template="{StaticResource FlatButtonCheck}"/>
+                Template="{StaticResource FlatButtonCheck}"/>
             <Label Grid.Row="2" 
-            	Grid.ColumnSpan="3"
-            	Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
-            	Template="{StaticResource FlatLabelConnected}"/>
+                Grid.ColumnSpan="3"
+                Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
+                Template="{StaticResource FlatLabelConnected}"/>
             <Label Grid.Row="3" 
                    Grid.ColumnSpan="2"
-            	Content="Прибор"
-            	Template="{StaticResource FlatLabel}"/>
+                Content="Прибор"
+                Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="3" 
-            	Grid.Column="2"
+                Grid.Column="2"
 
-            	Content="{Binding ShowLogicSD1}"
-            	Template="{StaticResource FlatLabel}"/>
+                Content="{Binding ShowLogicSD1}"
+                Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="4" Grid.ColumnSpan="2"
-            	Content="Обмен с прибором"
-            	Template="{StaticResource FlatLabel}"/>
+                Content="Обмен с прибором"
+                Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="4" Grid.Column="2" 
-            	Template="{StaticResource FlatLabel}"/>
+                Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Row="4"   VerticalAlignment="Center" HorizontalAlignment="Center"
                 Grid.Column="2"                                           	 
 
                       IsChecked="{Binding IsSD1Trans}" TabIndex="1"  />
             <Label Grid.Row="5" Grid.ColumnSpan="2"
-            	Content="Выдавать пакеты данных в прибор"
-            	Template="{StaticResource FlatLabel}"/>
+                Content="Выдавать пакеты данных в прибор"
+                Template="{StaticResource FlatLabel}"/>
             <Label Grid.Row="5" Grid.Column="2"
-            	Template="{StaticResource FlatLabel}"/>
+                Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center"
                 Grid.Column="2"                               			    
 
                  IsChecked="{Binding IsSD1TransData}" TabIndex="2"/>
             <Label Grid.Row="6" Grid.ColumnSpan="2"
-            	Content="Счетчик миллисекунд (готовность данных)"
-            	Template="{StaticResource FlatLabel}"/>
+                Content="Счетчик миллисекунд (готовность данных)"
+                Template="{StaticResource FlatLabel}"/>
             <TextBox Grid.Row="6"  
                 Grid.Column="2"
-			    Template="{StaticResource NumberInError}"
-			    Style="{StaticResource TextBoxInError}"
-			    Text="{Binding SD1SendTime}" TabIndex="3"/>
+                AcceptsReturn="False"
+                Template="{StaticResource NumberInError}"
+                Style="{StaticResource TextBoxInError}"
+                Text="{Binding SD1SendTime, UpdateSourceTrigger=PropertyChanged, Delay=1500}" TabIndex="3"/>
             <Label Grid.Row="7"
-            	Content="Количество байт в пакете данных"
-            	Template="{StaticResource FlatLabel}" Visibility="Hidden"/>
+                Content="Количество байт в пакете данных"
+                Template="{StaticResource FlatLabel}" Visibility="Hidden"/>
             <TextBox Grid.Column="1"                               
-            	Grid.Row="7"  
-            	Grid.ColumnSpan="2"
-            	Template="{StaticResource NumberInError}"
-            	Style="{StaticResource TextBoxInError}"
-            	Text="{Binding SD1DataSize}" Visibility="Hidden"/>
+                Grid.Row="7"  
+                Grid.ColumnSpan="2"
+                Template="{StaticResource NumberInError}"
+                Style="{StaticResource TextBoxInError}"
+                Text="{Binding SD1DataSize}" Visibility="Hidden"/>
         </Grid>
         
         <Grid Grid.Row="1" Visibility="Hidden">
@@ -104,21 +105,21 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-        		Content="Передать данные"
-        		Template="{StaticResource FlatLabel}"/>
+                Content="Передать данные"
+                Template="{StaticResource FlatLabel}"/>
             <Button Grid.Column="2"  
-            	Template="{StaticResource FlatButtonClick}"                       
-            	Content="из файла..."/>
+                Template="{StaticResource FlatButtonClick}"                       
+                Content="из файла..."/>
             <TextBox Grid.Row="1"
-        		Grid.ColumnSpan="3"   
-        		Template="{StaticResource DataSendInError}"
-        		Style="{StaticResource TextBoxInError}"
-        		Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
+                Grid.ColumnSpan="3"   
+                Template="{StaticResource DataSendInError}"
+                Style="{StaticResource TextBoxInError}"
+                Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"/>
             <Button Grid.Row="2"  
-        		Grid.ColumnSpan="3"
+                Grid.ColumnSpan="3"
                 Content="Передать посылку"
                 Command="{Binding IssuePackageCommand}"
-        		Template="{StaticResource FlatButtonClickBusy}"/>
+                Template="{StaticResource FlatButtonClickBusy}"/>
         </Grid>
     </Grid>
 </Window>

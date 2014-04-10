@@ -15,7 +15,7 @@
         <l:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         <SolidColorBrush x:Key="TextBrush" Color="White"/>
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue"/>
-        <SolidColorBrush x:Key="ClickBrush" Color="Orange"/>
+        <SolidColorBrush x:Key="ClickBrush" Color="White"/>
         <SolidColorBrush x:Key="SelectBrush" Color="LightGreen"/>
         <SolidColorBrush x:Key="CheckBrush2" Color="Maroon"/>        
         <SolidColorBrush x:Key="UnableBrush" Color="Gray"/>        

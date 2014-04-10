@@ -28,6 +28,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,6 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -48,6 +50,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,6 +78,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EGSEProtocolUSB.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App.xaml.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>App.xaml.resx</DependentUpon>
     </Compile>
     <Compile Include="Behaviors\EgseBehaviorsAdornerExtensions.cs" />
     <Compile Include="Behaviors\EgseBehaviorsKeyboardFocus.cs" />
@@ -289,6 +297,11 @@
     <EmbeddedResource Include="..\..\ConsoleApplication1\EGSEUtilitesTextlog.resx">
       <Link>EGSEUtilitesTextlog.resx</Link>
       <DependentUpon>EGSEUtilitesTextlog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="App.xaml.resx">
+      <DependentUpon>App.xaml.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>App.xaml.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="EGSEConstantsBUK.resx">
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>

@@ -8,6 +8,7 @@
 namespace Egse.Defaults
 {
     using System;
+    using System.Linq;
     using System.Windows;
     using Egse.Cyclogram.Command;
     using Egse.Devices;

@@ -630,13 +630,8 @@ namespace Egse.Devices
         /// <param name="value">Счетчик миллисекунд для НП1 (через сколько готовы данные).</param>
         internal void CmdSpacewire1SPTPControlSD1SendTime(int value)
         {
-            //// TODO удалить (только для проверки).
-            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });  
-
-            SendToUSB(Spacewire1SPTPControlSD1SendTimeHiAddr, new byte[1] { (byte)(value >> 8) });
             SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });
-            //// TODO удалить (только для проверки).
-            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });  
+            SendToUSB(Spacewire1SPTPControlSD1SendTimeHiAddr, new byte[1] { (byte)(value >> 8) });            
         }
 
         /// <summary>
@@ -1763,10 +1758,8 @@ namespace Egse.Devices
                 Device.CmdSetDeviceTime();
                 Task.Run(() =>
                 {
-                    Task.Delay(500).Wait();
                     Device.CmdSetDeviceLogicAddr();
                     Spacewire1Notify.SD1SendTime = 1000;
-                    Task.Delay(1500).Wait();
                     RefreshAllControlsValues();
                 });
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
@@ -2322,7 +2315,7 @@ namespace Egse.Devices
                     MemberInfo[] members = FormatterServices.GetSerializableMembers(defaultObj.GetType());
                     foreach (MemberInfo mi in members)
                     {
-                        if (mi.MemberType == MemberTypes.Field)
+                        if (MemberTypes.Field == mi.MemberType)
                         {
                             FieldInfo fi = mi as FieldInfo;
                             FieldInfo ownerField = this.GetType().GetField(fi.Name, BindingFlags.NonPublic | BindingFlags.Instance);
@@ -5193,7 +5186,7 @@ namespace Egse.Devices
                             result = "Некорректный ввод данных! Повторите ввод.";
                         }
                     }
-
+                    
                     return result;
                 }
             }
@@ -6210,7 +6203,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return IsIssueRMap || IsIssuePackage || !IsConnect;
+                    return IsIssueRMap || IsIssuePackage || !IsConnect || !IsIssueTrans;
                 }
             }
 
@@ -7740,7 +7733,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isRecordBusy || IsIssuePackage;
+                    return _isRecordBusy || IsIssuePackage || !IsConnect;
                 }
 
                 private set 

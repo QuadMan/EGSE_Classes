@@ -16,6 +16,7 @@ namespace Egse.WPF
     using System.Windows.Input;
     using Egse.Defaults;
     using Egse.Utilites;
+    using Microsoft.Win32;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -102,13 +103,18 @@ namespace Egse.WPF
             if (!this.mutex.WaitOne(TimeSpan.Zero, false))
             {
                 this.mutex = null;
-
                 SafeNativeMethods.PostMessage(HwndBroadCast, message, IntPtr.Zero, IntPtr.Zero);
-
                 Current.Shutdown();
-
                 return;
-            }         
+            }    
+
+            if (!CheckNetVersion())
+            {
+                this.mutex = null;                
+                MessageBox.Show(Resource.Get(@"eNetVersion"));                
+                Current.Shutdown();                
+                return;
+            }
         }
 
         /// <summary>
@@ -120,6 +126,34 @@ namespace Egse.WPF
             Dispose();
             base.OnExit(e);
         }
+
+        /// <summary>
+        /// Проверяет записи в регистре, установлен ли .Net 4.5.1.
+        /// </summary>
+        /// <returns>Версия релиза.</returns>
+        private static int Get45or451FromRegistry()
+        {
+            try
+            {
+                using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\"))
+                {
+                    return (int)ndpKey.GetValue("Release");
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Проверяет версию .Net Framework.
+        /// </summary>
+        /// <returns><c>true</c> если установлена 4.5.1.</returns>
+        private bool CheckNetVersion()
+        {
+            return 378758 <= Get45or451FromRegistry();
+        }       
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
