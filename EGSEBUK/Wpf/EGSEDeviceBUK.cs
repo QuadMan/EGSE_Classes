@@ -15,7 +15,10 @@ namespace Egse.Devices
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
+    using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Egse;
@@ -24,10 +27,6 @@ namespace Egse.Devices
     using Egse.Protocols;
     using Egse.USB;
     using Egse.Utilites;
-    using System.Runtime.Serialization.Formatters.Binary;
-    using System.Xml.Serialization;
-    using System.Runtime.Serialization;
-    using System.Reflection;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -631,8 +630,13 @@ namespace Egse.Devices
         /// <param name="value">Счетчик миллисекунд для НП1 (через сколько готовы данные).</param>
         internal void CmdSpacewire1SPTPControlSD1SendTime(int value)
         {
-            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });
+            //// TODO удалить (только для проверки).
+            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });  
+
             SendToUSB(Spacewire1SPTPControlSD1SendTimeHiAddr, new byte[1] { (byte)(value >> 8) });
+            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });
+            //// TODO удалить (только для проверки).
+            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });  
         }
 
         /// <summary>
@@ -1702,7 +1706,6 @@ namespace Egse.Devices
             Spacewire4Notify.Serialize();            
         }
 
-
         /// <summary>
         /// Событие: требуется сохранить настройки.
         /// </summary>
@@ -1765,7 +1768,7 @@ namespace Egse.Devices
                     Spacewire1Notify.SD1SendTime = 1000;
                     Task.Delay(1500).Wait();
                     RefreshAllControlsValues();
-                });                                         
+                });
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
             else
@@ -1777,6 +1780,18 @@ namespace Egse.Devices
                 Spacewire2Notify.Deserialize();
                 Spacewire3Notify.Deserialize();
                 Spacewire4Notify.Deserialize();
+            }
+        }
+
+        /// <summary>
+        /// Вызывается при подключении прибора, чтобы все элементы управления обновили свои значения.
+        /// </summary>
+        public void RefreshAllControlsValues()
+        {
+            Debug.Assert(ControlValuesList != null, Resource.Get(@"eNotAssigned"));
+            foreach (var cv in ControlValuesList)
+            {
+                (cv.Value as ControlValue).RefreshGetValue();
             }
         }
 
@@ -2017,18 +2032,6 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Вызывается при подключении прибора, чтобы все элементы управления обновили свои значения.
-        /// </summary>
-        public void RefreshAllControlsValues()
-        {
-            Debug.Assert(ControlValuesList != null, Resource.Get(@"eNotAssigned"));
-            foreach (var cv in ControlValuesList)
-            {
-               (cv.Value as ControlValue).RefreshGetValue();
-            }
-        }
-
-        /// <summary>
         /// Метод, обрабатывающий сообщения от декодера USB.
         /// </summary>
         /// <param name="sender">The sender.</param>
@@ -2074,7 +2077,7 @@ namespace Egse.Devices
                         break;
                 }
             }
-        }    
+        }
 
         /// <summary>
         /// Обработчик ошибок протокола декодера USB.
@@ -2101,13 +2104,12 @@ namespace Egse.Devices
             }
         }
 
-        
         /// <summary>
         /// Реализует сохранение в user.config файл списков отправленных команд(данных).
         /// Примечание(особенность работы):
         /// Жестко привязана к текущей версии программы. Для каждой версии существует отдельный user.config
         /// </summary>
-        [Serializable()]
+        [Serializable]
         public class PropSerializer
         {
             /// <summary>
@@ -2118,7 +2120,7 @@ namespace Egse.Devices
             /// <summary>
             /// Список отправленных команд(данных).
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ObservableCollection<string> _dataList = new ObservableCollection<string>();
 
             /// <summary>
@@ -2139,6 +2141,7 @@ namespace Egse.Devices
             /// Загружает из коллекции в список.
             /// </summary>
             /// <param name="collection">Коллекция строк.</param>
+            /// <param name="useIniFile">Если установлен <c>true</c> [будет использован ini файл].</param>
             public void LoadDataList(StringCollection collection, bool useIniFile = true)
             {
                 if (null != collection)
@@ -2170,6 +2173,7 @@ namespace Egse.Devices
             /// Сохраняет список команд(данных) в коллекцию.
             /// </summary>
             /// <param name="collection">Коллекция строк.</param>
+            /// <param name="useIniFile">Если установлено <c>true</c> [будет использован ini файл].</param>
             public void SaveDataList(StringCollection collection, bool useIniFile = true)
             {                
                 if (0 < DataList.Count)
@@ -2186,13 +2190,42 @@ namespace Egse.Devices
             }
         }
 
-        
         /// <summary>
         /// Прототип подкласса нотификатора.
         /// </summary>
-        [Serializable()]
+        [Serializable]
         public class SubNotify : PropSerializer, INotifyPropertyChanged
         {
+            /// <summary>
+            /// Экземпляр потока памяти, для сохранения дефолтных настроек.
+            /// </summary>
+            [field: NonSerialized]
+            private MemoryStream serializeStream = new MemoryStream();
+
+            /// <summary>
+            /// Экземпляр сериализатора.
+            /// </summary>
+            [field: NonSerialized]
+            private BinaryFormatter serializer;
+
+            /// <summary>
+            /// Ссылка на экземпляр словаря ControlValue.
+            /// </summary>
+            [field: NonSerialized]
+            private Dictionary<string, ControlValue> controlValuesList;
+
+            /// <summary>
+            /// Ссылка на экземпляр главного нотификатора.
+            /// </summary>
+            [field: NonSerialized]
+            private EgseBukNotify owner;
+
+            /// <summary>
+            /// Ссылка на экземпляр устройства.
+            /// </summary>
+            [field: NonSerialized]
+            private EgseBuk device;
+
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="SubNotify" />.
             /// </summary>
@@ -2209,69 +2242,9 @@ namespace Egse.Devices
             /// <summary>
             /// Occurs when a property value changes.
             /// </summary>           
-            [field: NonSerialized()]          
+            [field: NonSerialized]          
             public event PropertyChangedEventHandler PropertyChanged;
-          
-            [field: NonSerialized()]           
-            protected BinaryFormatter serializer;
-          
-            [field: NonSerialized()]           
-            protected MemoryStream serializeStream = new MemoryStream();
-          
-            [field: NonSerialized()]            
-            private EgseBukNotify owner;
-           
-            [field: NonSerialized()]           
-            private EgseBuk device;
-            
-            [field: NonSerialized()]           
-            private Dictionary<string, ControlValue> controlValuesList;
-
-            public virtual void Serialize(object obj)
-            {
-                if (null == serializer)
-                {
-                    serializer = new BinaryFormatter();
-                    serializer.FilterLevel = System.Runtime.Serialization.Formatters.TypeFilterLevel.Low;
-                }
-                serializer.Serialize(serializeStream, obj);
-                serializeStream.Flush();
-            }
-
-            public virtual void Deserialize()
-            {
-                if (null != serializer)
-                {
-                    serializeStream.Position = 0;
-                    var defaultObj = serializer.Deserialize(serializeStream);
-                    MemberInfo[] members = FormatterServices.GetSerializableMembers(defaultObj.GetType());
-                    foreach (MemberInfo mi in members)
-                    {
-                        if (mi.MemberType == MemberTypes.Field)
-                        {
-                            FieldInfo fi = mi as FieldInfo;
-                            FieldInfo ownerField = this.GetType().GetField(fi.Name, BindingFlags.NonPublic | BindingFlags.Instance);
-                            if (null != ownerField)
-                            {
-                                var ownerValue = ownerField.GetValue(this);
-                                var defaultValue = fi.GetValue(defaultObj);
-                                if ((null != ownerValue) && (null != defaultValue))
-                                if (!ownerValue.Equals(defaultValue))
-                                {                                   
-                                    ownerField.SetValue(this, defaultValue);
-                                }
-                            }
-                            else
-                            {
-                                throw new NullReferenceException("Не удалось восстановить экземпляр.");
-                            }
-
-                        }
-                    }
-                    this.FirePropertyChangedEvent(string.Empty);
-                }
-            }
-               
+                                                         
             /// <summary>
             /// Получает доступ к интерфейсу устройства. 
             /// </summary>
@@ -2313,9 +2286,63 @@ namespace Egse.Devices
                 {
                     return this.controlValuesList;
                 }
+
                 private set
                 {
                     this.controlValuesList = value;
+                }
+            }
+
+            /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public virtual void Serialize(object obj)
+            {
+                if (null == serializer)
+                {
+                    serializer = new BinaryFormatter();
+                    serializer.FilterLevel = System.Runtime.Serialization.Formatters.TypeFilterLevel.Low;
+                }
+
+                serializer.Serialize(serializeStream, obj);
+                serializeStream.Flush();
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            /// <exception cref="System.NullReferenceException">Не удалось восстановить экземпляр.</exception>
+            public virtual void Deserialize()
+            {
+                if (null != serializer)
+                {
+                    serializeStream.Position = 0;
+                    var defaultObj = serializer.Deserialize(serializeStream);
+                    MemberInfo[] members = FormatterServices.GetSerializableMembers(defaultObj.GetType());
+                    foreach (MemberInfo mi in members)
+                    {
+                        if (mi.MemberType == MemberTypes.Field)
+                        {
+                            FieldInfo fi = mi as FieldInfo;
+                            FieldInfo ownerField = this.GetType().GetField(fi.Name, BindingFlags.NonPublic | BindingFlags.Instance);
+                            if (null != ownerField)
+                            {
+                                var ownerValue = ownerField.GetValue(this);
+                                var defaultValue = fi.GetValue(defaultObj);
+                                if ((null != ownerValue) && (null != defaultValue) && (!ownerValue.Equals(defaultValue)))
+                                {
+                                    ownerField.SetValue(this, defaultValue);
+                                }
+                            }
+                            else
+                            {
+                                throw new NullReferenceException("Не удалось восстановить экземпляр.");
+                            }
+                        }
+                    }
+
+                    this.FirePropertyChangedEvent(string.Empty);
                 }
             }
 
@@ -2349,7 +2376,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор ВСИ интерфейса.
         /// </summary>
-        [Serializable()]     
+        [Serializable]     
         public class Hsi : SubNotify, IDataErrorInfo
         {           
             /// <summary>
@@ -2435,7 +2462,7 @@ namespace Egse.Devices
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private FileStream _rawDataStream;
             
             /// <summary>
@@ -2443,7 +2470,7 @@ namespace Egse.Devices
             /// Примечание:
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private Task _rawDataTask;
 
             /// <summary>
@@ -2474,61 +2501,55 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды на [включение КВВ ПК1].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEnable1Command;
             
             /// <summary>
             /// Экземпляр команды на [включение КВВ ПК2].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEnable2Command;
             
             /// <summary>
             /// Экземпляр команды на [включение опроса данных].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueRequestCommand;
 
-            
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _saveRawDataCommand;
 
-            
             /// <summary>
             /// Экземпляр команды на [открытие данных из файла].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _fromFileCommand;
-
             
             /// <summary>
             /// Экземпляр команды на [выдачу активного УКС активация ПК1 по интерфейсу ВСИ].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueCmdEnable1Command;
-
             
             /// <summary>
             /// Экземпляр команды на [выдачу активного УКС деактивировать ПК-ы по интерфейсу ВСИ].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueCmdDisableCommand;
-
             
             /// <summary>
             /// Экземпляр команды на [выдачу активного УКС активация ПК2 по интерфейсу ВСИ].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueCmdEnable2Command;
-
             
             /// <summary>
             /// Экземпляр команды на [выдачу УКС по интерфейсу ВСИ].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueCmdCommand;
 
             /// <summary>
@@ -2575,6 +2596,10 @@ namespace Egse.Devices
             /// Активность второго полукомплекта.
             /// </summary>
             private bool _isActive2;
+
+            /// <summary>
+            /// Сохранять в текстовый лог-файл.
+            /// </summary>
             private bool isSaveTxtData;
 
             /// <summary>
@@ -2616,17 +2641,6 @@ namespace Egse.Devices
                 MainResv = 0x00
             }
 
-            public override void Serialize(object obj = null)
-            {
-                base.Serialize(this);                                  
-
-            }
-
-            public override void Deserialize()
-            {
-                base.Deserialize();
-            }
-
             /// <summary>
             /// Линии имитатора БУК.
             /// </summary>
@@ -2666,7 +2680,7 @@ namespace Egse.Devices
                     return _isIssueReady1;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueReady1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady1, Convert.ToInt32(value));
@@ -2687,7 +2701,7 @@ namespace Egse.Devices
                     return _isIssueReady2;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueReady2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady2, Convert.ToInt32(value));
@@ -2708,7 +2722,7 @@ namespace Egse.Devices
                     return _isIssueBusy1;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueBusy1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy1, Convert.ToInt32(value));
@@ -2729,7 +2743,7 @@ namespace Egse.Devices
                     return _isIssueBusy2;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueBusy2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy2, Convert.ToInt32(value));
@@ -2737,6 +2751,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает значение, показывающее, что необходимо записывать текстовый лог-файл.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если выполняется запись текстового лог-файла; иначе, <c>false</c>.
+            /// </value>
             public bool IsSaveTxtData
             {
                 get
@@ -2771,7 +2791,7 @@ namespace Egse.Devices
                     return _isIssueMe1;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueMe1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe1, Convert.ToInt32(value));
@@ -2792,7 +2812,7 @@ namespace Egse.Devices
                     return _isIssueMe2;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueMe2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe2, Convert.ToInt32(value));
@@ -2800,7 +2820,12 @@ namespace Egse.Devices
                 }
             }
 
-
+            /// <summary>
+            /// Получает наименование текстовго лог-файла.
+            /// </summary>
+            /// <value>
+            /// Наименование текстовго лог-файла.
+            /// </value>
             public string TxtDataFile
             {
                 get
@@ -2813,7 +2838,6 @@ namespace Egse.Devices
                     {
                         return string.Empty;
                     }
-
                 }
             }
 
@@ -2830,7 +2854,7 @@ namespace Egse.Devices
                     return _isIssueEnable1;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueEnable1 = value;
                     ControlValuesList[Global.Hsi.Line1].SetProperty(Global.Hsi.Line1.IssueEnable, Convert.ToInt32(value));
@@ -2870,7 +2894,7 @@ namespace Egse.Devices
                     return _isIssueEnable2;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueEnable2 = value;
                     ControlValuesList[Global.Hsi.Line2].SetProperty(Global.Hsi.Line2.IssueEnable, Convert.ToInt32(value));
@@ -2910,7 +2934,7 @@ namespace Egse.Devices
                     return _stateCounter1;
                 }
 
-                set 
+                private set 
                 {
                     _stateCounter1 = value;
                     FirePropertyChangedEvent();
@@ -2930,7 +2954,7 @@ namespace Egse.Devices
                     return _rawDataFile;
                 }
 
-                set 
+                private set 
                 {
                     _rawDataFile = value;
                     if (string.Empty != value)
@@ -2972,7 +2996,7 @@ namespace Egse.Devices
                     return _isSaveRawData;
                 }
 
-                set  
+                private set  
                 {
                     _isSaveRawData = value;
                     if (value)
@@ -3020,7 +3044,7 @@ namespace Egse.Devices
                     return _frameCounter1;
                 }
 
-                set 
+                private set 
                 {
                     _frameCounter1 = value;
                     FirePropertyChangedEvent();
@@ -3040,7 +3064,7 @@ namespace Egse.Devices
                     return _stateCounter2;
                 }
 
-                set 
+                private set 
                 {
                     _stateCounter2 = value;
                     FirePropertyChangedEvent();
@@ -3060,7 +3084,7 @@ namespace Egse.Devices
                     return _frameCounter2;
                 }
 
-                set 
+                private set 
                 {
                     _frameCounter2 = value;
                     FirePropertyChangedEvent();
@@ -3080,7 +3104,7 @@ namespace Egse.Devices
                     return _line1;
                 }
 
-                set 
+                private set 
                 {
                     _line1 = value;
                     ControlValuesList[Global.Hsi.Line1].SetProperty(Global.Hsi.Line1.Line, Convert.ToInt32(value));
@@ -3101,7 +3125,7 @@ namespace Egse.Devices
                     return _isActive1;
                 }
 
-                set 
+                private set 
                 {
                     _isActive1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.Active1, Convert.ToInt32(value), false);                    
@@ -3122,7 +3146,7 @@ namespace Egse.Devices
                     return _isActive2;
                 }
 
-                set 
+                private set 
                 {
                     _isActive2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.Active2, Convert.ToInt32(value), false);  
@@ -3143,7 +3167,7 @@ namespace Egse.Devices
                     return _line2;
                 }
 
-                set 
+                private set 
                 {
                     _line2 = value;
                     ControlValuesList[Global.Hsi.Line2].SetProperty(Global.Hsi.Line2.Line, Convert.ToInt32(value));
@@ -3164,7 +3188,7 @@ namespace Egse.Devices
                     return _lineIn;
                 }
 
-                set 
+                private set 
                 {
                     _lineIn = value;
                     ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.LineIn, Convert.ToInt32(value));
@@ -3185,7 +3209,7 @@ namespace Egse.Devices
                     return _lineOut;
                 }
 
-                set 
+                private set 
                 {
                     _lineOut = value;
                     ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.LineOut, Convert.ToInt32(value));
@@ -3206,7 +3230,7 @@ namespace Egse.Devices
                     return _isIssueRequest;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueRequest = value;
                     ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.IssueRequest, Convert.ToInt32(value));
@@ -3246,7 +3270,7 @@ namespace Egse.Devices
                     return _isIssueCmd;
                 }
 
-                set 
+                private set 
                 {
                     _isIssueCmd = value;                   
                     FirePropertyChangedEvent();
@@ -3507,6 +3531,23 @@ namespace Egse.Devices
             }
 
             /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            public override void Deserialize()
+            {
+                base.Deserialize();
+            }
+
+            /// <summary>
             /// Вызов диалога "Открыть файл".
             /// </summary>
             /// <param name="obj">The object.</param>
@@ -3674,7 +3715,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор телеметрии.
         /// </summary>
-        [Serializable()]
+        [Serializable]
         public class Telemetry : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -3810,25 +3851,25 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУСК ПК1].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issuePowerBusk1Command;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУСК ПК2].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issuePowerBusk2Command;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУНД ПК1].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issuePowerBund1Command;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУНД ПК2].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issuePowerBund2Command;
 
             /// <summary>
@@ -3838,17 +3879,6 @@ namespace Egse.Devices
             public Telemetry(EgseBukNotify owner)
                 : base(owner)
             {
-            }
-
-            public override void Serialize(object obj = null)
-            {
-                base.Serialize(this);
-
-            }
-
-            public override void Deserialize()
-            {
-                base.Deserialize();
             }
 
             /// <summary>
@@ -4500,6 +4530,23 @@ namespace Egse.Devices
             }
 
             /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            public override void Deserialize()
+            {
+                base.Deserialize();
+            }
+
+            /// <summary>
             /// Initializes the control value.
             /// </summary>
             protected override void InitControlValue()
@@ -4540,7 +4587,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор spacewire1.
         /// </summary>
-        [Serializable()]
+        [Serializable]
         public class Spacewire1 : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -4616,37 +4663,37 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issuePackageCommand;
             
             /// <summary>
             /// Экземпляр команды на [включение обмена для НП1].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueSD1TransCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение обмена для НП2].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueSD2TransCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение выдачи пакетов данных в НП1].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueSD1TransDataCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение выдачи пакетов данных в НП2].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueSD2TransDataCommand;
 
             /// <summary>
@@ -4656,17 +4703,6 @@ namespace Egse.Devices
             public Spacewire1(EgseBukNotify owner)
                 : base(owner)
             {
-            }
-
-            public override void Serialize(object obj = null)
-            {
-                base.Serialize(this);
-
-            }
-
-            public override void Deserialize()
-            {
-                base.Deserialize();
             }
 
             /// <summary>
@@ -5163,6 +5199,23 @@ namespace Egse.Devices
             }
 
             /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            public override void Deserialize()
+            {
+                base.Deserialize();
+            }
+
+            /// <summary>
             /// Initializes the control value.
             /// </summary>
             protected override void InitControlValue()
@@ -5206,7 +5259,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор spacewire2.
         /// </summary>
-        [Serializable()]
+        [Serializable]
         public class Spacewire2 : SubNotify, IDataErrorInfo
         {         
             /// <summary>
@@ -5337,7 +5390,7 @@ namespace Egse.Devices
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private FileStream _rawDataStream;
 
             /// <summary>
@@ -5345,87 +5398,104 @@ namespace Egse.Devices
             /// Примечание:
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private Task _rawDataTask;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issuePackageCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки RMAP по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueRMapCommand;
 
             /// <summary>
             /// Экземпляр команды на [формирование посылки телекоманды по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueMakeTKCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение передачи метки времени по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueTimeMarkCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение обмена для прибора БУК].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueTransCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение выдачи КБВ для прибора БУК].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueKbvCommand;
 
             /// <summary>
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _fromFileCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _saveRawDataCommand;
+
+            /// <summary>
+            /// Данные/команды для отправки.
+            /// </summary>
+            [field: NonSerialized]
+            private byte[] data;
+
+            /// <summary>
+            /// Включено ли подтверждение получения.
+            /// </summary>
             private bool isConfirmReceipt;
+
+            /// <summary>
+            /// Включено ли подтверждение исполнения.
+            /// </summary>
             private bool isConfirmExecution = true;
-            [field: NonSerialized()]
+
+            /// <summary>
+            /// Список возможных apid-ов.
+            /// </summary>
+            [field: NonSerialized]
             private ObservableCollection<string> apidList = new ObservableCollection<string>() { "0x610", "0x612", "0x614", "0x616" };
+
+            /// <summary>
+            /// Сохранять ли текстовый лог-файл.
+            /// </summary>
             private bool isSaveTxtData = true;
+
+            /// <summary>
+            /// Словарь для корректного подсчета счетчика телекоманд.
+            /// </summary>
+            [field: NonSerialized]
+            private Dictionary<short, AutoCounter> counterIcd;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
             /// </summary>
-            /// <param name="owner">The owner.</param>
+            /// <param name="owner">Ссылка на экземпляр главного нотификатора.</param>
             public Spacewire2(EgseBukNotify owner)
                 : base(owner)
             {
                 counterIcd = new Dictionary<short, AutoCounter>();
-            }
-
-            public override void Serialize(object obj = null)
-            {
-                base.Serialize(this);
-
-            }
-
-            public override void Deserialize()
-            {
-                base.Deserialize();
             }
 
             /// <summary>
@@ -5504,9 +5574,6 @@ namespace Egse.Devices
                 BukTime2 = 0x0b
             }
 
-            [field: NonSerialized()]
-            private byte[] data;
-
             /// <summary>
             /// Получает буфер данных для передачи в USB.
             /// </summary>
@@ -5519,12 +5586,19 @@ namespace Egse.Devices
                 { 
                     return this.data; 
                 }
+
                 private set
                 {
                     this.data = value;
                 }
             }
 
+            /// <summary>
+            /// Получает ссылку на экземпляр списка доступных apid-ов.
+            /// </summary>
+            /// <value>
+            /// Ссылка на экземпляр списка доступных apid-ов.
+            /// </value>
             public ObservableCollection<string> ApidList
             {
                 get
@@ -5573,6 +5647,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает наименование текстового лог-файла.
+            /// </summary>
+            /// <value>
+            /// Наименование текстового лог-файла.
+            /// </value>
             public string TxtDataFile
             {
                 get
@@ -5585,7 +5665,6 @@ namespace Egse.Devices
                     {
                         return string.Empty;
                     }
-
                 }
             }
 
@@ -5631,6 +5710,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, что необходимо записывать текстовый лог-файл.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если выполняется запись текстового лог-файла; иначе, <c>false</c>.
+            /// </value>
             public bool IsSaveTxtData
             {
                 get
@@ -5759,9 +5844,6 @@ namespace Egse.Devices
                     FirePropertyChangedEvent();
                 }
             }
-
-            [field: NonSerialized()]
-            private Dictionary<short, AutoCounter> counterIcd;
 
             /// <summary>
             /// Получает значение [Счетчик телекоманд].
@@ -6152,6 +6234,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, что необходимо включить подтверждение получения телекоманды.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если включено подтверждение получения телекоманды; иначе, <c>false</c>.
+            /// </value>
             public bool IsConfirmReceipt
             {
                 get
@@ -6166,6 +6254,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, что необходимо включить подтверждение выполнения телекоманды.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если включено подтверждение выполнения телекоманды; иначе, <c>false</c>.
+            /// </value>
             public bool IsConfirmExecution 
             { 
                 get
@@ -6380,6 +6474,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает номер Apid из списка выбранного по-умолчанию.
+            /// </summary>
+            /// <value>
+            /// Номер Apid из списка выбранного по-умолчанию.
+            /// </value>
             public int ApidSelected
             {
                 get
@@ -6444,6 +6544,23 @@ namespace Egse.Devices
 
                     return result;
                 }
+            }
+
+            /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>
@@ -6540,7 +6657,7 @@ namespace Egse.Devices
         /// <summary>
         /// Нотификатор spacewire3.
         /// </summary>
-        [Serializable()]
+        [Serializable]
         public class Spacewire3 : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -6581,7 +6698,7 @@ namespace Egse.Devices
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private FileStream _rawDataStream;
 
             /// <summary>
@@ -6589,7 +6706,7 @@ namespace Egse.Devices
             /// Примечание:
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private Task _rawDataTask;
 
             /// <summary>
@@ -6600,13 +6717,13 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды [включение интерфейса spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _saveRawDataCommand;
 
             /// <summary>
@@ -6648,6 +6765,10 @@ namespace Egse.Devices
             /// Количество предоставления квот от НП.
             /// </summary>
             private long _requestQueueFromSD;
+
+            /// <summary>
+            /// Сохранять ли текстовый лог-файл.
+            /// </summary>
             private bool isSaveTxtData = true;
 
             /// <summary>
@@ -6657,17 +6778,6 @@ namespace Egse.Devices
             public Spacewire3(EgseBukNotify owner)
                 : base(owner)
             {
-            }
-
-            public override void Serialize(object obj = null)
-            {
-                base.Serialize(this);
-
-            }
-
-            public override void Deserialize()
-            {
-                base.Deserialize();
             }
 
             /// <summary>
@@ -6820,6 +6930,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает наименование текстового лог-файла.
+            /// </summary>
+            /// <value>
+            /// Наименование текстового лог-файла.
+            /// </value>
             public string TxtDataFile
             {
                 get
@@ -6832,10 +6948,15 @@ namespace Egse.Devices
                     {
                         return string.Empty;
                     }
-
                 }
             }
 
+            /// <summary>
+            /// Получает значение, показывающее, что необходимо записывать текстовый лог-файл.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если запись текстового лог-файла осуществляется; иначе, <c>false</c>.
+            /// </value>
             public bool IsSaveTxtData
             {
                 get
@@ -7201,6 +7322,23 @@ namespace Egse.Devices
             }
 
             /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            public override void Deserialize()
+            {
+                base.Deserialize();
+            }
+
+            /// <summary>
             /// Вызывается когда [требуется записать данные сообщения в файл].
             /// </summary>
             /// <param name="sender">The sender.</param>
@@ -7249,7 +7387,7 @@ namespace Egse.Devices
         /// <summary>
         /// Управление spacewire4.
         /// </summary>
-        [Serializable()]
+        [Serializable]
         public class Spacewire4 : SubNotify, IDataErrorInfo
         {
             /// <summary>
@@ -7295,43 +7433,43 @@ namespace Egse.Devices
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEnableCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение передачи метки времени по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueTimeMarkCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу ошибки EEP по интерфейсу spacewire, при формировании посылки].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEEPCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу EOP по интерфейсу spacewire, при формировании посылки].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueEOPCommand;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issuePackageCommand;
             
             /// <summary>
             /// Экземпляр команды на [включение автоматической выдачи посылки по интерфейсу spacewire].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _issueAutoCommand;
 
             /// <summary>
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
-            [field: NonSerialized()]
+            [field: NonSerialized]
             private ICommand _fromFileCommand;
 
             /// <summary>
@@ -7341,18 +7479,7 @@ namespace Egse.Devices
             public Spacewire4(EgseBukNotify owner)
                 : base(owner)
             {
-            }
-
-            public override void Serialize(object obj = null)
-            {
-                base.Serialize(this);
-
-            }
-
-            public override void Deserialize()
-            {
-                base.Deserialize();
-            }
+            }           
 
             /// <summary>
             /// Получает буфер данных для передачи в USB.
@@ -7699,6 +7826,23 @@ namespace Egse.Devices
 
                     return result;
                 }
+            }
+
+            /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
 
             /// <summary>

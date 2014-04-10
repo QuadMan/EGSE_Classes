@@ -1008,6 +1008,9 @@ namespace Egse.Protocols
             /// </summary>
             private BitVector32 _header;
 
+            /// <summary>
+            /// Не используется.
+            /// </summary>
             private ushort nullTerminated;
 
             /// <summary>
@@ -1328,7 +1331,11 @@ namespace Egse.Protocols
         /// <param name="to">Адрес прибора назначения.</param>
         /// <param name="from">Адрес прибора инициатора.</param>
         /// <param name="apid">Apid прибора назначения.</param>
-        /// <returns>Сформированное spacewire-сообщение телекоманды.</returns>
+        /// <param name="isReceipt">если установлено <c>true</c> [включить подтверждение получения].</param>
+        /// <param name="isExec">если установлено <c>true</c> [включить подтверждение исполнения].</param>
+        /// <returns>
+        /// Сформированное spacewire-сообщение телекоманды.
+        /// </returns>
         public static SpacewireTkMsgEventArgs GetNew(byte[] data, byte to, byte from, short apid, bool isReceipt, bool isExec)
         {
             if (null == _dict)

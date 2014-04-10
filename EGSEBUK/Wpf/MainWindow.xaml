@@ -33,7 +33,7 @@
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
 			<Button Grid.Column="0"
-				Content="О программе" TabIndex="31" Click="Button_Click"
+				Content="О программе" TabIndex="31" 
 				/>
 			<Button Grid.Column="1" 
 				Content="Выход"

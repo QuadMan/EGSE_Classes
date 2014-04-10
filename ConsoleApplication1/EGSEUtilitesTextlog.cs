@@ -41,12 +41,21 @@ namespace Egse.Utilites
         /// </summary>
         private StreamWriter streamWriter;
 
+        /// <summary>
+        /// Необходимо начать новый текстовый лог-файл.
+        /// </summary>
         private bool isNeedNewLog;
 
         /// <summary>
         /// Объект DateTime, хранящий текущее время : (HH:MM:SS:MMS) с log-файлом
         /// </summary>
         private DateTime logTime;
+
+        /// <summary>
+        /// Наименование лог-файла по-умолчанию.
+        /// Примечание:
+        /// Загружается из ресурсов.
+        /// </summary>
         private string defaultFileName;
         
         /// <summary>
@@ -59,13 +68,6 @@ namespace Egse.Utilites
             _enableTimeWrite = true;
             this.defaultFileName = fileName;
             MakeNewFile(this.defaultFileName);
-        }
-
-        private void MakeNewFile(string fileName)
-        {
-            this.logTime = new DateTime();
-            this.fileName = MakeLoggerDir() + "\\" + GetLoggerFileName(fileName);
-            this.streamWriter = new StreamWriter(this.fileName, true);
         }
 
         /// <summary>
@@ -163,6 +165,9 @@ namespace Egse.Utilites
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Инициализация нового текстового лог-файла.
+        /// </summary>
         public void NewLog()
         {
             this.isNeedNewLog = true;
@@ -240,6 +245,17 @@ namespace Egse.Utilites
                 this.streamWriter.Close();
             }
             //// тут освобождаем управляемые ресурсы
+        }
+
+        /// <summary>
+        /// Для инизиализации нового лог-файла.
+        /// </summary>
+        /// <param name="fileName">Наименование файла для лог-файла.</param>
+        private void MakeNewFile(string fileName)
+        {
+            this.logTime = new DateTime();
+            this.fileName = MakeLoggerDir() + "\\" + GetLoggerFileName(fileName);
+            this.streamWriter = new StreamWriter(this.fileName, true);
         }
     }
 

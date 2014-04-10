@@ -7,51 +7,54 @@
 
 namespace Egse.WPF
 {
+    using System;
+    using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.Security;
+    using System.Threading;
     using System.Windows;
     using System.Windows.Input;
     using Egse.Defaults;
     using Egse.Utilites;
-    using System;
-    using System.Threading;
-    using System.Reflection;
-    using System.Windows.Interop;
-    using System.Security;
-    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Идентификатор сообщения для общей рассылки.
+        /// </summary>
         private const int HwndBroadCast = 0xffff;
+
+        /// <summary>
+        /// Идентификатор зарегистрированного в системе сообщения.
+        /// </summary>
+        private static uint message;
+
+        /// <summary>
+        /// объект Mutex, для обнаружения запущеного экземпляра ПО.
+        /// </summary>
         private Mutex mutex;
 
-        private static uint Message;
-
-        private void Dispose(Boolean disposing)
+        /// <summary>
+        /// Handles the messages.
+        /// </summary>
+        /// <param name="handle">The handle.</param>
+        /// <param name="msg">The MSG.</param>
+        /// <param name="paramW">The parameter w.</param>
+        /// <param name="paramL">The parameter l.</param>
+        /// <param name="handled">if set to <c>true</c> [handled].</param>
+        /// <returns>Идентификатор сообщения.</returns>
+        public static IntPtr HandleMessages(IntPtr handle, int msg, IntPtr paramW, IntPtr paramL, ref bool handled)
         {
-            if (disposing && (this.mutex != null))
-            {
-                this.mutex.ReleaseMutex();
-                this.mutex.Close();
-                this.mutex = null;
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public static IntPtr HandleMessages(IntPtr handle, int message, IntPtr paramW, IntPtr paramL, ref bool handled)
-        {
-            if (message == Message)
+            if (msg == message)
             {
                 if (WindowState.Minimized == Application.Current.MainWindow.WindowState)
                 {
                     Application.Current.MainWindow.WindowState = WindowState.Normal;
                 }
+
                 bool topmost = Application.Current.MainWindow.Topmost;
                 Application.Current.MainWindow.Topmost = true;
                 Application.Current.MainWindow.Topmost = topmost;
@@ -60,33 +63,15 @@ namespace Egse.WPF
             return IntPtr.Zero;
         }
 
-        protected override void OnStartup(StartupEventArgs e)
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        public void Dispose()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string mutexName = string.Format(System.Globalization.CultureInfo.InvariantCulture, "Local\\{{{0}}}{{{1}}}", assembly.GetType().GUID, assembly.GetName().Name);
-
-            this.mutex = new Mutex(false, mutexName);
-            
-            Message = SafeNativeMethods.RegisterWindowMessage(mutexName);
-            
-            if (!this.mutex.WaitOne(TimeSpan.Zero, false))
-            {
-                this.mutex = null;
-
-                SafeNativeMethods.PostMessage(HwndBroadCast, Message, IntPtr.Zero, IntPtr.Zero);
-
-                Current.Shutdown();
-
-                return;
-            }         
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        protected override void OnExit(ExitEventArgs e)
-        {
-            Dispose();
-            base.OnExit(e);
-        }
- 
         /// <summary>
         /// Mouses the logger event.
         /// </summary>
@@ -101,6 +86,58 @@ namespace Egse.WPF
             }
         }
 
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Application.Startup" /> event.
+        /// </summary>
+        /// <param name="e">A <see cref="T:System.Windows.StartupEventArgs" /> that contains the event data.</param>
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string mutexName = string.Format(System.Globalization.CultureInfo.InvariantCulture, "Local\\{{{0}}}{{{1}}}", assembly.GetType().GUID, assembly.GetName().Name);
+
+            this.mutex = new Mutex(false, mutexName);
+            
+            message = SafeNativeMethods.RegisterWindowMessage(mutexName);
+            
+            if (!this.mutex.WaitOne(TimeSpan.Zero, false))
+            {
+                this.mutex = null;
+
+                SafeNativeMethods.PostMessage(HwndBroadCast, message, IntPtr.Zero, IntPtr.Zero);
+
+                Current.Shutdown();
+
+                return;
+            }         
+        }
+
+        /// <summary>
+        /// Raises the <see cref="E:System.Windows.Application.Exit" /> event.
+        /// </summary>
+        /// <param name="e">An <see cref="T:System.Windows.ExitEventArgs" /> that contains the event data.</param>
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Dispose();
+            base.OnExit(e);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        private void Dispose(bool disposing)
+        {
+            if (disposing && (this.mutex != null))
+            {
+                this.mutex.ReleaseMutex();
+                this.mutex.Close();
+                this.mutex = null;
+            }
+        }
+
+        /// <summary>
+        /// Предназначен для методов, которые являются безопасными для всех, кто их вызывает.
+        /// </summary>
         [SuppressUnmanagedCodeSecurityAttribute]
         internal static class SafeNativeMethods
         {            
@@ -108,7 +145,6 @@ namespace Egse.WPF
             public static extern bool PostMessage(int hwnd, uint msg, IntPtr wparam, IntPtr lparam);
             [DllImport("user32")]
             public static extern uint RegisterWindowMessage(string message);
-
         }
     }
 }

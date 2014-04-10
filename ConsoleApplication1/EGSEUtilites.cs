@@ -22,7 +22,6 @@ namespace Egse.Utilites
     using System.Text;
     using System.Windows;
     using Egse.Protocols;
-    using System.Threading;
 
     ////public class SampleMarshaler : ICustomMarshaler
     ////{
@@ -350,6 +349,8 @@ namespace Egse.Utilites
         /// <param name="to">Адрес прибора назначения.</param>
         /// <param name="from">Адрес прибора инициатора.</param>
         /// <param name="apid">APID прибора назначения.</param>
+        /// <param name="isReceipt">Если установлено <c>true</c> [включить подтверждение получения].</param>
+        /// <param name="isExec">Если установлено <c>true</c> [включить подтверждение исполнения].</param>
         /// <returns>
         /// spacewire-сообщение телекоманды.
         /// </returns>
@@ -810,8 +811,6 @@ namespace Egse.Utilites
     /// </summary>
     public static class Converter
     {
-
-
         /// <summary>
         /// Преобразует массив 6 байт к структуре.
         /// </summary>
@@ -1158,7 +1157,7 @@ namespace Egse.Utilites
         }
 
         /// <summary>
-        /// Класс предназначен для методов, которые являются безопасными для всех, кто их вызывает.
+        /// Предназначен для методов, которые являются безопасными для всех, кто их вызывает.
         /// </summary>
         [SuppressUnmanagedCodeSecurityAttribute]
         internal static class SafeNativeMethods

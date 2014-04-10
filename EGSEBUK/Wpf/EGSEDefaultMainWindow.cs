@@ -17,11 +17,11 @@ namespace Egse.Defaults
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
+    using System.Windows.Interop;
     using System.Windows.Markup;
     using System.Windows.Media;
     using Egse.Constants;
     using Egse.Utilites;
-    using System.Windows.Interop;
     using Egse.WPF;
 
     /// <summary>
@@ -172,7 +172,6 @@ namespace Egse.Defaults
         /// </summary>
         private System.Windows.Threading.DispatcherTimer _dispatcherTimer;
 
-     
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="MainWindow" />.
         /// </summary>
@@ -192,11 +191,7 @@ namespace Egse.Defaults
             _dispatcherTimer.Start();
             _intfEGSE.Device.Start();
         }
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            // для отображения окна, если приложение уже запущено.
-            HwndSource.FromHwnd((new WindowInteropHelper(this)).Handle).AddHook(new HwndSourceHook(App.HandleMessages));
-        }
+
         /// <summary>
         /// Occurs when [got load application event].
         /// </summary>
@@ -206,6 +201,17 @@ namespace Egse.Defaults
         /// Occurs when [got save application event].
         /// </summary>
         public event Action GotSaveAppEvent;
+
+        /// <summary>
+        /// Handles the Loaded event of the Window control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // для отображения окна, если приложение уже запущено.
+            HwndSource.FromHwnd((new WindowInteropHelper(this)).Handle).AddHook(new HwndSourceHook(App.HandleMessages));
+        }
 
         /// <summary>
         /// Загружаем параметры окон из конфигурационного файла.

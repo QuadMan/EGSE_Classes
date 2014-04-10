@@ -77,6 +77,9 @@ namespace Egse.Defaults
             }
         }
 
+        /// <summary>
+        /// Получает лог для интерфейса spacewire3.
+        /// </summary>
         public static TxtLogger LogSpacewire3
         {
             get

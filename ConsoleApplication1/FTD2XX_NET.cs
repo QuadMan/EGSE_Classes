@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 namespace FTD2XXNET
-{
+{    
     using System;
     using System.IO;
     using System.Runtime.InteropServices;
