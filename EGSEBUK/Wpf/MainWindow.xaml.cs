@@ -131,13 +131,9 @@ namespace Egse.Defaults
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            _intfEGSE.TelemetryNotify.Deserialize();
-            _intfEGSE.HsiNotify.Deserialize();
-            _intfEGSE.Spacewire1Notify.Deserialize();
-            _intfEGSE.Spacewire2Notify.Deserialize();
-            _intfEGSE.Spacewire3Notify.Deserialize();
-            _intfEGSE.Spacewire4Notify.Deserialize();
-            _intfEGSE.RefreshAllControlsValues();
+
         }
+
+
     }
 }

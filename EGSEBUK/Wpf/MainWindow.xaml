@@ -10,7 +10,7 @@
 		MinHeight="480"
 		FontFamily="{StaticResource BaseFontFamily}"
 		FontSize="{StaticResource BaseFontSize}"
-		Closing="Window_Closing" d:DesignHeight="629.4">
+		Closing="Window_Closing" d:DesignHeight="629.4" Loaded="Window_Loaded">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40"/>

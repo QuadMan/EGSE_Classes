@@ -22,6 +22,7 @@ namespace Egse.Utilites
     using System.Text;
     using System.Windows;
     using Egse.Protocols;
+    using System.Threading;
 
     ////public class SampleMarshaler : ICustomMarshaler
     ////{
@@ -809,6 +810,8 @@ namespace Egse.Utilites
     /// </summary>
     public static class Converter
     {
+
+
         /// <summary>
         /// Преобразует массив 6 байт к структуре.
         /// </summary>
@@ -1167,7 +1170,7 @@ namespace Egse.Utilites
             public static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
         }
     }
-
+    
     /// <summary>
     /// Для поддержки счетчика последовательности протокола ICD.
     /// </summary>

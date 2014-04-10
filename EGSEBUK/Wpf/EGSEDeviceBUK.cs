@@ -1759,19 +1759,24 @@ namespace Egse.Devices
             {
                 Device.CmdSetDeviceTime();
                 Task.Run(() =>
-                {                 
-                    RefreshAllControlsValues();
-                    Task.Delay(1000).Wait();  
+                {
+                    Task.Delay(500).Wait();
                     Device.CmdSetDeviceLogicAddr();
                     Spacewire1Notify.SD1SendTime = 1000;
-                });
-                                         
+                    Task.Delay(1500).Wait();
+                    RefreshAllControlsValues();
+                });                                         
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
             else
             {
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stDisconnected");
-                
+                TelemetryNotify.Deserialize();
+                HsiNotify.Deserialize();
+                Spacewire1Notify.Deserialize();
+                Spacewire2Notify.Deserialize();
+                Spacewire3Notify.Deserialize();
+                Spacewire4Notify.Deserialize();
             }
         }
 
@@ -2221,7 +2226,7 @@ namespace Egse.Devices
             
             [field: NonSerialized()]           
             private Dictionary<string, ControlValue> controlValuesList;
-           
+
             public virtual void Serialize(object obj)
             {
                 if (null == serializer)
@@ -2250,8 +2255,9 @@ namespace Egse.Devices
                             {
                                 var ownerValue = ownerField.GetValue(this);
                                 var defaultValue = fi.GetValue(defaultObj);
-                                if (ownerValue != defaultValue)
-                                {
+                                if ((null != ownerValue) && (null != defaultValue))
+                                if (!ownerValue.Equals(defaultValue))
+                                {                                   
                                     ownerField.SetValue(this, defaultValue);
                                 }
                             }
@@ -2259,8 +2265,10 @@ namespace Egse.Devices
                             {
                                 throw new NullReferenceException("Не удалось восстановить экземпляр.");
                             }
+
                         }
                     }
+                    this.FirePropertyChangedEvent(string.Empty);
                 }
             }
                
@@ -5406,7 +5414,7 @@ namespace Egse.Devices
             public Spacewire2(EgseBukNotify owner)
                 : base(owner)
             {
-                CounterIcd = new Dictionary<short, AutoCounter>();
+                counterIcd = new Dictionary<short, AutoCounter>();
             }
 
             public override void Serialize(object obj = null)
@@ -5494,7 +5502,10 @@ namespace Egse.Devices
                 /// Адресный байт "ВХОДНЫЕ ДАННЫЕ (РЕАЛЬНЫЙ БУК): TIME TICK".
                 /// </summary>
                 BukTime2 = 0x0b
-            }       
+            }
+
+            [field: NonSerialized()]
+            private byte[] data;
 
             /// <summary>
             /// Получает буфер данных для передачи в USB.
@@ -5502,7 +5513,17 @@ namespace Egse.Devices
             /// <value>
             /// Буфер данных.
             /// </value>
-            public byte[] Data { get; private set; }
+            public byte[] Data
+            { 
+                get 
+                { 
+                    return this.data; 
+                }
+                private set
+                {
+                    this.data = value;
+                }
+            }
 
             public ObservableCollection<string> ApidList
             {
@@ -5739,13 +5760,27 @@ namespace Egse.Devices
                 }
             }
 
+            [field: NonSerialized()]
+            private Dictionary<short, AutoCounter> counterIcd;
+
             /// <summary>
             /// Получает значение [Счетчик телекоманд].
             /// </summary>
             /// <value>
             /// [Счетчик телекоманд].
             /// </value>
-            public Dictionary<short, AutoCounter> CounterIcd { get; private set; }
+            public Dictionary<short, AutoCounter> CounterIcd 
+            {
+                get
+                {
+                    return counterIcd;
+                }
+
+                private set
+                {
+                    counterIcd = value;
+                }
+            }
 
             /// <summary>
             /// Получает значение, показывающее, что [выбран первый полукомплект БУК].
@@ -5997,7 +6032,7 @@ namespace Egse.Devices
                 {
                     if (null == _issueEnableCommand)
                     {
-                        _issueEnableCommand = new RelayCommand(obj => { IsIssueEnable = !IsIssueEnable; }, obj => { return true; });
+                        _issueEnableCommand = new RelayCommand(obj => { IsIssueEnable = !IsIssueEnable; Device.CmdSetDeviceLogicAddr(); }, obj => { return true; });
                     }
 
                     return _issueEnableCommand;

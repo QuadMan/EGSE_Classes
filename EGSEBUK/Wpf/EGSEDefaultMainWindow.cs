@@ -21,6 +21,8 @@ namespace Egse.Defaults
     using System.Windows.Media;
     using Egse.Constants;
     using Egse.Utilites;
+    using System.Windows.Interop;
+    using Egse.WPF;
 
     /// <summary>
     /// Общий класс расширений.
@@ -170,6 +172,7 @@ namespace Egse.Defaults
         /// </summary>
         private System.Windows.Threading.DispatcherTimer _dispatcherTimer;
 
+     
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="MainWindow" />.
         /// </summary>
@@ -178,7 +181,6 @@ namespace Egse.Defaults
             InitializeComponent();
             Application.Current.MainWindow = this;
             Title = Global.ShowCaption;            
-                        
             InitModules();
             LoadWindows();
             InitControlValues();
@@ -190,7 +192,11 @@ namespace Egse.Defaults
             _dispatcherTimer.Start();
             _intfEGSE.Device.Start();
         }
-
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // для отображения окна, если приложение уже запущено.
+            HwndSource.FromHwnd((new WindowInteropHelper(this)).Handle).AddHook(new HwndSourceHook(App.HandleMessages));
+        }
         /// <summary>
         /// Occurs when [got load application event].
         /// </summary>
@@ -207,8 +213,8 @@ namespace Egse.Defaults
         private void LoadWindows()
         {
             foreach (Window w in Application.Current.Windows)
-            {
-                AppSettings.LoadWindow(w);
+            {             
+                AppSettings.LoadWindow(w);             
             }
         }
 
@@ -281,7 +287,7 @@ namespace Egse.Defaults
         {
             foreach (Window w in Application.Current.Windows)
             {
-                if (w != Application.Current.MainWindow)
+                if (!w.Equals(Application.Current.MainWindow))
                 {
                     w.Close();
                 }
