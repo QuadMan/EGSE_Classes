@@ -1762,10 +1762,10 @@ namespace Egse.Devices
             {
                 Device.CmdSetDeviceTime();
                 Task.Run(() =>
-                {
-                    RefreshAllControlsValues();
+                {                    
                     Device.CmdSetDeviceLogicAddr();
-                    Spacewire1Notify.SD1SendTime = 1000;          
+                    Spacewire1Notify.SD1SendTime = 1000;
+                    RefreshAllControlsValues();
                 });
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
@@ -2598,7 +2598,7 @@ namespace Egse.Devices
             /// <summary>
             /// Сохранять в текстовый лог-файл.
             /// </summary>
-            private bool isSaveTxtData;
+            private bool isSaveTxtData = true;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Hsi" />.
