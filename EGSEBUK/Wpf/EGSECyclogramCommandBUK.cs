@@ -207,6 +207,17 @@ namespace Egse.Cyclogram.Command
         }
 
         /// <summary>
+        /// Аргумент "включить автоматический режим управления датчиками затворов".
+        /// </summary>
+        private enum Control
+        {
+            /// <summary>
+            /// Параметр "автоматический режим управления датчиками затворов" аргумента.
+            /// </summary>
+            AUTO
+        }
+
+        /// <summary>
         /// Аргумент "выбор канала spacewire".
         /// </summary>
         private enum Channel
@@ -237,11 +248,6 @@ namespace Egse.Cyclogram.Command
         /// </summary>
         private enum Command
         {
-            /// <summary>
-            /// Параметр "сформировать команду RMAP" аргумента.
-            /// </summary>
-            RMAP,
-
             /// <summary>
             /// Параметр "сформировать команду TELE" аргумента.
             /// </summary>
@@ -280,20 +286,32 @@ namespace Egse.Cyclogram.Command
             TICKTIME_OFF
         }
 
+        private enum SensorOpen
+        {
+            SENS_OPEN_ON,
+            SENS_OPEN_OFF
+        }
+
+        private enum SensorClose
+        {
+            SENS_CLOSE_ON,
+            SENS_CLOSE_OFF
+        }
+
         /// <summary>
         /// Аргумент "КБВ".
         /// </summary>
-        private enum Onboardtime
+        private enum OnBoardTime
         {
             /// <summary>
             /// Параметр "включить выдачу КБВ" аргумента.
             /// </summary>
-            ONBOARDTIME_ON,
+            OBT_ON,
 
             /// <summary>
             /// Параметр "выключить выдачу КБВ" аргумента.
             /// </summary>
-            ONBOARDTIME_OFF
+            OBT_OFF
         }
 
         /// <summary>
@@ -329,9 +347,78 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmd">Наименование команды.</param>
         /// <param name="exclude">Список исключенных параметров.</param>
         /// <returns><c>true</c> если параметры существуют, иначе <c>false</c></returns>
-        private bool IncludeTest<TEnum>(string cmd, TEnum[] exclude = null)
+        private bool IncludeTest<TEnum>(string cmd, out string errStr, TEnum[] exclude = null)
         {
-            return GetAllList<TEnum>(exclude).Exists(x => x == cmd);
+            if (!GetAllList<TEnum>(exclude).Exists(x => x == cmd))
+            {
+                errStr = string.Join(" или ", GetAllList<TEnum>(exclude).ToArray());
+                return false;
+            }
+            else
+            {
+                errStr = string.Empty;
+                return true;
+            }
+        }
+
+        private bool IncludeTest<TEnum1, TEnum2>(string cmd, out string errStr, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null)
+        {
+            if (IncludeTest<TEnum2>(cmd, out errStr, exclude2))
+            {
+                return true;
+            }
+            
+            if (IncludeTest<TEnum1>(cmd, out errStr, exclude1))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IncludeTest<TEnum1, TEnum2, TEnum3>(string cmd, out string errStr, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null)
+        {
+            if (IncludeTest<TEnum3>(cmd, out errStr, exclude3))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum2>(cmd, out errStr, exclude2))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum1>(cmd, out errStr, exclude1))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IncludeTest<TEnum1, TEnum2, TEnum3, TEnum4>(string cmd, out string errStr, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null)
+        {
+            if (IncludeTest<TEnum4>(cmd, out errStr, exclude4))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum3>(cmd, out errStr, exclude3))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum2>(cmd, out errStr, exclude2))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum1>(cmd, out errStr, exclude1))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -362,30 +449,60 @@ namespace Egse.Cyclogram.Command
         /// </returns>
         private bool PowerTest(string[] cmdParams, out string errString)
         {
-            errString = string.Empty;
-            switch (cmdParams.Length)
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
             {
-                case 3:
-                    {
-                        if (!IncludeTest<Device>(cmdParams[0], new Device[1] { Device.BUK }))
-                        {
-                            errString = string.Format(Resource.Get(@"eArg1"), string.Join(" или ", GetAllList<Device>(new Device[1] { Device.BUK }).ToArray()));
-                            return false;
-                        }
+                return !isParamCountErr;
+            }
 
-                        if (!IncludeTest<Sets>(cmdParams[1]))
-                        {
-                            errString = string.Format(Resource.Get(@"eArg2"), string.Join(" или ", GetAllList<Sets>().ToArray()));
-                            return false;
-                        }  
-                    }
+            if (!IncludeTest<Device>(cmdParams[0], out errParam, new Device[1] { Device.BUK }))
+            {                
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
 
-                    break;
-                case 4:
-                    break;
-                default:
-                    errString = Resource.Get(@"eParamCount");
+            if (2 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Line, Sets>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            if (3 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Sets, Switcher>(cmdParams[2], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg3"), errParam);
+                return false;
+            }
+
+            isParamCountErr = false;
+
+            if (4 > cmdParams.Length)
+            {
+                if (!IncludeTest<Sets>(cmdParams[1], out errParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg2"), errParam);
                     return false;
+                }
+
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Switcher>(cmdParams[3], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg4"), errParam);
+                return false;
             }
 
             return true;
@@ -410,16 +527,57 @@ namespace Egse.Cyclogram.Command
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool ShutterTest(string[] cmdParams, out string errString)
         {
-            errString = string.Empty;
-            switch (cmdParams.Length)
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
             {
-                case 3:
-                    break;
-                default:
-                    errString = Resource.Get(@"eParamCount");
-                    return false;
+                return !isParamCountErr;
             }
 
+            isParamCountErr = false;
+
+            if (2 > cmdParams.Length)
+            {
+                if (!IncludeTest<Control>(cmdParams[0], out errParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                    return false;
+                }
+
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Scidev>(cmdParams[0], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
+
+            if (!IncludeTest<SensorOpen, SensorClose>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            if (3 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<SensorOpen>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            if (!IncludeTest<SensorClose>(cmdParams[2], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg3"), errParam);
+                return false;
+            }
+            
             return true;
         }
 

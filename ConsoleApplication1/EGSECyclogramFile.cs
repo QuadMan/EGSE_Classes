@@ -165,6 +165,8 @@ namespace Egse.Cyclogram
             // составляем строку команды для отображения в циклограмме (выкидываем из исходной строки время, так как оно у нас в отдельном столбце)
             _curCommand.Str = strTokens[1];
 
+            _curCommand.Parameters = new string[] { };
+
             // копируем параметры, если они есть в массив параметров команды
             if (strTokens.Length - 2 > 0)
             {
@@ -182,7 +184,7 @@ namespace Egse.Cyclogram
             // выполняем функцию тестирования параметров команды
             if (!_curCommand.RunTestFunction())
             {
-                CyclogramParsingException exc = new CyclogramParsingException(); // "Ошибка при проверке команды " + _curCommand.CmdName);
+                CyclogramParsingException exc = new CyclogramParsingException("Ошибка при проверке команды " + _curCommand.Str);
                 throw exc;
             }
         }
