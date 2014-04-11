@@ -1699,7 +1699,7 @@ namespace Egse.Devices
             Spacewire4Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw4Cmds);            
             HsiNotify.LoadDataList(Wpf.Properties.Settings.Default.HsiCmds);
             TelemetryNotify.Serialize();
-            HsiNotify.Serialize();    
+            HsiNotify.Serialize();
             Spacewire1Notify.Serialize();
             Spacewire2Notify.Serialize();
             Spacewire3Notify.Serialize();

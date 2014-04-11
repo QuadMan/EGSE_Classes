@@ -210,7 +210,7 @@ namespace Egse.Cyclogram
 
             FileName = cycFName;
             Commands.Clear();
-            using (StreamReader sr = new StreamReader(cycFName))
+            using (StreamReader sr = new StreamReader(cycFName, System.Text.Encoding.Default, true))
             {
                 // читам файл по строкам
                 while (sr.Peek() >= 0)              

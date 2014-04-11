@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="eArg1" xml:space="preserve">
-    <value>Первый аргумент: должен быть {0}</value>
+    <value>1 арг.: должен быть {0}</value>
   </data>
   <data name="eArg2" xml:space="preserve">
-    <value>Второй аргумент: должен быть {0}</value>
+    <value>2 арг.: должен быть {0}</value>
   </data>
   <data name="eArg3" xml:space="preserve">
-    <value>Третий аргумент: должен быть {0}</value>
+    <value>3 арг.: должен быть {0}</value>
   </data>
   <data name="eArg4" xml:space="preserve">
-    <value>Четвертый аргумент: должен быть {0}</value>
+    <value>4 арг.: должен быть {0}</value>
   </data>
   <data name="eArg5" xml:space="preserve">
-    <value>Пятый аргумент: должен быть {0}</value>
+    <value>5 арг.: должен быть {0}</value>
   </data>
   <data name="eParamCount" xml:space="preserve">
     <value>Ошибочное количество параметров команды!</value>

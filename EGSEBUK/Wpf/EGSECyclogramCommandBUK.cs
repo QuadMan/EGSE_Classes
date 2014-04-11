@@ -26,13 +26,79 @@ namespace Egse.Cyclogram.Command
         {
             CyclogramCommandsAvailable = new CyclogramCommands();
             CyclogramCommandsAvailable.AddCommand("62ac720d56ce449d86ca2cde439ba75a", new CyclogramLine("POWER", PowerTest, PowerExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("efc854841c554c529966abe5f1e6c2d7", new CyclogramLine("GATE", GateTest, GateExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("efc854841c554c529966abe5f1e6c2d7", new CyclogramLine("SHUTTER", ShutterTest, ShutterExec, string.Empty));
             CyclogramCommandsAvailable.AddCommand("b1f06daf0810463892707e7edf5d93be", new CyclogramLine("KVV_IMIT", KvvImitTest, KvvImitExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("e333bfb23a204e748699528fb787012c", new CyclogramLine("BUSK_IMIT", BuskImitTest, BuskImitExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("9e3e94f708eb44819a8ea9d01aa321e9", new CyclogramLine("BUSK_IMIT_CMD", BuskImitCmdTest, BuskImitCmdExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("2e92651815794233bc062365b3e8278b", new CyclogramLine("BUSK_IMIT_CMD_FILE", BuskImitCmdFileTest, BuskImitCmdFileExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("ec4d4c82d1044d3fbcad59d4403c54aa", new CyclogramLine("BUSK_IMIT_LOGIC", BuskImitLogicTest, BuskImitLogicExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("bdeae631daf8489983760003e615852a", new CyclogramLine("SCIDEV_IMIT", ScidevImitTest, ScidevImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("954bcc4e3ea240ddacd8766fcc72c9bf", new CyclogramLine("KVV_IMIT_LOG", KvvImitLogTest, KvvImitLogExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("e333bfb23a204e748699528fb787012c", new CyclogramLine("BM4_IMIT", Bm4ImitTest, Bm4ImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("9e3e94f708eb44819a8ea9d01aa321e9", new CyclogramLine("BM4_IMIT_CMD", Bm4ImitCmdTest, Bm4ImitCmdExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("1198f53b3a9a4a6b9c69f3ac6ebe466f", new CyclogramLine("BM4_IMIT_LOG", Bm4ImitLogTest, Bm4ImitLogExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("bdeae631daf8489983760003e615852a", new CyclogramLine("DETECTOR_IMIT", DetectorImitTest, DetectorImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("fac9ef960e6b4a55b48ecd13f51d4acf", new CyclogramLine("DETECTOR_IMIT_LOG", DetectorImitLogTest, DetectorImitLogExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("2e92651815794233bc062365b3e8278b", new CyclogramLine("BUK_KVV_IMIT", BukKvvImitTest, BukKvvImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("ec4d4c82d1044d3fbcad59d4403c54aa", new CyclogramLine("BUK_KVV_IMIT_CMD", BukKvvImitCmdTest, BukKvvImitCmdExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("c8567a505600474fb4f8ab24a5a11246", new CyclogramLine("BUK_BM4_IMIT", BukBm4ImitTest, BukBm4ImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("e1ee52714fa547f38701f984328913d9", new CyclogramLine("BUK_DETECTOR_IMIT", BukDetectorImitTest, BukDetectorImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("e1ee52714fa547f38701f984328913d9", new CyclogramLine("BUK_DETECTOR_IMIT_CMD", BukDetectorImitCmdTest, BukDetectorImitCmdExec, string.Empty));
+        }
+
+        private bool BukDetectorImitCmdExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukDetectorImitCmdTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukDetectorImitExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukDetectorImitTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukBm4ImitExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukBm4ImitTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool DetectorImitLogTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool DetectorImitLogExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool Bm4ImitLogTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool Bm4ImitLogExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool KvvImitLogTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool KvvImitLogExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
         }
       
         /// <summary>
@@ -73,22 +139,22 @@ namespace Egse.Cyclogram.Command
         }
 
         /// <summary>
-        /// Аргумент "выбор НП".
+        /// Аргумент "каналы БС".
         /// </summary>
         private enum Scidev
         {
             /// <summary>
-            /// Параметр "НП УФЕС" аргумента.
+            /// Параметр "канал БС УФЕС" аргумента.
             /// </summary>
             UFES,
 
             /// <summary>
-            /// Параметр "НП ВУФЕС" аргумента.
+            /// Параметр "канал БС ВУФЕС" аргумента.
             /// </summary>
             VUFES,
 
             /// <summary>
-            /// Параметр "НП СДЩ" аргумента.
+            /// Параметр "канал БС СДЩ" аргумента.
             /// </summary>
             SDSH
         }
@@ -342,7 +408,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool GateTest(string[] cmdParams, out string errString)
+        private bool ShutterTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -363,7 +429,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool GateExec(string[] cmdParams)
+        private bool ShutterExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -410,7 +476,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitTest(string[] cmdParams, out string errString)
+        private bool Bm4ImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -439,7 +505,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitExec(string[] cmdParams)
+        private bool Bm4ImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -450,7 +516,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitCmdTest(string[] cmdParams, out string errString)
+        private bool Bm4ImitCmdTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -473,7 +539,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitCmdExec(string[] cmdParams)
+        private bool Bm4ImitCmdExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -484,7 +550,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitCmdFileTest(string[] cmdParams, out string errString)
+        private bool BukKvvImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -505,7 +571,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitCmdFileExec(string[] cmdParams)
+        private bool BukKvvImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -516,7 +582,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitLogicTest(string[] cmdParams, out string errString)
+        private bool BukKvvImitCmdTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -537,7 +603,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitLogicExec(string[] cmdParams)
+        private bool BukKvvImitCmdExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -548,7 +614,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool ScidevImitTest(string[] cmdParams, out string errString)
+        private bool DetectorImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -573,7 +639,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool ScidevImitExec(string[] cmdParams)
+        private bool DetectorImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
