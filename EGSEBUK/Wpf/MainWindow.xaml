@@ -197,15 +197,22 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
+                            <Label 
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton 
-                                Content="ВКЛ" 
+                                Content="ВКЛ " 
                                 GroupName="ufesOpen"
-                                Template="{StaticResource FlatRadioButton}"
+                                HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 IsChecked="{Binding IssueUfesOpen, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="11"/>
+                            <Label 
+                                Grid.Column="2"
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton Grid.Column="2"
-                                Content="ВЫКЛ" 
-                                GroupName="ufesOpen"
-                                Template="{StaticResource FlatRadioButton}"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                Content="ВЫКЛ " 
+                                GroupName="ufesOpen"                                
                                 IsChecked="{Binding IssueUfesOpen, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="12"/>
                         </Grid>
                         <Grid Grid.Column="1"
@@ -214,15 +221,19 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
+                            <Label 
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton 
-                                Content="ВКЛ" 
+                                Content="ВКЛ " HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 GroupName="vufesOpen"
-                                Template="{StaticResource FlatRadioButton}"
                                 IsChecked="{Binding IssueVufesOpen, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="13"/>
+                            <Label Grid.Column="2"
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton Grid.Column="2"
-                                Content="ВЫКЛ" 
+                                Content="ВЫКЛ " HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 GroupName="vufesOpen"
-                                Template="{StaticResource FlatRadioButton}"
                                 IsChecked="{Binding IssueVufesOpen, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="14"/>
                         </Grid>
                         <Grid Grid.Column="1"
@@ -231,15 +242,20 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
+                            <Label 
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton 
-                                Content="ВКЛ" 
+                                Content="ВКЛ " HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 GroupName="sdchshOpen"
-                                Template="{StaticResource FlatRadioButton}"
                                 IsChecked="{Binding IssueSdchshOpen, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="15"/>
+                            <Label Grid.Column="2"
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton Grid.Column="2"
-                                Content="ВЫКЛ" 
+                                Content="ВЫКЛ " HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 GroupName="sdchshOpen"
-                                Template="{StaticResource FlatRadioButton}"
+ 
                                 IsChecked="{Binding IssueSdchshOpen, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="16"/>
                         </Grid>
                         <Grid Grid.Column="2"
@@ -248,15 +264,21 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
+                            <Label 
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton 
-                                Content="ВКЛ" 
+                                Content="ВКЛ " 
                                 GroupName="ufesClose"
-                                Template="{StaticResource FlatRadioButton}"
+        HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 IsChecked="{Binding IssueUfesClose, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="17"/>
+                            <Label Grid.Column="2"
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton Grid.Column="2"
-                                Content="ВЫКЛ" 
+                                Content="ВЫКЛ " 
                                 GroupName="ufesClose"
-                                Template="{StaticResource FlatRadioButton}"
+              HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 IsChecked="{Binding IssueUfesClose, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="18"/>
                         </Grid>
                         <Grid Grid.Column="2"
@@ -265,15 +287,21 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
+                            <Label 
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton 
-                                Content="ВКЛ" 
+                                Content="ВКЛ " 
                                 GroupName="vufesClose"
-                                Template="{StaticResource FlatRadioButton}"
+                       HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 IsChecked="{Binding IssueVufesClose, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="19"/>
+                            <Label Grid.Column="2"
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton Grid.Column="2"
-                                Content="ВЫКЛ" 
+                                Content="ВЫКЛ " 
                                 GroupName="vufesClose"
-                                Template="{StaticResource FlatRadioButton}"
+                             HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 IsChecked="{Binding IssueVufesClose, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="20"/>
                         </Grid>
                         <Grid Grid.Column="2"
@@ -282,15 +310,21 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
+                            <Label 
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton 
-                                Content="ВКЛ" 
+                                Content="ВКЛ " 
                                 GroupName="sdchshClose"
-                                Template="{StaticResource FlatRadioButton}"
+                                HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 IsChecked="{Binding IssueSdchshClose, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="21"/>
+                            <Label Grid.Column="2"
+                            Template="{StaticResource FlatLabelCheck}"/>
                             <RadioButton Grid.Column="2"
-                                Content="ВЫКЛ" 
+                                Content="ВЫКЛ " 
                                 GroupName="sdchshClose"
-                                Template="{StaticResource FlatRadioButton}"
+                               HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
                                 IsChecked="{Binding IssueSdchshClose, ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off}, Converter={StaticResource EnumToBoolConverter}}" TabIndex="22"/>
                         </Grid>
                         <Label Grid.Column="0"
