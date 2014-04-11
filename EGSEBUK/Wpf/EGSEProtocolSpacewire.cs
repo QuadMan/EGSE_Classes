@@ -969,34 +969,34 @@ namespace Egse.Protocols
         public struct Tm
         {
             /// <summary>
-            /// Маска поля заголовка поля данных: Резерв (п/о).
-            /// </summary>
-            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Подтип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ReserveSection);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Тип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, SubServiceSection);
-
-            /// <summary>
             /// Маска поля заголовка поля данных: Резерв.
             /// </summary>
-            private static readonly BitVector32.Section BitReserveSection = BitVector32.CreateSection(0x01, ServiceSection);
+            private static readonly BitVector32.Section SubBitReserveSection = BitVector32.CreateSection(0x0F);
 
             /// <summary>
             /// Маска поля заголовка поля данных: Номер версии ТМ-пакета PUS.
             /// </summary>
-            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, BitReserveSection);
+            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, SubBitReserveSection);
 
             /// <summary>
             /// Маска поля заголовка поля данных: Резерв.
             /// </summary>
-            private static readonly BitVector32.Section SubBitReserveSection = BitVector32.CreateSection(0x0F, VersionSection);
+            private static readonly BitVector32.Section BitReserveSection = BitVector32.CreateSection(0x01, VersionSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Тип сервиса.
+            /// </summary>
+            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, BitReserveSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Подтип сервиса.
+            /// </summary>
+            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ServiceSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Резерв (п/о).
+            /// </summary>
+            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF, SubServiceSection);
 
             /// <summary>
             /// Агрегат доступа к заголовку icd.

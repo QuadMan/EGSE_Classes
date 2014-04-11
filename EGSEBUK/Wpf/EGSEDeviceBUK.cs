@@ -1763,11 +1763,9 @@ namespace Egse.Devices
                 Device.CmdSetDeviceTime();
                 Task.Run(() =>
                 {
-                    Task.Delay(500).Wait();
-                    Device.CmdSetDeviceLogicAddr();
-                    Spacewire1Notify.SD1SendTime = 1000;
-                    Task.Delay(1500).Wait();
                     RefreshAllControlsValues();
+                    Device.CmdSetDeviceLogicAddr();
+                    Spacewire1Notify.SD1SendTime = 1000;          
                 });
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
