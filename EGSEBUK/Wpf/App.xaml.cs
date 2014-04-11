@@ -108,13 +108,13 @@ namespace Egse.WPF
                 return;
             }    
 
-            if (!CheckNetVersion())
-            {
-                this.mutex = null;                
-                MessageBox.Show(Resource.Get(@"eNetVersion"));                
-                Current.Shutdown();                
-                return;
-            }
+            //if (!CheckNetVersion())
+            //{
+            //    this.mutex = null;                
+            //    MessageBox.Show(Resource.Get(@"eNetVersion"));                
+            //    Current.Shutdown();                
+            //    return;
+            //}
         }
 
         /// <summary>
