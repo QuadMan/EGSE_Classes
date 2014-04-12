@@ -339,6 +339,7 @@
       <LastGenOutput>SDWindow.xaml.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="CycDeveloperTest\CycDeveloperKvvImit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperKvvImitLog.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperPower.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperShutter.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperUTF.cyc" />

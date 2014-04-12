@@ -225,7 +225,7 @@ namespace Egse.Cyclogram
                     catch (CyclogramParsingException e)
                     {
                         _wasError = true;
-                        _curCommand.ErrorInCommand += e.Message + "\t";
+                        _curCommand.ErrorInCommand += e.Message;
                     }
                     catch
                     {

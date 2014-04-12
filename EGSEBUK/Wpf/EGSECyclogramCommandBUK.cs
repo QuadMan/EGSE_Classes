@@ -93,7 +93,57 @@ namespace Egse.Cyclogram.Command
 
         private bool KvvImitLogTest(string[] cmdParams, out string errString)
         {
-            throw new NotImplementedException();
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+            
+            // задаемся минимальным количеством параметров для команды (1).
+            isParamCountErr = false;
+
+            if (2 > cmdParams.Length)
+            {
+                if (!IncludeTest<BinLog, TxtLog>(cmdParams[0], out errParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                    return false;
+                }
+
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<BinLog>(cmdParams[0], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
+
+            if (!IncludeTest<TxtLog>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            // задаемся максимальным количеством параметров для команды (2).
+            isParamCountErr = true;
+
+            if (2 < cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            // исключаем дублирующие параметры.
+            if (cmdParams.Distinct().Count() != cmdParams.Length)
+            {
+                errString = Resource.Get(@"eUnique");
+                return false;
+            }
+
+            return true;
         }
 
         private bool KvvImitLogExec(string[] cmdParams)
@@ -143,6 +193,18 @@ namespace Egse.Cyclogram.Command
             /// Параметр "устройство БУНД" аргумента.
             /// </summary>
             BUND
+        }
+
+        private enum TxtLog
+        {
+            TXT_ON,
+            TXT_OFF
+        }
+
+        private enum BinLog
+        {
+            BIN_ON,
+            BIN_OFF
         }
 
         /// <summary>
@@ -358,7 +420,7 @@ namespace Egse.Cyclogram.Command
         {
             if (!GetAllList<TEnum>(exclude).Exists(x => x == cmd))
             {
-                errStr = string.Join(" или ", GetAllList<TEnum>(exclude).ToArray());
+                errStr = string.Join(@" или ", GetAllList<TEnum>(exclude).ToArray());
                 return false;
             }
             else
@@ -514,6 +576,14 @@ namespace Egse.Cyclogram.Command
                 return false;
             }
 
+            // задаемся максимальным количеством параметров для команды (4).
+            isParamCountErr = true;
+
+            if (4 < cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
             // исключаем дублирующие параметры.
             if (cmdParams.Distinct().Count() != cmdParams.Length)
             {
@@ -590,6 +660,14 @@ namespace Egse.Cyclogram.Command
             {
                 errString = string.Format(Resource.Get(@"eArg3"), errParam);
                 return false;
+            }
+
+            // задаемся максимальным количеством параметров для команды (3).
+            isParamCountErr = true;
+
+            if (3 < cmdParams.Length)
+            {
+                return !isParamCountErr;
             }
 
             // исключаем дублирующие параметры.
@@ -692,6 +770,14 @@ namespace Egse.Cyclogram.Command
             {
                 errString = string.Format(Resource.Get(@"eArg6"), errParam);
                 return false;
+            }
+
+            // задаемся максимальным количеством параметров для команды (6).
+            isParamCountErr = true;
+
+            if (6 < cmdParams.Length)
+            {
+                return !isParamCountErr;
             }
 
             // исключаем дублирующие параметры.
