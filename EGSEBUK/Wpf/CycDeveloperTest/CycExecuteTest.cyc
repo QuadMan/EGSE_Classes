@@ -1,0 +1,5 @@
+# ФАЙЛ ТЕСТА ЦИКЛОГРАММЫ (DEVELOPER-версия)
+# Проверка механизма выполнения команд
+1 KVV_IMIT_LOG BIN_ON TXT_OFF
+1 KVV_IMIT_LOG BIN_OFF
+1 KVV_IMIT_LOG TXT_OFF

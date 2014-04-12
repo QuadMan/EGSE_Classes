@@ -81,6 +81,12 @@
     <Compile Include="Behaviors\EgseBehaviorsUIElementAdorner.cs" />
     <Compile Include="Behaviors\EgseBehaviorsWatermarkComboBox.cs" />
     <Compile Include="Behaviors\EgseBehaviorsWatermarkTextBox.cs" />
+    <Compile Include="CustomAttributes\LambdaAttribute.cs" />
+    <Compile Include="CustomAttributes\LambdaAttribute.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LambdaAttribute.resx</DependentUpon>
+    </Compile>
     <Compile Include="EGSEConstantsBUK.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -290,6 +296,11 @@
       <Link>EGSEUtilitesTextlog.resx</Link>
       <DependentUpon>EGSEUtilitesTextlog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomAttributes\LambdaAttribute.resx">
+      <DependentUpon>LambdaAttribute.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>LambdaAttribute.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="EGSEConstantsBUK.resx">
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -343,6 +354,7 @@
     <None Include="CycDeveloperTest\CycDeveloperPower.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperShutter.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperUTF.cyc" />
+    <None Include="CycDeveloperTest\CycExecuteTest.cyc" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
