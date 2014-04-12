@@ -106,11 +106,29 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 6 арг.: должен быть {0}.
+        /// </summary>
+        internal static string eArg6 {
+            get {
+                return ResourceManager.GetString("eArg6", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ошибочное количество параметров команды!.
         /// </summary>
         internal static string eParamCount {
             get {
                 return ResourceManager.GetString("eParamCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обнаружены дублирующие параметры!.
+        /// </summary>
+        internal static string eUnique {
+            get {
+                return ResourceManager.GetString("eUnique", resourceCulture);
             }
         }
     }

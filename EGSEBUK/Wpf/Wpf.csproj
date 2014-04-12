@@ -338,6 +338,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SDWindow.xaml.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="CycDeveloperTest\CycDeveloperKvvImit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperPower.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperShutter.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperUTF.cyc" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
