@@ -5,7 +5,7 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace Egse.WPF
+namespace Egse.Wpf
 {
     using System;
     using System.Reflection;

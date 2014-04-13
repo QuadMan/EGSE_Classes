@@ -76,11 +76,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EGSEProtocolUSB.resx</DependentUpon>
     </Compile>
-    <Compile Include="Behaviors\EgseBehaviorsAdornerExtensions.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsKeyboardFocus.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsUIElementAdorner.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsWatermarkComboBox.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsWatermarkTextBox.cs" />
+    <Compile Include="Behaviors\AdornerExtensions.cs" />
+    <Compile Include="Behaviors\KeyboardFocus.cs" />
+    <Compile Include="Behaviors\UIElementAdorner.cs" />
+    <Compile Include="Behaviors\WatermarkComboBox.cs" />
+    <Compile Include="Behaviors\WatermarkTextBox.cs" />
     <Compile Include="EGSEConstantsBUK.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------
-// <copyright file="EgseBehaviorsKeyboardFocus.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="KeyboardFocus.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) MSDN Code Gallery. All rights reserved.
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Piotr W?odek, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace Egse.Behaviors
+namespace Egse.Wpf.Behaviors
 {
     using System.Windows;
     using System.Windows.Input;
@@ -14,12 +14,12 @@ namespace Egse.Behaviors
     /// <summary>
     /// Обработчик нажатия клавиатуры.
     /// </summary>
-    public static class KeyboardFocusBehavior
+    public static class KeyboardFocus
     {
         /// <summary>
         /// The is focused property
         /// </summary>
-        public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached("IsFocused", typeof(bool), typeof(KeyboardFocusBehavior), new UIPropertyMetadata(false, OnIsFocusedChanged));
+        public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached("IsFocused", typeof(bool), typeof(KeyboardFocus), new UIPropertyMetadata(false, OnIsFocusedChanged));
 
         /// <summary>
         /// Gets the is focused.

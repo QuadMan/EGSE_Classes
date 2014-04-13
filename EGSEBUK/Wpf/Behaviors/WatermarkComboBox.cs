@@ -1,12 +1,12 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="EgseBehaviorsWatermarkComboBox.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="WatermarkComboBox.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) MSDN Code Gallery. All rights reserved.
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Piotr Włodek, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace Egse.Behaviors
+namespace Egse.Wpf.Behaviors
 {
     using System;
     using System.ComponentModel;
@@ -17,51 +17,51 @@ namespace Egse.Behaviors
     /// <summary>
     /// Расширения для comboBox.
     /// </summary>
-    public sealed class WatermarkComboBoxBehavior
+    public sealed class WatermarkComboBox
     {
         /// <summary>
         /// The enable watermark property.
         /// </summary>
-        public static readonly DependencyProperty EnableWatermarkProperty = DependencyProperty.RegisterAttached("EnableWatermark", typeof(bool), typeof(WatermarkComboBoxBehavior), new UIPropertyMetadata(false, OnEnableWatermarkChanged));
+        public static readonly DependencyProperty EnableWatermarkProperty = DependencyProperty.RegisterAttached("EnableWatermark", typeof(bool), typeof(WatermarkComboBox), new UIPropertyMetadata(false, OnEnableWatermarkChanged));
       
         /// <summary>
         /// The label style property.
         /// </summary>
-        public static readonly DependencyProperty LabelStyleProperty = DependencyProperty.RegisterAttached("LabelStyle", typeof(Style), typeof(WatermarkComboBoxBehavior));
+        public static readonly DependencyProperty LabelStyleProperty = DependencyProperty.RegisterAttached("LabelStyle", typeof(Style), typeof(WatermarkComboBox));
 
         /// <summary>
         /// The label property.
         /// </summary>
-        public static readonly DependencyProperty LabelProperty = DependencyProperty.RegisterAttached("Label", typeof(string), typeof(WatermarkComboBoxBehavior));
+        public static readonly DependencyProperty LabelProperty = DependencyProperty.RegisterAttached("Label", typeof(string), typeof(WatermarkComboBox));
 
         /// <summary>
         /// The watermark ComboBox behavior property.
         /// </summary>
-        private static readonly DependencyProperty WatermarkComboBoxBehaviorProperty = DependencyProperty.RegisterAttached("WatermarkComboBoxBehavior", typeof(WatermarkComboBoxBehavior), typeof(WatermarkComboBoxBehavior), new UIPropertyMetadata(null));
+        private static readonly DependencyProperty WatermarkComboBoxBehaviorProperty = DependencyProperty.RegisterAttached("WatermarkComboBoxBehavior", typeof(WatermarkComboBox), typeof(WatermarkComboBox), new UIPropertyMetadata(null));
     
         /// <summary>
         /// The ComboBox.
         /// </summary>
-        private readonly ComboBox _comboBox;
+        private readonly ComboBox comboBox;
 
         /// <summary>
         /// The UI element adorner.
         /// </summary>
-        private UIElementAdorner uiElementAdorner;
+        private UIElementAdorner uiElement;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="WatermarkComboBoxBehavior" />.
+        /// Инициализирует новый экземпляр класса <see cref="WatermarkComboBox" />.
         /// </summary>
         /// <param name="comboBox">The combo box.</param>
         /// <exception cref="System.ArgumentNullException">Если аргументом задан null.</exception>
-        private WatermarkComboBoxBehavior(ComboBox comboBox)
+        private WatermarkComboBox(ComboBox comboBox)
         {
             if (null == comboBox)
             {
                 throw new ArgumentNullException("comboBox");
             }
 
-            _comboBox = comboBox;
+            this.comboBox = comboBox;
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace Egse.Behaviors
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>The watermark ComboBox behavior.</returns>
-        private static WatermarkComboBoxBehavior GetWatermarkComboBoxBehavior(DependencyObject obj)
+        private static WatermarkComboBox GetWatermarkComboBoxBehavior(DependencyObject obj)
         {
-            return (WatermarkComboBoxBehavior)obj.GetValue(WatermarkComboBoxBehaviorProperty);
+            return (WatermarkComboBox)obj.GetValue(WatermarkComboBoxBehaviorProperty);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace Egse.Behaviors
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="value">The value.</param>
-        private static void SetWatermarkComboBoxBehavior(DependencyObject obj, WatermarkComboBoxBehavior value)
+        private static void SetWatermarkComboBoxBehavior(DependencyObject obj, WatermarkComboBox value)
         {
             obj.SetValue(WatermarkComboBoxBehaviorProperty, value);
         }
@@ -153,12 +153,12 @@ namespace Egse.Behaviors
         {
             if (null != e.OldValue)
             {
-                var enabled = (bool)e.OldValue;
+                bool enabled = (bool)e.OldValue;
 
                 if (enabled)
                 {
                     ComboBox comboBox = (ComboBox)d;
-                    WatermarkComboBoxBehavior behavior = GetWatermarkComboBoxBehavior(comboBox);
+                    WatermarkComboBox behavior = GetWatermarkComboBoxBehavior(comboBox);
                     behavior.Detach();
 
                     SetWatermarkComboBoxBehavior(comboBox, null);
@@ -167,12 +167,12 @@ namespace Egse.Behaviors
 
             if (null != e.NewValue)
             {
-                var enabled = (bool)e.NewValue;
+                bool enabled = (bool)e.NewValue;
 
                 if (enabled)
                 {
                     ComboBox comboBox = (ComboBox)d;
-                    WatermarkComboBoxBehavior behavior = new WatermarkComboBoxBehavior(comboBox);
+                    WatermarkComboBox behavior = new WatermarkComboBox(comboBox);
                     behavior.Attach();
 
                     SetWatermarkComboBoxBehavior(comboBox, behavior);
@@ -185,9 +185,9 @@ namespace Egse.Behaviors
         /// </summary>
         private void Attach()
         {
-            _comboBox.Loaded += ComboBoxLoaded;
-            _comboBox.DragEnter += ComboBoxDragEnter;
-            _comboBox.DragLeave += ComboBoxDragLeave;
+            this.comboBox.Loaded += this.ComboBoxLoaded;
+            this.comboBox.DragEnter += this.ComboBoxDragEnter;
+            this.comboBox.DragLeave += this.ComboBoxDragLeave;
         }
 
         /// <summary>
@@ -195,9 +195,9 @@ namespace Egse.Behaviors
         /// </summary>
         private void Detach()
         {
-            _comboBox.Loaded -= ComboBoxLoaded;
-            _comboBox.DragEnter -= ComboBoxDragEnter;
-            _comboBox.DragLeave -= ComboBoxDragLeave;
+            this.comboBox.Loaded -= this.ComboBoxLoaded;
+            this.comboBox.DragEnter -= this.ComboBoxDragEnter;
+            this.comboBox.DragLeave -= this.ComboBoxDragLeave;
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace Egse.Behaviors
         /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
         private void ComboBoxDragLeave(object sender, DragEventArgs e)
         {
-            UpdateAdorner();
+            this.UpdateAdorner();
         }
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace Egse.Behaviors
         /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
         private void ComboBoxDragEnter(object sender, DragEventArgs e)
         {
-            _comboBox.TryRemoveAdorners<UIElementAdorner>();
+            this.comboBox.TryRemoveAdorners<UIElementAdorner>();
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace Egse.Behaviors
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void ComboBoxLoaded(object sender, RoutedEventArgs e)
         {
-            Init();
+            this.Init();
         }
 
         /// <summary>
@@ -235,43 +235,43 @@ namespace Egse.Behaviors
         /// </summary>
         private void Init()
         {
-            uiElementAdorner = new UIElementAdorner(_comboBox, GetLabel(_comboBox), GetLabelStyle(_comboBox));
-            UpdateAdorner();
+            this.uiElement = new UIElementAdorner(this.comboBox, GetLabel(this.comboBox), GetLabelStyle(this.comboBox));
+            this.UpdateAdorner();
 
             DependencyPropertyDescriptor focusProp = DependencyPropertyDescriptor.FromProperty(UIElement.IsFocusedProperty, typeof(ComboBox));
             if (null != focusProp)
             {
-                focusProp.AddValueChanged(_comboBox, (sender, args) => UpdateAdorner());
+                focusProp.AddValueChanged(this.comboBox, (sender, args) => this.UpdateAdorner());
             }
 
             DependencyPropertyDescriptor focusKeyboardProp = DependencyPropertyDescriptor.FromProperty(UIElement.IsKeyboardFocusedProperty, typeof(ComboBox));
             if (null != focusKeyboardProp)
             {
-                focusKeyboardProp.AddValueChanged(_comboBox, (sender, args) => UpdateAdorner());
+                focusKeyboardProp.AddValueChanged(this.comboBox, (sender, args) => this.UpdateAdorner());
             }
 
             DependencyPropertyDescriptor focusKeyboardWithinProp = DependencyPropertyDescriptor.FromProperty(UIElement.IsKeyboardFocusWithinProperty, typeof(ComboBox));
             if (null != focusKeyboardWithinProp)
             {
-                focusKeyboardWithinProp.AddValueChanged(_comboBox, (sender, args) => UpdateAdorner());
+                focusKeyboardWithinProp.AddValueChanged(this.comboBox, (sender, args) => this.UpdateAdorner());
             }
 
             DependencyPropertyDescriptor textProp = DependencyPropertyDescriptor.FromProperty(ComboBox.TextProperty, typeof(ComboBox));
             if (null != textProp)
             {
-                textProp.AddValueChanged(_comboBox, (sender, args) => UpdateAdorner());
+                textProp.AddValueChanged(this.comboBox, (sender, args) => this.UpdateAdorner());
             }
 
             DependencyPropertyDescriptor selectedIndexProp = DependencyPropertyDescriptor.FromProperty(Selector.SelectedIndexProperty, typeof(ComboBox));
             if (null != selectedIndexProp)
             {
-                selectedIndexProp.AddValueChanged(_comboBox, (sender, args) => UpdateAdorner());
+                selectedIndexProp.AddValueChanged(this.comboBox, (sender, args) => this.UpdateAdorner());
             }
 
             DependencyPropertyDescriptor selectedItemProp = DependencyPropertyDescriptor.FromProperty(Selector.SelectedItemProperty, typeof(ComboBox));
             if (null != selectedItemProp)
             {
-                selectedItemProp.AddValueChanged(_comboBox, (sender, args) => UpdateAdorner());
+                selectedItemProp.AddValueChanged(this.comboBox, (sender, args) => this.UpdateAdorner());
             }
         }
 
@@ -280,22 +280,17 @@ namespace Egse.Behaviors
         /// </summary>
         private void UpdateAdorner()
         {
-            if (!string.IsNullOrEmpty(_comboBox.Text) ||
-                _comboBox.IsFocused ||
-                _comboBox.IsKeyboardFocused ||
-                _comboBox.IsKeyboardFocusWithin ||
-                -1 != _comboBox.SelectedIndex ||
-                null != _comboBox.SelectedItem)
+            if (!string.IsNullOrEmpty(this.comboBox.Text) || this.comboBox.IsFocused || this.comboBox.IsKeyboardFocused || this.comboBox.IsKeyboardFocusWithin || -1 != this.comboBox.SelectedIndex || null != this.comboBox.SelectedItem)
             {
                 // Hide the Watermark Label if the adorner layer is visible
-                _comboBox.ToolTip = GetLabel(_comboBox);
-                _comboBox.TryRemoveAdorners<UIElementAdorner>();
+                this.comboBox.ToolTip = GetLabel(this.comboBox);
+                this.comboBox.TryRemoveAdorners<UIElementAdorner>();
             }
             else
             {
                 // Show the Watermark Label if the adorner layer is visible
-                _comboBox.ToolTip = null;
-                _comboBox.TryAddAdorner<UIElementAdorner>(uiElementAdorner);
+                this.comboBox.ToolTip = null;
+                this.comboBox.TryAddAdorner<UIElementAdorner>(this.uiElement);
             }
         }
     }

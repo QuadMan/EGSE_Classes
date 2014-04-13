@@ -21,7 +21,6 @@ namespace Egse.Devices
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Egse;
     using Egse.Constants;
     using Egse.Defaults;
     using Egse.Protocols;
