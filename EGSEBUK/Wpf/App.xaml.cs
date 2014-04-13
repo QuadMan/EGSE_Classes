@@ -16,6 +16,7 @@ namespace Egse.Wpf
     using System.Windows.Input;
     using Egse.Defaults;
     using Egse.Utilites;
+    using DetectNetVersion.DotNetFramework;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -101,14 +102,28 @@ namespace Egse.Wpf
             
             if (!this.mutex.WaitOne(TimeSpan.Zero, false))
             {
-                this.mutex = null;
-
                 SafeNativeMethods.PostMessage(HwndBroadCast, message, IntPtr.Zero, IntPtr.Zero);
-
                 Current.Shutdown();
-
                 return;
-            }         
+            }
+
+            string ownVer, needVer;
+            // выходим из приложения если не хватает версии DotNet Framework (необходима .Net Framework 4.5)
+            if (IsCheckDotNetVersion(out needVer, out ownVer))
+            {
+                MessageBox.Show(string.Format(Resource.Get(@"eNetVersion"), needVer, ownVer));
+                Current.Shutdown();
+                return; 
+            }
+
+        }
+
+        private bool IsCheckDotNetVersion(out string needVersion, out string ownerVersion)
+        {
+            NetFrameworkInfo FrameworkInfo = new NetFrameworkInfo();
+            ownerVersion = FrameworkInfo.HighestFrameworkVersion;
+            needVersion = string.Format("{0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
+            return 0 > ownerVersion.CompareTo(needVersion);
         }
 
         /// <summary>

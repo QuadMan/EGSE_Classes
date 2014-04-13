@@ -49,6 +49,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Egse.Wpf.AppEntryPoint</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -76,6 +79,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EGSEProtocolUSB.resx</DependentUpon>
     </Compile>
+    <Compile Include="App.xaml.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>App.xaml.resx</DependentUpon>
+    </Compile>
+    <Compile Include="AppEntryPoint.cs" />
     <Compile Include="Behaviors\AdornerExtensions.cs" />
     <Compile Include="Behaviors\KeyboardFocus.cs" />
     <Compile Include="Behaviors\UIElementAdorner.cs" />
@@ -114,6 +123,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EGSEProtocolSpacewire.resx</DependentUpon>
     </Compile>
+    <Compile Include="EmbeddedAssembly.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceUnitTest.Designer.cs">
       <DependentUpon>ResourceUnitTest.resx</DependentUpon>
@@ -290,6 +300,11 @@
       <Link>EGSEUtilitesTextlog.resx</Link>
       <DependentUpon>EGSEUtilitesTextlog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="App.xaml.resx">
+      <DependentUpon>App.xaml.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>App.xaml.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="EGSEConstantsBUK.resx">
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
@@ -352,12 +367,12 @@
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 и x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <ProductName>Клиентский профиль .NET Framework 3.5 с пакетом обновления 1 %28SP1%29</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
@@ -365,6 +380,18 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DetectNetVersion\DetectNetVersion.vbproj">
+      <Project>{0798acde-3c47-46fe-8d44-2102a180ff0f}</Project>
+      <Name>DetectNetVersion</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\DetectNetVersion\bin\Release\DetectNetVersion.dll">
+      <Link>DetectNetVersion.dll</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
