@@ -1124,7 +1124,7 @@ namespace Egse.Devices
         {
             IsConnected = false;
 
-            _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
+            _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogEncoder, false, true);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
             _decoderUSB.GotProtocolError += new ProtocolUSBBase.ProtocolErrorEventHandler(OnErrorFunc);
             DeviceTime = new EgseTime();
@@ -1142,7 +1142,7 @@ namespace Egse.Devices
             Spacewire4Notify = new Spacewire4(this);
 
             UITestNotify = new UITest(this);
-            UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
+            UITestNotify.UsbLogFile = LogsClass.LogEncoder.FileName;
 
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
