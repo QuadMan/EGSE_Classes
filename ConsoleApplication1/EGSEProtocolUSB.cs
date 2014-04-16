@@ -18,19 +18,12 @@ namespace Egse.Protocols
         /// <summary>
         /// Данные сообщения.
         /// </summary>
-        private byte[] _data;
+        private byte[] data;
 
         /// <summary>
         /// Длина сообщения.
         /// </summary>
-        private int _dataLen;
-
-        /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="BaseMsgEventArgs" />.
-        /// </summary>
-        public BaseMsgEventArgs()
-        {
-        }
+        private int dataLen;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="BaseMsgEventArgs" />.
@@ -40,8 +33,8 @@ namespace Egse.Protocols
         {
             new { data }.CheckNotNull();
 
-            Data = data;
-            DataLen = data.Length;
+            this.data = data;
+            this.dataLen = data.Length;
         }
       
         /// <summary>
@@ -51,12 +44,12 @@ namespace Egse.Protocols
         {
             get
             {
-                return _data;
+                return this.data;
             }
 
             set
             {
-                _data = value;
+                this.data = value;
             }
         }
 
@@ -67,12 +60,12 @@ namespace Egse.Protocols
         {
             get
             {
-                return _dataLen;
+                return this.dataLen;
             }
 
             set
             {
-                _dataLen = value;
+                this.dataLen = value;
             }
         }
 
@@ -86,7 +79,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return Crc16.Get(this._data, this._data.Length);
+                return Crc16.Get(this.data, this.data.Length);
             }
         }
 
@@ -96,7 +89,7 @@ namespace Egse.Protocols
         /// <returns>Массив байт.</returns>
         public virtual byte[] ToArray()
         {
-            return _data;
+            return this.data;
         }
 
         /// <summary>
@@ -127,8 +120,8 @@ namespace Egse.Protocols
         /// </summary>
         /// <param name="maxDataLen">Размер буфера</param>
         public ProtocolMsgEventArgs(uint maxDataLen)
+            : base(new byte[maxDataLen])
         {
-            base.Data = new byte[maxDataLen];
             base.DataLen = 0;
             Addr = 0;
         }
@@ -198,8 +191,8 @@ namespace Egse.Protocols
         /// </summary>
         /// <param name="maxDataLen">Размер буфера</param>
         public ProtocolErrorEventArgs(uint maxDataLen)
+            : base(new byte[maxDataLen])
         {
-            base.Data = new byte[maxDataLen];
             base.DataLen = 0;
             ErrorPos = 0;
         }

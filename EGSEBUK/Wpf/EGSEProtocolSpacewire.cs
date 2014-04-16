@@ -265,6 +265,14 @@ namespace Egse.Protocols
             }
         }
 
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return _icdInfo.SptpInfo;
+            }
+        }
+
         /// <summary>
         /// Тип сообщения Icd.
         /// </summary>
@@ -317,7 +325,7 @@ namespace Egse.Protocols
         /// <value>
         /// Агрегат доступа к заголовку icd сообщения.
         /// </value>
-        public Icd IcdInfo
+        public virtual Icd IcdInfo
         {
             get
             {
@@ -450,7 +458,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку sptp сообщения.
             /// </value>
-            public SpacewireSptpMsgEventArgs.Sptp SptpInfo
+            internal Sptp SptpInfo
             {
                 get
                 {
@@ -693,6 +701,22 @@ namespace Egse.Protocols
             }
         }
 
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return _obtInfo.IcdInfo;
+            }
+        }
+
         /// <summary>
         /// Проверка на принадлежность к КБВ-сообщению.
         /// </summary>
@@ -736,7 +760,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Агрегат доступа к заголовку icd.
             /// </summary>
-            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+            private Icd _icdHeader;
 
             /// <summary>
             /// Значение поля Р: нормальное.
@@ -759,7 +783,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку icd сообщения.
             /// </value>
-            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            internal Icd IcdInfo
             {
                 get
                 {
@@ -883,6 +907,22 @@ namespace Egse.Protocols
             get
             {
                 return _telemetroInfo;
+            }
+        }
+
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return _telemetroInfo.IcdInfo;
             }
         }
 
@@ -1024,7 +1064,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку icd сообщения.
             /// </value>
-            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            internal Icd IcdInfo
             {
                 get
                 {
@@ -1259,6 +1299,22 @@ namespace Egse.Protocols
             }
         }
 
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return _telecmdInfo.IcdInfo;
+            }
+        }
+
         /// <summary>
         /// Получает данные сообщения телекоманды.
         /// </summary>
@@ -1428,7 +1484,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Агрегат доступа к icd заголовку.
             /// </summary>
-            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+            private Icd _icdHeader;
 
             /// <summary>
             /// Заголовок телекоманды.
@@ -1441,7 +1497,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку icd.
             /// </value>
-            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            internal Icd IcdInfo
             {
                 get
                 {
@@ -1783,7 +1839,7 @@ namespace Egse.Protocols
         /// <value>
         /// Агрегат доступа к заголовку Sptp.
         /// </value>
-        public Sptp SptpInfo
+        public virtual Sptp SptpInfo
         {
             get
             {

@@ -3,7 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
 		xmlns:l="clr-namespace:Egse.Defaults"
 		xmlns:d="clr-namespace:Egse.Devices"  
-		xmlns:b="clr-namespace:Egse.Behaviors"
+		xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
 		Title="Имитатор каналов БС" 
 		FontFamily="{StaticResource BaseFontFamily}"
 		FontSize="{StaticResource BaseFontSize}"
@@ -94,9 +94,9 @@
 				<TextBox              
 					IsReadOnly="True"
 					Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"
-					b:WatermarkTextBoxBehavior.EnableWatermark="True"
-					b:WatermarkTextBoxBehavior.Label="Файл отсутствует..."
-					b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
+					b:WatermarkTextBox.EnableWatermark="True"
+					b:WatermarkTextBox.Label="Файл отсутствует..."
+					b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
 					IsTabStop="False"/>
 			</DockPanel>
             <DockPanel Grid.Row="2"
@@ -109,9 +109,9 @@
                 <TextBox              
 					IsReadOnly="True"
 					Text="{Binding TxtDataFile, ValidatesOnDataErrors=True, Mode=OneWay}"
-					b:WatermarkTextBoxBehavior.EnableWatermark="True"
-					b:WatermarkTextBoxBehavior.Label="Лог-файл отсутствует..."
-					b:WatermarkTextBoxBehavior.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
+					b:WatermarkTextBox.EnableWatermark="True"
+					b:WatermarkTextBox.Label="Лог-файл отсутствует..."
+					b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
 					IsTabStop="False"/>
             </DockPanel>
             <ListBox x:Name="MonitorList" 

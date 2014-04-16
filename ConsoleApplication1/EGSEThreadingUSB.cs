@@ -248,10 +248,11 @@ namespace Egse.Threading
                     // если есть команды для выдачи в USB
                     if (_cmdQueue.Count > 0)
                     {
-                        byte[] _buf = _cmdQueue.Peek();
-                        FTD2XXNET.FTDICustom.FT_STATUS res = _ftdi.WriteBuf(ref _buf, out bytesWritten);
-                        if ((res == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesWritten == _buf.Length))
+                        byte[] buf = _cmdQueue.Peek();
+                        FTD2XXNET.FTDICustom.FT_STATUS res = _ftdi.WriteBuf(ref buf, out bytesWritten);
+                        if ((res == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesWritten == buf.Length))
                         {
+                            Egse.Defaults.LogsClass.LogUSB.LogText = Converter.ByteArrayToHexStr(buf);
                             _cmdQueue.Dequeue();
                         }
                     }

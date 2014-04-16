@@ -1,12 +1,12 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="EgseBehaviorsWatermarkTextBox.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="WatermarkTextBox.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) MSDN Code Gallery. All rights reserved.
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Piotr Włodek, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace Egse.Behaviors
+namespace Egse.Wpf.Behaviors
 {
     using System;
     using System.ComponentModel;
@@ -16,32 +16,32 @@ namespace Egse.Behaviors
     /// <summary>
     /// Расширение для TextBox.
     /// </summary>
-    public sealed class WatermarkTextBoxBehavior
+    public sealed class WatermarkTextBox
     {
         /// <summary>
         /// The label property.
         /// </summary>
-        public static readonly DependencyProperty LabelProperty = DependencyProperty.RegisterAttached("Label", typeof(string), typeof(WatermarkTextBoxBehavior));
+        public static readonly DependencyProperty LabelProperty = DependencyProperty.RegisterAttached("Label", typeof(string), typeof(WatermarkTextBox));
 
         /// <summary>
         /// The label style property.
         /// </summary>
-        public static readonly DependencyProperty LabelStyleProperty = DependencyProperty.RegisterAttached("LabelStyle", typeof(Style), typeof(WatermarkTextBoxBehavior));
+        public static readonly DependencyProperty LabelStyleProperty = DependencyProperty.RegisterAttached("LabelStyle", typeof(Style), typeof(WatermarkTextBox));
 
         /// <summary>
         /// The enable watermark property.
         /// </summary>
-        public static readonly DependencyProperty EnableWatermarkProperty = DependencyProperty.RegisterAttached("EnableWatermark", typeof(bool), typeof(WatermarkTextBoxBehavior), new UIPropertyMetadata(false, OnEnableWatermarkChanged));
+        public static readonly DependencyProperty EnableWatermarkProperty = DependencyProperty.RegisterAttached("EnableWatermark", typeof(bool), typeof(WatermarkTextBox), new UIPropertyMetadata(false, OnEnableWatermarkChanged));
                 
         /// <summary>
         /// The watermark text box behavior property.
         /// </summary>
-        private static readonly DependencyProperty WatermarkTextBoxBehaviorProperty = DependencyProperty.RegisterAttached("WatermarkTextBoxBehavior", typeof(WatermarkTextBoxBehavior), typeof(WatermarkTextBoxBehavior), new UIPropertyMetadata(null));
+        private static readonly DependencyProperty WatermarkTextBoxBehaviorProperty = DependencyProperty.RegisterAttached("WatermarkTextBoxBehavior", typeof(WatermarkTextBox), typeof(WatermarkTextBox), new UIPropertyMetadata(null));
 
         /// <summary>
         /// The has text property key.
         /// </summary>
-        private static readonly DependencyPropertyKey HasTextPropertyKey = DependencyProperty.RegisterAttachedReadOnly("HasText", typeof(bool), typeof(WatermarkTextBoxBehavior), new UIPropertyMetadata(false));
+        private static readonly DependencyPropertyKey HasTextPropertyKey = DependencyProperty.RegisterAttachedReadOnly("HasText", typeof(bool), typeof(WatermarkTextBox), new UIPropertyMetadata(false));
        
         /// <summary>
         /// The has text property.
@@ -51,26 +51,26 @@ namespace Egse.Behaviors
         /// <summary>
         /// The text box.
         /// </summary>
-        private readonly TextBox _textBox;
+        private readonly TextBox textBox;
 
         /// <summary>
         /// The UI element adorner.
         /// </summary>
-        private UIElementAdorner _uiElementAdorner;
+        private UIElementAdorner uiElement;
 
         /// <summary>
-        /// Инициализирует новый экземпляр класса <see cref="WatermarkTextBoxBehavior" />.
+        /// Инициализирует новый экземпляр класса <see cref="WatermarkTextBox" />.
         /// </summary>
         /// <param name="textBox">The text box.</param>
         /// <exception cref="System.ArgumentNullException">Если аргументом задан null.</exception>
-        private WatermarkTextBoxBehavior(TextBox textBox)
+        private WatermarkTextBox(TextBox textBox)
         {
             if (null == textBox)
             {
                 throw new ArgumentNullException("textBox");
             }
 
-            _textBox = textBox;
+            this.textBox = textBox;
         }
 
         /// <summary>
@@ -158,9 +158,9 @@ namespace Egse.Behaviors
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>The watermark TextBox behavior.</returns>
-        private static WatermarkTextBoxBehavior GetWatermarkTextBoxBehavior(DependencyObject obj)
+        private static WatermarkTextBox GetWatermarkTextBoxBehavior(DependencyObject obj)
         {
-            return (WatermarkTextBoxBehavior)obj.GetValue(WatermarkTextBoxBehaviorProperty);
+            return (WatermarkTextBox)obj.GetValue(WatermarkTextBoxBehaviorProperty);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace Egse.Behaviors
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="value">The value.</param>
-        private static void SetWatermarkTextBoxBehavior(DependencyObject obj, WatermarkTextBoxBehavior value)
+        private static void SetWatermarkTextBoxBehavior(DependencyObject obj, WatermarkTextBox value)
         {
             obj.SetValue(WatermarkTextBoxBehaviorProperty, value);
         }
@@ -182,26 +182,26 @@ namespace Egse.Behaviors
         {
             if (null != e.OldValue)
             {
-                var enabled = (bool)e.OldValue;
+                bool enabled = (bool)e.OldValue;
 
                 if (enabled)
                 {
-                    var textBox = (TextBox)d;
-                    var behavior = GetWatermarkTextBoxBehavior(textBox);
+                    TextBox textBox = (TextBox)d;
+                    WatermarkTextBox behavior = GetWatermarkTextBoxBehavior(textBox);
                     behavior.Detach();
 
                     SetWatermarkTextBoxBehavior(textBox, null);
                 }
             }
 
-            if (e.NewValue != null)
+            if (null != e.NewValue)
             {
-                var enabled = (bool)e.NewValue;
+                bool enabled = (bool)e.NewValue;
 
                 if (enabled)
                 {
-                    var textBox = (TextBox)d;
-                    var behavior = new WatermarkTextBoxBehavior(textBox);
+                    TextBox textBox = (TextBox)d;
+                    WatermarkTextBox behavior = new WatermarkTextBox(textBox);
                     behavior.Attach();
 
                     SetWatermarkTextBoxBehavior(textBox, behavior);
@@ -214,10 +214,10 @@ namespace Egse.Behaviors
         /// </summary>
         private void Attach()
         {
-            _textBox.Loaded += TextBoxLoaded;
-            _textBox.TextChanged += TextBoxTextChanged;
-            _textBox.DragEnter += TextBoxDragEnter;
-            _textBox.DragLeave += TextBoxDragLeave;
+            this.textBox.Loaded += this.TextBoxLoaded;
+            this.textBox.TextChanged += this.TextBoxTextChanged;
+            this.textBox.DragEnter += this.TextBoxDragEnter;
+            this.textBox.DragLeave += this.TextBoxDragLeave;
         }
 
         /// <summary>
@@ -225,10 +225,10 @@ namespace Egse.Behaviors
         /// </summary>
         private void Detach()
         {
-            _textBox.Loaded -= TextBoxLoaded;
-            _textBox.TextChanged -= TextBoxTextChanged;
-            _textBox.DragEnter -= TextBoxDragEnter;
-            _textBox.DragLeave -= TextBoxDragLeave;
+            this.textBox.Loaded -= this.TextBoxLoaded;
+            this.textBox.TextChanged -= this.TextBoxTextChanged;
+            this.textBox.DragEnter -= this.TextBoxDragEnter;
+            this.textBox.DragLeave -= this.TextBoxDragLeave;
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Egse.Behaviors
         /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
         private void TextBoxDragLeave(object sender, DragEventArgs e)
         {
-            UpdateAdorner();
+            this.UpdateAdorner();
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Egse.Behaviors
         /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
         private void TextBoxDragEnter(object sender, DragEventArgs e)
         {
-            _textBox.TryRemoveAdorners<UIElementAdorner>();
+            this.textBox.TryRemoveAdorners<UIElementAdorner>();
         }
 
         /// <summary>
@@ -258,8 +258,8 @@ namespace Egse.Behaviors
         /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
         private void TextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            var hasText = !string.IsNullOrEmpty(_textBox.Text);
-            SetHasText(_textBox, hasText);
+            bool hasText = !string.IsNullOrEmpty(this.textBox.Text);
+            SetHasText(this.textBox, hasText);
         }
 
         /// <summary>
@@ -269,7 +269,7 @@ namespace Egse.Behaviors
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void TextBoxLoaded(object sender, RoutedEventArgs e)
         {
-            Init();
+            this.Init();
         }
 
         /// <summary>
@@ -277,38 +277,38 @@ namespace Egse.Behaviors
         /// </summary>
         private void Init()
         {
-            _uiElementAdorner = new UIElementAdorner(_textBox, GetLabel(_textBox), GetLabelStyle(_textBox));
-            UpdateAdorner();
+            this.uiElement = new UIElementAdorner(this.textBox, GetLabel(this.textBox), GetLabelStyle(this.textBox));
+            this.UpdateAdorner();
 
             DependencyPropertyDescriptor focusProp = DependencyPropertyDescriptor.FromProperty(UIElement.IsFocusedProperty, typeof(FrameworkElement));
             if (null != focusProp)
             {
-                focusProp.AddValueChanged(_textBox, (sender, args) => UpdateAdorner());
+                focusProp.AddValueChanged(this.textBox, (sender, args) => this.UpdateAdorner());
             }
 
             DependencyPropertyDescriptor containsTextProp = DependencyPropertyDescriptor.FromProperty(HasTextProperty, typeof(TextBox));
             if (null != containsTextProp)
             {
-                containsTextProp.AddValueChanged(_textBox, (sender, args) => UpdateAdorner());
+                containsTextProp.AddValueChanged(this.textBox, (sender, args) => this.UpdateAdorner());
             }
         }
 
         /// <summary>
-        /// Updates the adorner.
+        /// Обновляет графический элемент.
         /// </summary>
         private void UpdateAdorner()
         {
-            if (GetHasText(_textBox) || (_textBox.IsFocused && !_textBox.IsReadOnly))
+            if (GetHasText(this.textBox) || (this.textBox.IsFocused && !this.textBox.IsReadOnly))
             {
                 // Hide the Watermark Label if the adorner layer is visible
-                _textBox.ToolTip = GetLabel(_textBox);
-                _textBox.TryRemoveAdorners<UIElementAdorner>();
+                this.textBox.ToolTip = GetLabel(this.textBox);
+                this.textBox.TryRemoveAdorners<UIElementAdorner>();
             }
             else
             {
                 // Show the Watermark Label if the adorner layer is visible
-                _textBox.ToolTip = null;
-                _textBox.TryAddAdorner<UIElementAdorner>(_uiElementAdorner);
+                this.textBox.ToolTip = null;
+                this.textBox.TryAddAdorner<UIElementAdorner>(this.uiElement);
             }
         }
     }

@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------
-// <copyright file="EgseBehaviorsAdornerExtensions.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="AdornerExtensions.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) MSDN Code Gallery. All rights reserved.
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Piotr W?odek, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace Egse.Behaviors
+namespace Egse.Wpf.Behaviors
 {
     using System.Windows;
     using System.Windows.Documents;
@@ -17,10 +17,10 @@ namespace Egse.Behaviors
     public static class AdornerExtensions
     {
         /// <summary>
-        /// Tries the remove adorners.
+        /// Попытка удалить графический элемент.
         /// </summary>
-        /// <typeparam name="T">Type of the element.</typeparam>
-        /// <param name="elem">The element.</param>
+        /// <typeparam name="T">Тип графического элемента.</typeparam>
+        /// <param name="elem">Графический элемент.</param>
         public static void TryRemoveAdorners<T>(this UIElement elem)
             where T : Adorner
         {
@@ -32,15 +32,15 @@ namespace Egse.Behaviors
         }
 
         /// <summary>
-        /// Removes the adorners.
+        /// Удаление графического элемента.
         /// </summary>
-        /// <typeparam name="T">Type of the element.</typeparam>
-        /// <param name="adr">The adr.</param>
-        /// <param name="elem">The element.</param>
-        public static void RemoveAdorners<T>(this AdornerLayer adr, UIElement elem)
+        /// <typeparam name="T">Тип графического элемента.</typeparam>
+        /// <param name="layer">The adr.</param>
+        /// <param name="elem">Графический элемент.</param>
+        public static void RemoveAdorners<T>(this AdornerLayer layer, UIElement elem)
             where T : Adorner
         {
-            Adorner[] adorners = adr.GetAdorners(elem);
+            Adorner[] adorners = layer.GetAdorners(elem);
 
             if (null == adorners)
             {
@@ -51,7 +51,7 @@ namespace Egse.Behaviors
             {
                 if (adorners[i] is T)
                 {
-                    adr.Remove(adorners[i]);
+                    layer.Remove(adorners[i]);
                 }
             }
         }

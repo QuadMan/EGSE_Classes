@@ -22,14 +22,14 @@ namespace Wpf {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class EGSEDefaultLoggers {
+    internal class App_xaml {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal EGSEDefaultLoggers() {
+        internal App_xaml() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Wpf {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.EGSEDefaultLoggers", typeof(EGSEDefaultLoggers).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.App.xaml", typeof(App_xaml).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,74 +61,11 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Ищет локализованную строку, похожую на errors.log.
+        ///   Ищет локализованную строку, похожую на Приложение не может быть запущено. Необходима версия .Net Framework 4.5 ({0}) или выше. Ваша версия: {1}.
         /// </summary>
-        internal static string stErrorsLog {
+        internal static string eNetVersion {
             get {
-                return ResourceManager.GetString("stErrorsLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на hsi.log.
-        /// </summary>
-        internal static string stHsiLog {
-            get {
-                return ResourceManager.GetString("stHsiLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на main.log.
-        /// </summary>
-        internal static string stMainLog {
-            get {
-                return ResourceManager.GetString("stMainLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на operator.log.
-        /// </summary>
-        internal static string stOperatorLog {
-            get {
-                return ResourceManager.GetString("stOperatorLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на encoder.log.
-        /// </summary>
-        internal static string stProtoEncoderLog {
-            get {
-                return ResourceManager.GetString("stProtoEncoderLog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на spacewire2.log.
-        /// </summary>
-        internal static string stSpacewire2 {
-            get {
-                return ResourceManager.GetString("stSpacewire2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на spacewire3.log.
-        /// </summary>
-        internal static string stSpacewire3 {
-            get {
-                return ResourceManager.GetString("stSpacewire3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Ищет локализованную строку, похожую на usb.log.
-        /// </summary>
-        internal static string stUSBLog {
-            get {
-                return ResourceManager.GetString("stUSBLog", resourceCulture);
+                return ResourceManager.GetString("eNetVersion", resourceCulture);
             }
         }
     }
