@@ -20,7 +20,8 @@
 
         public void Init(EgseBukNotify intfEGSE)
         {
-            this.intfEGSE = intfEGSE;           
+            this.intfEGSE = intfEGSE;
+            GridControlBuk.DataContext = intfEGSE.ControlBukNotify;
             DataContext = this.intfEGSE;          
         }    
 

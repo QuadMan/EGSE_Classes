@@ -8,6 +8,7 @@
 // TODO продумать, как передавать между потоками сообщение, что декодеру нужно сделать сброс при перепоключении устройства
 namespace Egse
 {
+    using Egse.Utilites;
     using Egse.Protocols;
     using Egse.Threading;
     using Egse.USB;
@@ -157,13 +158,19 @@ namespace Egse
         /// </summary>
         /// <param name="addr">Адрес, по которому нужно передать данные</param>
         /// <param name="data">Данные для передачи</param>
-        /// <returns>Возвращает результат записи в очередь команд USB</returns>
+        /// <returns>Возвращает результат записи в очередь команд USB.</returns>
         public bool SendToUSB(uint addr, byte[] data)
         {
-            byte[] dataOut;
-            _dec.Encode(addr, data, out dataOut);
-            bool res = _readThread.WriteBuf(dataOut);
-            return res;
+            new { data }.CheckNotNull();
+            
+            if (0 != data.Length)
+            {
+                byte[] dataOut;
+                _dec.Encode(addr, data, out dataOut);
+                return _readThread.WriteBuf(dataOut);
+            }        
+
+            return false;
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿<Window x:Class="Egse.Defaults.ControlBukWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:l="clr-namespace:Egse.Defaults"
         xmlns:d="clr-namespace:Egse.Devices" 
         xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Egse.Defaults.ControlBukWindow"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
         Closing="Window_Closing"
@@ -32,10 +33,10 @@
                 Template="{StaticResource FlatLabel}"/>
             <Label Content="Настройки" Grid.Column="2" Grid.ColumnSpan="6"
                 Template="{StaticResource FlatLabel}"/>
-      
-        
+
+
             <Label Content="Управление" Grid.Column="8"
-                Template="{StaticResource FlatLabel}"/>           
+                Template="{StaticResource FlatLabel}"/>
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -58,11 +59,12 @@
             <Label Grid.Column="2" Grid.ColumnSpan="6"
                 Template="{StaticResource FlatLabel}"/>
             <CheckBox Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center"
-                      Content="Запрашивать кадры в тестовом режиме"/>           
-            
+                IsChecked="{Binding IsIssueTest}"
+                Content="Запрашивать кадры в тестовом режиме"/>
+
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>            
+                Content="Выдать"
+                Command="{Binding IssueGetFrame}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -83,34 +85,26 @@
             <Label Grid.ColumnSpan="2"
                 Content="Порог для определения ЗНЩ"
                 Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">       
-            <GroupBox Header="Тип алгоритма">
-            <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
-            </GroupBox>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                <GroupBox Header="Тип алгоритма">
+                    <TextBox Text="{Binding AlgoType}" TabIndex="3"/>
+                </GroupBox>
                 <GroupBox Header="Порог для определения ЗНЩ">
-                    <TextBox Text="003" TabIndex="3"/>
+                    <TextBox Text="{Binding Threshold}" TabIndex="3"/>
                 </GroupBox>
                 <GroupBox Header="Параметр 1">
-                    <TextBox Text="03" TabIndex="3"/>
+                    <TextBox Text="{Binding Param1}" TabIndex="3"/>
                 </GroupBox>
                 <GroupBox Header="Параметр 2">
-                    <TextBox Text="03" TabIndex="3"/>
+                    <TextBox Text="{Binding Param2}" TabIndex="3"/>
                 </GroupBox>
                 <GroupBox Header="Параметр 3">
-                    <TextBox Text="03" TabIndex="3"/>
+                    <TextBox Text="{Binding Param3}" TabIndex="3"/>
                 </GroupBox>
             </StackPanel>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+                Content="Выдать"
+                Command="{Binding IssueCmdThreshold}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -131,11 +125,10 @@
             <Label Grid.ColumnSpan="2"
                 Content="Получить телеметрию БУК"
                 Style="{StaticResource FlatHeader}"/>
-           <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">                   
-            </StackPanel>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White"/>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+                Content="Выдать"
+                Command="{Binding IssueCmdGetTele}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -159,21 +152,25 @@
             <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
                 <GroupBox Header="Детектор">
                     <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
+                        IsEditable="False"
+                        Style="{StaticResource ComboBoxInError}"
+                        b:WatermarkComboBox.EnableWatermark="True"
+                        b:WatermarkComboBox.Label=" "
+                        b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"  
+                        TabIndex="9"
+                              SelectedIndex="{Binding SelDetector}">
+                        <System:String>УФЕС</System:String>
+                        <System:String>ВУФЕС</System:String>
+                        <System:String>СДЩ</System:String>
+                    </ComboBox>
                 </GroupBox>
                 <CheckBox Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center"
-                      Content="Питание"/>               
-            </StackPanel>           
+                    IsChecked="{Binding PwrDetector}"
+                          Content="Питание"/>
+            </StackPanel>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+                Content="Выдать"
+                Command="{Binding IssueCmdSelDetector}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -196,79 +193,103 @@
                 Style="{StaticResource FlatHeader}"/>
             <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
                 <GroupBox Header="Тип параметров">
-                    <StackPanel VerticalAlignment="Center">
-                        <RadioButton GroupName="grpPar" Content="Параметры БУК"/>
-                        <RadioButton GroupName="grpPar" Content="Параметры КВВ"/>
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                    <ComboBox IsReadOnly="False" 
+                                IsEditable="False"
+                                Style="{StaticResource ComboBoxInError}"
+                                b:WatermarkComboBox.EnableWatermark="True"
+                                b:WatermarkComboBox.Label=" "
+                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                                SelectedIndex="{Binding SelConf}"
+                                TabIndex="9">
+                            <System:String>Команда не будет выполнена</System:String>
+                            <System:String>Параметры БУК</System:String>
+                            <System:String>Параметры КВВ</System:String>
+                        </ComboBox>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Параметры БУК">
                     <StackPanel Orientation="Horizontal">
-                    <GroupBox Header="Режим работы">
-                        <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
-                    </GroupBox>
-                    <GroupBox Header="Параметр сжатия">
-                        <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
-                    </GroupBox>
+                        <GroupBox Header="Режим работы">
+                            <ComboBox IsReadOnly="False" 
+                                IsEditable="False"
+                                Style="{StaticResource ComboBoxInError}"
+                                b:WatermarkComboBox.EnableWatermark="True"
+                                b:WatermarkComboBox.Label=" "
+                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                                SelectedIndex="{Binding ModeConf}"
+                                TabIndex="9">
+                                <System:String>Нормальный</System:String>
+                                <System:String>Тестовый</System:String>
+                            </ComboBox>
+                        </GroupBox>
+                        <GroupBox Header="Параметр сжатия">
+                            <ComboBox IsReadOnly="False" 
+                                IsEditable="False"                               
+                                Style="{StaticResource ComboBoxInError}"
+                                b:WatermarkComboBox.EnableWatermark="True"
+                                b:WatermarkComboBox.Label=" "
+                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                               SelectedIndex="{Binding CompressConf}"
+                                TabIndex="9">
+                                <System:String>Нет сжатия</System:String>
+                                <System:String>Есть сжатие</System:String>
+                                <System:String>Есть сжатие с параметром 1</System:String>
+                            </ComboBox>
+                        </GroupBox>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Header="Параметры КВВ">
                     <StackPanel Orientation="Horizontal">
                         <GroupBox Header="Линия отправки в КВВ">
                             <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
+                                IsEditable="False"
+                                
+                                Style="{StaticResource ComboBoxInError}"
+                                b:WatermarkComboBox.EnableWatermark="True"
+                                b:WatermarkComboBox.Label=" "
+                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                                SelectedIndex="{Binding LineSendConf}"
+                                TabIndex="9">
+                                <System:String>Основная</System:String>
+                                <System:String>Резервная</System:String>
+                            </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Линия приема от КВВ">
                             <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
+                                IsEditable="False"
+                               
+                                Style="{StaticResource ComboBoxInError}"
+                                b:WatermarkComboBox.EnableWatermark="True"
+                                b:WatermarkComboBox.Label=" "
+                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                                SelectedIndex="{Binding LineRecvConf}"
+                                TabIndex="9">
+                                <System:String>Основная</System:String>
+                                <System:String>Резервная</System:String>
+                            </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Активация">
                             <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
+                                IsEditable="False"
+                               
+                                Style="{StaticResource ComboBoxInError}"
+                                b:WatermarkComboBox.EnableWatermark="True"
+                                b:WatermarkComboBox.Label=" "
+                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                                SelectedIndex="{Binding ActivateConf}"
+                                TabIndex="9">
+                                <System:String>Активировать КВВ1</System:String>
+                                <System:String>Активировать КВВ2</System:String>
+                            </ComboBox>
                         </GroupBox>
-                        <CheckBox VerticalAlignment="Center" Content="Опрос КВВ"/>
+                        <CheckBox IsChecked="{Binding ExchangeConf}" VerticalAlignment="Center" Content="Опрос КВВ"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+                Content="Выдать"
+                Command="{Binding IssueCmdConfig}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -291,23 +312,15 @@
                 Style="{StaticResource FlatHeader}"/>
             <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
                 <GroupBox Header="Номер затвор">
-                    <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
+                    <TextBox Text="{Binding NumberShutter}" TabIndex="3"/>
                 </GroupBox>
                 <GroupBox Header="Длительность открытия затвора">
-                    <TextBox Text="003" TabIndex="3"/>
+                    <TextBox Text="{Binding ShutterTime}" TabIndex="3"/>
                 </GroupBox>
             </StackPanel>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+                Content="Выдать"
+                Command="{Binding IssueCmdShutter}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -330,23 +343,15 @@
                 Style="{StaticResource FlatHeader}"/>
             <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
                 <GroupBox Header="Номер засветки">
-                    <ComboBox IsReadOnly="False" 
-                      IsEditable="True"
-                      ItemsSource="{Binding DataList}"
-                      Style="{StaticResource ComboBoxInError}"
-                      b:WatermarkComboBox.EnableWatermark="True"
-                      b:WatermarkComboBox.Label=" "
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="9"/>
+                    <TextBox Text="{Binding NumberLight}" TabIndex="3"/>
                 </GroupBox>
                 <GroupBox Header="Длительность засветки">
-                    <TextBox Text="003" TabIndex="3"/>
+                    <TextBox Text="{Binding LightTime}" TabIndex="3"/>
                 </GroupBox>
             </StackPanel>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+                Content="Выдать"
+                Command="{Binding IssueCmdLight}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -367,14 +372,14 @@
             <Label Grid.ColumnSpan="2"
                 Content="Выдать УКС в КВВ"
                 Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">                
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
                 <GroupBox Header="УКС">
-                    <TextBox Text="00 01 02 03" TabIndex="3"/>
+                    <TextBox Text="{Binding CmdBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="3"/>
                 </GroupBox>
             </StackPanel>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+                Content="Выдать"
+                Command="{Binding IssueCmdSend}" TabIndex="6"/>
         </Grid>
         <Separator/>
         <Grid>
@@ -397,12 +402,12 @@
                 Style="{StaticResource FlatHeader}"/>
             <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
                 <GroupBox Header="Команда">
-                    <TextBox Text="00 43 45 44 64 34" TabIndex="3"/>
+                    <TextBox Text="{Binding DataBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="3"/>
                 </GroupBox>
             </StackPanel>
             <Button Grid.Column="8"                     
-                    Content="Выдать"
-                    Command="{Binding FromFileCommand}" TabIndex="6"/>
-        </Grid>           
+                Content="Выдать"
+                Command="{Binding IssueDataSend}" TabIndex="6"/>
+        </Grid>
     </StackPanel>
 </Window>
