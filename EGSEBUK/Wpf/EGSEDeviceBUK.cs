@@ -4590,11 +4590,11 @@ namespace Egse.Devices
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => IsPowerBusk2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => IsPowerBund1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => IsPowerBund2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 6, 1, delegate { }, value => UfesLight1 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 7, 1, delegate { }, value => UfesLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 10, 1, delegate { }, value => UfesLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 9, 1, delegate { }, value => UfesLight2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 9, 1, delegate { }, value => VufesLight2 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 10, 1, delegate { }, value => SdchshLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 7, 1, delegate { }, value => VufesLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 6, 1, delegate { }, value => SdchshLight1 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower1, 20, 1, delegate { }, value => UfesPower1 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower2, 21, 1, delegate { }, value => UfesPower2 = 1 == value, true);

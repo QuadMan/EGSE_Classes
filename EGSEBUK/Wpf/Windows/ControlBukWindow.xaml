@@ -7,9 +7,402 @@
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
         Closing="Window_Closing"
+        Height="800"
         Title="Команды управления БУК"
         Visibility="{Binding IsShowControlBuk, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
-    <Grid>
+    <StackPanel x:Name="GridControlBuk"
+        Background="{StaticResource BackBrush}"
+        Margin="4">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Команда" Grid.ColumnSpan="2"
+                Template="{StaticResource FlatLabel}"/>
+            <Label Content="Настройки" Grid.Column="2" Grid.ColumnSpan="6"
+                Template="{StaticResource FlatLabel}"/>
+      
         
-    </Grid>
+            <Label Content="Управление" Grid.Column="8"
+                Template="{StaticResource FlatLabel}"/>           
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Получить кадр"
+                Style="{StaticResource FlatHeader}"/>
+            <Label Grid.Column="2" Grid.ColumnSpan="6"
+                Template="{StaticResource FlatLabel}"/>
+            <CheckBox Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center"
+                      Content="Запрашивать кадры в тестовом режиме"/>           
+            
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>            
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Порог для определения ЗНЩ"
+                Style="{StaticResource FlatHeader}"/>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">       
+            <GroupBox Header="Тип алгоритма">
+            <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+            </GroupBox>
+                <GroupBox Header="Порог для определения ЗНЩ">
+                    <TextBox Text="003" TabIndex="3"/>
+                </GroupBox>
+                <GroupBox Header="Параметр 1">
+                    <TextBox Text="03" TabIndex="3"/>
+                </GroupBox>
+                <GroupBox Header="Параметр 2">
+                    <TextBox Text="03" TabIndex="3"/>
+                </GroupBox>
+                <GroupBox Header="Параметр 3">
+                    <TextBox Text="03" TabIndex="3"/>
+                </GroupBox>
+            </StackPanel>
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Получить телеметрию БУК"
+                Style="{StaticResource FlatHeader}"/>
+           <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">                   
+            </StackPanel>
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Выбрать детектор"
+                Style="{StaticResource FlatHeader}"/>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                <GroupBox Header="Детектор">
+                    <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                </GroupBox>
+                <CheckBox Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center"
+                      Content="Питание"/>               
+            </StackPanel>           
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Конфигурация БУК"
+                Style="{StaticResource FlatHeader}"/>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                <GroupBox Header="Тип параметров">
+                    <StackPanel VerticalAlignment="Center">
+                        <RadioButton GroupName="grpPar" Content="Параметры БУК"/>
+                        <RadioButton GroupName="grpPar" Content="Параметры КВВ"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Параметры БУК">
+                    <StackPanel Orientation="Horizontal">
+                    <GroupBox Header="Режим работы">
+                        <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                    </GroupBox>
+                    <GroupBox Header="Параметр сжатия">
+                        <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                    </GroupBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Параметры КВВ">
+                    <StackPanel Orientation="Horizontal">
+                        <GroupBox Header="Линия отправки в КВВ">
+                            <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                        </GroupBox>
+                        <GroupBox Header="Линия приема от КВВ">
+                            <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                        </GroupBox>
+                        <GroupBox Header="Активация">
+                            <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                        </GroupBox>
+                        <CheckBox VerticalAlignment="Center" Content="Опрос КВВ"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Открытие затворов"
+                Style="{StaticResource FlatHeader}"/>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                <GroupBox Header="Номер затвор">
+                    <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                </GroupBox>
+                <GroupBox Header="Длительность открытия затвора">
+                    <TextBox Text="003" TabIndex="3"/>
+                </GroupBox>
+            </StackPanel>
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Управление засветкой"
+                Style="{StaticResource FlatHeader}"/>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                <GroupBox Header="Номер засветки">
+                    <ComboBox IsReadOnly="False" 
+                      IsEditable="True"
+                      ItemsSource="{Binding DataList}"
+                      Style="{StaticResource ComboBoxInError}"
+                      b:WatermarkComboBox.EnableWatermark="True"
+                      b:WatermarkComboBox.Label=" "
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
+                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
+                      TabIndex="9"/>
+                </GroupBox>
+                <GroupBox Header="Длительность засветки">
+                    <TextBox Text="003" TabIndex="3"/>
+                </GroupBox>
+            </StackPanel>
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Выдать УКС в КВВ"
+                Style="{StaticResource FlatHeader}"/>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">                
+                <GroupBox Header="УКС">
+                    <TextBox Text="00 01 02 03" TabIndex="3"/>
+                </GroupBox>
+            </StackPanel>
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>
+        <Separator/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.ColumnSpan="2"
+                Content="Ручное управление детектором"
+                Style="{StaticResource FlatHeader}"/>
+            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                <GroupBox Header="Команда">
+                    <TextBox Text="00 43 45 44 64 34" TabIndex="3"/>
+                </GroupBox>
+            </StackPanel>
+            <Button Grid.Column="8"                     
+                    Content="Выдать"
+                    Command="{Binding FromFileCommand}" TabIndex="6"/>
+        </Grid>           
+    </StackPanel>
 </Window>

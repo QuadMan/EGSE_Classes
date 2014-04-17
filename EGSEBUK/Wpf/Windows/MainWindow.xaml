@@ -441,7 +441,7 @@
                             Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="4"
                             Grid.Row="4"                            
-                            Tag="{Binding SdchshLight1, Converter={StaticResource BoolToIndexConverter}}"
+                            Tag="{Binding SdchshLight2, Converter={StaticResource BoolToIndexConverter}}"
                             Template="{StaticResource FlatLabelCheck}"/>
                         <Label Grid.Column="5"
                             Grid.Row="4"                            
