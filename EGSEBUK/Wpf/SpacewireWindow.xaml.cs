@@ -97,20 +97,14 @@ namespace Egse.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Random rnd = new Random();
-            byte[] buf = new byte[30];
-            rnd.NextBytes(buf);
-
-            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
-            this.OnSpacewireMsg(this, msg);
-            //try
-            //{
-            //    Extensions.ClearMonitor(MonitorList);
-            //}
-            //catch (Exception exc)
-            //{
-            //    MessageBox.Show(exc.Message);
-            //}            
+            try
+            {
+                Extensions.ClearMonitor(MonitorList);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+            }            
         }
     }
 }

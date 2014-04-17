@@ -1211,6 +1211,8 @@ namespace Egse.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
+        private bool isShowControlBuk;
+        private bool isShowTeleBuk;
 
         /// <summary>
         /// Состояние прибора.
@@ -1606,6 +1608,34 @@ namespace Egse.Devices
             private set 
             {
                 _isShowSimSD = value;
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public bool IsShowControlBuk
+        {
+            get
+            {
+                return this.isShowControlBuk;
+            }
+
+            private set
+            {
+                this.isShowControlBuk = value;
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public bool IsShowTeleBuk
+        {
+            get
+            {
+                return this.isShowTeleBuk;
+            }
+            
+            private set
+            {
+                this.isShowTeleBuk = value;
                 FirePropertyChangedEvent();
             }
         }

@@ -90,7 +90,10 @@
     <Compile Include="Behaviors\UIElementAdorner.cs" />
     <Compile Include="Behaviors\WatermarkComboBox.cs" />
     <Compile Include="Behaviors\WatermarkTextBox.cs" />
-	<Compile Include="CustomAttributes\LambdaAttribute.cs" />
+    <Compile Include="ControlBukWindow.xaml.cs">
+      <DependentUpon>ControlBukWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomAttributes\LambdaAttribute.cs" />
     <Compile Include="CustomAttributes\LambdaAttribute.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -159,6 +162,9 @@
     <Compile Include="EGSEDeviceBUK.cs" />
     <Compile Include="EGSEConstantsBUK.cs" />
     <Compile Include="EGSECyclogramCommandBUK.cs" />
+    <Compile Include="TeleBukWindow.xaml.cs">
+      <DependentUpon>TeleBukWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UsbSendsMonitor.xaml.cs">
       <DependentUpon>UsbSendsMonitor.xaml</DependentUpon>
     </Compile>
@@ -166,6 +172,10 @@
       <Link>EGSECyclogramControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ControlBukWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="HSIWindow.xaml">
       <SubType>Designer</SubType>
@@ -270,6 +280,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SimSpacewireWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TeleBukWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -438,7 +452,7 @@
       set IVAN_DIR=Z:\Users\Ivan\$(TargetName)
       set ALEXANDR_DIR=Z:\Users\QuadMan\$(TargetName)
       set ANDREW_DIR=Z:\Users\Vitamin\$(TargetName)
-      if exist \\z:\ (
+      if exist "\\stl_server\data" (
       if %USERDOMAIN%\%USERNAME% == Иван-ПК\Иван (
       if $(ConfigurationName) == Debug (
       echo Debug deploy

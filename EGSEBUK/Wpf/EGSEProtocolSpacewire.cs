@@ -872,7 +872,7 @@ namespace Egse.Protocols
 
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : " CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
         }
 
         /// <summary>
@@ -1261,7 +1261,7 @@ namespace Egse.Protocols
 
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : " CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
         }
 
         /// <summary>

@@ -526,6 +526,7 @@
                     <CheckBox Content="Имитатор каналов БС" 
                         Margin="4"
                         IsChecked="{Binding IsShowSD, Mode=TwoWay}" TabIndex="25"/>
+                    <Separator/>
                     <CheckBox Content="Имитатор БУК (для КВВ)" 
                         Margin="4"
                         IsChecked="{Binding IsShowSimHsi, Mode=TwoWay}" TabIndex="26"/>
@@ -535,6 +536,13 @@
                     <CheckBox Content="Имитатор БУК (для каналов БС)" 
                         Margin="4"
                         IsChecked="{Binding IsShowSimSD, Mode=TwoWay}" TabIndex="28"/>
+                    <Separator/>
+                    <CheckBox Content="Команды управления БУК" 
+                        Margin="4"
+                        IsChecked="{Binding IsShowControlBuk, Mode=TwoWay}" TabIndex="29"/>
+                    <CheckBox Content="Телеметрия БУК" 
+                        Margin="4"
+                        IsChecked="{Binding IsShowTeleBuk, Mode=TwoWay}" TabIndex="30"/>
                 </StackPanel>
             </Grid>
         </StackPanel>

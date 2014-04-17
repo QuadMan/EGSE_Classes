@@ -259,11 +259,6 @@
         			VerticalAlignment="Center"
         			Content="{TemplateBinding Content}"/>                
             </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter TargetName="Border" Property="Background" Value="{StaticResource UnableBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
         </ControlTemplate>
         <ControlTemplate x:Key="DataSendInError" TargetType="{x:Type TextBox}">
             <Border x:Name="Border"

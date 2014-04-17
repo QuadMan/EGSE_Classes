@@ -4,10 +4,10 @@
 		xmlns:l="clr-namespace:Egse.Defaults"
 		xmlns:d="clr-namespace:Egse.Devices" 
 		xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
-		Title="Имитатор БМ-4 (БУСК, БУНД)"
-		FontFamily="{StaticResource BaseFontFamily}"
+        FontFamily="{StaticResource BaseFontFamily}"
 		FontSize="{StaticResource BaseFontSize}"
-		Closing="Window_Closing"
+        Closing="Window_Closing"
+		Title="Имитатор БМ-4 (БУСК, БУНД)"		
 		Visibility="{Binding IsShowSpacewire, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
 	<Grid x:Name="GridSpacewire"
 		  Background="{StaticResource BackBrush}"
