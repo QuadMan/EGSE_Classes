@@ -3,7 +3,7 @@
              xmlns:l="clr-namespace:Egse.Defaults"                       
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              x:Class="Egse.Wpf.App"
-             StartupUri="MainWindow.xaml">
+             StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <l:BoolToIntConverter x:Key="BoolToIndexConverter" />

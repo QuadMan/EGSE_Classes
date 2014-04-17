@@ -83,14 +83,14 @@
                 <Button x:Name="StartBtn" Content="Старт" Width="68" Margin="5,7" Click="StartBtn_Click" TabIndex="35"/>
                 <Button x:Name="StopBtn" Content="Стоп" Width="68" Margin="5,7" Click="StopBtn_Click" TabIndex="36"/>
                 <Button x:Name="StepBtn" Content="Шаг" Width="68" Margin="5,7" Click="StepBtn_Click" TabIndex="37"/>
-            <CheckBox x:Name="TrackingModeCB" Content="Текущий шаг" Margin="30,13,5,7" Checked="TrackingModeCB_Checked" IsChecked="True" TabIndex="38"/>
-            <Label Content="Повторить" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,0,0"/>
-            <ComboBox Width="72" Margin="5,7" SelectedIndex="0" VerticalContentAlignment="Center" TabIndex="39">
+            <CheckBox x:Name="TrackingModeCB" Content="Текущий шаг" Margin="30,13,5,7" Checked="TrackingModeCB_Checked" IsChecked="True" TabIndex="38" Visibility="Collapsed"/>
+            <Label Content="Повторить" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="5,0,0,0" Visibility="Collapsed"/>
+            <ComboBox Width="72" Margin="5,7" SelectedIndex="0" VerticalContentAlignment="Center" TabIndex="39" Visibility="Collapsed">
                 <ComboBoxItem Content="1 раз"/>
                 <ComboBoxItem Content="2 раза"/>
             </ComboBox>
-            <Label Content="Пауза" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-            <ComboBox Width="72" Margin="5,7" SelectedIndex="0" VerticalContentAlignment="Center" TabIndex="40">
+            <Label Content="Пауза" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="Collapsed"/>
+            <ComboBox Width="72" Margin="5,7" SelectedIndex="0" VerticalContentAlignment="Center" TabIndex="40" Visibility="Collapsed">
                 <ComboBoxItem Content="1 с"/>
                 <ComboBoxItem Content="5 с"/>
             </ComboBox>
