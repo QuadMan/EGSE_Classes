@@ -633,7 +633,7 @@ namespace Egse.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stIcdStringExt"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo);
+                return string.Format(Resource.Get(@"stIcdStringExt"), Version, (byte)Type, (byte)Flag, Apid, Segment, Counter, Size, SptpInfo);
             }
 
             /// <summary>
@@ -645,7 +645,7 @@ namespace Egse.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo.ToString(extended));
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, (byte)Type, (byte)Flag, Apid, Segment, Counter, Size, SptpInfo.ToString(extended));
             }
         }
     }
@@ -869,6 +869,11 @@ namespace Egse.Protocols
         /// Данные сообщения телеметрии.
         /// </summary>
         private byte[] _data;
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : " CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+        }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireTmMsgEventArgs" />.
@@ -1253,6 +1258,11 @@ namespace Egse.Protocols
         /// Агрегат доступа к заголовку телекоманды.
         /// </summary>
         private Tk _telecmdInfo;
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : " CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+        }
 
         /// <summary>
         /// Данные телекоманды.
@@ -1659,6 +1669,11 @@ namespace Egse.Protocols
         /// </summary>
         private string _errorMsg;
 
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stErrorMsgToString"), this.DataLen, Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.ErrorMessage());
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireErrorMsgEventArgs" />.
         /// </summary>
@@ -1774,6 +1789,11 @@ namespace Egse.Protocols
         /// Данные сообщения.
         /// </summary>
         private byte[] _data;
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true));
+        }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
@@ -2052,7 +2072,7 @@ namespace Egse.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stSptpStringExt"), To, ProtocolId, MsgType, From);
+                return string.Format(Resource.Get(@"stSptpStringExt"), To, (byte)ProtocolId, (byte)MsgType, From);
             }
 
             /// <summary>
@@ -2064,7 +2084,7 @@ namespace Egse.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stSptpString"), To, ProtocolId, MsgType, From);
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stSptpString"), To, (byte)ProtocolId, (byte)MsgType, From);
             }
         }
     }

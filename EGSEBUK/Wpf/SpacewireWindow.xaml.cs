@@ -54,46 +54,13 @@ namespace Egse.Defaults
             new { msg }.CheckNotNull();
             string spacewireMsg = string.Empty;
 
-            if (msg is SpacewireSptpMsgEventArgs)
-            {
-                SpacewireSptpMsgEventArgs sptpMsg = msg as SpacewireSptpMsgEventArgs;
-                                    
-                // crc check
-                if ((sptpMsg is SpacewireTkMsgEventArgs) || (sptpMsg is SpacewireTmMsgEventArgs))
-                {                   
-                    if (sptpMsg is SpacewireTkMsgEventArgs)
-                    {
-                        SpacewireTkMsgEventArgs telecmdMsg = sptpMsg as SpacewireTkMsgEventArgs;
-                        spacewireMsg += _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + telecmdMsg.TkInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telecmdMsg.Data, isSmart: true) + "]";
-                    }
-                    else if (sptpMsg is SpacewireTmMsgEventArgs)
-                    {
-                        SpacewireTmMsgEventArgs telemetroMsg = sptpMsg as SpacewireTmMsgEventArgs;
-                        spacewireMsg += _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + telemetroMsg.TmInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(telemetroMsg.Data, isSmart: true) + "]";
-                    }
+            spacewireMsg = _intfEGSE.DeviceTime.ToString() + msg.ToString();
 
-                    ushort crcInData = msg.ToArray().AsTk().Crc;
-                    ushort crcGen = msg.ToArray().AsTk().NeededCrc;
-                    spacewireMsg += crcGen == crcInData ? " > Crc ok" : " > Crc error, need " + crcGen.ToString("X4");
-                }      
-                else
-                {
-                    if (sptpMsg.Data.Length > 30)
-                    {
-                        spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(sptpMsg.Data, isSmart: true) + "]";
-                    }
-                    else
-                    {
-                        spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + sptpMsg.Data.Length.ToString() + ") " + sptpMsg.SptpInfo.ToString(false) + " [" + Converter.ByteArrayToHexStr(sptpMsg.Data) + "]";
-                    }
-                }
-            }
-            else if (msg is SpacewireErrorMsgEventArgs)
-            {
-                SpacewireErrorMsgEventArgs err = msg as SpacewireErrorMsgEventArgs;
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка: " + err.ErrorMessage();
-            }
+            SendToMonitor(spacewireMsg);            
+        }
 
+        private void SendToMonitor(string spacewireMsg)
+        {
             if (null != MonitorList && Visibility.Visible == this.Visibility)
             {
                 try
@@ -130,14 +97,20 @@ namespace Egse.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Extensions.ClearMonitor(MonitorList);
-            }
-            catch (Exception exc)
-            {
-                MessageBox.Show(exc.Message);
-            }            
+            Random rnd = new Random();
+            byte[] buf = new byte[30];
+            rnd.NextBytes(buf);
+
+            SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
+            this.OnSpacewireMsg(this, msg);
+            //try
+            //{
+            //    Extensions.ClearMonitor(MonitorList);
+            //}
+            //catch (Exception exc)
+            //{
+            //    MessageBox.Show(exc.Message);
+            //}            
         }
     }
 }

@@ -1124,7 +1124,7 @@ namespace Egse.Devices
         {
             IsConnected = false;
 
-            _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogEncoder, false, true);
+            _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogEncoder, false, false);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
             _decoderUSB.GotProtocolError += new ProtocolUSBBase.ProtocolErrorEventHandler(OnErrorFunc);
             DeviceTime = new EgseTime();
