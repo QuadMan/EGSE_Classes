@@ -606,7 +606,7 @@ namespace Egse.Defaults
             byte[] buf = ObjectToByteArray(value);
             if (0 == buf.Length)
             {
-                return " ";
+                return string.Empty;
             }
 
             return Converter.ByteArrayToHexStr(buf);            

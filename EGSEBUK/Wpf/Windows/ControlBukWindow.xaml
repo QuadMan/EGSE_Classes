@@ -59,20 +59,21 @@
             <Label Grid.ColumnSpan="2"
                    Content="Получить кадр"
                    Style="{StaticResource FlatHeader}" />
-            <Label Grid.Column="2"
-                   Grid.ColumnSpan="6"
-                   Template="{StaticResource FlatLabel}" />
-            <CheckBox Grid.Column="2"
-                      Grid.ColumnSpan="6"
-                      VerticalAlignment="Center"
-                      Content="Запрашивать кадры в тестовом режиме"
-                      IsChecked="{Binding IsIssueTest}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Margin="1"
+                        Background="White"
+                        Orientation="Horizontal">
+                <CheckBox Margin="10,0,0,0"
+                          VerticalAlignment="Center"
+                          Content="Запрашивать кадры в тестовом режиме"
+                          IsChecked="{Binding IsIssueTest}" />
+            </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueGetFrame}"
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -93,30 +94,35 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <GroupBox Header="Тип алгоритма">
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Тип алгоритма" />
                     <TextBox TabIndex="3" Text="{Binding AlgoType}" />
-                </GroupBox>
-                <GroupBox Header="Порог для определения ЗНЩ">
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Порог для определения ЗНЩ" />
                     <TextBox TabIndex="3" Text="{Binding Threshold}" />
-                </GroupBox>
-                <GroupBox Header="Параметр 1">
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Параметр 1" />
                     <TextBox TabIndex="3" Text="{Binding Param1}" />
-                </GroupBox>
-                <GroupBox Header="Параметр 2">
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Параметр 2" />
                     <TextBox TabIndex="3" Text="{Binding Param2}" />
-                </GroupBox>
-                <GroupBox Header="Параметр 3">
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Параметр 3" />
                     <TextBox TabIndex="3" Text="{Binding Param3}" />
-                </GroupBox>
+                </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdThreshold}"
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -137,6 +143,7 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal" />
             <Button Grid.Column="8"
@@ -144,7 +151,6 @@
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -165,19 +171,22 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <GroupBox Header="Детектор">
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Детектор" />
                     <ComboBox IsEditable="False" SelectedIndex="{Binding SelDetector}">
                         <System:String>УФЕС</System:String>
                         <System:String>ВУФЕС</System:String>
                         <System:String>СДЩ</System:String>
                     </ComboBox>
-                </GroupBox>
+                </StackPanel>
                 <CheckBox Grid.Column="2"
                           Grid.ColumnSpan="6"
+                          Margin="10,0,0,0"
                           VerticalAlignment="Center"
-                          Content="Питание"
+                          Content="Подать питание на детектор"
                           IsChecked="{Binding PwrDetector}" />
             </StackPanel>
             <Button Grid.Column="8"
@@ -185,7 +194,6 @@
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -206,59 +214,65 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <GroupBox Header="Тип параметров">
-                    <StackPanel VerticalAlignment="Center" Orientation="Vertical">
-                        <ComboBox IsEditable="False" SelectedIndex="{Binding SelConf}">
-                            <System:String>Команда не будет выполнена</System:String>
-                            <System:String>Параметры БУК</System:String>
-                            <System:String>Параметры КВВ</System:String>
-                        </ComboBox>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Header="Параметры БУК">
+                <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                    <Label>Тип параметров</Label>
+                    <ComboBox IsEditable="False" SelectedIndex="{Binding SelConf}">
+                        <System:String>Команда не будет выполнена</System:String>
+                        <System:String>Параметры БУК</System:String>
+                        <System:String>Параметры КВВ</System:String>
+                    </ComboBox>
+                </StackPanel>
+                <GroupBox Margin="10,0,0,0" Header="Параметры БУК">
                     <StackPanel Orientation="Horizontal">
-                        <GroupBox Header="Режим работы">
+                        <StackPanel>
+                            <Label Content="Режим работы" />
                             <ComboBox IsEditable="False" SelectedIndex="{Binding ModeConf}">
                                 <System:String>Нормальный</System:String>
                                 <System:String>Тестовый</System:String>
                             </ComboBox>
-                        </GroupBox>
-                        <GroupBox Header="Параметр сжатия">
+                        </StackPanel>
+                        <StackPanel Margin="10,0,0,0">
+                            <Label Content="Параметр сжатия" />
                             <ComboBox IsEditable="False" SelectedIndex="{Binding CompressConf}">
                                 <System:String>Нет сжатия</System:String>
                                 <System:String>Есть сжатие</System:String>
                                 <System:String>Есть сжатие с параметром 1</System:String>
                             </ComboBox>
-                        </GroupBox>
+                        </StackPanel>
                     </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Параметры КВВ">
+                <GroupBox Margin="10,0,0,0" Header="Параметры КВВ">
                     <StackPanel Orientation="Horizontal">
-                        <GroupBox Header="Линия отправки в КВВ">
+                        <StackPanel>
+                            <Label Content="Линия отправки в КВВ" />
                             <ComboBox IsEditable="False"
                                       SelectedIndex="{Binding LineSendConf}"
                                       TabIndex="9">
                                 <System:String>Основная</System:String>
                                 <System:String>Резервная</System:String>
                             </ComboBox>
-                        </GroupBox>
-                        <GroupBox Header="Линия приема от КВВ">
+                        </StackPanel>
+                        <StackPanel Margin="10,0,0,0">
+                            <Label Content="Линия приема от КВВ" />
                             <ComboBox IsEditable="False" SelectedIndex="{Binding LineRecvConf}">
                                 <System:String>Основная</System:String>
                                 <System:String>Резервная</System:String>
                             </ComboBox>
-                        </GroupBox>
-                        <GroupBox Header="Активация">
+                        </StackPanel>
+                        <StackPanel Margin="10,0,0,0">
+                            <Label Content="Активация" />
                             <ComboBox IsEditable="False"
                                       SelectedIndex="{Binding ActivateConf}"
                                       Style="{StaticResource ComboBoxInError}">
                                 <System:String>Активировать КВВ1</System:String>
                                 <System:String>Активировать КВВ2</System:String>
                             </ComboBox>
-                        </GroupBox>
-                        <CheckBox VerticalAlignment="Center"
+                        </StackPanel>
+                        <CheckBox Margin="10,0,0,0"
+                                  VerticalAlignment="Center"
                                   Content="Опрос КВВ"
                                   IsChecked="{Binding ExchangeConf}" />
                     </StackPanel>
@@ -269,7 +283,6 @@
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -290,29 +303,32 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <GroupBox Header="Номер затвор">
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Номер затвор" />
                     <TextBox TabIndex="3" Text="{Binding NumberShutter}" />
-                </GroupBox>
-                <GroupBox Header="Линия">
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Линия передачи" />
                     <ComboBox IsEditable="False"
                               SelectedIndex="{Binding LineShutter}"
                               TabIndex="9">
                         <System:String>Основная</System:String>
                         <System:String>Резервная</System:String>
                     </ComboBox>
-                </GroupBox>
-                <GroupBox Header="Длительность открытия затвора">
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Длительность открытия затвора" />
                     <TextBox TabIndex="3" Text="{Binding ShutterTime}" />
-                </GroupBox>
+                </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdShutter}"
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -333,21 +349,23 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <GroupBox Header="Номер засветки">
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Номер засветки" />
                     <TextBox TabIndex="3" Text="{Binding NumberLight}" />
-                </GroupBox>
-                <GroupBox Header="Длительность засветки">
+                </StackPanel>
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Длительность засветки" />
                     <TextBox TabIndex="3" Text="{Binding LightTime}" />
-                </GroupBox>
+                </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdLight}"
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -368,18 +386,19 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <GroupBox Header="УКС">
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="УКС" />
                     <TextBox TabIndex="3" Text="{Binding CmdBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" />
-                </GroupBox>
+                </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdSend}"
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
-        <Separator />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -400,11 +419,13 @@
                    Style="{StaticResource FlatHeader}" />
             <StackPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
+                        Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <GroupBox Header="Команда">
+                <StackPanel Margin="10,0,0,0">
+                    <Label Content="Команда" />
                     <TextBox TabIndex="3" Text="{Binding DataBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" />
-                </GroupBox>
+                </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueDataSend}"
