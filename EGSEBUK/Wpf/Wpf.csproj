@@ -28,7 +28,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,7 +39,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,7 +48,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Egse.Wpf.AppEntryPoint</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -84,11 +84,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>App.xaml.resx</DependentUpon>
     </Compile>
-    <Compile Include="Behaviors\EgseBehaviorsAdornerExtensions.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsKeyboardFocus.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsUIElementAdorner.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsWatermarkComboBox.cs" />
-    <Compile Include="Behaviors\EgseBehaviorsWatermarkTextBox.cs" />
+    <Compile Include="AppEntryPoint.cs" />
+    <Compile Include="Behaviors\AdornerExtensions.cs" />
+    <Compile Include="Behaviors\KeyboardFocus.cs" />
+    <Compile Include="Behaviors\UIElementAdorner.cs" />
+    <Compile Include="Behaviors\WatermarkComboBox.cs" />
+    <Compile Include="Behaviors\WatermarkTextBox.cs" />
+    <Compile Include="Windows\ControlBukWindow.xaml.cs">
+      <DependentUpon>ControlBukWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomAttributes\LambdaAttribute.cs" />
+    <Compile Include="CustomAttributes\LambdaAttribute.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LambdaAttribute.resx</DependentUpon>
+    </Compile>
     <Compile Include="EGSEConstantsBUK.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -122,53 +132,56 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EGSEProtocolSpacewire.resx</DependentUpon>
     </Compile>
+    <Compile Include="EmbeddedAssembly.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceUnitTest.Designer.cs">
       <DependentUpon>ResourceUnitTest.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="SDWindow.xaml.cs">
+    <Compile Include="Windows\SDWindow.xaml.cs">
       <DependentUpon>SDWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SDWindow.xaml.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SDWindow.xaml.resx</DependentUpon>
-    </Compile>
-    <Compile Include="SimHsiWindow.xaml.cs">
+    <Compile Include="Windows\SimHsiWindow.xaml.cs">
       <DependentUpon>SimHsiWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SimSDWindow.xaml.cs">
+    <Compile Include="Windows\SimSDWindow.xaml.cs">
       <DependentUpon>SimSDWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SpacewireWindow.xaml.cs">
+    <Compile Include="Windows\SpacewireWindow.xaml.cs">
       <DependentUpon>SpacewireWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SimSpacewireWindow.xaml.cs">
+    <Compile Include="Windows\SimSpacewireWindow.xaml.cs">
       <DependentUpon>SimSpacewireWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EGSEDeviceBUK.cs" />
     <Compile Include="EGSEConstantsBUK.cs" />
     <Compile Include="EGSECyclogramCommandBUK.cs" />
-    <Compile Include="UsbSendsMonitor.xaml.cs">
+    <Compile Include="Windows\TeleBukWindow.xaml.cs">
+      <DependentUpon>TeleBukWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UsbSendsMonitor.xaml.cs">
       <DependentUpon>UsbSendsMonitor.xaml</DependentUpon>
     </Compile>
     <Page Include="..\..\ConsoleApplication1\EGSECyclogramControl.xaml">
-      <Link>EGSECyclogramControl.xaml</Link>
+      <Link>Windows\EGSECyclogramControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="HSIWindow.xaml">
+    <Page Include="Windows\ControlBukWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Windows\HSIWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="..\..\ConsoleApplication1\EGSECyclogramControl.xaml.cs">
-      <Link>EGSECyclogramControl.xaml.cs</Link>
+      <Link>Windows\EGSECyclogramControl.xaml.cs</Link>
       <DependentUpon>EGSECyclogramControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="..\..\ConsoleApplication1\EGSEUtilitesADC.cs">
@@ -238,34 +251,38 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EGSEDefaultLoggers.resx</DependentUpon>
     </Compile>
-    <Compile Include="HSIWindow.xaml.cs">
+    <Compile Include="Windows\HSIWindow.xaml.cs">
       <DependentUpon>HSIWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SDWindow.xaml">
+    <Page Include="Windows\SDWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SimHsiWindow.xaml">
+    <Page Include="Windows\SimHsiWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SimSDWindow.xaml">
+    <Page Include="Windows\SimSDWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SpacewireWindow.xaml">
+    <Page Include="Windows\SpacewireWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SimSpacewireWindow.xaml">
+    <Page Include="Windows\SimSpacewireWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UsbSendsMonitor.xaml">
+    <Page Include="Windows\TeleBukWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\UsbSendsMonitor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -298,10 +315,10 @@
       <Link>EGSEUtilitesTextlog.resx</Link>
       <DependentUpon>EGSEUtilitesTextlog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="App.xaml.resx">
-      <DependentUpon>App.xaml.cs</DependentUpon>
+    <EmbeddedResource Include="CustomAttributes\LambdaAttribute.resx">
+      <DependentUpon>LambdaAttribute.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>App.xaml.Designer.cs</LastGenOutput>
+      <LastGenOutput>LambdaAttribute.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="EGSEConstantsBUK.resx">
       <DependentUpon>EGSEConstantsBUK.cs</DependentUpon>
@@ -346,11 +363,17 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourceUnitTest.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="SDWindow.xaml.resx">
+    <EmbeddedResource Include="Windows\SDWindow.xaml.resx">
       <DependentUpon>SDWindow.xaml.cs</DependentUpon>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SDWindow.xaml.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="CycDeveloperTest\CycDeveloperKvvImit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperKvvImitLog.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperPower.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperShutter.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperUTF.cyc" />
+    <None Include="CycDeveloperTest\CycExecuteTest.cyc" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -378,6 +401,18 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DetectNetVersion\DetectNetVersion.vbproj">
+      <Project>{0798acde-3c47-46fe-8d44-2102a180ff0f}</Project>
+      <Name>DetectNetVersion</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\DetectNetVersion\bin\Release\DetectNetVersion.dll">
+      <Link>DetectNetVersion.dll</Link>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -412,7 +447,7 @@
       set IVAN_DIR=Z:\Users\Ivan\$(TargetName)
       set ALEXANDR_DIR=Z:\Users\QuadMan\$(TargetName)
       set ANDREW_DIR=Z:\Users\Vitamin\$(TargetName)
-      if exist \\z:\ (
+      if exist "\\stl_server\data" (
       if %USERDOMAIN%\%USERNAME% == Иван-ПК\Иван (
       if $(ConfigurationName) == Debug (
       echo Debug deploy

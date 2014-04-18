@@ -17,15 +17,16 @@ namespace Egse.Defaults
         /// <summary>
         /// Список имен лог-файлов.
         /// </summary>
-        private static string[] logsNames = new string[7] 
+        private static string[] logsNames = new string[8] 
         { 
             Resource.Get("stMainLog"),
             Resource.Get("stOperatorLog"),
             Resource.Get("stHsiLog"),
             Resource.Get("stErrorsLog"),
-            Resource.Get("stUSBLog"),
+            Resource.Get("stProtoEncoderLog"),
             Resource.Get("stSpacewire2"),
-            Resource.Get("stSpacewire3")
+            Resource.Get("stSpacewire3"),
+            Resource.Get("stUSBLog")
         };
 
         /// <summary>
@@ -122,13 +123,21 @@ namespace Egse.Defaults
         }
 
         /// <summary>
-        /// Получает лог USB.
+        /// Получает лог кодировщика протокола.
         /// </summary>
-        public static TxtLogger LogUSB
+        public static TxtLogger LogEncoder
         {
             get
             {
                 return Instance._loggers[4];
+            }
+        }
+
+        public static TxtLogger LogUSB
+        {
+            get
+            {
+                return Instance._loggers[7];
             }
         }
 

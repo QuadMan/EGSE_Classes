@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="eNetVersion" xml:space="preserve">
-    <value>Установите .Net 4.5.1! Приложение будет закрыто!</value>
+    <value>Приложение не может быть запущено. Необходима версия .Net Framework 4.5 ({0}) или выше. Ваша версия: {1}</value>
   </data>
 </root>

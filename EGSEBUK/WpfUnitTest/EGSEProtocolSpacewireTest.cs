@@ -90,6 +90,14 @@ namespace Egse.Protocols.UnitTest
 
             Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
 
+            //Assert.AreEqual(0, msg.TmInfo.BitReserve, "Ошибка в парсинге свойства TmInfo.BitReserve");
+            //Assert.AreEqual(0, msg.TmInfo.Reserve, "Ошибка в парсинге свойства TmInfo.Reserve");
+            //Assert.AreEqual(0, msg.TmInfo.Service, "Ошибка в парсинге свойства TmInfo.Service");
+            //Assert.AreEqual(0, msg.TmInfo.SubBitReserve, "Ошибка в парсинге свойства TmInfo.SubBitReserve");
+            //Assert.AreEqual(0, msg.TmInfo.SubService, "Ошибка в парсинге свойства TmInfo.SubService");
+            //Assert.AreEqual(0, msg.TmInfo.Time, "Ошибка в парсинге свойства TmInfo.Time");
+            //Assert.AreEqual(0, msg.TmInfo.Version, "Ошибка в парсинге свойства TmInfo.Version");
+
             string str = msg.TmInfo.ToString(false);
         }
 
@@ -337,6 +345,13 @@ namespace Egse.Protocols.UnitTest
 
             byte[] test = buf.Skip(14).ToArray().Take(1).ToArray();
             CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
+
+           // Assert.AreEqual(0, msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
+           // Assert.AreEqual(0, msg.TkInfo.Flag, "Ошибка в парсинге свойства TkInfo.Flag");
+           // Assert.AreEqual(0, msg.TkInfo.Reserve, "Ошибка в парсинге свойства TkInfo.Reserve");
+           // Assert.AreEqual(0, msg.TkInfo.Service, "Ошибка в парсинге свойства TkInfo.Service");
+          //  Assert.AreEqual(0, msg.TkInfo.SubService, "Ошибка в парсинге свойства TkInfo.SubService");
+          //  Assert.AreEqual(0, msg.TkInfo.Version, "Ошибка в парсинге свойства TkInfo.Version");
         }
 
         /// <summary>
@@ -450,17 +465,17 @@ namespace Egse.Protocols.UnitTest
             byte[] buf_new = msg.ToArray();
 
             CollectionAssert.AreEqual(buf, msg.Data, "Ошибка в парсинге данных кадра");
-            Assert.AreEqual(to, msg.TkInfo.IcdInfo.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
-            Assert.AreEqual((SpacewireSptpMsgEventArgs.SptpProtocol)0xf2, msg.TkInfo.IcdInfo.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
-            Assert.AreEqual(0x00, (byte)msg.TkInfo.IcdInfo.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
-            Assert.AreEqual(from, msg.TkInfo.IcdInfo.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
+            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual((SpacewireSptpMsgEventArgs.SptpProtocol)0xf2, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(0x00, (byte)msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
 
-            Assert.AreEqual(0, msg.TkInfo.IcdInfo.Version, "Ошибка в парсинге свойства IcdInfo.Version");
-            Assert.AreEqual(apid, msg.TkInfo.IcdInfo.Apid, "Ошибка в парсинге свойства IcdInfo.Apid");
-            Assert.AreEqual(0, msg.TkInfo.IcdInfo.Counter, "Ошибка в парсинге свойства IcdInfo.Counter");
-            Assert.AreEqual(SpacewireTkMsgEventArgs.IcdFlag.HeaderFill, msg.TkInfo.IcdInfo.Flag, "Ошибка в парсинге свойства IcdInfo.Flag");
-            Assert.AreEqual(3, msg.TkInfo.IcdInfo.Segment, "Ошибка в парсинге свойства IcdInfo.Segment");
-            Assert.AreEqual(6, msg.TkInfo.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
+            Assert.AreEqual(0, msg.IcdInfo.Version, "Ошибка в парсинге свойства IcdInfo.Version");
+            Assert.AreEqual(apid, msg.IcdInfo.Apid, "Ошибка в парсинге свойства IcdInfo.Apid");
+            Assert.AreEqual(0, msg.IcdInfo.Counter, "Ошибка в парсинге свойства IcdInfo.Counter");
+            Assert.AreEqual(SpacewireTkMsgEventArgs.IcdFlag.HeaderFill, msg.IcdInfo.Flag, "Ошибка в парсинге свойства IcdInfo.Flag");
+            Assert.AreEqual(3, msg.IcdInfo.Segment, "Ошибка в парсинге свойства IcdInfo.Segment");
+            Assert.AreEqual(6, msg.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
 
             Assert.AreEqual((byte)((1 << 3) | 1), msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
 

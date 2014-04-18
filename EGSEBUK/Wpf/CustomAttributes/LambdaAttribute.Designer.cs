@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Wpf
-{
-
-
+namespace Wpf.CustomAttributes {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -22,14 +22,14 @@ namespace Wpf
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class SDWindow_xaml {
+    internal class LambdaAttribute {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal SDWindow_xaml() {
+        internal LambdaAttribute() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Wpf
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.SDWindow.xaml", typeof(SDWindow_xaml).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Wpf.CustomAttributes.LambdaAttribute", typeof(LambdaAttribute).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,11 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Экземпляр ListBox не инициализировал DataContext. .
+        ///   Looks up a localized string similar to Ошибка в ссылке на Lambda-функцию: hostingField = {0}.
         /// </summary>
-        internal static string eNotSupportMonitorList {
+        internal static string eHostingField {
             get {
-                return ResourceManager.GetString("eNotSupportMonitorList", resourceCulture);
+                return ResourceManager.GetString("eHostingField", resourceCulture);
             }
         }
     }

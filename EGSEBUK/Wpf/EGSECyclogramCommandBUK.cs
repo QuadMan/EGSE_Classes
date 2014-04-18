@@ -13,6 +13,9 @@ namespace Egse.Cyclogram.Command
     using Egse.Cyclogram;
     using Egse.Devices;
     using Egse.Utilites;
+    using Egse.CustomAttributes;
+    using System.Linq.Expressions;
+    using System.Windows;
 
     /// <summary>
     /// Инициализирует набор доступных цикломанд для устройства.
@@ -26,15 +29,140 @@ namespace Egse.Cyclogram.Command
         {
             CyclogramCommandsAvailable = new CyclogramCommands();
             CyclogramCommandsAvailable.AddCommand("62ac720d56ce449d86ca2cde439ba75a", new CyclogramLine("POWER", PowerTest, PowerExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("efc854841c554c529966abe5f1e6c2d7", new CyclogramLine("GATE", GateTest, GateExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("efc854841c554c529966abe5f1e6c2d7", new CyclogramLine("SHUTTER", ShutterTest, ShutterExec, string.Empty));
             CyclogramCommandsAvailable.AddCommand("b1f06daf0810463892707e7edf5d93be", new CyclogramLine("KVV_IMIT", KvvImitTest, KvvImitExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("e333bfb23a204e748699528fb787012c", new CyclogramLine("BUSK_IMIT", BuskImitTest, BuskImitExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("9e3e94f708eb44819a8ea9d01aa321e9", new CyclogramLine("BUSK_IMIT_CMD", BuskImitCmdTest, BuskImitCmdExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("2e92651815794233bc062365b3e8278b", new CyclogramLine("BUSK_IMIT_CMD_FILE", BuskImitCmdFileTest, BuskImitCmdFileExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("ec4d4c82d1044d3fbcad59d4403c54aa", new CyclogramLine("BUSK_IMIT_LOGIC", BuskImitLogicTest, BuskImitLogicExec, string.Empty));
-            CyclogramCommandsAvailable.AddCommand("bdeae631daf8489983760003e615852a", new CyclogramLine("SCIDEV_IMIT", ScidevImitTest, ScidevImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("954bcc4e3ea240ddacd8766fcc72c9bf", new CyclogramLine("KVV_IMIT_LOG", KvvImitLogTest, KvvImitLogExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("e333bfb23a204e748699528fb787012c", new CyclogramLine("BM4_IMIT", Bm4ImitTest, Bm4ImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("9e3e94f708eb44819a8ea9d01aa321e9", new CyclogramLine("BM4_IMIT_CMD", Bm4ImitCmdTest, Bm4ImitCmdExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("1198f53b3a9a4a6b9c69f3ac6ebe466f", new CyclogramLine("BM4_IMIT_LOG", Bm4ImitLogTest, Bm4ImitLogExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("bdeae631daf8489983760003e615852a", new CyclogramLine("DETECTOR_IMIT", DetectorImitTest, DetectorImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("fac9ef960e6b4a55b48ecd13f51d4acf", new CyclogramLine("DETECTOR_IMIT_LOG", DetectorImitLogTest, DetectorImitLogExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("2e92651815794233bc062365b3e8278b", new CyclogramLine("BUK_KVV_IMIT", BukKvvImitTest, BukKvvImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("ec4d4c82d1044d3fbcad59d4403c54aa", new CyclogramLine("BUK_KVV_IMIT_CMD", BukKvvImitCmdTest, BukKvvImitCmdExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("c8567a505600474fb4f8ab24a5a11246", new CyclogramLine("BUK_BM4_IMIT", BukBm4ImitTest, BukBm4ImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("e1ee52714fa547f38701f984328913d9", new CyclogramLine("BUK_DETECTOR_IMIT", BukDetectorImitTest, BukDetectorImitExec, string.Empty));
+            CyclogramCommandsAvailable.AddCommand("e1ee52714fa547f38701f984328913d9", new CyclogramLine("BUK_DETECTOR_IMIT_CMD", BukDetectorImitCmdTest, BukDetectorImitCmdExec, string.Empty));
+        }
+
+        private bool BukDetectorImitCmdExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukDetectorImitCmdTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukDetectorImitExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukDetectorImitTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukBm4ImitExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool BukBm4ImitTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool DetectorImitLogTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool DetectorImitLogExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool Bm4ImitLogTest(string[] cmdParams, out string errString)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool Bm4ImitLogExec(string[] cmdParams)
+        {
+            throw new NotImplementedException();
+        }
+
+        private bool KvvImitLogTest(string[] cmdParams, out string errString)
+        {
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+            
+            // задаемся минимальным количеством параметров для команды (1).
+            isParamCountErr = false;
+
+            if (2 > cmdParams.Length)
+            {
+                if (!IncludeTest<BinLog, TxtLog>(cmdParams[0], out errParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                    return false;
+                }                
+
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<BinLog>(cmdParams[0], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
+
+            if (!IncludeTest<TxtLog>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+            
+            // задаемся максимальным количеством параметров для команды (2).
+            isParamCountErr = true;
+
+            if (2 < cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            // исключаем дублирующие параметры.
+            if (cmdParams.Distinct().Count() != cmdParams.Length)
+            {
+                errString = Resource.Get(@"eUnique");
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool KvvImitLogExec(string[] cmdParams)
+        {
+            IncludeExec<BinLog, TxtLog>(cmdParams.ToList());
+
+            return true;
         }
       
+        private enum State
+        {
+            READY,
+            BUSY,
+            ME
+        }
+
         /// <summary>
         /// Аргумент "переключатель состояния".
         /// </summary>
@@ -72,23 +200,48 @@ namespace Egse.Cyclogram.Command
             BUND
         }
 
+        private enum TxtLog
+        {
+            [ActionAttribute(typeof(Execut), "TxtOn")]
+            TXT_ON,
+            [ActionAttribute(typeof(Execut), "TxtOff")]
+            TXT_OFF
+        }
+
+        public static class Execut
+        {
+            public static readonly Action<EgseBukNotify> BinOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinOn"); });
+            public static readonly Action<EgseBukNotify> BinOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinOff"); });
+            public static readonly Action<EgseBukNotify> TxtOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtOn"); });
+            public static readonly Action<EgseBukNotify> TxtOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtOff"); });
+        }
+
+        private enum BinLog
+        {
+            [ActionAttribute(typeof(Execut), "BinOn")]
+            BIN_ON,
+
+            [ActionAttribute(typeof(Execut), "BinOff")]
+            BIN_OFF
+        }
+
         /// <summary>
-        /// Аргумент "выбор НП".
+        /// Аргумент "каналы БС".
         /// </summary>
         private enum Scidev
         {
             /// <summary>
-            /// Параметр "НП УФЕС" аргумента.
+            /// Параметр "канал БС УФЕС" аргумента.
             /// </summary>
             UFES,
 
             /// <summary>
-            /// Параметр "НП ВУФЕС" аргумента.
+            /// Параметр "канал БС ВУФЕС" аргумента.
             /// </summary>
             VUFES,
 
             /// <summary>
-            /// Параметр "НП СДЩ" аргумента.
+            /// Параметр "канал БС СДЩ" аргумента.
             /// </summary>
             SDSH
         }
@@ -141,6 +294,17 @@ namespace Egse.Cyclogram.Command
         }
 
         /// <summary>
+        /// Аргумент "включить автоматический режим управления датчиками затворов".
+        /// </summary>
+        private enum Control
+        {
+            /// <summary>
+            /// Параметр "автоматический режим управления датчиками затворов" аргумента.
+            /// </summary>
+            AUTO
+        }
+
+        /// <summary>
         /// Аргумент "выбор канала spacewire".
         /// </summary>
         private enum Channel
@@ -171,11 +335,6 @@ namespace Egse.Cyclogram.Command
         /// </summary>
         private enum Command
         {
-            /// <summary>
-            /// Параметр "сформировать команду RMAP" аргумента.
-            /// </summary>
-            RMAP,
-
             /// <summary>
             /// Параметр "сформировать команду TELE" аргумента.
             /// </summary>
@@ -214,20 +373,32 @@ namespace Egse.Cyclogram.Command
             TICKTIME_OFF
         }
 
+        private enum SensorOpen
+        {
+            SENS_OPEN_ON,
+            SENS_OPEN_OFF
+        }
+
+        private enum SensorClose
+        {
+            SENS_CLOSE_ON,
+            SENS_CLOSE_OFF
+        }
+
         /// <summary>
         /// Аргумент "КБВ".
         /// </summary>
-        private enum Onboardtime
+        private enum OnBoardTime
         {
             /// <summary>
             /// Параметр "включить выдачу КБВ" аргумента.
             /// </summary>
-            ONBOARDTIME_ON,
+            OBT_ON,
 
             /// <summary>
             /// Параметр "выключить выдачу КБВ" аргумента.
             /// </summary>
-            ONBOARDTIME_OFF
+            OBT_OFF
         }
 
         /// <summary>
@@ -263,9 +434,120 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmd">Наименование команды.</param>
         /// <param name="exclude">Список исключенных параметров.</param>
         /// <returns><c>true</c> если параметры существуют, иначе <c>false</c></returns>
-        private bool IncludeTest<TEnum>(string cmd, TEnum[] exclude = null)
+        private bool IncludeTest<TEnum>(string cmd, out string errStr, TEnum[] exclude = null)
         {
-            return GetAllList<TEnum>(exclude).Exists(x => x == cmd);
+            if (!GetAllList<TEnum>(exclude).Exists(x => x == cmd))
+            {
+                errStr = string.Join(@" или ", GetAllList<TEnum>(exclude).ToArray());
+                return false;
+            }
+            else
+            {
+                errStr = string.Empty;
+                return true;
+            }
+        }
+
+        private bool IncludeExec<TEnum>(string cmd, TEnum[] exclude = null)
+        {
+            if (GetAllList<TEnum>(exclude).Exists(x => x == cmd))
+            {
+                System.Reflection.MemberInfo memberInfo = typeof(TEnum).GetMember(cmd).FirstOrDefault();
+
+                if (null != memberInfo)
+                {
+                    ActionAttribute attribute = (ActionAttribute)memberInfo.GetCustomAttributes(typeof(ActionAttribute), false).FirstOrDefault();
+                    if (null != attribute)
+                    {
+                        attribute.Act(this.BukNotify);
+                        return true;
+                    }                    
+                }  
+                
+            }
+
+            return false;
+        }
+
+        private void IncludeExec<TEnum1, TEnum2>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null)
+        {
+            foreach (string str in cmds)
+            {
+                if (IncludeExec<TEnum1>(str, exclude1))
+                {
+                    cmds.Remove(str);
+                    break;
+                }
+            }
+
+            foreach (string str in cmds)
+            {
+                if (IncludeExec<TEnum2>(str, exclude2))
+                {
+                    cmds.Remove(str);
+                    break;
+                }
+            }
+        }
+
+        private bool IncludeTest<TEnum1, TEnum2>(string cmd, out string errStr, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null)
+        {
+            if (IncludeTest<TEnum2>(cmd, out errStr, exclude2))
+            {
+                return true;
+            }
+            
+            if (IncludeTest<TEnum1>(cmd, out errStr, exclude1))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IncludeTest<TEnum1, TEnum2, TEnum3>(string cmd, out string errStr, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null)
+        {
+            if (IncludeTest<TEnum3>(cmd, out errStr, exclude3))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum2>(cmd, out errStr, exclude2))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum1>(cmd, out errStr, exclude1))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IncludeTest<TEnum1, TEnum2, TEnum3, TEnum4>(string cmd, out string errStr, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null)
+        {
+            if (IncludeTest<TEnum4>(cmd, out errStr, exclude4))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum3>(cmd, out errStr, exclude3))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum2>(cmd, out errStr, exclude2))
+            {
+                return true;
+            }
+
+            if (IncludeTest<TEnum1>(cmd, out errStr, exclude1))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -286,6 +568,21 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        private ActionAttribute Attribute(Enum effectType)
+        {
+            System.Reflection.MemberInfo memberInfo = effectType.GetType().GetMember(effectType.ToString()).FirstOrDefault();
+
+            if (memberInfo != null)
+            {
+                ActionAttribute attribute = (ActionAttribute)
+                             memberInfo.GetCustomAttributes(typeof(ActionAttribute), false)
+                                       .FirstOrDefault();
+                return attribute;
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// TODO описание
         /// </summary>
@@ -296,30 +593,77 @@ namespace Egse.Cyclogram.Command
         /// </returns>
         private bool PowerTest(string[] cmdParams, out string errString)
         {
-            errString = string.Empty;
-            switch (cmdParams.Length)
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
             {
-                case 3:
-                    {
-                        if (!IncludeTest<Device>(cmdParams[0], new Device[1] { Device.BUK }))
-                        {
-                            errString = string.Format(Resource.Get(@"eArg1"), string.Join(" или ", GetAllList<Device>(new Device[1] { Device.BUK }).ToArray()));
-                            return false;
-                        }
+                return !isParamCountErr;
+            }
 
-                        if (!IncludeTest<Sets>(cmdParams[1]))
-                        {
-                            errString = string.Format(Resource.Get(@"eArg2"), string.Join(" или ", GetAllList<Sets>().ToArray()));
-                            return false;
-                        }  
-                    }
+            if (!IncludeTest<Device>(cmdParams[0], out errParam, new Device[1] { Device.BUK }))
+            {                
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
 
-                    break;
-                case 4:
-                    break;
-                default:
-                    errString = Resource.Get(@"eParamCount");
+            if (2 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Line, Sets>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            if (3 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Sets, Switcher>(cmdParams[2], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg3"), errParam);
+                return false;
+            }
+
+            // задаемся минимальным количеством параметров для команды (3).
+            isParamCountErr = false;
+
+            if (4 > cmdParams.Length)
+            {
+                // если количество параметров минимально - второй аргумент обязан быть параметром "Sets".
+                if (!IncludeTest<Sets>(cmdParams[1], out errParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg2"), errParam);
                     return false;
+                }
+
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Switcher>(cmdParams[3], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg4"), errParam);
+                return false;
+            }
+
+            // задаемся максимальным количеством параметров для команды (4).
+            isParamCountErr = true;
+
+            if (4 < cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            // исключаем дублирующие параметры.
+            if (cmdParams.Distinct().Count() != cmdParams.Length)
+            {
+                errString = Resource.Get(@"eUnique");
+                return false;
             }
 
             return true;
@@ -342,16 +686,70 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool GateTest(string[] cmdParams, out string errString)
+        private bool ShutterTest(string[] cmdParams, out string errString)
         {
-            errString = string.Empty;
-            switch (cmdParams.Length)
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
             {
-                case 3:
-                    break;
-                default:
-                    errString = Resource.Get(@"eParamCount");
+                return !isParamCountErr;
+            }
+
+            // устанавливаем минимальное количество параметров в команде.
+            isParamCountErr = false;
+
+            if (2 > cmdParams.Length)
+            {
+                // если минимальное количество параметров (1) проверить что это параметр "Control".
+                if (!IncludeTest<Control>(cmdParams[0], out errParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
+                }
+
+                return !isParamCountErr;
+            }
+
+            // если же команд более 1 - первый аргумент обязан быть параметром "Scidev".
+            if (!IncludeTest<Scidev>(cmdParams[0], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
+
+            // следующий параметр может варьироваться.
+            if (!IncludeTest<SensorOpen, SensorClose>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            if (3 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<SensorClose>(cmdParams[2], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg3"), errParam);
+                return false;
+            }
+
+            // задаемся максимальным количеством параметров для команды (3).
+            isParamCountErr = true;
+
+            if (3 < cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            // исключаем дублирующие параметры.
+            if (cmdParams.Distinct().Count() != cmdParams.Length)
+            {
+                errString = Resource.Get(@"eUnique");
+                return false;
             }
 
             return true;
@@ -363,7 +761,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool GateExec(string[] cmdParams)
+        private bool ShutterExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -376,18 +774,92 @@ namespace Egse.Cyclogram.Command
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
         private bool KvvImitTest(string[] cmdParams, out string errString)
         {
-            errString = string.Empty;
-            switch (cmdParams.Length)
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
             {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                default:
-                    errString = Resource.Get(@"eParamCount");
-                    return false;
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Sets>(cmdParams[0], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
+
+            if (2 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Switcher, Halfset>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            // задаемся минимальным количеством параметров для команды (2).
+            isParamCountErr = false;
+
+            if (3 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<Halfset, State>(cmdParams[2], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg3"), errParam);
+                return false;
+            }
+            
+            if (4 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<State>(cmdParams[3], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg4"), errParam);
+                return false;
+            }
+
+            if (5 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<State>(cmdParams[4], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg5"), errParam);
+                return false;
+            }
+
+            if (6 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<State>(cmdParams[5], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg6"), errParam);
+                return false;
+            }
+
+            // задаемся максимальным количеством параметров для команды (6).
+            isParamCountErr = true;
+
+            if (6 < cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            // исключаем дублирующие параметры.
+            if (cmdParams.Distinct().Count() != cmdParams.Length)
+            {
+                errString = Resource.Get(@"eUnique");
+                return false;
             }
 
             return true;
@@ -410,24 +882,70 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitTest(string[] cmdParams, out string errString)
+        private bool Bm4ImitTest(string[] cmdParams, out string errString)
         {
-            errString = string.Empty;
-            switch (cmdParams.Length)
+            string errParam = string.Empty;
+            bool isParamCountErr = true;
+            errString = Resource.Get(@"eParamCount");
+
+            if (1 > cmdParams.Length)
             {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                default:
-                    errString = Resource.Get(@"eParamCount");
+                return !isParamCountErr;
+            }
+
+            // устанавливаем минимальное количество параметров в команде.
+            isParamCountErr = false;
+
+            if (2 > cmdParams.Length)
+            {
+                // если минимальное количество параметров (1) проверить что это параметр "Control".
+                if (!IncludeTest<Control>(cmdParams[0], out errParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
+                }
+
+                return !isParamCountErr;
+            }
+
+            // если же команд более 1 - первый аргумент обязан быть параметром "Scidev".
+            if (!IncludeTest<Scidev>(cmdParams[0], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
+
+            // следующий параметр может варьироваться.
+            if (!IncludeTest<SensorOpen, SensorClose>(cmdParams[1], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg2"), errParam);
+                return false;
+            }
+
+            if (3 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            if (!IncludeTest<SensorClose>(cmdParams[2], out errParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg3"), errParam);
+                return false;
+            }
+
+            // задаемся максимальным количеством параметров для команды (3).
+            isParamCountErr = true;
+
+            if (3 < cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            // исключаем дублирующие параметры.
+            if (cmdParams.Distinct().Count() != cmdParams.Length)
+            {
+                errString = Resource.Get(@"eUnique");
+                return false;
             }
 
             return true;
@@ -439,7 +957,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitExec(string[] cmdParams)
+        private bool Bm4ImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -450,7 +968,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitCmdTest(string[] cmdParams, out string errString)
+        private bool Bm4ImitCmdTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -473,7 +991,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitCmdExec(string[] cmdParams)
+        private bool Bm4ImitCmdExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -484,7 +1002,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitCmdFileTest(string[] cmdParams, out string errString)
+        private bool BukKvvImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -505,7 +1023,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitCmdFileExec(string[] cmdParams)
+        private bool BukKvvImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -516,7 +1034,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool BuskImitLogicTest(string[] cmdParams, out string errString)
+        private bool BukKvvImitCmdTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -537,7 +1055,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool BuskImitLogicExec(string[] cmdParams)
+        private bool BukKvvImitCmdExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }
@@ -548,7 +1066,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <param name="errString">The error string.</param>
         /// <returns><c>true</c> если проверка успешно пройдена, иначе <c>false</c>.</returns>
-        private bool ScidevImitTest(string[] cmdParams, out string errString)
+        private bool DetectorImitTest(string[] cmdParams, out string errString)
         {
             errString = string.Empty;
             switch (cmdParams.Length)
@@ -573,7 +1091,7 @@ namespace Egse.Cyclogram.Command
         /// <param name="cmdParams">The command parameters.</param>
         /// <returns><c>true</c> если команда выполнена, иначе <c>false</c>.</returns>
         /// <exception cref="System.NotImplementedException">Нет реализации.</exception>
-        private bool ScidevImitExec(string[] cmdParams)
+        private bool DetectorImitExec(string[] cmdParams)
         {
             throw new NotImplementedException();
         }

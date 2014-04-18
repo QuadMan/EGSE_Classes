@@ -78,10 +78,9 @@
                 Template="{StaticResource FlatLabel}"/>
             <TextBox Grid.Row="6"  
                 Grid.Column="2"
-                AcceptsReturn="False"
                 Template="{StaticResource NumberInError}"
                 Style="{StaticResource TextBoxInError}"
-                Text="{Binding SD1SendTime, UpdateSourceTrigger=PropertyChanged, Delay=1500}" TabIndex="3"/>
+                Text="{Binding SD1SendTime}" TabIndex="3"/>
             <Label Grid.Row="7"
                 Content="Количество байт в пакете данных"
                 Template="{StaticResource FlatLabel}" Visibility="Hidden"/>

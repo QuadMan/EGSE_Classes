@@ -39,7 +39,7 @@ namespace Egse.Protocols
         /// Текущий байт при декодировании посылки.
         /// </summary>
         private byte _bt = 0;
-
+        
         /// <summary>
         /// Сколько ошибок протокола зафиксировал декодер.
         /// </summary>

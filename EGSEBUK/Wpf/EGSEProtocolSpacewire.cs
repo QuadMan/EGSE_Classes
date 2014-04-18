@@ -265,6 +265,14 @@ namespace Egse.Protocols
             }
         }
 
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return _icdInfo.SptpInfo;
+            }
+        }
+
         /// <summary>
         /// Тип сообщения Icd.
         /// </summary>
@@ -317,7 +325,7 @@ namespace Egse.Protocols
         /// <value>
         /// Агрегат доступа к заголовку icd сообщения.
         /// </value>
-        public Icd IcdInfo
+        public virtual Icd IcdInfo
         {
             get
             {
@@ -450,7 +458,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку sptp сообщения.
             /// </value>
-            public SpacewireSptpMsgEventArgs.Sptp SptpInfo
+            internal Sptp SptpInfo
             {
                 get
                 {
@@ -625,7 +633,7 @@ namespace Egse.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stIcdStringExt"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo);
+                return string.Format(Resource.Get(@"stIcdStringExt"), Version, (byte)Type, (byte)Flag, Apid, Segment, Counter, Size, SptpInfo);
             }
 
             /// <summary>
@@ -637,7 +645,7 @@ namespace Egse.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, Type, Flag, Apid, Segment, Counter, Size, SptpInfo.ToString(extended));
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stIcdString"), Version, (byte)Type, (byte)Flag, Apid, Segment, Counter, Size, SptpInfo.ToString(extended));
             }
         }
     }
@@ -693,6 +701,22 @@ namespace Egse.Protocols
             }
         }
 
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return _obtInfo.IcdInfo;
+            }
+        }
+
         /// <summary>
         /// Проверка на принадлежность к КБВ-сообщению.
         /// </summary>
@@ -736,7 +760,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Агрегат доступа к заголовку icd.
             /// </summary>
-            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+            private Icd _icdHeader;
 
             /// <summary>
             /// Значение поля Р: нормальное.
@@ -759,7 +783,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку icd сообщения.
             /// </value>
-            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            internal Icd IcdInfo
             {
                 get
                 {
@@ -846,6 +870,11 @@ namespace Egse.Protocols
         /// </summary>
         private byte[] _data;
 
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireTmMsgEventArgs" />.
         /// </summary>
@@ -883,6 +912,22 @@ namespace Egse.Protocols
             get
             {
                 return _telemetroInfo;
+            }
+        }
+
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return _telemetroInfo.IcdInfo;
             }
         }
 
@@ -969,34 +1014,34 @@ namespace Egse.Protocols
         public struct Tm
         {
             /// <summary>
-            /// Маска поля заголовка поля данных: Резерв (п/о).
-            /// </summary>
-            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Подтип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ReserveSection);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Тип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, SubServiceSection);
-
-            /// <summary>
             /// Маска поля заголовка поля данных: Резерв.
             /// </summary>
-            private static readonly BitVector32.Section BitReserveSection = BitVector32.CreateSection(0x01, ServiceSection);
+            private static readonly BitVector32.Section SubBitReserveSection = BitVector32.CreateSection(0x0F);
 
             /// <summary>
             /// Маска поля заголовка поля данных: Номер версии ТМ-пакета PUS.
             /// </summary>
-            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, BitReserveSection);
+            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, SubBitReserveSection);
 
             /// <summary>
             /// Маска поля заголовка поля данных: Резерв.
             /// </summary>
-            private static readonly BitVector32.Section SubBitReserveSection = BitVector32.CreateSection(0x0F, VersionSection);
+            private static readonly BitVector32.Section BitReserveSection = BitVector32.CreateSection(0x01, VersionSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Тип сервиса.
+            /// </summary>
+            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, BitReserveSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Подтип сервиса.
+            /// </summary>
+            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ServiceSection);
+
+            /// <summary>
+            /// Маска поля заголовка поля данных: Резерв (п/о).
+            /// </summary>
+            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF, SubServiceSection);
 
             /// <summary>
             /// Агрегат доступа к заголовку icd.
@@ -1024,7 +1069,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку icd сообщения.
             /// </value>
-            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            internal Icd IcdInfo
             {
                 get
                 {
@@ -1214,6 +1259,11 @@ namespace Egse.Protocols
         /// </summary>
         private Tk _telecmdInfo;
 
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+        }
+
         /// <summary>
         /// Данные телекоманды.
         /// </summary>
@@ -1256,6 +1306,22 @@ namespace Egse.Protocols
             get
             {
                 return _telecmdInfo;
+            }
+        }
+
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return _telecmdInfo.IcdInfo;
             }
         }
 
@@ -1428,7 +1494,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Агрегат доступа к icd заголовку.
             /// </summary>
-            private SpacewireIcdMsgEventArgs.Icd _icdHeader;
+            private Icd _icdHeader;
 
             /// <summary>
             /// Заголовок телекоманды.
@@ -1441,7 +1507,7 @@ namespace Egse.Protocols
             /// <value>
             /// Агрегат доступа к заголовку icd.
             /// </value>
-            public SpacewireIcdMsgEventArgs.Icd IcdInfo
+            internal Icd IcdInfo
             {
                 get
                 {
@@ -1603,6 +1669,11 @@ namespace Egse.Protocols
         /// </summary>
         private string _errorMsg;
 
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stErrorMsgToString"), this.DataLen, Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.ErrorMessage());
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireErrorMsgEventArgs" />.
         /// </summary>
@@ -1719,6 +1790,11 @@ namespace Egse.Protocols
         /// </summary>
         private byte[] _data;
 
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true));
+        }
+
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
         /// </summary>
@@ -1783,7 +1859,7 @@ namespace Egse.Protocols
         /// <value>
         /// Агрегат доступа к заголовку Sptp.
         /// </value>
-        public Sptp SptpInfo
+        public virtual Sptp SptpInfo
         {
             get
             {
@@ -1996,7 +2072,7 @@ namespace Egse.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stSptpStringExt"), To, ProtocolId, MsgType, From);
+                return string.Format(Resource.Get(@"stSptpStringExt"), To, (byte)ProtocolId, (byte)MsgType, From);
             }
 
             /// <summary>
@@ -2008,7 +2084,7 @@ namespace Egse.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stSptpString"), To, ProtocolId, MsgType, From);
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stSptpString"), To, (byte)ProtocolId, (byte)MsgType, From);
             }
         }
     }

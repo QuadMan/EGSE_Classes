@@ -277,11 +277,12 @@ namespace Egse.Cyclogram
                 case CurState.cycloLoadedWithErrors:
                     if ((DG.SelectedItem != null) && (DG.SelectedItem as CyclogramLine).WasError)
                     {
-                        StatusLabel.Content = (DG.SelectedItem as CyclogramLine).ErrorInCommand;
+                        // добавил "_" для корректного отображения параметров в строке (первый символ "_" трактуется как управляющий).
+                        StatusLabel.Content = "_" + (DG.SelectedItem as CyclogramLine).ErrorInCommand;
                     }
                     else
                     {
-                        StatusLabel.Content = statusText;
+                        StatusLabel.Content = "_" + statusText;
                     }
 
                     break;

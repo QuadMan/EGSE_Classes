@@ -5,7 +5,7 @@
 // <author>Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace Egse.WPF
+namespace Egse.Wpf
 {
     using System;
     using System.Reflection;
@@ -16,7 +16,7 @@ namespace Egse.WPF
     using System.Windows.Input;
     using Egse.Defaults;
     using Egse.Utilites;
-    using Microsoft.Win32;
+    using DetectNetVersion.DotNetFramework;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -102,19 +102,28 @@ namespace Egse.WPF
             
             if (!this.mutex.WaitOne(TimeSpan.Zero, false))
             {
-                this.mutex = null;
                 SafeNativeMethods.PostMessage(HwndBroadCast, message, IntPtr.Zero, IntPtr.Zero);
                 Current.Shutdown();
                 return;
-            }    
+            }
 
-            //if (!CheckNetVersion())
-            //{
-            //    this.mutex = null;                
-            //    MessageBox.Show(Resource.Get(@"eNetVersion"));                
-            //    Current.Shutdown();                
-            //    return;
-            //}
+            string ownVer, needVer;
+            // выходим из приложения если не хватает версии DotNet Framework (необходима .Net Framework 4.5)
+            if (IsCheckDotNetVersion(out needVer, out ownVer))
+            {
+                MessageBox.Show(string.Format(Resource.Get(@"eNetVersion"), needVer, ownVer));
+                Current.Shutdown();
+                return; 
+            }
+
+        }
+
+        private bool IsCheckDotNetVersion(out string needVersion, out string ownerVersion)
+        {
+            NetFrameworkInfo FrameworkInfo = new NetFrameworkInfo();
+            ownerVersion = FrameworkInfo.HighestFrameworkVersion;
+            needVersion = string.Format("{0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
+            return 0 > ownerVersion.CompareTo(needVersion);
         }
 
         /// <summary>
@@ -126,34 +135,6 @@ namespace Egse.WPF
             Dispose();
             base.OnExit(e);
         }
-
-        /// <summary>
-        /// Проверяет записи в регистре, установлен ли .Net 4.5.1.
-        /// </summary>
-        /// <returns>Версия релиза.</returns>
-        private static int Get45or451FromRegistry()
-        {
-            try
-            {
-                using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\"))
-                {
-                    return (int)ndpKey.GetValue("Release");
-                }
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// Проверяет версию .Net Framework.
-        /// </summary>
-        /// <returns><c>true</c> если установлена 4.5.1.</returns>
-        private bool CheckNetVersion()
-        {
-            return 378758 <= Get45or451FromRegistry();
-        }       
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.

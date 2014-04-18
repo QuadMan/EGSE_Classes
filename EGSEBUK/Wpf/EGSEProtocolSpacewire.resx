@@ -141,26 +141,38 @@
   <data name="eUnknowSpacewireData" xml:space="preserve">
     <value>Неизвестный кадр spacewire!</value>
   </data>
+  <data name="stErrorMsgToString" xml:space="preserve">
+    <value>: ({0}d) [{1}] Ошибка: {2}</value>
+  </data>
   <data name="stIcdString" xml:space="preserve">
-    <value>{7} - ICD[{0},{1},{2},0x{3:X},{4},{5},{6}]</value>
+    <value>{7} - ICD[V:{0:X},T:{1:X},F:{2:X},A:{3:X},S:{4:X},C:{5}d,{6}d]</value>
   </data>
   <data name="stIcdStringExt" xml:space="preserve">
     <value>{7} - ICD(Идентификатор пакета[Номер версии:{0}, Тип:{1}, Флаг заголовка данных:{2}, APID:0x{3:X}] - Поле контроля последовательности[Флаг сегментации:{4}, Счетчик последовательности:{5}, Длина поля данных:{6}])</value>
   </data>
+  <data name="stSptpMsgToString" xml:space="preserve">
+    <value>: ({0}d) {1} [{2}]</value>
+  </data>
   <data name="stSptpString" xml:space="preserve">
-    <value>SPTP[{0},{1},{2},{3}]</value>
+    <value>SPTP[{0:X},{1:X},{2:X},{3:X}]</value>
   </data>
   <data name="stSptpStringExt" xml:space="preserve">
     <value>SPTP(Идентификатор пакета[Назначение:{0},Протокол:0x{1:X},Тип:{2},Инициатор:{3}])</value>
   </data>
+  <data name="stTkMsgToString" xml:space="preserve">
+    <value>: ({0}d) {1} [{2}] {3}</value>
+  </data>
   <data name="stTkString" xml:space="preserve">
-    <value>{6} - TK[{0},{1},{2},{3},{4},{5}]</value>
+    <value>{6} - TK[H:{0:X},P:{1:X},Q:{2:X},S:{3:X},s:{4:X},R:{5:X}]</value>
   </data>
   <data name="stTkStringExt" xml:space="preserve">
     <value>{6} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4},Резерв:{5})</value>
   </data>
+  <data name="stTmMsgToString" xml:space="preserve">
+    <value>: ({0}d) {1} [{2}] {3}</value>
+  </data>
   <data name="stTmString" xml:space="preserve">
-    <value>{7} - TM[{0},{1},{2},{3},{4},{5},{6}]</value>
+    <value>{7} - TM[R:{0:X},V:{1:X},P:{2:X},S:{3:X},s:{4:X},R:{5:X},{6}]</value>
   </data>
   <data name="stTmStringExt" xml:space="preserve">
     <value>{7} - TM(Резерв:{0},Номер версии ТМ-пакета PUS:{1},Резерв:{2},Тип сервиса:{3},Подтип сервиса:{4},Резерв (п/о):{5},Время:{6})</value>

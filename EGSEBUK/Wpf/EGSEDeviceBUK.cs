@@ -21,7 +21,6 @@ namespace Egse.Devices
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Egse;
     using Egse.Constants;
     using Egse.Defaults;
     using Egse.Protocols;
@@ -630,8 +629,13 @@ namespace Egse.Devices
         /// <param name="value">Счетчик миллисекунд для НП1 (через сколько готовы данные).</param>
         internal void CmdSpacewire1SPTPControlSD1SendTime(int value)
         {
+            //// TODO удалить (только для проверки).
+            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });  
+
+            SendToUSB(Spacewire1SPTPControlSD1SendTimeHiAddr, new byte[1] { (byte)(value >> 8) });
             SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });
-            SendToUSB(Spacewire1SPTPControlSD1SendTimeHiAddr, new byte[1] { (byte)(value >> 8) });            
+            //// TODO удалить (только для проверки).
+            SendToUSB(Spacewire1SPTPControlSD1SendTimeLoAddr, new byte[1] { (byte)value });  
         }
 
         /// <summary>
@@ -686,20 +690,7 @@ namespace Egse.Devices
         internal void CmdSpacewire2Record(int value)
         {
             SendToUSB(Spacewire2RecordFlushAddr, new byte[1] { 1 });
-            if ((null != _intfBUK.Spacewire2Notify.Data) && (0 < _intfBUK.Spacewire2Notify.Data.Length))
-            {
-                _intfBUK.Spacewire2Notify.DataToSaveList();
-
-                if (_intfBUK.Spacewire2Notify.IsMakeTeleCmd)
-                {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToTk((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk, _intfBUK.Spacewire2Notify.Apid, _intfBUK.Spacewire2Notify.IsConfirmReceipt, _intfBUK.Spacewire2Notify.IsConfirmExecution).ToArray());
-                }
-                else
-                {
-                    SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.Data.ToSptp((byte)_intfBUK.Spacewire2Notify.LogicBuk, (byte)_intfBUK.Spacewire2Notify.LogicBusk).ToArray());
-                }
-            }
-
+            SendToUSB(Spacewire2RecordDataAddr, _intfBUK.Spacewire2Notify.MakeData());
             SendToUSB(Spacewire2RecordSendAddr, new byte[1] { (byte)value });
         }
 
@@ -1120,7 +1111,7 @@ namespace Egse.Devices
         {
             IsConnected = false;
 
-            _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogUSB, false, true);
+            _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogEncoder, false, false);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
             _decoderUSB.GotProtocolError += new ProtocolUSBBase.ProtocolErrorEventHandler(OnErrorFunc);
             DeviceTime = new EgseTime();
@@ -1136,9 +1127,10 @@ namespace Egse.Devices
             Spacewire2Notify = new Spacewire2(this);
             Spacewire3Notify = new Spacewire3(this);
             Spacewire4Notify = new Spacewire4(this);
+            ControlBukNotify = new ControlBuk(this);
 
             UITestNotify = new UITest(this);
-            UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
+            UITestNotify.UsbLogFile = LogsClass.LogEncoder.FileName;
 
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
@@ -1207,6 +1199,8 @@ namespace Egse.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
+        private bool isShowControlBuk;
+        private bool isShowTeleBuk;
 
         /// <summary>
         /// Состояние прибора.
@@ -1279,6 +1273,8 @@ namespace Egse.Devices
         /// Экземпляр нотификатора.
         /// </value>
         public Spacewire4 Spacewire4Notify { get; private set; }
+
+        public ControlBuk ControlBukNotify { get; private set; }
 
         /// <summary>
         /// Получает доступ к USB прибора.
@@ -1606,6 +1602,34 @@ namespace Egse.Devices
             }
         }
 
+        public bool IsShowControlBuk
+        {
+            get
+            {
+                return this.isShowControlBuk;
+            }
+
+            private set
+            {
+                this.isShowControlBuk = value;
+                FirePropertyChangedEvent();
+            }
+        }
+
+        public bool IsShowTeleBuk
+        {
+            get
+            {
+                return this.isShowTeleBuk;
+            }
+            
+            private set
+            {
+                this.isShowTeleBuk = value;
+                FirePropertyChangedEvent();
+            }
+        }
+
         /// <summary>
         /// Получает значение текущей скорости по USB.
         /// </summary>
@@ -1694,7 +1718,7 @@ namespace Egse.Devices
             Spacewire4Notify.LoadDataList(Wpf.Properties.Settings.Default.Spw4Cmds);            
             HsiNotify.LoadDataList(Wpf.Properties.Settings.Default.HsiCmds);
             TelemetryNotify.Serialize();
-            HsiNotify.Serialize();    
+            HsiNotify.Serialize();
             Spacewire1Notify.Serialize();
             Spacewire2Notify.Serialize();
             Spacewire3Notify.Serialize();
@@ -1757,7 +1781,7 @@ namespace Egse.Devices
             {
                 Device.CmdSetDeviceTime();
                 Task.Run(() =>
-                {
+                {                    
                     Device.CmdSetDeviceLogicAddr();
                     Spacewire1Notify.SD1SendTime = 1000;
                     RefreshAllControlsValues();
@@ -2315,7 +2339,7 @@ namespace Egse.Devices
                     MemberInfo[] members = FormatterServices.GetSerializableMembers(defaultObj.GetType());
                     foreach (MemberInfo mi in members)
                     {
-                        if (MemberTypes.Field == mi.MemberType)
+                        if (mi.MemberType == MemberTypes.Field)
                         {
                             FieldInfo fi = mi as FieldInfo;
                             FieldInfo ownerField = this.GetType().GetField(fi.Name, BindingFlags.NonPublic | BindingFlags.Instance);
@@ -2593,7 +2617,7 @@ namespace Egse.Devices
             /// <summary>
             /// Сохранять в текстовый лог-файл.
             /// </summary>
-            private bool isSaveTxtData;
+            private bool isSaveTxtData = true;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Hsi" />.
@@ -4556,11 +4580,11 @@ namespace Egse.Devices
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => IsPowerBusk2 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => IsPowerBund1 = 1 == value);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => IsPowerBund2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 6, 1, delegate { }, value => UfesLight1 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 7, 1, delegate { }, value => UfesLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 10, 1, delegate { }, value => UfesLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 9, 1, delegate { }, value => UfesLight2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 9, 1, delegate { }, value => VufesLight2 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 10, 1, delegate { }, value => SdchshLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 7, 1, delegate { }, value => VufesLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 6, 1, delegate { }, value => SdchshLight1 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower1, 20, 1, delegate { }, value => UfesPower1 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower2, 21, 1, delegate { }, value => UfesPower2 = 1 == value, true);
@@ -5186,7 +5210,7 @@ namespace Egse.Devices
                             result = "Некорректный ввод данных! Повторите ввод.";
                         }
                     }
-                    
+
                     return result;
                 }
             }
@@ -5246,6 +5270,720 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire1.SD2DataSize].AddProperty(Global.Spacewire1.SD2DataSize, 0, 16, Device.CmdSpacewire1SPTPControlSD2DataSize, value => SD2DataSize = value);
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.Busy, 3, 1, delegate { }, value => IsRecordBusy = 1 == value);
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.IssuePackage, 0, 1, Device.CmdSpacewire1Record, value => IsIssuePackage = 1 == value);
+            }
+        }
+
+
+        [Serializable]
+        public class ControlBuk : SubNotify, IDataErrorInfo
+        {
+            private ICommand issueCmdGetFrame;
+            private bool spw2IsNeedSaveData;
+            private byte[] spw2Data;
+            private bool spw2IsConfirmExecution;
+            private bool spw2IsConfirmReceipt;
+            private bool spw2IsMakeTeleCmd;
+            private bool isIssueTest;
+            private short spw2Apid;
+            private short threshold;
+            private ICommand issueCmdThreshold;
+            private byte algoType;
+            private byte param1;
+            private byte param3;
+            private byte param2;
+            private ICommand issueCmdGetTele;
+            private byte selDetector;
+            private bool pwrDetector;
+            private ICommand issueCmdSelDetector;
+            private byte selConf;
+            private ICommand issueCmdConfig;
+            private byte modeConf;
+            private byte compressConf;
+            private byte lineRecvConf;
+            private byte lineSendConf;
+            private byte activateConf;
+            private bool exchangeConf;
+            private byte numberShutter;
+            private int shutterTime;
+            private ICommand issueCmdShutter;
+            private byte numberLight;
+            private int lightTime;
+            private ICommand issueCmdLight;
+            private byte[] cmdBytes;
+            private ICommand issueCmdSend;
+            private ICommand issueDataSend;
+            private byte[] dataBytes;
+            private byte lineShutter;
+            public ControlBuk(EgseBukNotify owner)
+                : base(owner)
+            {                
+            }
+
+            public ICommand IssueCmdGetFrame
+            {
+                get
+                {
+                    if (this.issueCmdGetFrame == null)
+                    {
+                        this.issueCmdGetFrame = new RelayCommand(CmdGetFrame, obj => { return true; });
+                    }
+
+                    return this.issueCmdGetFrame;
+                }
+            }
+
+            public ICommand IssueCmdThreshold
+            {
+                get
+                {
+                    if (this.issueCmdThreshold == null)
+                    {
+                        this.issueCmdThreshold = new RelayCommand(CmdThreshold, obj => { return true; });
+                    }
+
+                    return this.issueCmdThreshold;
+                }
+            }
+
+            public ICommand IssueCmdGetTele
+            {
+                get
+                {
+                    if (this.issueCmdGetTele == null)
+                    {
+                        this.issueCmdGetTele = new RelayCommand(CmdGetTele, obj => { return true; });
+                    }
+
+                    return this.issueCmdGetTele;
+                }
+            }
+            public ICommand IssueCmdSelDetector
+            {
+                get
+                {
+                    if (this.issueCmdSelDetector == null)
+                    {
+                        this.issueCmdSelDetector = new RelayCommand(CmdSelDetector, obj => { return true; });
+                    }
+
+                    return this.issueCmdSelDetector;
+                }
+            }
+
+            public ICommand IssueCmdConfig
+            {
+                get
+                {
+                    if (this.issueCmdConfig == null)
+                    {
+                        this.issueCmdConfig = new RelayCommand(CmdConfig, obj => { return true; });
+                    }
+
+                    return this.issueCmdConfig;
+                }
+            }
+
+            public ICommand IssueCmdShutter
+            {
+                get
+                {
+                    if (this.issueCmdShutter == null)
+                    {
+                        this.issueCmdShutter = new RelayCommand(CmdShutter, obj => { return true; });
+                    }
+
+                    return this.issueCmdShutter;
+                }
+            }
+
+            public ICommand IssueCmdLight
+            {
+                get
+                {
+                    if (this.issueCmdLight == null)
+                    {
+                        this.issueCmdLight = new RelayCommand(CmdLight, obj => { return true; });
+                    }
+
+                    return this.issueCmdLight;
+                }
+            }
+
+            public ICommand IssueCmdSend
+            {
+                get
+                {
+                    if (this.issueCmdSend == null)
+                    {
+                        this.issueCmdSend = new RelayCommand(CmdSend, obj => { return true; });
+                    }
+
+                    return this.issueCmdSend;
+                }
+            }
+
+            public ICommand IssueDataSend
+            {
+                get
+                {
+                    if (this.issueDataSend == null)
+                    {
+                        this.issueDataSend = new RelayCommand(DataSend, obj => { return true; });
+                    }
+
+                    return this.issueDataSend;
+                }
+            }
+
+
+            private void DataSend(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                byte[] buf = new byte[250];
+                int i = 0;
+                if (null != DataBytes)
+                {
+                    foreach (byte t in DataBytes)
+                    {
+                        buf[i++] = t;
+                    }
+                }
+                
+                // TODO НЕ ДОПИСАНО!
+                Owner.Spacewire2Notify.Data = new byte[9] { 0, 14, 0, (byte)DataBytes.Length, 0, buf[0], buf[1], buf[2], buf[3] };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdSend(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                byte[] buf = new byte[4] { 0, 0, 0, 0 };
+                int i = 0;
+                if (null != CmdBytes)
+                {
+                    foreach (byte t in CmdBytes)
+                    {
+                        buf[i++] = t;
+                    }
+                }
+                Owner.Spacewire2Notify.Data = new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdLight(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[8] { 0, 12, 0, NumberLight, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)(LightTime) };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdShutter(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[8] { 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)(ShutterTime) };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdConfig(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = false;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                switch (SelConf) 
+                {
+                    case 1:
+                        { 
+                            Owner.Spacewire2Notify.Data = new byte[6] { 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) }; 
+                        }
+                        break;
+                    case 2: 
+                        {
+                            Owner.Spacewire2Notify.Data = new byte[6] { 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) }; 
+                        }
+                        break;
+                   default:
+                        return;
+                }                
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdSelDetector(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[4] { 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdGetTele(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = false;
+                Owner.Spacewire2Notify.IsConfirmReceipt = false;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[2] { 0, 5 };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdGetFrame(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[4] { 0, 1, 0, Convert.ToByte(IsIssueTest) };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+
+            private void CmdThreshold(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = false;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[8] { 0, 4, AlgoType, Convert.ToByte(Threshold >> 8), Convert.ToByte(Threshold), Param1, Param2, Param3 };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void PushSpw2Prop()
+            {
+                this.spw2Apid = Owner.Spacewire2Notify.Apid;
+                this.spw2IsNeedSaveData = Owner.Spacewire2Notify.IsNeedSaveData;
+                this.spw2Data = Owner.Spacewire2Notify.Data;
+                this.spw2IsConfirmExecution = Owner.Spacewire2Notify.IsConfirmExecution;
+                this.spw2IsConfirmReceipt = Owner.Spacewire2Notify.IsConfirmReceipt;
+                this.spw2IsMakeTeleCmd = Owner.Spacewire2Notify.IsMakeTeleCmd;
+            }
+
+            private void PopSpw2Prop()
+            {
+                Owner.Spacewire2Notify.Apid = this.spw2Apid;
+                Owner.Spacewire2Notify.IsNeedSaveData = this.spw2IsNeedSaveData;
+                Owner.Spacewire2Notify.Data = this.spw2Data;
+                Owner.Spacewire2Notify.IsConfirmExecution = this.spw2IsConfirmExecution;
+                Owner.Spacewire2Notify.IsConfirmReceipt = this.spw2IsConfirmReceipt;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = this.spw2IsMakeTeleCmd;
+            }
+
+            public byte AlgoType
+            {
+                get
+                {
+                    return this.algoType;
+                }
+
+                private set
+                {
+                    this.algoType = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte SelConf
+            {
+                get
+                {
+                    return this.selConf;
+                }
+
+                private set
+                {
+                    this.selConf = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte[] DataBytes
+            {
+                get
+                {
+                    return this.dataBytes;
+                }
+
+                private set
+                {
+                    this.dataBytes = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte[] CmdBytes
+            {
+                get
+                {
+                    return this.cmdBytes;
+                }
+
+                private set
+                {
+                    this.cmdBytes = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte SelDetector
+            {
+                get
+                {
+                    return this.selDetector;
+                }
+
+                private set
+                {
+                    this.selDetector = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte CompressConf
+            {
+                get
+                {
+                    return this.compressConf;
+                }
+
+                private set
+                {
+                    this.compressConf = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte LineSendConf
+            {
+                get
+                {
+                    return this.lineSendConf;
+                }
+
+                private set
+                {
+                    this.lineSendConf = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte ActivateConf
+            {
+                get
+                {
+                    return this.activateConf;
+                }
+
+                private set
+                {
+                    this.activateConf = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+            
+            public bool ExchangeConf
+            {
+                get
+                {
+                    return this.exchangeConf;
+                }
+
+                private set
+                {
+                    this.exchangeConf = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte NumberLight
+            {
+                get
+                {
+                    return this.numberLight;
+                }
+
+                private set
+                {
+                    this.numberLight = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public int LightTime
+            {
+                get
+                {
+                    return this.lightTime;
+                }
+
+                private set
+                {
+                    this.lightTime = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte LineShutter
+            {
+                get
+                {
+                    return this.lineShutter;
+                }
+
+                private set
+                {
+                    this.lineShutter = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte NumberShutter
+            {
+                get
+                {
+                    return this.numberShutter;
+                }
+
+                private set
+                {
+                    this.numberShutter = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public int ShutterTime
+            {
+                get
+                {
+                    return this.shutterTime;
+                }
+
+                private set
+                {
+                    this.shutterTime = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte LineRecvConf
+            {
+                get
+                {
+                    return this.lineRecvConf;
+                }
+
+                private set
+                {
+                    this.lineRecvConf = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+            
+
+            public byte ModeConf
+            {
+                get
+                {
+                    return this.modeConf;
+                }
+
+                private set
+                {
+                    this.modeConf = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+            
+
+            public bool PwrDetector
+            {
+                get
+                {
+                    return this.pwrDetector;
+                }
+
+                private set
+                {
+                    this.pwrDetector = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte Param1
+            {
+                get
+                {
+                    return this.param1;
+                }
+
+                private set
+                {
+                    this.param1 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+            public byte Param2
+            {
+                get
+                {
+                    return this.param2;
+                }
+
+                private set
+                {
+                    this.param2 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+            public byte Param3
+            {
+                get
+                {
+                    return this.param3;
+                }
+
+                private set
+                {
+                    this.param3 = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public short Threshold
+            {
+                get
+                {
+                    return this.threshold;
+                }
+
+                private set
+                {
+                    this.threshold = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public bool IsIssueTest
+            {
+                get
+                {
+                    return this.isIssueTest;
+                }
+
+                private set
+                {
+                    this.isIssueTest = value;                   
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public string Error
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="System.String"/> with the specified name.
+            /// </summary>
+            /// <value>
+            /// The <see cref="System.String"/>.
+            /// </value>
+            /// <param name="name">The name.</param>
+            /// <returns>Сообщение об ошибке.</returns>
+            public string this[string name]
+            {
+                get
+                {
+                    string result = null;
+
+                    return result;
+                }
+            }
+
+            /// <summary>
+            /// Serializes the specified object.
+            /// </summary>
+            /// <param name="obj">The object.</param>
+            public override void Serialize(object obj = null)
+            {
+                base.Serialize(this);
+            }
+
+            /// <summary>
+            /// Deserializes this instance.
+            /// </summary>
+            public override void Deserialize()
+            {
+                base.Deserialize();
             }
         }
 
@@ -5567,20 +6305,60 @@ namespace Egse.Devices
                 BukTime2 = 0x0b
             }
 
+            private bool isNeedSaveData = true;
+
+            internal bool IsNeedSaveData
+            {
+                get
+                {
+                    return this.isNeedSaveData;
+                }
+
+                set
+                {
+                    this.isNeedSaveData = value;
+                }
+            }
+
+            public byte[] MakeData()
+            {
+                if ((null != this.Data) && (0 < this.Data.Length))
+                {
+
+                    if (IsNeedSaveData)
+                    {
+                        DataToSaveList();
+                    }
+
+                    if (IsMakeTeleCmd)
+                    {
+                        return this.Data.ToTk((byte)LogicBuk, (byte)LogicBusk, Apid, IsConfirmReceipt, IsConfirmExecution).ToArray();
+                    }
+                    else
+                    {
+                        return this.Data.ToSptp((byte)LogicBuk, (byte)LogicBusk).ToArray();
+                    }
+                }
+                else
+                {
+                    return new byte[] { };
+                }
+            }
+
             /// <summary>
             /// Получает буфер данных для передачи в USB.
             /// </summary>
             /// <value>
             /// Буфер данных.
-            /// </value>
+            /// </value>            
             public byte[] Data
             { 
                 get 
-                { 
-                    return this.data; 
+                {                   
+                    return this.data;
                 }
 
-                private set
+                set
                 {
                     this.data = value;
                 }
@@ -6203,7 +6981,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return IsIssueRMap || IsIssuePackage || !IsConnect || !IsIssueTrans;
+                    return IsIssueRMap || IsIssuePackage || !IsConnect;
                 }
             }
 
@@ -6220,7 +6998,7 @@ namespace Egse.Devices
                     return this.isMakeTeleCmd;
                 }
 
-                private set 
+                set 
                 {
                     this.isMakeTeleCmd = value;
                     FirePropertyChangedEvent();
@@ -6240,7 +7018,7 @@ namespace Egse.Devices
                     return this.isConfirmReceipt;
                 }
 
-                private set
+                set
                 {
                     this.isConfirmReceipt = value;
                     FirePropertyChangedEvent();
@@ -6260,7 +7038,7 @@ namespace Egse.Devices
                     return this.isConfirmExecution;
                 }
 
-                private set
+                set
                 {
                     this.isConfirmExecution = value;
                     FirePropertyChangedEvent();
@@ -6494,7 +7272,7 @@ namespace Egse.Devices
                     return _setApid;
                 }
 
-                private set 
+                set 
                 {
                     _setApid = value;
                     FirePropertyChangedEvent();
@@ -7733,7 +8511,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isRecordBusy || IsIssuePackage || !IsConnect;
+                    return _isRecordBusy || IsIssuePackage;
                 }
 
                 private set 

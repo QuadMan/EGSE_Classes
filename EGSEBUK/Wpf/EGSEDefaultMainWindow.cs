@@ -22,7 +22,7 @@ namespace Egse.Defaults
     using System.Windows.Media;
     using Egse.Constants;
     using Egse.Utilites;
-    using Egse.WPF;
+    using Egse.Wpf;
 
     /// <summary>
     /// Общий класс расширений.

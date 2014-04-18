@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Wpf
-{
-
-
+namespace Wpf {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -133,7 +133,16 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {7} - ICD[{0},{1},{2},0x{3:X},{4},{5},{6}].
+        ///   Looks up a localized string similar to : ({0}d) [{1}] Ошибка: {2}.
+        /// </summary>
+        internal static string stErrorMsgToString {
+            get {
+                return ResourceManager.GetString("stErrorMsgToString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {7} - ICD[V:{0:X},T:{1:X},F:{2:X},A:{3:X},S:{4:X},C:{5}d,{6}d].
         /// </summary>
         internal static string stIcdString {
             get {
@@ -151,7 +160,16 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SPTP[{0},{1},{2},{3}].
+        ///   Looks up a localized string similar to : ({0}d) {1} [{2}].
+        /// </summary>
+        internal static string stSptpMsgToString {
+            get {
+                return ResourceManager.GetString("stSptpMsgToString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SPTP[{0:X},{1:X},{2:X},{3:X}].
         /// </summary>
         internal static string stSptpString {
             get {
@@ -169,7 +187,16 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {6} - TK[{0},{1},{2},{3},{4},{5}].
+        ///   Looks up a localized string similar to : ({0}d) {1} [{2}] {3}.
+        /// </summary>
+        internal static string stTkMsgToString {
+            get {
+                return ResourceManager.GetString("stTkMsgToString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {6} - TK[H:{0:X},P:{1:X},Q:{2:X},S:{3:X},s:{4:X},R:{5:X}].
         /// </summary>
         internal static string stTkString {
             get {
@@ -187,7 +214,16 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {7} - TM[{0},{1},{2},{3},{4},{5},{6}].
+        ///   Looks up a localized string similar to : ({0}d) {1} [{2}] {3}.
+        /// </summary>
+        internal static string stTmMsgToString {
+            get {
+                return ResourceManager.GetString("stTmMsgToString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {7} - TM[R:{0:X},V:{1:X},P:{2:X},S:{3:X},s:{4:X},R:{5:X},{6}].
         /// </summary>
         internal static string stTmString {
             get {

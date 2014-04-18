@@ -18,6 +18,10 @@ namespace Egse.Defaults
     /// </summary>
     public partial class MainWindow : Window
     {
+        private TeleBukWindow winTeleBuk;
+
+        private ControlBukWindow winControlBuk;
+
         /// <summary>
         /// Окно "Монитор USB (исходящий)".
         /// </summary>
@@ -111,6 +115,10 @@ namespace Egse.Defaults
             DataContext = _intfEGSE;
             this.GotLoadAppEvent += new Action(_intfEGSE.LoadAppEvent);
             this.GotSaveAppEvent += new Action(_intfEGSE.SaveAppEvent);
+            winControlBuk = new ControlBukWindow();
+            winControlBuk.Init(_intfEGSE);
+            winTeleBuk = new TeleBukWindow();
+            winTeleBuk.Init(_intfEGSE);            
             winHsi = new HsiWindow();
             winHsi.Init(_intfEGSE);
             winSpacewire = new SpacewireWindow();

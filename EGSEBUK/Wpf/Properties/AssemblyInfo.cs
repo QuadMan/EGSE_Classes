@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ИКИ РАН")]
-[assembly: AssemblyProduct("Wpf.Properties")]
+[assembly: AssemblyProduct("КИА")]
 [assembly: AssemblyCopyright("(с) ИКИ РАН")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

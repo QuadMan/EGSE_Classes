@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Wpf
-{
-
-
+namespace Wpf {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -61,7 +61,7 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Первый аргумент: должен быть {0}.
+        ///   Looks up a localized string similar to 1 арг.: должен быть {0}.
         /// </summary>
         internal static string eArg1 {
             get {
@@ -70,7 +70,7 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Второй аргумент: должен быть {0}.
+        ///   Looks up a localized string similar to 2 арг.: должен быть {0}.
         /// </summary>
         internal static string eArg2 {
             get {
@@ -79,7 +79,7 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Третий аргумент: должен быть {0}.
+        ///   Looks up a localized string similar to 3 арг.: должен быть {0}.
         /// </summary>
         internal static string eArg3 {
             get {
@@ -88,7 +88,7 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Четвертый аргумент: должен быть {0}.
+        ///   Looks up a localized string similar to 4 арг.: должен быть {0}.
         /// </summary>
         internal static string eArg4 {
             get {
@@ -97,11 +97,20 @@ namespace Wpf
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Пятый аргумент: должен быть {0}.
+        ///   Looks up a localized string similar to 5 арг.: должен быть {0}.
         /// </summary>
         internal static string eArg5 {
             get {
                 return ResourceManager.GetString("eArg5", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 арг.: должен быть {0}.
+        /// </summary>
+        internal static string eArg6 {
+            get {
+                return ResourceManager.GetString("eArg6", resourceCulture);
             }
         }
         
@@ -111,6 +120,15 @@ namespace Wpf
         internal static string eParamCount {
             get {
                 return ResourceManager.GetString("eParamCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Обнаружены дублирующие параметры!.
+        /// </summary>
+        internal static string eUnique {
+            get {
+                return ResourceManager.GetString("eUnique", resourceCulture);
             }
         }
     }

@@ -117,28 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="eArg1" xml:space="preserve">
-    <value>1 арг.: должен быть {0}</value>
-  </data>
-  <data name="eArg2" xml:space="preserve">
-    <value>2 арг.: должен быть {0}</value>
-  </data>
-  <data name="eArg3" xml:space="preserve">
-    <value>3 арг.: должен быть {0}</value>
-  </data>
-  <data name="eArg4" xml:space="preserve">
-    <value>4 арг.: должен быть {0}</value>
-  </data>
-  <data name="eArg5" xml:space="preserve">
-    <value>5 арг.: должен быть {0}</value>
-  </data>
-  <data name="eArg6" xml:space="preserve">
-    <value>6 арг.: должен быть {0}</value>
-  </data>
-  <data name="eParamCount" xml:space="preserve">
-    <value>Ошибочное количество параметров команды!</value>
-  </data>
-  <data name="eUnique" xml:space="preserve">
-    <value>Обнаружены дублирующие параметры!</value>
+  <data name="eHostingField" xml:space="preserve">
+    <value>Ошибка в ссылке на Lambda-функцию: hostingField = {0}</value>
   </data>
 </root>

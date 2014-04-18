@@ -1,12 +1,12 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="EgseBehaviorsUIElementAdorner.cs" company="IKI RSSI, laboratory №711">
+// <copyright file="UIElementAdorner.cs" company="IKI RSSI, laboratory №711">
 //     Copyright (c) MSDN Code Gallery. All rights reserved.
 //     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
 // </copyright>
 // <author>Piotr Włodek, Коробейщиков Иван</author>
 //-----------------------------------------------------------------------
 
-namespace Egse.Behaviors
+namespace Egse.Wpf.Behaviors
 {
     using System.Windows;
     using System.Windows.Controls;
@@ -32,7 +32,7 @@ namespace Egse.Behaviors
         public UIElementAdorner(UIElement adornedElement, string label, Style labelStyle)
             : base(adornedElement)
         {
-            uiElement = new TextBlock { Style = labelStyle, Text = label };
+            this.uiElement = new TextBlock { Style = labelStyle, Text = label };
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Egse.Behaviors
         /// </returns>
         protected override Size MeasureOverride(Size constraint)
         {
-            uiElement.Measure(constraint);
+            this.uiElement.Measure(constraint);
             return constraint;
         }
 
@@ -69,7 +69,7 @@ namespace Egse.Behaviors
         /// </returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            uiElement.Arrange(new Rect(finalSize));
+            this.uiElement.Arrange(new Rect(finalSize));
             return finalSize;
         }
 
@@ -82,7 +82,7 @@ namespace Egse.Behaviors
         /// </returns>
         protected override Visual GetVisualChild(int index)
         {
-            return uiElement;
+            return this.uiElement;
         }
     }
 }
