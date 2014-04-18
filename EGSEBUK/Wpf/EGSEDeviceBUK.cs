@@ -1128,9 +1128,11 @@ namespace Egse.Devices
             Spacewire3Notify = new Spacewire3(this);
             Spacewire4Notify = new Spacewire4(this);
             ControlBukNotify = new ControlBuk(this);
+            TeleBukNotify = new TeleBuk(this);
+            TeleKvvNotify = new TeleKvv(this);
 
             UITestNotify = new UITest(this);
-            UITestNotify.UsbLogFile = LogsClass.LogEncoder.FileName;
+            UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
 
             _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
             _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
@@ -1258,6 +1260,10 @@ namespace Egse.Devices
         /// Экземпляр нотификатора.
         /// </value>
         public Spacewire2 Spacewire2Notify { get; private set; }
+
+        public TeleBuk TeleBukNotify { get; private set; }
+
+        public TeleKvv TeleKvvNotify { get; private set; }
 
         /// <summary>
         /// Получает нотификатор spacewire3.
@@ -1796,7 +1802,9 @@ namespace Egse.Devices
             {
                 Device.CmdSetDeviceTime();
                 Task.Run(() =>
-                {                    
+                {
+                    // задержка для получения текущих значений от прибора
+                    Task.Delay(2000);
                     Device.CmdSetDeviceLogicAddr();
                     Spacewire1Notify.SD1SendTime = 1000;
                     RefreshAllControlsValues();
@@ -1881,6 +1889,12 @@ namespace Egse.Devices
                 else if (e is SpacewireObtMsgEventArgs)
                 {
                     Spacewire2Notify.CodeOnboardTime = (e as SpacewireObtMsgEventArgs).ObtInfo.Value;
+                }
+                else if (e is SpacewireTm604MsgEventArgs)
+                {
+                    TeleBukNotify.TmBukData = (e as SpacewireTm604MsgEventArgs).Tm604Info.TmBukInfo;
+                    TeleKvvNotify.TmKvvData = (e as SpacewireTm604MsgEventArgs).Tm604Info.TmKvvInfo;
+                    this.GotSpacewire2Msg(sender, e);
                 }
                 else
                 {
@@ -3677,7 +3691,7 @@ namespace Egse.Devices
         /// <summary>
         /// Вспомогательный нотификатор, используется для самопроверки.
         /// </summary>
-        public class UITest : SubNotify, IDataErrorInfo
+        public class UITest : SubNotify
         {
             /// <summary>
             /// Путь к usb-лог файлу.
@@ -3703,43 +3717,13 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _usbLogFile;
+                    return this._usbLogFile;
                 }
 
                 set 
                 {
-                    _usbLogFile = value;
+                    this._usbLogFile = value;
                     FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает сообщение об ошибке в объекте.
-            /// </summary>
-            /// <returns>An error message indicating what is wrong with this object. The default is an empty string ("").</returns>
-            public string Error
-            {
-                get
-                {
-                    return null;
-                }
-            }
-
-            /// <summary>
-            /// Gets the <see cref="System.String"/> with the specified name.
-            /// </summary>
-            /// <value>
-            /// The <see cref="System.String"/>.
-            /// </value>
-            /// <param name="name">The name.</param>
-            /// <returns>Сообщение об ошибке.</returns>
-            public string this[string name]
-            {
-                get
-                {
-                    string result = null;
-
-                    return result;
                 }
             }
         }
@@ -5288,9 +5272,7 @@ namespace Egse.Devices
             }
         }
 
-
-        [Serializable]
-        public class ControlBuk : SubNotify, IDataErrorInfo
+        public class ControlBuk : SubNotify
         {
             private ICommand issueCmdGetFrame;
             private bool spw2IsNeedSaveData;
@@ -5957,48 +5939,70 @@ namespace Egse.Devices
                     FirePropertyChangedEvent();
                 }
             }
+        }
 
-            public string Error
+        public class TeleKvv : SubNotify
+        {
+            private Egse.Protocols.SpacewireTm604MsgEventArgs.TmKvv tmkvvData = new SpacewireTm604MsgEventArgs.TmKvv();
+
+            public TeleKvv(EgseBukNotify owner)
+                : base(owner)
+            {
+            }
+            internal Egse.Protocols.SpacewireTm604MsgEventArgs.TmKvv TmKvvData
             {
                 get
                 {
-                    return null;
+                    return this.tmkvvData;
+                }
+
+                set
+                {
+                    this.tmkvvData = value;
+                    FirePropertyChangedEvent(string.Empty);
                 }
             }
 
-            /// <summary>
-            /// Gets the <see cref="System.String"/> with the specified name.
-            /// </summary>
-            /// <value>
-            /// The <see cref="System.String"/>.
-            /// </value>
-            /// <param name="name">The name.</param>
-            /// <returns>Сообщение об ошибке.</returns>
-            public string this[string name]
+            public byte[] KvvData
             {
                 get
                 {
-                    string result = null;
+                    return this.tmkvvData.Buffer;
+                }
+            }
+        }
 
-                    return result;
+        public class TeleBuk : SubNotify
+        {
+
+            private Egse.Protocols.SpacewireTm604MsgEventArgs.TmBuk tmbukData = new SpacewireTm604MsgEventArgs.TmBuk();
+            
+            public TeleBuk(EgseBukNotify owner)
+                : base(owner)
+            {
+
+            }
+           
+            internal Egse.Protocols.SpacewireTm604MsgEventArgs.TmBuk TmBukData           
+            {
+                get
+                {
+                    return this.tmbukData;
+                }
+
+                set
+                {
+                    this.tmbukData = value;
+                    FirePropertyChangedEvent(string.Empty);
                 }
             }
 
-            /// <summary>
-            /// Serializes the specified object.
-            /// </summary>
-            /// <param name="obj">The object.</param>
-            public override void Serialize(object obj = null)
+            public byte[] BukData
             {
-                base.Serialize(this);
-            }
-
-            /// <summary>
-            /// Deserializes this instance.
-            /// </summary>
-            public override void Deserialize()
-            {
-                base.Deserialize();
+                get
+                {
+                    return this.tmbukData.Buffer;
+                }
             }
         }
 

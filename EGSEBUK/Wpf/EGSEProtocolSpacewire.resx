@@ -127,10 +127,13 @@
     <value>Размер кадра spacewire icd меньше 10 байт!</value>
   </data>
   <data name="eSmallSpacewireTkData" xml:space="preserve">
-    <value>Размер кадра spacewire icd меньше 16 байт!</value>
+    <value>Размер кадра spacewire tk меньше 16 байт!</value>
+  </data>
+  <data name="eSmallSpacewireTm604Data" xml:space="preserve">
+    <value>Размер кадра spacewire tm604 меньше 790 байт!</value>
   </data>
   <data name="eSmallSpacewireTmData" xml:space="preserve">
-    <value>Размер кадра spacewire icd меньше 16 байт!</value>
+    <value>Размер кадра spacewire tm меньше 22 байт!</value>
   </data>
   <data name="eSpacewireObtData" xml:space="preserve">
     <value>Размер кадра spacewire obt некорректен!</value>

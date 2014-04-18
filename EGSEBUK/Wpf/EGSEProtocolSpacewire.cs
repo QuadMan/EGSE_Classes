@@ -138,6 +138,10 @@ namespace Egse.Protocols
                         {
                             pack = new SpacewireTkMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
                         }
+                        else if (SpacewireTm604MsgEventArgs.Test(arr))
+                        {
+                            pack = new SpacewireTm604MsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
+                        }
                         else if (SpacewireTmMsgEventArgs.Test(arr))
                         {
                             pack = new SpacewireTmMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
@@ -907,7 +911,7 @@ namespace Egse.Protocols
         /// <value>
         /// Агрегат доступа к заголовку tm сообщения.
         /// </value>
-        public Tm TmInfo
+        public virtual Tm TmInfo
         {
             get
             {
@@ -1240,6 +1244,173 @@ namespace Egse.Protocols
             public string ToString(bool extended)
             {
                 return extended ? this.ToString() : string.Format(Resource.Get(@"stTmString"), BitReserve, Version, SubBitReserve, Service, SubService, Reserve, Time, IcdInfo.ToString(extended));
+            }
+        }
+    }
+
+    public class SpacewireTm604MsgEventArgs : SpacewireTmMsgEventArgs
+    {
+        
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct TmBuk
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+            private byte[] buf;
+
+            public byte[] Buffer
+            {
+                get
+                {
+                    if (null == this.buf)
+                    {
+                        return new byte[256];
+                    }
+
+                    return this.buf;
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct TmKvv
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
+            private byte[] buf;
+
+            public byte[] Buffer
+            {
+                get
+                {
+                    if (null == this.buf)
+                    {
+                        return new byte[512];
+                    }
+
+                    return this.buf;                    
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct Tm604
+        {
+            private Tm tmHeader;
+
+            private TmKvv tmkvvHeader;
+
+            private TmBuk tmbukHeader;
+
+            public TmBuk TmBukInfo
+            {
+                get
+                {
+                    return this.tmbukHeader;
+                }
+            }
+
+            public TmKvv TmKvvInfo
+            {
+                get
+                {
+                    return this.tmkvvHeader;
+                }
+            }
+
+            internal Tm TmInfo
+            {
+                get
+                {
+                    return this.tmHeader;
+                }
+
+                set
+                {
+                    this.tmHeader = value;
+                }
+            }
+
+            public override string ToString()
+            {
+                return string.Empty;
+            }
+
+            public string ToString(bool extended)
+            {
+                return extended ? this.ToString() : string.Empty;
+            }
+        }
+        public SpacewireTm604MsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data, time1, time2, error)
+        {
+            if (790 > data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTm604Data"));
+            }
+
+            try
+            {
+                this.msgInfo = Converter.MarshalTo<Tm604>(data);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+        private Tm604 msgInfo;
+
+        public static new bool Test(byte[] data)
+        {
+            if (null != data ? 9 < data.Length : false)
+            {
+                byte[] raw = data.Skip(4).Take(4).ToArray();
+                BitVector32 head = new BitVector32(ConvertToInt(raw));
+                Icd icdInfo = new Icd();
+                icdInfo.Header = head;
+                return icdInfo.Version == 0
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
+                       && icdInfo.Apid == 0x604;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public Tm604 Tm604Info
+        {
+            get
+            {
+                return this.msgInfo;
+            }
+        }
+
+        public override byte[] ToArray()
+        {
+            return base.ToArray();
+        }
+
+        public override Tm TmInfo
+        {
+            get
+            {
+                return this.Tm604Info.TmInfo;
+            }
+        }
+
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return this.TmInfo.IcdInfo;
             }
         }
     }

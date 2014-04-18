@@ -517,6 +517,26 @@ namespace Egse.Defaults
         }
     }
 
+
+    public class ReverseShortConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((null == values) || (2 != values.Length))
+                return null;
+
+            if ((null == values[0] as byte?) || (null == values[1] as byte? ))
+                return null;
+
+            return ((values[0] as byte?) << 8) | (values[1] as byte?);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// Конвертор enum to bool для wpf.
     /// </summary>

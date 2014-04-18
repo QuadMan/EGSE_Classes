@@ -1,15 +1,88 @@
 ﻿<Window x:Class="Egse.Defaults.TeleBukWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:l="clr-namespace:Egse.Defaults"
-        xmlns:d="clr-namespace:Egse.Devices" 
         xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
+        xmlns:d="clr-namespace:Egse.Devices"
+        xmlns:l="clr-namespace:Egse.Defaults"
+        Title="Телеметрия БУК"
+        Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
-        Closing="Window_Closing"
-        Title="Телеметрия БУК"
-        Visibility="{Binding IsShowTeleBuk, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
-    <Grid>
-        
-    </Grid>
+        Visibility="{Binding IsShowTeleBuk,
+                             Converter={StaticResource BooleanToVisibilityConverter},
+                             Mode=TwoWay}">
+    <ScrollViewer>
+        <Grid x:Name="GridBuk"
+              Margin="4"
+              Background="{StaticResource BackBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Наименование параметра" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Номер версии прошивки ПЛИС" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Номер версии программы процессора" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Логический адрес прибора БУК" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Логический адрес прибора БУСК1" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Логический адрес прибора БУСК2" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Логический адрес прибора БУНД1" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Логический адрес прибора БУНД2" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Установки SpW с БМ-4" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Адрес подключенного прибора" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Ошибки КБВ" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="КБВ 31-24" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="КБВ 17-24" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="КБВ 8-16" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="КБВ 0-7" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Установки SpW с детекторами" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Параметры КВВ" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Статус питания" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Датчики затвора" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Текущий режим работы" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Текущий активный детектор" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Тип алгоритма для ЗНЩ" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Параметры алгоритма" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Порог ЗНЩ 15-8" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Порог ЗНЩ 7-0" />
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Телеметрия БУК" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[1], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="BukData[2]" />
+                            <Binding Path="BukData[3]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[5], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[7], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[9], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[11], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[13], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[15], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[17], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[19], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[22], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[23], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[24], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[25], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[27], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[29], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[31], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[33], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[34], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[35], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[36], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[37], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[38], StringFormat={}{0:X2}h}" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[39], StringFormat={}{0:X2}h}" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Window>

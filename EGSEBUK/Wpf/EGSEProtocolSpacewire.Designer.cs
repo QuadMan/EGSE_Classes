@@ -88,7 +88,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Размер кадра spacewire icd меньше 16 байт!.
+        ///   Looks up a localized string similar to Размер кадра spacewire tk меньше 16 байт!.
         /// </summary>
         internal static string eSmallSpacewireTkData {
             get {
@@ -97,7 +97,16 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Размер кадра spacewire icd меньше 16 байт!.
+        ///   Looks up a localized string similar to Размер кадра spacewire tm604 меньше 790 байт!.
+        /// </summary>
+        internal static string eSmallSpacewireTm604Data {
+            get {
+                return ResourceManager.GetString("eSmallSpacewireTm604Data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Размер кадра spacewire tm меньше 22 байт!.
         /// </summary>
         internal static string eSmallSpacewireTmData {
             get {

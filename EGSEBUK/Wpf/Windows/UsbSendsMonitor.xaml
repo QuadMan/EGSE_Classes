@@ -1,73 +1,80 @@
 ﻿<Window x:Class="Egse.Defaults.UsbSendsMonitor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
-        xmlns:d="clr-namespace:Egse.Devices" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="clr-namespace:Egse.Devices"
         Title="Монитор USB (исходящий)"
+        Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
-        Closing="Window_Closing"
-        Visibility="{Binding IsShowUsbSendsMonitor, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+        Visibility="{Binding IsShowUsbSendsMonitor,
+                             Converter={StaticResource BooleanToVisibilityConverter},
+                             Mode=TwoWay}">
     <Grid x:Name="GridUsbSendsMonitor"
-          Background="{StaticResource BackBrush}"
-          Margin="4">
+          Margin="4"
+          Background="{StaticResource BackBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBox IsReadOnly="True"
-            Template="{StaticResource FilePreviewer}"
-            Style="{StaticResource TextBoxInError}"                    
-            Text="{Binding UsbLogFile, ValidatesOnDataErrors=True}" IsTabStop="False"/>
+                 IsTabStop="False"
+                 Style="{StaticResource TextBoxInError}"
+                 Template="{StaticResource FilePreviewer}"
+                 Text="{Binding UsbLogFile,
+                                ValidatesOnDataErrors=True}" />
         <Button Grid.Row="1"
-				Content="Обновить"
-				 Click="Button_Click_2" TabIndex="1"/>
+                Click="Button_Click_2"
+                Content="Обновить"
+                TabIndex="1" />
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
                 <RowDefinition />
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-        		Content="Содержимое файла"
-        		Style="{StaticResource FlatHeader}"/>
-            <ListBox x:Name="Monitor" 
-        		Grid.Row="1"
-        		Grid.ColumnSpan="2"
-        		Margin="1"
-        		BorderThickness="0"/>
-            <Button Grid.Row="2"  
-        		Grid.ColumnSpan="2"
-                Content="Очистить"
-        		Click="Button_Click" TabIndex="2"/>
+                   Content="Содержимое файла"
+                   Style="{StaticResource FlatHeader}" />
+            <ListBox x:Name="Monitor"
+                     Grid.Row="1"
+                     Grid.ColumnSpan="2"
+                     Margin="1"
+                     BorderThickness="0" />
+            <Button Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    Click="Button_Click"
+                    Content="Очистить"
+                    TabIndex="2" />
         </Grid>
         <Grid Grid.Row="3">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
                 <RowDefinition />
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-        		Content="Последние изменения"
-        		Style="{StaticResource FlatHeader}"/>
-            <ListBox x:Name="LastOperationMonitor" 
-        		Grid.Row="1"
-        		Grid.ColumnSpan="2"
-        		Margin="1"
-        		BorderThickness="0"/>
-            <Button Grid.Row="2"  
-        		Grid.ColumnSpan="2"
-                Content="Очистить"
-        		Click="Button_Click_1" TabIndex="3"/>
+                   Content="Последние изменения"
+                   Style="{StaticResource FlatHeader}" />
+            <ListBox x:Name="LastOperationMonitor"
+                     Grid.Row="1"
+                     Grid.ColumnSpan="2"
+                     Margin="1"
+                     BorderThickness="0" />
+            <Button Grid.Row="2"
+                    Grid.ColumnSpan="2"
+                    Click="Button_Click_1"
+                    Content="Очистить"
+                    TabIndex="3" />
         </Grid>
     </Grid>
 </Window>

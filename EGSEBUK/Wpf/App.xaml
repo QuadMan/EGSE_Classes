@@ -13,6 +13,7 @@
         <l:BytesToStrConverter x:Key="BytesToStrConverter" />
         <l:ShortToStrConverter x:Key="ShortToStrConverter" />
         <l:EnumToBoolConverter x:Key="EnumToBoolConverter" />
+        <l:ReverseShortConverter x:Key="ReverseShortConverter" />
         <SolidColorBrush x:Key="TextBrush" Color="White" />
         <SolidColorBrush x:Key="OverBrush" Color="LightBlue" />
         <SolidColorBrush x:Key="ClickBrush" Color="White" />
@@ -76,6 +77,12 @@
                     <Setter Property="ToolTip" Value="{Binding (Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}" />
                 </Trigger>
             </Style.Triggers>
+        </Style>
+        <Style x:Key="FormattedTextBlock" TargetType="{x:Type TextBlock}">
+            <Setter Property="Background" Value="{StaticResource TextBrush}" />
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
             <Setter Property="AcceptsReturn" Value="True" />

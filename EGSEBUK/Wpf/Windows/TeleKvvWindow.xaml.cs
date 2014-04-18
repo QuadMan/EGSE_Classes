@@ -21,6 +21,7 @@
         public void Init(EgseBukNotify intfEGSE)
         {
             this.intfEGSE = intfEGSE;
+            this.GridKvv.DataContext = this.intfEGSE.TeleKvvNotify;
             DataContext = this.intfEGSE;
         }
 

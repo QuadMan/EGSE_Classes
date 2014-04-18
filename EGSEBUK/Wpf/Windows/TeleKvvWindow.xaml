@@ -1,15 +1,2226 @@
 ﻿<Window x:Class="Egse.Defaults.TeleKvvWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:l="clr-namespace:Egse.Defaults"
-        xmlns:d="clr-namespace:Egse.Devices"
         xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
+        xmlns:d="clr-namespace:Egse.Devices"
+        xmlns:l="clr-namespace:Egse.Defaults"
+        Title="Телеметрия КВВ"
+        Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
-        Closing="Window_Closing"
-        Title="Телеметрия КВВ"
-        Visibility="{Binding IsShowTeleKvv, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
-    <Grid>
-        
-    </Grid>
+        Visibility="{Binding IsShowTeleKvv,
+                             Converter={StaticResource BooleanToVisibilityConverter},
+                             Mode=TwoWay}">
+    <ScrollViewer>
+        <Grid x:Name="GridKvv"
+              Margin="4"
+              Background="{StaticResource BackBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Наименование параметра" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Адресная метка" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Номер версии прошивки" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM1" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM2" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM3" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM4" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM5" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM6" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM7" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM8" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM9" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM10" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM11" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM12" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM13" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM14" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM15" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM16" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 01h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 02h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 03h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 04h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 05h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 06h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 07h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 08h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 09h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 0ah" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 0bh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 0ch" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 0dh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 0eh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 0fh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 10h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 11h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 12h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 13h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 14h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 15h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 16h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 17h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 18h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 19h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 1ah" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 1bh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 1ch" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 1dh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 1eh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 1fh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 20h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 21h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 22h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 23h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 24h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 25h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 26h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 27h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 28h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 29h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 2ah" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 2bh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 2ch" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 2dh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 2eh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 2fh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 30h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 31h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 32h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 33h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 34h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 35h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 36h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 37h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 38h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 39h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 3ah" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 3bh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 3ch" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 3dh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 3eh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 3fh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 40h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 41h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 42h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 43h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 44h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 45h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 46h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 47h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 48h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 49h" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 4ah" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 4bh" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Регистр по адресу 4ch" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="current_CTRL_MODE" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="current_PWM_PERIOD" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[1]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[2]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[3]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[4]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[5]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[6]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[7]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[8]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[9]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[10]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[11]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[12]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[13]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[14]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[15]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="X_temp[16]" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="HEATER_ADD" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM17" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM18" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM19" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM20" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM21" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM22" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM23" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM24" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM25" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM26" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM27" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM28" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM29" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM30" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM31" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM32" />
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Телеметрия КВВ1" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:X2}h">
+                            <Binding Path="KvvData[0]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:X2}h">
+                            <Binding Path="KvvData[1]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[2]" />
+                            <Binding Path="KvvData[3]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[4]" />
+                            <Binding Path="KvvData[5]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[6]" />
+                            <Binding Path="KvvData[7]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[8]" />
+                            <Binding Path="KvvData[9]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[10]" />
+                            <Binding Path="KvvData[11]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[12]" />
+                            <Binding Path="KvvData[13]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[14]" />
+                            <Binding Path="KvvData[15]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[16]" />
+                            <Binding Path="KvvData[17]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[18]" />
+                            <Binding Path="KvvData[19]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[20]" />
+                            <Binding Path="KvvData[21]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[22]" />
+                            <Binding Path="KvvData[23]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[24]" />
+                            <Binding Path="KvvData[25]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[26]" />
+                            <Binding Path="KvvData[27]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[28]" />
+                            <Binding Path="KvvData[29]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[30]" />
+                            <Binding Path="KvvData[31]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[32]" />
+                            <Binding Path="KvvData[33]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[34]" />
+                            <Binding Path="KvvData[35]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[36]" />
+                            <Binding Path="KvvData[37]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[38]" />
+                            <Binding Path="KvvData[39]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[40]" />
+                            <Binding Path="KvvData[41]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[42]" />
+                            <Binding Path="KvvData[43]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[44]" />
+                            <Binding Path="KvvData[45]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[46]" />
+                            <Binding Path="KvvData[47]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[48]" />
+                            <Binding Path="KvvData[49]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[50]" />
+                            <Binding Path="KvvData[51]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[52]" />
+                            <Binding Path="KvvData[53]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[54]" />
+                            <Binding Path="KvvData[55]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[56]" />
+                            <Binding Path="KvvData[57]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[58]" />
+                            <Binding Path="KvvData[59]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[60]" />
+                            <Binding Path="KvvData[61]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[62]" />
+                            <Binding Path="KvvData[63]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[64]" />
+                            <Binding Path="KvvData[65]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[66]" />
+                            <Binding Path="KvvData[67]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[68]" />
+                            <Binding Path="KvvData[69]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[70]" />
+                            <Binding Path="KvvData[71]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[72]" />
+                            <Binding Path="KvvData[73]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[74]" />
+                            <Binding Path="KvvData[75]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[76]" />
+                            <Binding Path="KvvData[77]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[78]" />
+                            <Binding Path="KvvData[79]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[80]" />
+                            <Binding Path="KvvData[81]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[82]" />
+                            <Binding Path="KvvData[83]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[84]" />
+                            <Binding Path="KvvData[85]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[86]" />
+                            <Binding Path="KvvData[87]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[88]" />
+                            <Binding Path="KvvData[89]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[90]" />
+                            <Binding Path="KvvData[91]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[92]" />
+                            <Binding Path="KvvData[93]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[94]" />
+                            <Binding Path="KvvData[95]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[96]" />
+                            <Binding Path="KvvData[97]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[98]" />
+                            <Binding Path="KvvData[99]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[100]" />
+                            <Binding Path="KvvData[101]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[102]" />
+                            <Binding Path="KvvData[103]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[104]" />
+                            <Binding Path="KvvData[105]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[106]" />
+                            <Binding Path="KvvData[107]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[108]" />
+                            <Binding Path="KvvData[109]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[110]" />
+                            <Binding Path="KvvData[111]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[112]" />
+                            <Binding Path="KvvData[113]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[114]" />
+                            <Binding Path="KvvData[115]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[116]" />
+                            <Binding Path="KvvData[117]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[118]" />
+                            <Binding Path="KvvData[119]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[120]" />
+                            <Binding Path="KvvData[121]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[122]" />
+                            <Binding Path="KvvData[123]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[124]" />
+                            <Binding Path="KvvData[125]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[126]" />
+                            <Binding Path="KvvData[127]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[128]" />
+                            <Binding Path="KvvData[129]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[130]" />
+                            <Binding Path="KvvData[131]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[132]" />
+                            <Binding Path="KvvData[133]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[134]" />
+                            <Binding Path="KvvData[135]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[136]" />
+                            <Binding Path="KvvData[137]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[138]" />
+                            <Binding Path="KvvData[139]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[140]" />
+                            <Binding Path="KvvData[141]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[142]" />
+                            <Binding Path="KvvData[143]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[144]" />
+                            <Binding Path="KvvData[145]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[146]" />
+                            <Binding Path="KvvData[147]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[148]" />
+                            <Binding Path="KvvData[149]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[150]" />
+                            <Binding Path="KvvData[151]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[152]" />
+                            <Binding Path="KvvData[153]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[154]" />
+                            <Binding Path="KvvData[155]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[156]" />
+                            <Binding Path="KvvData[157]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[158]" />
+                            <Binding Path="KvvData[159]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[160]" />
+                            <Binding Path="KvvData[161]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[162]" />
+                            <Binding Path="KvvData[163]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[164]" />
+                            <Binding Path="KvvData[165]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[166]" />
+                            <Binding Path="KvvData[167]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[168]" />
+                            <Binding Path="KvvData[169]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[170]" />
+                            <Binding Path="KvvData[171]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[172]" />
+                            <Binding Path="KvvData[173]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[174]" />
+                            <Binding Path="KvvData[175]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[176]" />
+                            <Binding Path="KvvData[177]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[178]" />
+                            <Binding Path="KvvData[179]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[180]" />
+                            <Binding Path="KvvData[181]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[182]" />
+                            <Binding Path="KvvData[183]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[184]" />
+                            <Binding Path="KvvData[185]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[186]" />
+                            <Binding Path="KvvData[187]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[188]" />
+                            <Binding Path="KvvData[189]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[190]" />
+                            <Binding Path="KvvData[191]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[192]" />
+                            <Binding Path="KvvData[193]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[194]" />
+                            <Binding Path="KvvData[195]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[196]" />
+                            <Binding Path="KvvData[197]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[198]" />
+                            <Binding Path="KvvData[199]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[200]" />
+                            <Binding Path="KvvData[201]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[202]" />
+                            <Binding Path="KvvData[203]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[204]" />
+                            <Binding Path="KvvData[205]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[206]" />
+                            <Binding Path="KvvData[207]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[208]" />
+                            <Binding Path="KvvData[209]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[210]" />
+                            <Binding Path="KvvData[211]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[212]" />
+                            <Binding Path="KvvData[213]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[214]" />
+                            <Binding Path="KvvData[215]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[216]" />
+                            <Binding Path="KvvData[217]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[218]" />
+                            <Binding Path="KvvData[219]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[220]" />
+                            <Binding Path="KvvData[221]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[222]" />
+                            <Binding Path="KvvData[223]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[224]" />
+                            <Binding Path="KvvData[225]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[226]" />
+                            <Binding Path="KvvData[227]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[228]" />
+                            <Binding Path="KvvData[229]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[230]" />
+                            <Binding Path="KvvData[231]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[232]" />
+                            <Binding Path="KvvData[233]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[234]" />
+                            <Binding Path="KvvData[235]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[236]" />
+                            <Binding Path="KvvData[237]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[238]" />
+                            <Binding Path="KvvData[239]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[240]" />
+                            <Binding Path="KvvData[241]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[242]" />
+                            <Binding Path="KvvData[243]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[244]" />
+                            <Binding Path="KvvData[245]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[246]" />
+                            <Binding Path="KvvData[247]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[248]" />
+                            <Binding Path="KvvData[249]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[250]" />
+                            <Binding Path="KvvData[251]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[252]" />
+                            <Binding Path="KvvData[253]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[254]" />
+                            <Binding Path="KvvData[255]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Телеметрия КВВ2" />
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:X2}h">
+                            <Binding Path="KvvData[256]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0:X2}h">
+                            <Binding Path="KvvData[257]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[258]" />
+                            <Binding Path="KvvData[259]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[260]" />
+                            <Binding Path="KvvData[261]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[262]" />
+                            <Binding Path="KvvData[263]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[264]" />
+                            <Binding Path="KvvData[265]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[266]" />
+                            <Binding Path="KvvData[267]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[268]" />
+                            <Binding Path="KvvData[269]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[270]" />
+                            <Binding Path="KvvData[271]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[272]" />
+                            <Binding Path="KvvData[273]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[274]" />
+                            <Binding Path="KvvData[275]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[276]" />
+                            <Binding Path="KvvData[277]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[278]" />
+                            <Binding Path="KvvData[279]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[280]" />
+                            <Binding Path="KvvData[281]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[282]" />
+                            <Binding Path="KvvData[283]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[284]" />
+                            <Binding Path="KvvData[285]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[286]" />
+                            <Binding Path="KvvData[287]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[288]" />
+                            <Binding Path="KvvData[289]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[290]" />
+                            <Binding Path="KvvData[291]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[292]" />
+                            <Binding Path="KvvData[293]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[294]" />
+                            <Binding Path="KvvData[295]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[296]" />
+                            <Binding Path="KvvData[297]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[298]" />
+                            <Binding Path="KvvData[299]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[300]" />
+                            <Binding Path="KvvData[301]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[302]" />
+                            <Binding Path="KvvData[303]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[304]" />
+                            <Binding Path="KvvData[305]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[306]" />
+                            <Binding Path="KvvData[307]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[308]" />
+                            <Binding Path="KvvData[309]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[310]" />
+                            <Binding Path="KvvData[311]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[312]" />
+                            <Binding Path="KvvData[313]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[314]" />
+                            <Binding Path="KvvData[315]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[316]" />
+                            <Binding Path="KvvData[317]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[318]" />
+                            <Binding Path="KvvData[319]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[320]" />
+                            <Binding Path="KvvData[321]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[322]" />
+                            <Binding Path="KvvData[323]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[324]" />
+                            <Binding Path="KvvData[325]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[326]" />
+                            <Binding Path="KvvData[327]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[328]" />
+                            <Binding Path="KvvData[329]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[330]" />
+                            <Binding Path="KvvData[331]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[332]" />
+                            <Binding Path="KvvData[333]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[334]" />
+                            <Binding Path="KvvData[335]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[336]" />
+                            <Binding Path="KvvData[337]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[338]" />
+                            <Binding Path="KvvData[339]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[340]" />
+                            <Binding Path="KvvData[341]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[342]" />
+                            <Binding Path="KvvData[343]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[344]" />
+                            <Binding Path="KvvData[345]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[346]" />
+                            <Binding Path="KvvData[347]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[348]" />
+                            <Binding Path="KvvData[349]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[350]" />
+                            <Binding Path="KvvData[351]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[352]" />
+                            <Binding Path="KvvData[353]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[354]" />
+                            <Binding Path="KvvData[355]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[356]" />
+                            <Binding Path="KvvData[357]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[358]" />
+                            <Binding Path="KvvData[359]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[360]" />
+                            <Binding Path="KvvData[361]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[362]" />
+                            <Binding Path="KvvData[363]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[364]" />
+                            <Binding Path="KvvData[365]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[366]" />
+                            <Binding Path="KvvData[367]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[368]" />
+                            <Binding Path="KvvData[369]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[370]" />
+                            <Binding Path="KvvData[371]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[372]" />
+                            <Binding Path="KvvData[373]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[374]" />
+                            <Binding Path="KvvData[375]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[376]" />
+                            <Binding Path="KvvData[377]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[378]" />
+                            <Binding Path="KvvData[379]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[380]" />
+                            <Binding Path="KvvData[381]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[382]" />
+                            <Binding Path="KvvData[383]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[384]" />
+                            <Binding Path="KvvData[385]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[386]" />
+                            <Binding Path="KvvData[387]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[388]" />
+                            <Binding Path="KvvData[389]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[390]" />
+                            <Binding Path="KvvData[391]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[392]" />
+                            <Binding Path="KvvData[393]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[394]" />
+                            <Binding Path="KvvData[395]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[396]" />
+                            <Binding Path="KvvData[397]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[398]" />
+                            <Binding Path="KvvData[399]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[400]" />
+                            <Binding Path="KvvData[401]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[402]" />
+                            <Binding Path="KvvData[403]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[404]" />
+                            <Binding Path="KvvData[405]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[406]" />
+                            <Binding Path="KvvData[407]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[408]" />
+                            <Binding Path="KvvData[409]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[410]" />
+                            <Binding Path="KvvData[411]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[412]" />
+                            <Binding Path="KvvData[413]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[414]" />
+                            <Binding Path="KvvData[415]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[416]" />
+                            <Binding Path="KvvData[417]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[418]" />
+                            <Binding Path="KvvData[419]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[420]" />
+                            <Binding Path="KvvData[421]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[422]" />
+                            <Binding Path="KvvData[423]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[424]" />
+                            <Binding Path="KvvData[425]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[426]" />
+                            <Binding Path="KvvData[427]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[428]" />
+                            <Binding Path="KvvData[429]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[430]" />
+                            <Binding Path="KvvData[431]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[432]" />
+                            <Binding Path="KvvData[433]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[434]" />
+                            <Binding Path="KvvData[435]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[436]" />
+                            <Binding Path="KvvData[437]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[438]" />
+                            <Binding Path="KvvData[439]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[440]" />
+                            <Binding Path="KvvData[441]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[442]" />
+                            <Binding Path="KvvData[443]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[444]" />
+                            <Binding Path="KvvData[445]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[446]" />
+                            <Binding Path="KvvData[447]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[448]" />
+                            <Binding Path="KvvData[449]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[450]" />
+                            <Binding Path="KvvData[451]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[452]" />
+                            <Binding Path="KvvData[453]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[454]" />
+                            <Binding Path="KvvData[455]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[456]" />
+                            <Binding Path="KvvData[457]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[458]" />
+                            <Binding Path="KvvData[459]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[460]" />
+                            <Binding Path="KvvData[461]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[462]" />
+                            <Binding Path="KvvData[463]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[464]" />
+                            <Binding Path="KvvData[465]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[466]" />
+                            <Binding Path="KvvData[467]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[468]" />
+                            <Binding Path="KvvData[469]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[470]" />
+                            <Binding Path="KvvData[471]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[472]" />
+                            <Binding Path="KvvData[473]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[474]" />
+                            <Binding Path="KvvData[475]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[476]" />
+                            <Binding Path="KvvData[477]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[478]" />
+                            <Binding Path="KvvData[479]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[480]" />
+                            <Binding Path="KvvData[481]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[482]" />
+                            <Binding Path="KvvData[483]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[484]" />
+                            <Binding Path="KvvData[485]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[486]" />
+                            <Binding Path="KvvData[487]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[488]" />
+                            <Binding Path="KvvData[489]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[490]" />
+                            <Binding Path="KvvData[491]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[492]" />
+                            <Binding Path="KvvData[493]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[494]" />
+                            <Binding Path="KvvData[495]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[496]" />
+                            <Binding Path="KvvData[497]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[498]" />
+                            <Binding Path="KvvData[499]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[500]" />
+                            <Binding Path="KvvData[501]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[502]" />
+                            <Binding Path="KvvData[503]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[504]" />
+                            <Binding Path="KvvData[505]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[506]" />
+                            <Binding Path="KvvData[507]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[508]" />
+                            <Binding Path="KvvData[509]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource ReverseShortConverter}" StringFormat="{}{0:X4}h">
+                            <Binding Path="KvvData[510]" />
+                            <Binding Path="KvvData[511]" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Window>
