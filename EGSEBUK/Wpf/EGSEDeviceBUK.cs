@@ -5313,6 +5313,7 @@ namespace Egse.Devices
             private ICommand issueCmdSend;
             private ICommand issueDataSend;
             private byte[] dataBytes;
+            private byte lineShutter;
             public ControlBuk(EgseBukNotify owner)
                 : base(owner)
             {                
@@ -5511,7 +5512,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = true;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[8] { 0, 11, 0, NumberShutter, 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)(ShutterTime) };
+                Owner.Spacewire2Notify.Data = new byte[8] { 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)(ShutterTime) };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
@@ -5784,6 +5785,20 @@ namespace Egse.Devices
                 private set
                 {
                     this.lightTime = value;
+                    FirePropertyChangedEvent();
+                }
+            }
+
+            public byte LineShutter
+            {
+                get
+                {
+                    return this.lineShutter;
+                }
+
+                private set
+                {
+                    this.lineShutter = value;
                     FirePropertyChangedEvent();
                 }
             }

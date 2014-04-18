@@ -1,207 +1,224 @@
-﻿<Window
+﻿<Window x:Class="Egse.Defaults.ControlBukWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:l="clr-namespace:Egse.Defaults"
-        xmlns:d="clr-namespace:Egse.Devices" 
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
-        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Egse.Defaults.ControlBukWindow"
+        xmlns:d="clr-namespace:Egse.Devices"
+        xmlns:l="clr-namespace:Egse.Defaults"
+        Title="Команды управления БУК"
+        Height="800"
+        Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
-        Closing="Window_Closing"
-        Height="800"
-        Title="Команды управления БУК"
-        Visibility="{Binding IsShowControlBuk, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+        Visibility="{Binding IsShowControlBuk,
+                             Converter={StaticResource BooleanToVisibilityConverter},
+                             Mode=TwoWay}">
     <StackPanel x:Name="GridControlBuk"
-        Background="{StaticResource BackBrush}"
-        Margin="4">
+                Margin="4"
+                Background="{StaticResource BackBrush}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label Content="Команда" Grid.ColumnSpan="2"
-                Template="{StaticResource FlatLabel}"/>
-            <Label Content="Настройки" Grid.Column="2" Grid.ColumnSpan="6"
-                Template="{StaticResource FlatLabel}"/>
-
-
-            <Label Content="Управление" Grid.Column="8"
-                Template="{StaticResource FlatLabel}"/>
+            <Label Grid.ColumnSpan="2"
+                   Content="Команда"
+                   Template="{StaticResource FlatLabel}" />
+            <Label Grid.Column="2"
+                   Grid.ColumnSpan="6"
+                   Content="Настройки"
+                   Template="{StaticResource FlatLabel}" />
+            <Label Grid.Column="8"
+                   Content="Управление"
+                   Template="{StaticResource FlatLabel}" />
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Получить кадр"
-                Style="{StaticResource FlatHeader}"/>
-            <Label Grid.Column="2" Grid.ColumnSpan="6"
-                Template="{StaticResource FlatLabel}"/>
-            <CheckBox Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center"
-                IsChecked="{Binding IsIssueTest}"
-                Content="Запрашивать кадры в тестовом режиме"/>
-
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueGetFrame}" TabIndex="6"/>
+                   Content="Получить кадр"
+                   Style="{StaticResource FlatHeader}" />
+            <Label Grid.Column="2"
+                   Grid.ColumnSpan="6"
+                   Template="{StaticResource FlatLabel}" />
+            <CheckBox Grid.Column="2"
+                      Grid.ColumnSpan="6"
+                      VerticalAlignment="Center"
+                      Content="Запрашивать кадры в тестовом режиме"
+                      IsChecked="{Binding IsIssueTest}" />
+            <Button Grid.Column="8"
+                    Command="{Binding IssueGetFrame}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Порог для определения ЗНЩ"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                   Content="Порог для определения ЗНЩ"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal">
                 <GroupBox Header="Тип алгоритма">
-                    <TextBox Text="{Binding AlgoType}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding AlgoType}" />
                 </GroupBox>
                 <GroupBox Header="Порог для определения ЗНЩ">
-                    <TextBox Text="{Binding Threshold}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding Threshold}" />
                 </GroupBox>
                 <GroupBox Header="Параметр 1">
-                    <TextBox Text="{Binding Param1}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding Param1}" />
                 </GroupBox>
                 <GroupBox Header="Параметр 2">
-                    <TextBox Text="{Binding Param2}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding Param2}" />
                 </GroupBox>
                 <GroupBox Header="Параметр 3">
-                    <TextBox Text="{Binding Param3}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding Param3}" />
                 </GroupBox>
             </StackPanel>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueCmdThreshold}" TabIndex="6"/>
+            <Button Grid.Column="8"
+                    Command="{Binding IssueCmdThreshold}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Получить телеметрию БУК"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White"/>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueCmdGetTele}" TabIndex="6"/>
+                   Content="Получить телеметрию БУК"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal" />
+            <Button Grid.Column="8"
+                    Command="{Binding IssueCmdGetTele}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Выбрать детектор"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                   Content="Выбрать детектор"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal">
                 <GroupBox Header="Детектор">
-                    <ComboBox IsReadOnly="False" 
-                        IsEditable="False"
-                        Style="{StaticResource ComboBoxInError}"
-                        b:WatermarkComboBox.EnableWatermark="True"
-                        b:WatermarkComboBox.Label=" "
-                        b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"  
-                        TabIndex="9"
-                              SelectedIndex="{Binding SelDetector}">
+                    <ComboBox IsEditable="False"
+                              IsReadOnly="False"
+                              SelectedIndex="{Binding SelDetector}"
+                              Style="{StaticResource ComboBoxInError}"
+                              TabIndex="9"
+                              b:WatermarkComboBox.EnableWatermark="True"
+                              b:WatermarkComboBox.Label=" "
+                              b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}">
                         <System:String>УФЕС</System:String>
                         <System:String>ВУФЕС</System:String>
                         <System:String>СДЩ</System:String>
                     </ComboBox>
                 </GroupBox>
-                <CheckBox Grid.Column="2" Grid.ColumnSpan="6" VerticalAlignment="Center"
-                    IsChecked="{Binding PwrDetector}"
-                          Content="Питание"/>
+                <CheckBox Grid.Column="2"
+                          Grid.ColumnSpan="6"
+                          VerticalAlignment="Center"
+                          Content="Питание"
+                          IsChecked="{Binding PwrDetector}" />
             </StackPanel>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueCmdSelDetector}" TabIndex="6"/>
+            <Button Grid.Column="8"
+                    Command="{Binding IssueCmdSelDetector}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Конфигурация БУК"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                   Content="Конфигурация БУК"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal">
                 <GroupBox Header="Тип параметров">
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-                    <ComboBox IsReadOnly="False" 
-                                IsEditable="False"
-                                Style="{StaticResource ComboBoxInError}"
-                                b:WatermarkComboBox.EnableWatermark="True"
-                                b:WatermarkComboBox.Label=" "
-                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                                SelectedIndex="{Binding SelConf}"
-                                TabIndex="9">
+                    <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+                        <ComboBox IsEditable="False" SelectedIndex="{Binding SelConf}">
                             <System:String>Команда не будет выполнена</System:String>
                             <System:String>Параметры БУК</System:String>
                             <System:String>Параметры КВВ</System:String>
@@ -211,27 +228,13 @@
                 <GroupBox Header="Параметры БУК">
                     <StackPanel Orientation="Horizontal">
                         <GroupBox Header="Режим работы">
-                            <ComboBox IsReadOnly="False" 
-                                IsEditable="False"
-                                Style="{StaticResource ComboBoxInError}"
-                                b:WatermarkComboBox.EnableWatermark="True"
-                                b:WatermarkComboBox.Label=" "
-                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                                SelectedIndex="{Binding ModeConf}"
-                                TabIndex="9">
+                            <ComboBox IsEditable="False" SelectedIndex="{Binding ModeConf}">
                                 <System:String>Нормальный</System:String>
                                 <System:String>Тестовый</System:String>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Параметр сжатия">
-                            <ComboBox IsReadOnly="False" 
-                                IsEditable="False"                               
-                                Style="{StaticResource ComboBoxInError}"
-                                b:WatermarkComboBox.EnableWatermark="True"
-                                b:WatermarkComboBox.Label=" "
-                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                               SelectedIndex="{Binding CompressConf}"
-                                TabIndex="9">
+                            <ComboBox IsEditable="False" SelectedIndex="{Binding CompressConf}">
                                 <System:String>Нет сжатия</System:String>
                                 <System:String>Есть сжатие</System:String>
                                 <System:String>Есть сжатие с параметром 1</System:String>
@@ -242,172 +245,179 @@
                 <GroupBox Header="Параметры КВВ">
                     <StackPanel Orientation="Horizontal">
                         <GroupBox Header="Линия отправки в КВВ">
-                            <ComboBox IsReadOnly="False" 
-                                IsEditable="False"
-                                
-                                Style="{StaticResource ComboBoxInError}"
-                                b:WatermarkComboBox.EnableWatermark="True"
-                                b:WatermarkComboBox.Label=" "
-                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                                SelectedIndex="{Binding LineSendConf}"
-                                TabIndex="9">
+                            <ComboBox IsEditable="False"
+                                      SelectedIndex="{Binding LineSendConf}"
+                                      TabIndex="9">
                                 <System:String>Основная</System:String>
                                 <System:String>Резервная</System:String>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Линия приема от КВВ">
-                            <ComboBox IsReadOnly="False" 
-                                IsEditable="False"
-                               
-                                Style="{StaticResource ComboBoxInError}"
-                                b:WatermarkComboBox.EnableWatermark="True"
-                                b:WatermarkComboBox.Label=" "
-                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                                SelectedIndex="{Binding LineRecvConf}"
-                                TabIndex="9">
+                            <ComboBox IsEditable="False" SelectedIndex="{Binding LineRecvConf}">
                                 <System:String>Основная</System:String>
                                 <System:String>Резервная</System:String>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Активация">
-                            <ComboBox IsReadOnly="False" 
-                                IsEditable="False"
-                               
-                                Style="{StaticResource ComboBoxInError}"
-                                b:WatermarkComboBox.EnableWatermark="True"
-                                b:WatermarkComboBox.Label=" "
-                                b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                                SelectedIndex="{Binding ActivateConf}"
-                                TabIndex="9">
+                            <ComboBox IsEditable="False"
+                                      SelectedIndex="{Binding ActivateConf}"
+                                      Style="{StaticResource ComboBoxInError}">
                                 <System:String>Активировать КВВ1</System:String>
                                 <System:String>Активировать КВВ2</System:String>
                             </ComboBox>
                         </GroupBox>
-                        <CheckBox IsChecked="{Binding ExchangeConf}" VerticalAlignment="Center" Content="Опрос КВВ"/>
+                        <CheckBox VerticalAlignment="Center"
+                                  Content="Опрос КВВ"
+                                  IsChecked="{Binding ExchangeConf}" />
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueCmdConfig}" TabIndex="6"/>
+            <Button Grid.Column="8"
+                    Command="{Binding IssueCmdConfig}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Открытие затворов"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                   Content="Открытие затворов"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal">
                 <GroupBox Header="Номер затвор">
-                    <TextBox Text="{Binding NumberShutter}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding NumberShutter}" />
+                </GroupBox>
+                <GroupBox Header="Линия">
+                    <ComboBox IsEditable="False"
+                              SelectedIndex="{Binding LineShutter}"
+                              TabIndex="9">
+                        <System:String>Основная</System:String>
+                        <System:String>Резервная</System:String>
+                    </ComboBox>
                 </GroupBox>
                 <GroupBox Header="Длительность открытия затвора">
-                    <TextBox Text="{Binding ShutterTime}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding ShutterTime}" />
                 </GroupBox>
             </StackPanel>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueCmdShutter}" TabIndex="6"/>
+            <Button Grid.Column="8"
+                    Command="{Binding IssueCmdShutter}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Управление засветкой"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                   Content="Управление засветкой"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal">
                 <GroupBox Header="Номер засветки">
-                    <TextBox Text="{Binding NumberLight}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding NumberLight}" />
                 </GroupBox>
                 <GroupBox Header="Длительность засветки">
-                    <TextBox Text="{Binding LightTime}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding LightTime}" />
                 </GroupBox>
             </StackPanel>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueCmdLight}" TabIndex="6"/>
+            <Button Grid.Column="8"
+                    Command="{Binding IssueCmdLight}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Выдать УКС в КВВ"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                   Content="Выдать УКС в КВВ"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal">
                 <GroupBox Header="УКС">
-                    <TextBox Text="{Binding CmdBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding CmdBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" />
                 </GroupBox>
             </StackPanel>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueCmdSend}" TabIndex="6"/>
+            <Button Grid.Column="8"
+                    Command="{Binding IssueCmdSend}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
-        <Separator/>
+        <Separator />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Ручное управление детектором"
-                Style="{StaticResource FlatHeader}"/>
-            <StackPanel Grid.Column="2" Grid.ColumnSpan="6" Orientation="Horizontal" Background="White">
+                   Content="Ручное управление детектором"
+                   Style="{StaticResource FlatHeader}" />
+            <StackPanel Grid.Column="2"
+                        Grid.ColumnSpan="6"
+                        Background="White"
+                        Orientation="Horizontal">
                 <GroupBox Header="Команда">
-                    <TextBox Text="{Binding DataBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" TabIndex="3"/>
+                    <TextBox TabIndex="3" Text="{Binding DataBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" />
                 </GroupBox>
             </StackPanel>
-            <Button Grid.Column="8"                     
-                Content="Выдать"
-                Command="{Binding IssueDataSend}" TabIndex="6"/>
+            <Button Grid.Column="8"
+                    Command="{Binding IssueDataSend}"
+                    Content="Выдать"
+                    TabIndex="6" />
         </Grid>
     </StackPanel>
 </Window>
