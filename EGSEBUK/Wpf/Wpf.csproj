@@ -160,6 +160,9 @@
     <Compile Include="Windows\TeleBukWindow.xaml.cs">
       <DependentUpon>TeleBukWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\TeleKvvWindow.xaml.cs">
+      <DependentUpon>TeleKvvWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\UsbSendsMonitor.xaml.cs">
       <DependentUpon>UsbSendsMonitor.xaml</DependentUpon>
     </Compile>
@@ -279,6 +282,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\TeleBukWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TeleKvvWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

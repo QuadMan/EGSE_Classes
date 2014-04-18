@@ -2,10 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:l="clr-namespace:Egse.Defaults"
-		xmlns:d="clr-namespace:Egse.Devices" 
-		xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
+        xmlns:d="clr-namespace:Egse.Devices" 
+        xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
         FontFamily="{StaticResource BaseFontFamily}"
-		FontSize="{StaticResource BaseFontSize}"
+        FontSize="{StaticResource BaseFontSize}"
         Closing="Window_Closing"
         Title="Телеметрия БУК"
         Visibility="{Binding IsShowTeleBuk, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">

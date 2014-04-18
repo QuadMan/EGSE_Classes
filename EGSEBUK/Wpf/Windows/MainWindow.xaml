@@ -335,11 +335,11 @@
                         <Label Grid.Column="0"
                             Grid.Row="3"
                             Template="{StaticResource FlatLabel}"
-                            Content=" УФЕС "/>
+                            Content=" УФЭС "/>
                         <Label Grid.Column="0"
                             Grid.Row="4"
                             Template="{StaticResource FlatLabel}"
-                            Content=" ВУФЕС "/>
+                            Content=" ВУФЭС "/>
                         <Label Grid.Column="0"
                             Grid.Row="5"
                             Template="{StaticResource FlatLabel}"
@@ -459,11 +459,11 @@
                         <Label Grid.Column="0"
                             Grid.Row="2"
                             Template="{StaticResource FlatLabel}"
-                            Content=" УФЕС "/>
+                            Content=" УФЭС "/>
                         <Label Grid.Column="0"
                             Grid.Row="3"
                             Template="{StaticResource FlatLabel}"
-                            Content=" ВУФЕС "/>
+                            Content=" ВУФЭС "/>
                         <Label Grid.Column="0"
                             Grid.Row="4"
                             Template="{StaticResource FlatLabel}"
@@ -543,6 +543,10 @@
                     <CheckBox Content="Телеметрия БУК" 
                         Margin="4"
                         IsChecked="{Binding IsShowTeleBuk, Mode=TwoWay}" TabIndex="30"/>
+                    <CheckBox Content="Телеметрия КВВ"
+                              Margin="4"
+                              IsChecked="{Binding IsShowTeleKvv, Mode=TwoWay}"
+                              TabIndex="31" />
                 </StackPanel>
             </Grid>
         </StackPanel>

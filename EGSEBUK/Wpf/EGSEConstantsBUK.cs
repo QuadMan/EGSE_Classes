@@ -899,7 +899,7 @@ namespace Egse.Constants
         }
 
         /// <summary>
-        /// Индексы свойств [SPACEWIRE 3 (ИМИТАТОР УФЕС, ВУФЕС, СДЩ)]
+        /// Индексы свойств [SPACEWIRE 3 (ИМИТАТОР УФЭС, ВУФЭС, СДЩ)]
         /// </summary>
         public static class Spacewire3
         {
@@ -1118,22 +1118,22 @@ namespace Egse.Constants
         public class CVTelemetry 
         {
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Питание УФЕС (осн)].
+            /// Индекс свойства [Телеметрия:  Питание УФЭС (осн)].
             /// </summary>
             public readonly string UfesPower1 = "77847f912b2842fd954a53454b1283af";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Питание УФЕС (рез)].
+            /// Индекс свойства [Телеметрия:  Питание УФЭС (рез)].
             /// </summary>
             public readonly string UfesPower2 = "eac13e31010a4639a7bb1a8eaa1e7059";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Питание ВУФЕС (осн)].
+            /// Индекс свойства [Телеметрия:  Питание ВУФЭС (осн)].
             /// </summary>
             public readonly string VufesPower1 = "b0efec8196ff41a19193da4432342647";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Питание ВУФЕС (рез)].
+            /// Индекс свойства [Телеметрия:  Питание ВУФЭС (рез)].
             /// </summary>
             public readonly string VufesPower2 = "94e0bcb218424ed9bd4d7c2365996aa9";
 
@@ -1148,22 +1148,22 @@ namespace Egse.Constants
             public readonly string SdchshPower2 = "4c1443fda8bf48bdb019ef8e99325315";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Подсветка УФЕС (осн)].
+            /// Индекс свойства [Телеметрия:  Подсветка УФЭС (осн)].
             /// </summary>
             public readonly string UfesLight1 = "8bd191047cd345759fd844f6c4b643ff";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Подсветка УФЕС (рез)].
+            /// Индекс свойства [Телеметрия:  Подсветка УФЭС (рез)].
             /// </summary>
             public readonly string UfesLight2 = "cb102496daac44ffa4136b4c071df11f";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Подсветка ВУФЕС (осн)].
+            /// Индекс свойства [Телеметрия:  Подсветка ВУФЭС (осн)].
             /// </summary>
             public readonly string VufesLight1 = "db83722ee76f43f8a8688ccdbac81ef8";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Подсветка ВУФЕС (рез)].
+            /// Индекс свойства [Телеметрия:  Подсветка ВУФЭС (рез)].
             /// </summary>
             public readonly string VufesLight2 = "0ad388efb4b641688a4134e613a9437e";
 
@@ -1178,22 +1178,22 @@ namespace Egse.Constants
             public readonly string SdchshLight2 = "979aa9840c644636988aa7e96487a973";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Затвор УФЕС (осн)].
+            /// Индекс свойства [Телеметрия:  Затвор УФЭС (осн)].
             /// </summary>
             public readonly string UfesLock1 = "33d4913434d045d69f8605894ad38b37";
            
             /// <summary>
-            /// Индекс свойства [Телеметрия:  Затвор УФЕС (рез)].
+            /// Индекс свойства [Телеметрия:  Затвор УФЭС (рез)].
             /// </summary>
             public readonly string UfesLock2 = "c2b0b0bba8de4e94abbf7e6a9c8a8ee1";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия: Затвор ВУФЕС (осн)].
+            /// Индекс свойства [Телеметрия: Затвор ВУФЭС (осн)].
             /// </summary>
             public readonly string VufesLock1 = "add2a3069a9a436884e08e707b82a3ae";
 
             /// <summary>
-            /// Индекс свойства [Телеметрия: Затвор ВУФЕС (рез)].
+            /// Индекс свойства [Телеметрия: Затвор ВУФЭС (рез)].
             /// </summary>
             public readonly string VufesLock2 = "a8bf2e88fd684430820e455b6f841df8";
 
@@ -1249,22 +1249,22 @@ namespace Egse.Constants
             public readonly string Auto = "0dd027489d2841b393f27bd24e1ba827";
 
             /// <summary>
-            /// Индекс свойства [УФЕС: Датчики затворов: открытие].
+            /// Индекс свойства [УФЭС: Датчики затворов: открытие].
             /// </summary>
             public readonly string UfesOpen = "1a9eaeba16f746abbd76879400733dd6";
 
             /// <summary>
-            /// Индекс свойства [УФЕС: Датчики затворов: закрытие].
+            /// Индекс свойства [УФЭС: Датчики затворов: закрытие].
             /// </summary>
             public readonly string UfesClose = "014d72354f774310b3c2d2c05980e72c";
 
             /// <summary>
-            /// Индекс свойства [ВУФЕС: Датчики затворов: открытие].
+            /// Индекс свойства [ВУФЭС: Датчики затворов: открытие].
             /// </summary>
             public readonly string VufesOpen = "b80a1dc893ad4489866979d2a76f0724";
 
             /// <summary>
-            /// Индекс свойства [ВУФЕС: Датчики затворов: закрытие].
+            /// Индекс свойства [ВУФЭС: Датчики затворов: закрытие].
             /// </summary>
             public readonly string VufesClose = "ec63f6626d73473ca4dc227a0ba1fb59";
 

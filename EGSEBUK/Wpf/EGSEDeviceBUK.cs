@@ -462,7 +462,7 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Отправляет команду включить/выключить затвор УФЕС ОСН.
+        /// Отправляет команду включить/выключить затвор УФЭС ОСН.
         /// </summary>
         /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         internal void CmdUfesLock1(int value)
@@ -482,7 +482,7 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Отправляет команду включить/выключить затвор УФЕС РЕЗ.
+        /// Отправляет команду включить/выключить затвор УФЭС РЕЗ.
         /// </summary>
         /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         internal void CmdUfesLock2(int value)
@@ -502,7 +502,7 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Отправляет команду включить/выключить затвор ВУФЕС ОСН.
+        /// Отправляет команду включить/выключить затвор ВУФЭС ОСН.
         /// </summary>
         /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         internal void CmdVufesLock1(int value)
@@ -522,7 +522,7 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Отправляет команду включить/выключить затвор ВУФЕС РЕЗ.
+        /// Отправляет команду включить/выключить затвор ВУФЭС РЕЗ.
         /// </summary>
         /// <param name="value"><c>1</c> если [включить]; иначе, <c>0</c>.</param>
         internal void CmdVufesLock2(int value)
@@ -1085,22 +1085,22 @@ namespace Egse.Devices
         private DevEnabled _issueSdchshOpen = DevEnabled.Off;
 
         /// <summary>
-        /// ВУФЕС: Датчики затворов: закрытия.
+        /// ВУФЭС: Датчики затворов: закрытия.
         /// </summary>
         private DevEnabled _issueVufesClose = DevEnabled.Off;
 
         /// <summary>
-        /// ВУФЕС: Датчики затворов: открытия.
+        /// ВУФЭС: Датчики затворов: открытия.
         /// </summary>
         private DevEnabled _issueVufesOpen = DevEnabled.Off;
 
         /// <summary>
-        /// УФЕС: Датчики затворов: закрытия.
+        /// УФЭС: Датчики затворов: закрытия.
         /// </summary>
         private DevEnabled _issueUfesClose = DevEnabled.Off;
 
         /// <summary>
-        /// УФЕС: Датчики затворов: открытия.
+        /// УФЭС: Датчики затворов: открытия.
         /// </summary>
         private DevEnabled _issueUfesOpen = DevEnabled.Off;
 
@@ -1201,6 +1201,7 @@ namespace Egse.Devices
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
         private bool isShowControlBuk;
         private bool isShowTeleBuk;
+        private bool isShowTeleKvv;
 
         /// <summary>
         /// Состояние прибора.
@@ -1317,10 +1318,10 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика открытия для НП УФЕС].
+        /// Получает команду на [включение датчика открытия для НП УФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика открытия для НП УФЕС].
+        /// Команда на [включение датчика открытия для НП УФЭС].
         /// </value>
         public DevEnabled IssueUfesOpen
         {
@@ -1338,10 +1339,10 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика закрытия для НП УФЕС].
+        /// Получает команду на [включение датчика закрытия для НП УФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика закрытия для НП УФЕС].
+        /// Команда на [включение датчика закрытия для НП УФЭС].
         /// </value>
         public DevEnabled IssueUfesClose
         {
@@ -1359,10 +1360,10 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика открытия для НП ВУФЕС].
+        /// Получает команду на [включение датчика открытия для НП ВУФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика открытия для НП ВУФЕС].
+        /// Команда на [включение датчика открытия для НП ВУФЭС].
         /// </value>
         public DevEnabled IssueVufesOpen
         {
@@ -1380,10 +1381,10 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика закрытия для НП ВУФЕС].
+        /// Получает команду на [включение датчика закрытия для НП ВУФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика закрытия для НП ВУФЕС].
+        /// Команда на [включение датчика закрытия для НП ВУФЭС].
         /// </value>
         public DevEnabled IssueVufesClose
         {
@@ -1630,6 +1631,20 @@ namespace Egse.Devices
             }
         }
 
+        public bool IsShowTeleKvv
+        {
+            get
+            {
+                return this.isShowTeleKvv;
+            }
+            
+            private set
+            {
+                this.isShowTeleKvv = value;
+                FirePropertyChangedEvent();
+            }
+        }
+        
         /// <summary>
         /// Получает значение текущей скорости по USB.
         /// </summary>
@@ -3776,22 +3791,22 @@ namespace Egse.Devices
             private bool _isPowerBund2;
 
             /// <summary>
-            /// Телеметрия: Питание УФЕС ОСН.
+            /// Телеметрия: Питание УФЭС ОСН.
             /// </summary>
             private bool _ufesPower1;
 
             /// <summary>
-            /// Телеметрия: Питание УФЕС РЕЗ.
+            /// Телеметрия: Питание УФЭС РЕЗ.
             /// </summary>
             private bool _ufesPower2;
 
             /// <summary>
-            /// Телеметрия: Питание ВУФЕС ОСН.
+            /// Телеметрия: Питание ВУФЭС ОСН.
             /// </summary>
             private bool _vufesPower1;
 
             /// <summary>
-            /// Телеметрия: Питание ВУФЕС РЕЗ.
+            /// Телеметрия: Питание ВУФЭС РЕЗ.
             /// </summary>
             private bool _vufesPower2;
 
@@ -3806,22 +3821,22 @@ namespace Egse.Devices
             private bool _sdchshPower2;
 
             /// <summary>
-            /// Телеметрия: Подсветка УФЕС ОСН.
+            /// Телеметрия: Подсветка УФЭС ОСН.
             /// </summary>
             private bool _ufesLight1;
 
             /// <summary>
-            /// Телеметрия: Подсветка УФЕС РЕЗ.
+            /// Телеметрия: Подсветка УФЭС РЕЗ.
             /// </summary>
             private bool _ufesLight2;
 
             /// <summary>
-            /// Телеметрия: Подсветка ВУФЕС ОСН.
+            /// Телеметрия: Подсветка ВУФЭС ОСН.
             /// </summary>
             private bool _vufesLight1;
 
             /// <summary>
-            /// Телеметрия: Подсветка ВУФЕС РЕЗ.
+            /// Телеметрия: Подсветка ВУФЭС РЕЗ.
             /// </summary>
             private bool _vufesLight2;
 
@@ -3836,22 +3851,22 @@ namespace Egse.Devices
             private bool _sdchshLight2;
 
             /// <summary>
-            /// Телеметрия: Затвор УФЕС ОСН.
+            /// Телеметрия: Затвор УФЭС ОСН.
             /// </summary>
             private bool _ufesLock1;
 
             /// <summary>
-            /// Телеметрия: Затвор УФЕС РЕЗ.
+            /// Телеметрия: Затвор УФЭС РЕЗ.
             /// </summary>
             private bool _ufesLock2;
 
             /// <summary>
-            /// Телеметрия: Затвор ВУФЕС ОСН.
+            /// Телеметрия: Затвор ВУФЭС ОСН.
             /// </summary>
             private bool _vufesLock1;
 
             /// <summary>
-            /// Телеметрия: Затвор ВУФЕС РЕЗ.
+            /// Телеметрия: Затвор ВУФЭС РЕЗ.
             /// </summary>
             private bool _vufesLock2;
 
@@ -4139,10 +4154,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, включен ли [затвор прибора УФЕС ОСН].
+            /// Получает значение, показывающее, включен ли [затвор прибора УФЭС ОСН].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [затвор прибора УФЕС ОСН] включен; иначе, <c>false</c>.
+            ///   <c>true</c> если [затвор прибора УФЭС ОСН] включен; иначе, <c>false</c>.
             /// </value>
             public bool UfesLock1 
             { 
@@ -4160,10 +4175,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, включен ли [затвор прибора УФЕС РЕЗ].
+            /// Получает значение, показывающее, включен ли [затвор прибора УФЭС РЕЗ].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [затвор прибора УФЕС РЕЗ] включен; иначе, <c>false</c>.
+            ///   <c>true</c> если [затвор прибора УФЭС РЕЗ] включен; иначе, <c>false</c>.
             /// </value>
             public bool UfesLock2
             {
@@ -4181,10 +4196,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, включен ли [затвор прибора ВУФЕС ОСН].
+            /// Получает значение, показывающее, включен ли [затвор прибора ВУФЭС ОСН].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [затвор прибора ВУФЕС ОСН] включен; иначе, <c>false</c>.
+            ///   <c>true</c> если [затвор прибора ВУФЭС ОСН] включен; иначе, <c>false</c>.
             /// </value>
             public bool VufesLock1
             {
@@ -4202,10 +4217,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, включен ли [затвор прибора ВУФЕС РЕЗ].
+            /// Получает значение, показывающее, включен ли [затвор прибора ВУФЭС РЕЗ].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [затвор прибора ВУФЕС РЕЗ] включен; иначе, <c>false</c>.
+            ///   <c>true</c> если [затвор прибора ВУФЭС РЕЗ] включен; иначе, <c>false</c>.
             /// </value>
             public bool VufesLock2
             {
@@ -4265,10 +4280,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание УФЕС ОСН].
+            /// Получает значение, показывающее, есть ли [питание УФЭС ОСН].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [питание УФЕС ОСН]; иначе, <c>false</c>.
+            ///   <c>true</c> если [питание УФЭС ОСН]; иначе, <c>false</c>.
             /// </value>
             public bool UfesPower1
             {
@@ -4286,10 +4301,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание УФЕС РЕЗ].
+            /// Получает значение, показывающее, есть ли [питание УФЭС РЕЗ].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [питание УФЕС РЕЗ]; иначе, <c>false</c>.
+            ///   <c>true</c> если [питание УФЭС РЕЗ]; иначе, <c>false</c>.
             /// </value>
             public bool UfesPower2
             {
@@ -4307,10 +4322,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание ВУФЕС ОСН].
+            /// Получает значение, показывающее, есть ли [питание ВУФЭС ОСН].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [питание ВУФЕС ОСН]; иначе, <c>false</c>.
+            ///   <c>true</c> если [питание ВУФЭС ОСН]; иначе, <c>false</c>.
             /// </value>
             public bool VufesPower1
             {
@@ -4328,10 +4343,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [питание ВУФЕС РЕЗ].
+            /// Получает значение, показывающее, есть ли [питание ВУФЭС РЕЗ].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [питание ВУФЕС РЕЗ]; иначе, <c>false</c>.
+            ///   <c>true</c> если [питание ВУФЭС РЕЗ]; иначе, <c>false</c>.
             /// </value>
             public bool VufesPower2
             {
@@ -4391,10 +4406,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка УФЕС ОСН].
+            /// Получает значение, показывающее, есть ли [подсветка УФЭС ОСН].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка УФЕС ОСН]; иначе, <c>false</c>.
+            ///   <c>true</c> если [подсветка УФЭС ОСН]; иначе, <c>false</c>.
             /// </value>
             public bool UfesLight1
             {
@@ -4412,10 +4427,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка УФЕС РЕЗ].
+            /// Получает значение, показывающее, есть ли [подсветка УФЭС РЕЗ].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка УФЕС РЕЗ]; иначе, <c>false</c>.
+            ///   <c>true</c> если [подсветка УФЭС РЕЗ]; иначе, <c>false</c>.
             /// </value>
             public bool UfesLight2
             {
@@ -4433,10 +4448,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка ВУФЕС ОСН].
+            /// Получает значение, показывающее, есть ли [подсветка ВУФЭС ОСН].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка ВУФЕС ОСН]; иначе, <c>false</c>.
+            ///   <c>true</c> если [подсветка ВУФЭС ОСН]; иначе, <c>false</c>.
             /// </value>
             public bool VufesLight1
             {
@@ -4454,10 +4469,10 @@ namespace Egse.Devices
             }
             
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка ВУФЕС РЕЗ].
+            /// Получает значение, показывающее, есть ли [подсветка ВУФЭС РЕЗ].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка ВУФЕС РЕЗ]; иначе, <c>false</c>.
+            ///   <c>true</c> если [подсветка ВУФЭС РЕЗ]; иначе, <c>false</c>.
             /// </value>
             public bool VufesLight2
             {
@@ -7575,15 +7590,15 @@ namespace Egse.Devices
             public enum WorkDevice
             {
                 /// <summary>
-                /// Рабочий прибор "УФЕС".
+                /// Рабочий прибор "УФЭС".
                 /// </summary>
-                [Description("УФЕС")]
+                [Description("УФЭС")]
                 Ufes = 0x00,
 
                 /// <summary>
-                /// Рабочий прибор "ВУФЕС".
+                /// Рабочий прибор "ВУФЭС".
                 /// </summary>
-                [Description("ВУФЕС")]
+                [Description("ВУФЭС")]
                 Vufes = 0x01,
 
                 /// <summary>

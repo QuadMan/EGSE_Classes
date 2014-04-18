@@ -231,12 +231,12 @@ namespace Egse.Cyclogram.Command
         private enum Scidev
         {
             /// <summary>
-            /// Параметр "канал БС УФЕС" аргумента.
+            /// Параметр "канал БС УФЭС" аргумента.
             /// </summary>
             UFES,
 
             /// <summary>
-            /// Параметр "канал БС ВУФЕС" аргумента.
+            /// Параметр "канал БС ВУФЭС" аргумента.
             /// </summary>
             VUFES,
 

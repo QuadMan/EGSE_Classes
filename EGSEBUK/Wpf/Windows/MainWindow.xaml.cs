@@ -18,6 +18,8 @@ namespace Egse.Defaults
     /// </summary>
     public partial class MainWindow : Window
     {
+        private TeleKvvWindow winTeleKvv;
+
         private TeleBukWindow winTeleBuk;
 
         private ControlBukWindow winControlBuk;
@@ -117,6 +119,8 @@ namespace Egse.Defaults
             this.GotSaveAppEvent += new Action(_intfEGSE.SaveAppEvent);
             winControlBuk = new ControlBukWindow();
             winControlBuk.Init(_intfEGSE);
+            winTeleKvv = new TeleKvvWindow();
+            winTeleKvv.Init(_intfEGSE);   
             winTeleBuk = new TeleBukWindow();
             winTeleBuk.Init(_intfEGSE);            
             winHsi = new HsiWindow();
