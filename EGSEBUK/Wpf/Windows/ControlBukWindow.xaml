@@ -6,7 +6,6 @@
         xmlns:d="clr-namespace:Egse.Devices"
         xmlns:l="clr-namespace:Egse.Defaults"
         Title="Команды управления БУК"
-        Height="800"
         Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
@@ -169,14 +168,7 @@
                         Background="White"
                         Orientation="Horizontal">
                 <GroupBox Header="Детектор">
-                    <ComboBox IsEditable="False"
-                              IsReadOnly="False"
-                              SelectedIndex="{Binding SelDetector}"
-                              Style="{StaticResource ComboBoxInError}"
-                              TabIndex="9"
-                              b:WatermarkComboBox.EnableWatermark="True"
-                              b:WatermarkComboBox.Label=" "
-                              b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}">
+                    <ComboBox IsEditable="False" SelectedIndex="{Binding SelDetector}">
                         <System:String>УФЕС</System:String>
                         <System:String>ВУФЕС</System:String>
                         <System:String>СДЩ</System:String>
