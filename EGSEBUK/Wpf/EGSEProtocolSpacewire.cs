@@ -1660,7 +1660,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Маска поля заголовка поля данных: Резерв.
             /// </summary>
-            private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF, SubServiceSection);
+            //! В ТК не используется !private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF, SubServiceSection);
 
             /// <summary>
             /// Агрегат доступа к icd заголовку.
@@ -1697,6 +1697,7 @@ namespace Egse.Protocols
             /// <value>
             /// Значение резервного байта.
             /// </value>
+            /* в ТК не используется
             public byte Reserve
             {
                 get
@@ -1709,7 +1710,7 @@ namespace Egse.Protocols
                     _header[ReserveSection] = (int)value;
                 }
             }
-
+            */
             /// <summary>
             /// Получает или задает тип сервиса.
             /// </summary>
@@ -1813,7 +1814,7 @@ namespace Egse.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stTkStringExt"), Flag, Version, Acknowledgment, Service, SubService, Reserve, IcdInfo);
+                return string.Format(Resource.Get(@"stTkStringExt"), Flag, Version, Acknowledgment, Service, SubService, /*Reserve,*/ IcdInfo);
             }
 
             /// <summary>
@@ -1825,7 +1826,7 @@ namespace Egse.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), Flag, Version, Acknowledgment, Service, SubService, Reserve, IcdInfo.ToString(extended));
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), Flag, Version, Acknowledgment, Service, SubService, /*Reserve,*/ IcdInfo.ToString(extended));
             }
         }      
     }

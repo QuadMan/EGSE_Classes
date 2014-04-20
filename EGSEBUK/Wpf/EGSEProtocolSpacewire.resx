@@ -166,10 +166,10 @@
     <value>: ({0}d) {1} [{2}] {3}</value>
   </data>
   <data name="stTkString" xml:space="preserve">
-    <value>{6} - TK[H:{0:X},P:{1:X},Q:{2:X},S:{3:X},s:{4:X},R:{5:X}]</value>
+    <value>{6} - TK[H:{0:X},P:{1:X},Q:{2:X},S:{3:X},s:{4:X}]</value>
   </data>
   <data name="stTkStringExt" xml:space="preserve">
-    <value>{6} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4},Резерв:{5})</value>
+    <value>{6} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4})</value>
   </data>
   <data name="stTmMsgToString" xml:space="preserve">
     <value>: ({0}d) {1} [{2}] {3}</value>
