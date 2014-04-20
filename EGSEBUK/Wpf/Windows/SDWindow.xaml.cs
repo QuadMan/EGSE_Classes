@@ -72,23 +72,28 @@ namespace Egse.Defaults
                 spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка: " + err.ErrorMessage();
             }
 
+            SendToMonitor(spacewireMsg);
+        }
+
+        private void SendToMonitor(string txtMsg)
+        {
             if (null != MonitorList && Visibility.Visible == this.Visibility)
             {
                 try
                 {
-                    Extensions.AddToMonitor(MonitorList, spacewireMsg);
+                    Extensions.AddToMonitor(MonitorList, txtMsg);
                 }
                 catch (Exception exc)
                 {
                     MessageBox.Show(exc.Message);
                 }
-
-                if (_intfEGSE.Spacewire3Notify.IsSaveTxtData)
-                {
-                    LogsClass.LogSpacewire3.LogText = spacewireMsg;
-                }
             }
-        }  
+
+            if (_intfEGSE.Spacewire3Notify.IsSaveTxtData)
+            {
+                LogsClass.LogSpacewire3.LogText = txtMsg;
+            }
+        }
 
         /// <summary>
         /// Handles the Closing event of the Window control.

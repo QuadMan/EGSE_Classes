@@ -59,23 +59,23 @@ namespace Egse.Defaults
             SendToMonitor(spacewireMsg);            
         }
 
-        private void SendToMonitor(string spacewireMsg)
+        private void SendToMonitor(string txtMsg)
         {
             if (null != MonitorList && Visibility.Visible == this.Visibility)
             {
                 try
                 {
-                    Extensions.AddToMonitor(MonitorList, spacewireMsg);
+                    Extensions.AddToMonitor(MonitorList, txtMsg);
                 }
                 catch (Exception exc)
                 {
                     MessageBox.Show(exc.Message);
                 }
+            }
 
-                if (_intfEGSE.Spacewire2Notify.IsSaveTxtData)
-                {
-                    LogsClass.LogSpacewire2.LogText = spacewireMsg;
-                }
+            if (_intfEGSE.Spacewire2Notify.IsSaveTxtData)
+            {
+                LogsClass.LogSpacewire2.LogText = txtMsg;
             }
         }
 

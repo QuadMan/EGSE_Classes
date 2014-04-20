@@ -64,22 +64,27 @@ namespace Egse.Defaults
                 hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
+            SendToMonitor(hsiMsg);
+        }
+
+        private void SendToMonitor(string txtMsg)
+        {
             if (null != MonitorList && Visibility.Visible == this.Visibility)
             {
                 try
                 {
-                    Extensions.AddToMonitor(MonitorList, hsiMsg);
+                    Extensions.AddToMonitor(MonitorList, txtMsg);
                 }
                 catch (Exception exc)
                 {
                     MessageBox.Show(exc.Message);
                 }
-
-                if (_intfEGSE.HsiNotify.IsSaveTxtData)
-                {
-                    LogsClass.LogHsi.LogText = hsiMsg;
-                }
             }
+
+            if (_intfEGSE.HsiNotify.IsSaveTxtData)
+            {
+                LogsClass.LogHsi.LogText = txtMsg;
+            }            
         }
 
         /// <summary>
@@ -100,18 +105,23 @@ namespace Egse.Defaults
                 hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
+            SendToMonitorCmd(hsiMsg);
+        }
+
+        private void SendToMonitorCmd(string txtMsg)
+        {
             if (null != MonitorListCmd && Visibility.Visible == this.Visibility)
             {
                 try
                 {
-                    Extensions.AddToMonitor(MonitorListCmd, hsiMsg);
+                    Extensions.AddToMonitor(MonitorListCmd, txtMsg);
                 }
                 catch (Exception exc)
                 {
                     MessageBox.Show(exc.Message);
                 }
-            }        
-        } 
+            }   
+        }
 
         /// <summary>
         /// Handles the Closing event of the Window control.
