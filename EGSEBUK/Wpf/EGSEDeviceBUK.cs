@@ -7369,11 +7369,19 @@ namespace Egse.Devices
 
                     if (_rawDataStream.CanWrite)
                     {
-                        if (e is SpacewireTmMsgEventArgs)
+                        SpacewireTmMsgEventArgs spw = e as SpacewireTmMsgEventArgs;
+                        if (null == spw)
                         {
-                            SpacewireTmMsgEventArgs tm = e as SpacewireTmMsgEventArgs;
-                            _rawDataTask = _rawDataStream.WriteAsync(tm.Data, 0, tm.Data.Length);
+                            return;
                         }
+
+                        if ((0x600 == spw.IcdInfo.Apid) || (0x610 == spw.IcdInfo.Apid))
+                        {
+                            return;
+                        }
+
+                        _rawDataTask = _rawDataStream.WriteAsync(spw.Data, 0, spw.Data.Length);
+
                         ////if (e is SpacewireSptpMsgEventArgs)
                         ////{
                         ////    SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
