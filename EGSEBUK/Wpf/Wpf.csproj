@@ -85,6 +85,11 @@
       <DependentUpon>App.xaml.resx</DependentUpon>
     </Compile>
     <Compile Include="AppEntryPoint.cs" />
+    <Compile Include="AppEntryPoint.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppEntryPoint.resx</DependentUpon>
+    </Compile>
     <Compile Include="Behaviors\AdornerExtensions.cs" />
     <Compile Include="Behaviors\KeyboardFocus.cs" />
     <Compile Include="Behaviors\UIElementAdorner.cs" />
@@ -321,6 +326,11 @@
     <EmbeddedResource Include="..\..\ConsoleApplication1\EGSEUtilitesTextlog.resx">
       <Link>EGSEUtilitesTextlog.resx</Link>
       <DependentUpon>EGSEUtilitesTextlog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AppEntryPoint.resx">
+      <DependentUpon>AppEntryPoint.cs</DependentUpon>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppEntryPoint.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomAttributes\LambdaAttribute.resx">
       <DependentUpon>LambdaAttribute.cs</DependentUpon>

@@ -5441,18 +5441,20 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = true;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                byte[] buf = new byte[250];
-                int i = 0;
-                if (null != DataBytes)
+                if ((null == DataBytes) || (250 < DataBytes.Length))
                 {
-                    foreach (byte t in DataBytes)
-                    {
-                        buf[i++] = t;
-                    }
+                    System.Windows.MessageBox.Show(Resource.Get(@"eBadDataSendMsg"));
+                    return;
                 }
-                
-                // TODO НЕ ДОПИСАНО!
-                Owner.Spacewire2Notify.Data = new byte[9] { 0, 14, 0, (byte)DataBytes.Length, 0, buf[0], buf[1], buf[2], buf[3] };
+
+                byte[] buf = new byte[DataBytes.Length + 5];
+                Array.Copy(DataBytes, 0, buf, 5, DataBytes.Length);
+                buf[0] = 0;
+                buf[1] = 14;
+                buf[2] = 0;
+                buf[3] = (byte)DataBytes.Length;
+                buf[4] = 0;
+                Owner.Spacewire2Notify.Data = buf;
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
@@ -5595,7 +5597,6 @@ namespace Egse.Devices
                 PopSpw2Prop();
             }
 
-
             private void CmdThreshold(object obj)
             {
                 PushSpw2Prop();
@@ -5604,7 +5605,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = false;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[8] { 0, 4, AlgoType, Convert.ToByte(Threshold >> 8), Convert.ToByte(Threshold), Param1, Param2, Param3 };
+                Owner.Spacewire2Notify.Data = new byte[8] { 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, Param2, Param3 };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
