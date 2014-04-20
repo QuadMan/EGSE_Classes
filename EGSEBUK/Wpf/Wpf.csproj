@@ -52,6 +52,9 @@
   <PropertyGroup>
     <StartupObject>Egse.Wpf.AppEntryPoint</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>main.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -430,6 +433,9 @@
     <EmbeddedResource Include="..\DetectNetVersion\bin\Release\DetectNetVersion.dll">
       <Link>DetectNetVersion.dll</Link>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="main.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
