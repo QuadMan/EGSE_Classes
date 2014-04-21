@@ -205,7 +205,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {6} - TK[H:{0:X},P:{1:X},Q:{2:X},S:{3:X},s:{4:X}].
+        ///   Looks up a localized string similar to {5} - TK[H:{0:X},P:{1:X},Q:{2:X},S:{3:X},s:{4:X}].
         /// </summary>
         internal static string stTkString {
             get {
@@ -214,7 +214,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {6} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4}).
+        ///   Looks up a localized string similar to {5} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4}).
         /// </summary>
         internal static string stTkStringExt {
             get {
