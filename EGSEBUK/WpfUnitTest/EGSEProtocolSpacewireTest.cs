@@ -301,8 +301,14 @@ namespace Egse.Protocols.UnitTest
 
             Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
             
-            byte[] test = buf.Skip(14).ToArray().Take(2).ToArray();
+            byte[] test = buf.Skip(13).ToArray().Take(3).ToArray();
             CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
+
+            Assert.AreEqual((byte)(buf[10] & 0xF), msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
+            Assert.AreEqual((byte)((buf[10] >> 7) & 0x1), msg.TkInfo.Flag, "Ошибка в парсинге свойства TkInfo.Flag");
+            Assert.AreEqual(buf[11], msg.TkInfo.Service, "Ошибка в парсинге свойства TkInfo.Service");
+            Assert.AreEqual(buf[12], msg.TkInfo.SubService, "Ошибка в парсинге свойства TkInfo.SubService");
+            Assert.AreEqual((byte)((buf[10] >> 4) & 0x7), msg.TkInfo.Version, "Ошибка в парсинге свойства TkInfo.Version");
         }
 
         /// <summary>
@@ -343,15 +349,14 @@ namespace Egse.Protocols.UnitTest
 
             Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
 
-            byte[] test = buf.Skip(14).ToArray().Take(1).ToArray();
+            byte[] test = buf.Skip(13).ToArray().Take(2).ToArray();
             CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
 
-           // Assert.AreEqual(0, msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
-           // Assert.AreEqual(0, msg.TkInfo.Flag, "Ошибка в парсинге свойства TkInfo.Flag");
-           // Assert.AreEqual(0, msg.TkInfo.Reserve, "Ошибка в парсинге свойства TkInfo.Reserve");
-           // Assert.AreEqual(0, msg.TkInfo.Service, "Ошибка в парсинге свойства TkInfo.Service");
-          //  Assert.AreEqual(0, msg.TkInfo.SubService, "Ошибка в парсинге свойства TkInfo.SubService");
-          //  Assert.AreEqual(0, msg.TkInfo.Version, "Ошибка в парсинге свойства TkInfo.Version");
+            Assert.AreEqual((byte)(buf[10] & 0xF), msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
+            Assert.AreEqual((byte)((buf[10] >> 7) & 0x1), msg.TkInfo.Flag, "Ошибка в парсинге свойства TkInfo.Flag");
+            Assert.AreEqual(buf[11], msg.TkInfo.Service, "Ошибка в парсинге свойства TkInfo.Service");
+            Assert.AreEqual(buf[12], msg.TkInfo.SubService, "Ошибка в парсинге свойства TkInfo.SubService");
+            Assert.AreEqual((byte)((buf[10] >> 4) & 0x7), msg.TkInfo.Version, "Ошибка в парсинге свойства TkInfo.Version");
         }
 
         /// <summary>
@@ -497,8 +502,14 @@ namespace Egse.Protocols.UnitTest
             SpacewireTkMsgEventArgs msg = new SpacewireTkMsgEventArgs(buf, 0x00, 0x00, 0x00);
 
             // проверяем результат парсинга данных кадра
-            byte[] test = buf.Skip(14).ToArray().Take(0xff4).ToArray();
+            byte[] test = buf.Skip(13).ToArray().Take(0xff5).ToArray();
             CollectionAssert.AreEqual(test, msg.Data, "Ошибка в парсинге данных кадра");
+
+            Assert.AreEqual((byte)(buf[10] & 0xF), msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
+            Assert.AreEqual((byte)((buf[10] >> 7) & 0x1), msg.TkInfo.Flag, "Ошибка в парсинге свойства TkInfo.Flag");
+            Assert.AreEqual(buf[11], msg.TkInfo.Service, "Ошибка в парсинге свойства TkInfo.Service");
+            Assert.AreEqual(buf[12], msg.TkInfo.SubService, "Ошибка в парсинге свойства TkInfo.SubService");
+            Assert.AreEqual((byte)((buf[10] >> 4) & 0x7), msg.TkInfo.Version, "Ошибка в парсинге свойства TkInfo.Version");
         }
 
         /// <summary>

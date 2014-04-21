@@ -1804,10 +1804,10 @@ namespace Egse.Devices
                 Task.Run(() =>
                 {
                     // задержка для получения текущих значений от прибора
-                    Task.Delay(2000);
+                    Task.Delay(1500);
+                    RefreshAllControlsValues();
                     Device.CmdSetDeviceLogicAddr();
                     Spacewire1Notify.SD1SendTime = 1000;
-                    RefreshAllControlsValues();
                 });
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
@@ -6101,7 +6101,7 @@ namespace Egse.Devices
             /// <summary>
             /// APID для формирования команды.
             /// </summary>
-            private short _setApid;
+            private short setApid = 0x610;
 
             /// <summary>
             /// Текущее значение Timetick1 от БУСК.
@@ -7289,12 +7289,12 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _setApid;
+                    return this.setApid;
                 }
 
                 set 
                 {
-                    _setApid = value;
+                    this.setApid = value;
                     FirePropertyChangedEvent();
                 }
             }

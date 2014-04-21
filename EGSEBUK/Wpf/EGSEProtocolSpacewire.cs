@@ -1633,36 +1633,6 @@ namespace Egse.Protocols
         public struct Tk
         {
             /// <summary>
-            /// Маска поля заголовка поля данных: Тип квитирования.
-            /// </summary>
-            private static readonly BitVector32.Section AcknowledgmentSection = BitVector32.CreateSection(0x0F);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Номер версии ТМ-пакета PUS.
-            /// </summary>
-            private static readonly BitVector32.Section VersionSection = BitVector32.CreateSection(0x07, AcknowledgmentSection);
-            
-            /// <summary>
-            /// Маска поля заголовка поля данных: Флаг вторичного заголовка CCSDS.
-            /// </summary>
-            private static readonly BitVector32.Section FlagSection = BitVector32.CreateSection(0x01, VersionSection);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Тип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section ServiceSection = BitVector32.CreateSection(0xFF, FlagSection);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Подтип сервиса.
-            /// </summary>
-            private static readonly BitVector32.Section SubServiceSection = BitVector32.CreateSection(0xFF, ServiceSection);
-
-            /// <summary>
-            /// Маска поля заголовка поля данных: Резерв.
-            /// </summary>
-            //! В ТК не используется !private static readonly BitVector32.Section ReserveSection = BitVector32.CreateSection(0xFF, SubServiceSection);
-
-            /// <summary>
             /// Агрегат доступа к icd заголовку.
             /// </summary>
             private Icd _icdHeader;
@@ -1670,7 +1640,13 @@ namespace Egse.Protocols
             /// <summary>
             /// Заголовок телекоманды.
             /// </summary>
-            private BitVector32 _header;
+            //private BitVector32 _header;
+
+            private byte flagVersionAcknowledgment;
+
+            private byte service;
+
+            private byte subService;
 
             /// <summary>
             /// Получает или задает агрегат доступа к заголовку icd.
@@ -1692,26 +1668,6 @@ namespace Egse.Protocols
             }
 
             /// <summary>
-            /// Получает или задает значение резервного байта.
-            /// </summary>
-            /// <value>
-            /// Значение резервного байта.
-            /// </value>
-            /* в ТК не используется
-            public byte Reserve
-            {
-                get
-                {
-                    return (byte)_header[ReserveSection];
-                }
-
-                set
-                {
-                    _header[ReserveSection] = (int)value;
-                }
-            }
-            */
-            /// <summary>
             /// Получает или задает тип сервиса.
             /// </summary>
             /// <value>
@@ -1721,12 +1677,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (byte)_header[ServiceSection];
+                    return this.service;
                 }
 
                 set
                 {
-                    _header[ServiceSection] = (int)value;
+                    this.service = value;
                 }
             }
 
@@ -1740,12 +1696,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (byte)_header[SubServiceSection];
+                    return this.subService;
                 }
 
                 set
                 {
-                    _header[SubServiceSection] = (int)value;
+                    this.subService = value;
                 }
             }
 
@@ -1759,12 +1715,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (byte)_header[AcknowledgmentSection];
+                    return (byte)(this.flagVersionAcknowledgment & 0xF);
                 }
 
                 set
                 {
-                    _header[AcknowledgmentSection] = (int)value;
+                    this.flagVersionAcknowledgment |= (byte)(value & 0xF);
                 }
             }
 
@@ -1778,12 +1734,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (byte)_header[VersionSection];
+                    return (byte)((this.flagVersionAcknowledgment >> 4) & 0x7);
                 }
 
                 set
                 {
-                    _header[VersionSection] = (int)value;
+                    this.flagVersionAcknowledgment |= (byte)((value & 0x7) << 4);
                 }
             }
 
@@ -1797,12 +1753,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (byte)_header[FlagSection];
+                    return (byte)((this.flagVersionAcknowledgment >> 7) & 0x1);
                 }
 
                 set
                 {
-                    _header[FlagSection] = (int)value;
+                    this.flagVersionAcknowledgment |= (byte)((value & 0x1) << 7);
                 }
             }
 
@@ -1814,7 +1770,7 @@ namespace Egse.Protocols
             /// </returns>
             public override string ToString()
             {
-                return string.Format(Resource.Get(@"stTkStringExt"), Flag, Version, Acknowledgment, Service, SubService, /*Reserve,*/ IcdInfo);
+                return string.Format(Resource.Get(@"stTkStringExt"), Flag, Version, Acknowledgment, Service, SubService, IcdInfo);
             }
 
             /// <summary>
@@ -1826,7 +1782,7 @@ namespace Egse.Protocols
             /// </returns>
             public string ToString(bool extended)
             {
-                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), Flag, Version, Acknowledgment, Service, SubService, /*Reserve,*/ IcdInfo.ToString(extended));
+                return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), Flag, Version, Acknowledgment, Service, SubService, IcdInfo.ToString(extended));
             }
         }      
     }
