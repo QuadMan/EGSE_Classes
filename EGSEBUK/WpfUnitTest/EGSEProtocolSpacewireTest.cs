@@ -462,7 +462,7 @@ namespace Egse.Protocols.UnitTest
             short apid = 612;
 
             Random rnd = new Random();
-            byte[] buf = new byte[6];
+            byte[] buf = new byte[16];
             rnd.NextBytes(buf);
 
             SpacewireTkMsgEventArgs msg = SpacewireTkMsgEventArgs.GetNew(buf, to, from, apid, true, true);
@@ -480,9 +480,7 @@ namespace Egse.Protocols.UnitTest
             Assert.AreEqual(0, msg.IcdInfo.Counter, "Ошибка в парсинге свойства IcdInfo.Counter");
             Assert.AreEqual(SpacewireTkMsgEventArgs.IcdFlag.HeaderFill, msg.IcdInfo.Flag, "Ошибка в парсинге свойства IcdInfo.Flag");
             Assert.AreEqual(3, msg.IcdInfo.Segment, "Ошибка в парсинге свойства IcdInfo.Segment");
-            Assert.AreEqual(6, msg.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
-
-            Assert.AreEqual((byte)((1 << 3) | 1), msg.TkInfo.Acknowledgment, "Ошибка в парсинге свойства TkInfo.Acknowledgment");
+            Assert.AreEqual(21, msg.IcdInfo.Size, "Ошибка в парсинге свойства IcdInfo.Size");
 
             string str = msg.TkInfo.ToString(false);
         }

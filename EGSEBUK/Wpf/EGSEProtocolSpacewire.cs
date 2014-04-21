@@ -1593,7 +1593,7 @@ namespace Egse.Protocols
             icdInfo.Apid = apid;
             icdInfo.Segment = 3;
             icdInfo.SptpInfo = sptpInfo;
-            icdInfo.Size = (ushort)data.Length;
+            icdInfo.Size = (ushort)(data.Length + 5);
             if (!_dict.ContainsKey(apid))
             {
                 _dict.Add(apid, new AutoCounter());

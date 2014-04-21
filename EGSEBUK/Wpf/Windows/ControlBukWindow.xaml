@@ -70,7 +70,7 @@
                           IsChecked="{Binding IsIssueTest}" />
             </StackPanel>
             <Button Grid.Column="8"
-                    Command="{Binding IssueGetFrame}"
+                    Command="{Binding IssueCmdGetFrame}"
                     Content="Выдать"
                     TabIndex="6" />
         </Grid>
