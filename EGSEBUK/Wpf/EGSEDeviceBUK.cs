@@ -5495,7 +5495,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = true;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[8] { 0, 12, 0, NumberLight, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)(LightTime) };
+                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 12, 0, NumberLight, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)(LightTime) };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
@@ -5511,7 +5511,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = true;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[8] { 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)(ShutterTime) };
+                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)(ShutterTime) };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
@@ -5531,12 +5531,12 @@ namespace Egse.Devices
                 {
                     case 1:
                         { 
-                            Owner.Spacewire2Notify.Data = new byte[6] { 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) }; 
+                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) }; 
                         }
                         break;
                     case 2: 
                         {
-                            Owner.Spacewire2Notify.Data = new byte[6] { 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) }; 
+                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) }; 
                         }
                         break;
                    default:
@@ -5557,7 +5557,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = true;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[4] { 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) };
+                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
@@ -5573,7 +5573,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = false;
                 Owner.Spacewire2Notify.IsConfirmReceipt = false;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[2] { 0, 5 };
+                Owner.Spacewire2Notify.Data = new byte[3] { 0, 0, 5 };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
@@ -5589,7 +5589,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = true;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[4] { 0, 1, 0, Convert.ToByte(IsIssueTest) };
+                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 1, 0, Convert.ToByte(IsIssueTest) };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
@@ -5605,7 +5605,7 @@ namespace Egse.Devices
                 Owner.Spacewire2Notify.IsConfirmExecution = false;
                 Owner.Spacewire2Notify.IsConfirmReceipt = true;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[8] { 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, Param2, Param3 };
+                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, Param2, Param3 };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
