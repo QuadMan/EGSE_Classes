@@ -61,7 +61,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1 арг.: должен быть {0}.
+        ///   Looks up a localized string similar to 1 арг.: {0}.
         /// </summary>
         internal static string eArg1 {
             get {
@@ -70,7 +70,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2 арг.: должен быть {0}.
+        ///   Looks up a localized string similar to 2 арг.: {0}.
         /// </summary>
         internal static string eArg2 {
             get {
@@ -79,7 +79,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 3 арг.: должен быть {0}.
+        ///   Looks up a localized string similar to 3 арг.: {0}.
         /// </summary>
         internal static string eArg3 {
             get {
@@ -88,7 +88,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 4 арг.: должен быть {0}.
+        ///   Looks up a localized string similar to 4 арг.: {0}.
         /// </summary>
         internal static string eArg4 {
             get {
@@ -97,7 +97,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 арг.: должен быть {0}.
+        ///   Looks up a localized string similar to 5 арг.: {0}.
         /// </summary>
         internal static string eArg5 {
             get {
@@ -106,7 +106,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 6 арг.: должен быть {0}.
+        ///   Looks up a localized string similar to 6 арг.: {0}.
         /// </summary>
         internal static string eArg6 {
             get {
@@ -115,7 +115,25 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ошибочное количество параметров команды!.
+        ///   Looks up a localized string similar to обнаружен дублирующий аргумент {0}.
+        /// </summary>
+        internal static string eArgUnique {
+            get {
+                return ResourceManager.GetString("eArgUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ошибка в посылке ({0}).
+        /// </summary>
+        internal static string eBadPackage {
+            get {
+                return ResourceManager.GetString("eBadPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибочное количество аргументов команды!.
         /// </summary>
         internal static string eParamCount {
             get {
@@ -124,11 +142,20 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Обнаружены дублирующие параметры!.
+        ///   Looks up a localized string similar to Обнаружены дублирующие аргументы!.
         /// </summary>
         internal static string eUnique {
             get {
                 return ResourceManager.GetString("eUnique", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to должен быть {0}.
+        /// </summary>
+        internal static string stNeedBy {
+            get {
+                return ResourceManager.GetString("stNeedBy", resourceCulture);
             }
         }
     }

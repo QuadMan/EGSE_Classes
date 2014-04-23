@@ -862,7 +862,6 @@ namespace Egse.Utilites
                     return new byte[] { };
                 }
 
-                // outBuf[i++] = (byte)Convert.ToInt32(hex, 16);
             }
 
             return outBuf;

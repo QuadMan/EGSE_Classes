@@ -118,27 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="eArg1" xml:space="preserve">
-    <value>1 арг.: должен быть {0}</value>
+    <value>1 арг.: {0}</value>
   </data>
   <data name="eArg2" xml:space="preserve">
-    <value>2 арг.: должен быть {0}</value>
+    <value>2 арг.: {0}</value>
   </data>
   <data name="eArg3" xml:space="preserve">
-    <value>3 арг.: должен быть {0}</value>
+    <value>3 арг.: {0}</value>
   </data>
   <data name="eArg4" xml:space="preserve">
-    <value>4 арг.: должен быть {0}</value>
+    <value>4 арг.: {0}</value>
   </data>
   <data name="eArg5" xml:space="preserve">
-    <value>5 арг.: должен быть {0}</value>
+    <value>5 арг.: {0}</value>
   </data>
   <data name="eArg6" xml:space="preserve">
-    <value>6 арг.: должен быть {0}</value>
+    <value>6 арг.: {0}</value>
+  </data>
+  <data name="eArgUnique" xml:space="preserve">
+    <value>обнаружен дублирующий аргумент {0}</value>
+  </data>
+  <data name="eBadPackage" xml:space="preserve">
+    <value>ошибка в посылке ({0})</value>
   </data>
   <data name="eParamCount" xml:space="preserve">
-    <value>Ошибочное количество параметров команды!</value>
+    <value>Ошибочное количество аргументов команды!</value>
   </data>
   <data name="eUnique" xml:space="preserve">
-    <value>Обнаружены дублирующие параметры!</value>
+    <value>Обнаружены дублирующие аргументы!</value>
+  </data>
+  <data name="stNeedBy" xml:space="preserve">
+    <value>должен быть {0}</value>
   </data>
 </root>

@@ -144,9 +144,7 @@ namespace Egse.Wpf
         {
             if (disposing && (this.mutex != null))
             {
-                this.mutex.ReleaseMutex();
                 this.mutex.Close();
-                this.mutex = null;
             }
         }
 

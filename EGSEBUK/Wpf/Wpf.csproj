@@ -388,9 +388,19 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SDWindow.xaml.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="CycDeveloperTest\CycDeveloperBm4ImitCmd.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperBukKvvImitCmd.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperBukDetectorImitCmd.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperBukBm4Imit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperBukKvvImit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperBukDetectorImit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperDetectorImit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperBm4ImitLog.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperKvvImit.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperDetectorImitLog.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperKvvImitLog.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperPower.cyc" />
+    <None Include="CycDeveloperTest\CycDeveloperBm4Imit.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperShutter.cyc" />
     <None Include="CycDeveloperTest\CycDeveloperUTF.cyc" />
     <None Include="CycDeveloperTest\CycExecuteTest.cyc" />

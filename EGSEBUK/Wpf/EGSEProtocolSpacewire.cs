@@ -1428,7 +1428,7 @@ namespace Egse.Protocols
         /// <summary>
         /// Агрегат доступа к заголовку телекоманды.
         /// </summary>
-        private Tk _telecmdInfo;
+        private Tk msgInfo;
 
         public override string ToString()
         {
@@ -1438,7 +1438,10 @@ namespace Egse.Protocols
         /// <summary>
         /// Данные телекоманды.
         /// </summary>
-        private byte[] _data;
+        private byte[] data;
+
+        private const int HeaderSize = 3;
+        private const int CrcSize = sizeof(ushort);
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireTkMsgEventArgs" />.
@@ -1458,7 +1461,7 @@ namespace Egse.Protocols
             
             try
             {
-                _telecmdInfo = Converter.MarshalTo<Tk>(data, out _data);
+                this.msgInfo = Converter.MarshalTo<Tk>(data, out this.data);
             }
             catch (Exception e)
             {
@@ -1476,7 +1479,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return _telecmdInfo;
+                return this.msgInfo;
             }
         }
 
@@ -1492,7 +1495,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return _telecmdInfo.IcdInfo;
+                return this.msgInfo.IcdInfo;
             }
         }
 
@@ -1506,7 +1509,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return _data.Take(_data.Length - 2).ToArray();
+                return this.data.Take(this.data.Length - 2).ToArray();
             }
         }
 
@@ -1520,7 +1523,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return (ushort)((_data[_data.Length - 2] << 8) | _data[_data.Length - 1]);
+                return (ushort)((this.data[this.data.Length - 2] << 8) | this.data[this.data.Length - 1]);
             }
         }
 
@@ -1593,7 +1596,7 @@ namespace Egse.Protocols
             icdInfo.Apid = apid;
             icdInfo.Segment = 3;
             icdInfo.SptpInfo = sptpInfo;
-            icdInfo.Size = (ushort)(data.Length + 5);
+            icdInfo.Size = (ushort)(data.Length + CrcSize + HeaderSize);
             if (!_dict.ContainsKey(apid))
             {
                 _dict.Add(apid, new AutoCounter());
@@ -1609,7 +1612,7 @@ namespace Egse.Protocols
             byte[] rawData = Converter.MarshalFrom<Tk>(telecmdInfo, ref data);
 
             ushort crc = Crc16.Get(rawData, rawData.Length, 4);
-            Array.Resize(ref rawData, rawData.Length + 2);
+            Array.Resize(ref rawData, rawData.Length + CrcSize);
             rawData[rawData.GetUpperBound(0) - 1] = (byte)(crc >> 8);
             rawData[rawData.GetUpperBound(0)] = (byte)crc;
             return new SpacewireTkMsgEventArgs(rawData, 0x00, 0x00);
@@ -1635,12 +1638,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Агрегат доступа к icd заголовку.
             /// </summary>
-            private Icd _icdHeader;
-
-            /// <summary>
-            /// Заголовок телекоманды.
-            /// </summary>
-            //private BitVector32 _header;
+            private Icd icdHeader;
 
             private byte flagVersionAcknowledgment;
 
@@ -1658,12 +1656,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return _icdHeader;
+                    return this.icdHeader;
                 }
 
                 set
                 {
-                    _icdHeader = value;
+                    this.icdHeader = value;
                 }
             }
 
@@ -1784,7 +1782,8 @@ namespace Egse.Protocols
             {
                 return extended ? this.ToString() : string.Format(Resource.Get(@"stTkString"), Flag, Version, Acknowledgment, Service, SubService, IcdInfo.ToString(extended));
             }
-        }      
+        }
+
     }
 
     /// <summary>
@@ -1795,7 +1794,7 @@ namespace Egse.Protocols
         /// <summary>
         /// Сообщение об ошибке.
         /// </summary>
-        private string _errorMsg;
+        private string errorMsg;
 
         public override string ToString()
         {
@@ -1813,7 +1812,7 @@ namespace Egse.Protocols
         public SpacewireErrorMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00, string msg = null)
             : base(data)
         {
-             _errorMsg = null == msg ? string.Empty : msg;   
+             this.errorMsg = null == msg ? string.Empty : msg;   
         }
 
         /// <summary>
@@ -1844,7 +1843,7 @@ namespace Egse.Protocols
         /// <returns>Строка сообщения об ошибке.</returns>
         public string ErrorMessage()
         {
-            return _errorMsg;
+            return this.errorMsg;
         }
     }
 
@@ -1911,7 +1910,7 @@ namespace Egse.Protocols
         /// <summary>
         /// Агрегат доступа к заголовку sptp-сообщения.
         /// </summary>
-        private Sptp _sptpInfo;
+        private Sptp msgInfo;
 
         /// <summary>
         /// Данные сообщения.
@@ -1941,7 +1940,7 @@ namespace Egse.Protocols
             
             try
             { 
-                _sptpInfo = Converter.MarshalTo<Sptp>(data, out _data);
+                this.msgInfo = Converter.MarshalTo<Sptp>(data, out _data);
             }
             catch (Exception e)
             {
@@ -1991,7 +1990,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return _sptpInfo;
+                return this.msgInfo;
             }
         }
 
@@ -2114,7 +2113,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Заголовок sptp-сообщения.
             /// </summary>
-            private BitVector32 _header;
+            private BitVector32 header;
 
             /// <summary>
             /// Получает или задает значение поля: Адрес прибора назначения.
@@ -2126,12 +2125,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (byte)_header[ToSection];
+                    return (byte)this.header[ToSection];
                 }
 
                 set
                 {
-                    _header[ToSection] = (int)value;
+                    this.header[ToSection] = (int)value;
                 }
             }
 
@@ -2145,12 +2144,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (SptpProtocol)_header[ProtocolIdSection];
+                    return (SptpProtocol)this.header[ProtocolIdSection];
                 }
 
                 set
                 {
-                    _header[ProtocolIdSection] = (int)value;
+                    this.header[ProtocolIdSection] = (int)value;
                 }
             }
 
@@ -2164,12 +2163,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (SptpType)_header[MsgTypeSection];
+                    return (SptpType)this.header[MsgTypeSection];
                 }
 
                 set
                 {
-                    _header[MsgTypeSection] = (int)value;
+                    this.header[MsgTypeSection] = (int)value;
                 }
             }
 
@@ -2183,12 +2182,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return (byte)_header[FromSection];
+                    return (byte)this.header[FromSection];
                 }
 
                 set
                 {
-                    _header[FromSection] = (int)value;
+                    this.header[FromSection] = (int)value;
                 }
             }
 
