@@ -12,17 +12,26 @@ namespace Egse.CustomAttributes
     using Egse.Utilites;
     using Egse.Devices;
 
-    [System.AttributeUsage(System.AttributeTargets.Field)]
+    [System.AttributeUsage(System.AttributeTargets.Field | System.AttributeTargets.Enum, Inherited = false)]
     public class ActionAttribute : System.Attribute
     {
         public Action<EgseBukNotify> Act { get; private set; }
-        
-        public ActionAttribute(Type hostingType, string hostingField)
+
+        public Action<EgseBukNotify, object> ActArg { get; private set; }
+
+        public ActionAttribute(Type hostingType, string hostingField, bool needArg = false)
         {
             System.Reflection.FieldInfo field = hostingType.GetField(hostingField);
             if (null != field)
             {
-                Act = (Action<EgseBukNotify>)field.GetValue(null);
+                if (needArg)
+                {
+                    ActArg = (Action<EgseBukNotify, object>)field.GetValue(null);
+                }
+                else
+                {
+                    Act = (Action<EgseBukNotify>)field.GetValue(null);
+                }                
             }
             else
             {
