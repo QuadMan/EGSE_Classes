@@ -141,6 +141,12 @@
   <data name="eBadPackage" xml:space="preserve">
     <value>ошибка в посылке ({0})</value>
   </data>
+  <data name="eDuplicate" xml:space="preserve">
+    <value>Команда уже была выполнена ранее: {0}</value>
+  </data>
+  <data name="eNop" xml:space="preserve">
+    <value>Нет команды для выполнения!</value>
+  </data>
   <data name="eParamCount" xml:space="preserve">
     <value>Ошибочное количество аргументов команды!</value>
   </data>

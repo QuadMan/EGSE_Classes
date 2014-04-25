@@ -15,12 +15,15 @@ namespace Egse.CustomAttributes
     [System.AttributeUsage(System.AttributeTargets.Field | System.AttributeTargets.Enum, Inherited = false)]
     public class ActionAttribute : System.Attribute
     {
+        private Type host;
+
         public Action<EgseBukNotify> Act { get; private set; }
 
         public Action<EgseBukNotify, object> ActArg { get; private set; }
 
         public ActionAttribute(Type hostingType, string hostingField, bool needArg = false)
         {
+            host = hostingType;
             System.Reflection.FieldInfo field = hostingType.GetField(hostingField);
             if (null != field)
             {

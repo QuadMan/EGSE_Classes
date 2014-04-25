@@ -82,7 +82,7 @@
                       VerticalAlignment="Center" 
                       HorizontalAlignment="Center"
                 Grid.Column="2"  
-                IsChecked="{Binding IsIssueEEP}" TabIndex="5"/>
+                IsChecked="{Binding IsIssueEep}" TabIndex="5"/>
             <Label Grid.Row="3"   
                 Grid.ColumnSpan="2"	
                 Content="Выдавать в конце посылки EOP или EEP"

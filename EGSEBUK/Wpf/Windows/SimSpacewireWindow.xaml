@@ -63,7 +63,7 @@
             <CheckBox Grid.Row="4"   VerticalAlignment="Center" HorizontalAlignment="Center"
                 Grid.Column="2"                                           	 
 
-                      IsChecked="{Binding IsSD1Trans}" TabIndex="1"  />
+                      IsChecked="{Binding IsIssueExchange}" TabIndex="1"  />
             <Label Grid.Row="5" Grid.ColumnSpan="2"
                 Content="Выдавать пакеты данных в прибор"
                 Template="{StaticResource FlatLabel}"/>

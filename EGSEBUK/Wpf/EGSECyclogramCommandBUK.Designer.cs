@@ -133,6 +133,24 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Команда уже была выполнена ранее: {0}.
+        /// </summary>
+        internal static string eDuplicate {
+            get {
+                return ResourceManager.GetString("eDuplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Нет команды для выполнения!.
+        /// </summary>
+        internal static string eNop {
+            get {
+                return ResourceManager.GetString("eNop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ошибочное количество аргументов команды!.
         /// </summary>
         internal static string eParamCount {

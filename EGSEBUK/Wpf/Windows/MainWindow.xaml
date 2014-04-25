@@ -273,8 +273,8 @@
                             <RadioButton HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          Content="ВКЛ "
-                                         GroupName="sdchshOpen"
-                                         IsChecked="{Binding IssueSdchshOpen,
+                                         GroupName="sdshOpen"
+                                         IsChecked="{Binding IssueSdshOpen,
                                                              ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="15" />
@@ -283,8 +283,8 @@
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          Content="ВЫКЛ "
-                                         GroupName="sdchshOpen"
-                                         IsChecked="{Binding IssueSdchshOpen,
+                                         GroupName="sdshOpen"
+                                         IsChecked="{Binding IssueSdshOpen,
                                                              ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="16" />
@@ -348,8 +348,8 @@
                             <RadioButton HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          Content="ВКЛ "
-                                         GroupName="sdchshClose"
-                                         IsChecked="{Binding IssueSdchshClose,
+                                         GroupName="sdshClose"
+                                         IsChecked="{Binding IssueSdshClose,
                                                              ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="21" />
@@ -358,8 +358,8 @@
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center"
                                          Content="ВЫКЛ "
-                                         GroupName="sdchshClose"
-                                         IsChecked="{Binding IssueSdchshClose,
+                                         GroupName="sdshClose"
+                                         IsChecked="{Binding IssueSdshClose,
                                                              ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="22" />

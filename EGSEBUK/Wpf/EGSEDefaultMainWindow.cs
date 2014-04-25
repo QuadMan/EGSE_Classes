@@ -51,8 +51,15 @@ namespace Egse.Defaults
         {
             Type enumType = value.GetType();
             FieldInfo field = enumType.GetField(value.ToString());
-            object[] attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            return attributes.Length == 0 ? value.ToString() : ((DescriptionAttribute)attributes[0]).Description;
+            if (null != field)
+            {
+                object[] attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                return attributes.Length == 0 ? value.ToString() : ((DescriptionAttribute)attributes[0]).Description;
+            }
+            else
+            {
+                return value.ToString();
+            }
         }
 
         /// <summary>

@@ -85,7 +85,7 @@
                       Grid.Column="2"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      IsChecked="{Binding IsIssueTimeMark}"
+                      IsChecked="{Binding IsIssueTickTime}"
                       TabIndex="4" />
             <Label Grid.Row="7"
                    Grid.ColumnSpan="2"
@@ -98,10 +98,8 @@
                       Grid.Column="2"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      IsChecked="{Binding IsIssueKbv}"
-                      TabIndex="5"
-                      Tag="{Binding IsIssueKbv,
-                                    Converter={StaticResource BoolToIndexConverter}}" />
+                      IsChecked="{Binding IsIssueObt}"
+                      TabIndex="5" />
             <Label Grid.Row="5"
                    Grid.ColumnSpan="2"
                    Content="Обмен с прибором"
@@ -113,7 +111,7 @@
                       Grid.Column="2"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      IsChecked="{Binding IsIssueTrans}"
+                      IsChecked="{Binding IsIssueExchange}"
                       TabIndex="3" />
         </Grid>
         <Grid Grid.Row="1">

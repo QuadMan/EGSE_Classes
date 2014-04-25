@@ -17,7 +17,9 @@ namespace Egse.Cyclogram.Command
     using System.Linq.Expressions;
     using System.Windows;
     using System.Globalization;
-
+using System.Threading.Tasks;
+    using System.ComponentModel;
+    using Egse.Defaults;
     /// <summary>
     /// Инициализирует набор доступных цикломанд для устройства.
     /// </summary>
@@ -49,7 +51,7 @@ namespace Egse.Cyclogram.Command
         {
             try
             {
-                IncludeExec<ErrorEndPoint, HexPackage>(cmdParams.ToList());
+                IncludeExec<ErrorEndPoint, HexPackageBukDetectorImit>(cmdParams.ToList());
                 return true;
             }
             catch
@@ -75,7 +77,7 @@ namespace Egse.Cyclogram.Command
 
             if (2 > cmdParams.Length)
             {
-                if (!IncludeTest<HexPackage>(cmdParams[0], out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBukDetectorImit>(cmdParams[0], out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
@@ -84,13 +86,13 @@ namespace Egse.Cyclogram.Command
                 return !isParamCountErr;
             }
 
-            if (!IncludeTest<ErrorEndPoint, HexPackage>(cmdParams[0], out errParam, ref uniParam))
+            if (!IncludeTest<ErrorEndPoint, HexPackageBukDetectorImit>(cmdParams[0], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg1"), errParam);
                 return false;
             }
 
-            if (!IncludeTest<HexPackage>(cmdParams[1], out errParam, ref uniParam))
+            if (!IncludeTest<HexPackageBukDetectorImit>(cmdParams[1], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg2"), errParam);
                 return false;
@@ -103,7 +105,7 @@ namespace Egse.Cyclogram.Command
 
             if (!NeedTest<ErrorEndPoint>(cmdParams[0], out errParam, ref uniParam))
             {
-                if (!IncludeTest<HexPackage>(cmdParams, out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBukDetectorImit>(cmdParams, out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
@@ -111,7 +113,7 @@ namespace Egse.Cyclogram.Command
             }
             else
             {
-                if (!IncludeTest<HexPackage>(cmdParams.Skip(1).ToArray(), out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBukDetectorImit>(cmdParams.Skip(1).ToArray(), out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg2"), errParam);
                     return false;
@@ -174,7 +176,7 @@ namespace Egse.Cyclogram.Command
         {
             try
             {
-                IncludeExec<SwitcherBukBm4Imit, Exchange, Data, Time>(cmdParams.ToList());
+                IncludeExec<SwitcherBukBm4Imit, ExchangeBukBm4Imit, Data, Time>(cmdParams.ToList());
                 return true;
             }
             catch
@@ -216,7 +218,7 @@ namespace Egse.Cyclogram.Command
                 return !isParamCountErr;
             }
 
-            if (!IncludeTest<Exchange, Data, Time>(cmdParams[1], out errParam, ref uniParam))
+            if (!IncludeTest<ExchangeBukBm4Imit, Data, Time>(cmdParams[1], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg2"), errParam);
                 return false;
@@ -584,87 +586,475 @@ namespace Egse.Cyclogram.Command
 
         public static class Execut
         {
-            public static readonly Action<EgseBukNotify> BinLogKvvImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinLogKvvImitOn"); });
-            public static readonly Action<EgseBukNotify> BinLogKvvImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinLogKvvImitOff"); });
-            public static readonly Action<EgseBukNotify> BinLogDetectorImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinLogDetectorImitOn"); });
-            public static readonly Action<EgseBukNotify> BinLogDetectorImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinLogDetectorImitOff"); });
-            public static readonly Action<EgseBukNotify> BinLogBm4ImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinLogBm4ImitOn"); });
-            public static readonly Action<EgseBukNotify> BinLogBm4ImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed BinLogBm4ImitOff"); });
-            public static readonly Action<EgseBukNotify> TxtLogDetectorImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtLogDetectorImitOn"); });
-            public static readonly Action<EgseBukNotify> TxtLogDetectorImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtLogDetectorImitOff"); });
-            public static readonly Action<EgseBukNotify> TxtLogBm4ImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtLogBm4ImitOn"); });
-            public static readonly Action<EgseBukNotify> TxtLogBm4ImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtLogBm4ImitOff"); });
-            public static readonly Action<EgseBukNotify> TxtLogKvvImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtLogKvvImitOn"); });
-            public static readonly Action<EgseBukNotify> TxtLogKvvImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TxtLogKvvImitOff"); });            
-            public static readonly Action<EgseBukNotify> ExchangeOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ExchangeOn"); });
-            public static readonly Action<EgseBukNotify> ExchangeOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ExchangeOff"); });
-            public static readonly Action<EgseBukNotify> IssueEep = new Action<EgseBukNotify>(x => { MessageBox.Show("executed IssueEep"); });
-            public static readonly Action<EgseBukNotify> DeviceBusk = new Action<EgseBukNotify>(x => { MessageBox.Show("executed DeviceBusk"); });
-            public static readonly Action<EgseBukNotify> DeviceBuk = new Action<EgseBukNotify>(x => { MessageBox.Show("executed DeviceBuk"); });
-            public static readonly Action<EgseBukNotify> DeviceBund = new Action<EgseBukNotify>(x => { MessageBox.Show("executed DeviceBund"); });
-            public static readonly Action<EgseBukNotify> SwitcherBm4ImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherBm4ImitOn"); });
-            public static readonly Action<EgseBukNotify> SwitcherBm4ImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherBm4ImitOff"); });
-            public static readonly Action<EgseBukNotify> SwitcherDetectorImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherDetectorImitOn"); });
-            public static readonly Action<EgseBukNotify> SwitcherDetectorImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherDetectorImitOff"); });
-            public static readonly Action<EgseBukNotify> SwitcherBukBm4ImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherBukBm4ImitOn"); });
-            public static readonly Action<EgseBukNotify> SwitcherBukBm4ImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherBukBm4ImitOff"); });
-            public static readonly Action<EgseBukNotify> SwitcherBukDetectorImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherBukDetectorImitOn"); });
-            public static readonly Action<EgseBukNotify> SwitcherBukDetectorImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherBukDetectorImitOff"); });
-            public static readonly Action<EgseBukNotify> SwitcherPowerOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherPowerOn"); });
-            public static readonly Action<EgseBukNotify> SwitcherPowerOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherPowerOff"); });
-            public static readonly Action<EgseBukNotify> SwitcherKvvImitOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherKvvImitOn"); });
-            public static readonly Action<EgseBukNotify> SwitcherKvvImitOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SwitcherKvvImitOff"); });                                                            
-            public static readonly Action<EgseBukNotify> StateReady = new Action<EgseBukNotify>(x => { MessageBox.Show("executed StateReady"); });
-            public static readonly Action<EgseBukNotify> StateBusy = new Action<EgseBukNotify>(x => { MessageBox.Show("executed StateBusy"); });
-            public static readonly Action<EgseBukNotify> StateMe = new Action<EgseBukNotify>(x => { MessageBox.Show("executed StateMe"); });
-            public static readonly Action<EgseBukNotify> ScidevDetectorImitUfes = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ScidevDetectorImitUfes"); });
-            public static readonly Action<EgseBukNotify> ScidevDetectorImitVufes = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ScidevDetectorImitVufes"); });
-            public static readonly Action<EgseBukNotify> ScidevDetectorImitSdsh = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ScidevDetectorImitSdsh"); });
-            public static readonly Action<EgseBukNotify> ScidevShutterUfes = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ScidevShutterUfes"); });
-            public static readonly Action<EgseBukNotify> ScidevShutterVufes = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ScidevShutterVufes"); });
-            public static readonly Action<EgseBukNotify> ScidevShutterSdsh = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ScidevShutterSdsh"); });            
-            public static readonly Action<EgseBukNotify> HalfsetDetectorImitMain = new Action<EgseBukNotify>(x => { MessageBox.Show("executed HalfsetDetectorImitMain"); });
-            public static readonly Action<EgseBukNotify> HalfsetDetectorImitResv = new Action<EgseBukNotify>(x => { MessageBox.Show("executed HalfsetDetectorImitResv"); });
-            public static readonly Action<EgseBukNotify> HalfsetKvvImitMain = new Action<EgseBukNotify>(x => { MessageBox.Show("executed HalfsetKvvImitMain"); });
-            public static readonly Action<EgseBukNotify> HalfsetKvvImitResv = new Action<EgseBukNotify>(x => { MessageBox.Show("executed HalfsetKvvImitResv"); });
-            public static readonly Action<EgseBukNotify> HalfsetKvvImitBoth = new Action<EgseBukNotify>(x => { MessageBox.Show("executed HalfsetKvvImitBoth"); });
-            public static readonly Action<EgseBukNotify> HalfsetKvvImitNone = new Action<EgseBukNotify>(x => { MessageBox.Show("executed HalfsetKvvImitNone"); });
-            public static readonly Action<EgseBukNotify> LineA = new Action<EgseBukNotify>(x => { MessageBox.Show("executed LineA"); });
-            public static readonly Action<EgseBukNotify> LineB = new Action<EgseBukNotify>(x => { MessageBox.Show("executed LineB"); });
-            public static readonly Action<EgseBukNotify> LineAB = new Action<EgseBukNotify>(x => { MessageBox.Show("executed LineAB"); });
-            public static readonly Action<EgseBukNotify> ControlAuto = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ControlAuto"); });
-            public static readonly Action<EgseBukNotify> ChannelCh1_1 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ChannelCh1_1"); });
-            public static readonly Action<EgseBukNotify> ChannelCh1_2 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ChannelCh1_2"); });
-            public static readonly Action<EgseBukNotify> ChannelCh2_1 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ChannelCh2_1"); });
-            public static readonly Action<EgseBukNotify> ChannelCh2_2 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ChannelCh2_2"); });
-            public static readonly Action<EgseBukNotify> CommandTele = new Action<EgseBukNotify>(x => { MessageBox.Show("executed CommandTele"); });
-            public static readonly Action<EgseBukNotify> PollOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed PollOn"); });
-            public static readonly Action<EgseBukNotify> PollOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed PollOff"); });
-            public static readonly Action<EgseBukNotify> DataOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed DataOn"); });
-            public static readonly Action<EgseBukNotify> DataOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed DataOff"); });
-            public static readonly Action<EgseBukNotify, object> TimeArg = new Action<EgseBukNotify, object>((x, obj) => { MessageBox.Show("executed TimeArg:" + (int)obj); });
-            public static readonly Action<EgseBukNotify> MarkReceipt = new Action<EgseBukNotify>(x => { MessageBox.Show("executed MarkReceipt"); });
-            public static readonly Action<EgseBukNotify> MarkExecut = new Action<EgseBukNotify>(x => { MessageBox.Show("executed MarkExecut"); });
-            public static readonly Action<EgseBukNotify> CmdActivate1 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed CmdActivate1"); });
-            public static readonly Action<EgseBukNotify> CmdActivate2 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed CmdActivate2"); });
-            public static readonly Action<EgseBukNotify, object> ApidArg = new Action<EgseBukNotify, object>((x, obj) => { MessageBox.Show("executed ApidArg:" + (int)obj); });
-            public static readonly Action<EgseBukNotify> ReceiveMain = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ReceiveMain"); });
-            public static readonly Action<EgseBukNotify> ReceiveResv = new Action<EgseBukNotify>(x => { MessageBox.Show("executed ReceiveResv"); });
-            public static readonly Action<EgseBukNotify> SendMain = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SendMain"); });
-            public static readonly Action<EgseBukNotify> SendResv = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SendResv"); });
-            public static readonly Action<EgseBukNotify> TickOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TickOn"); });
-            public static readonly Action<EgseBukNotify> TickOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed TickOff"); });
-            public static readonly Action<EgseBukNotify> SensorOpenOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SensorOpenOn"); });
-            public static readonly Action<EgseBukNotify> SensorOpenOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SensorOpenOff"); });
-            public static readonly Action<EgseBukNotify> SensorCloseOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SensorCloseOn"); });
-            public static readonly Action<EgseBukNotify> SensorCloseOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SensorCloseOff"); });
-            public static readonly Action<EgseBukNotify> OnBoardTimeOn = new Action<EgseBukNotify>(x => { MessageBox.Show("executed OnBoardTimeOn"); });
-            public static readonly Action<EgseBukNotify> OnBoardTimeOff = new Action<EgseBukNotify>(x => { MessageBox.Show("executed OnBoardTimeOff"); });
-            public static readonly Action<EgseBukNotify> SetsPower1 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SetsPower1"); });
-            public static readonly Action<EgseBukNotify> SetsPower2 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SetsPower2"); });
-            public static readonly Action<EgseBukNotify> SetsKvvImit1 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SetsKvvImit1"); });
-            public static readonly Action<EgseBukNotify> SetsKvvImit2 = new Action<EgseBukNotify>(x => { MessageBox.Show("executed SetsKvvImit2"); });
-            public static readonly Action<EgseBukNotify, object> HexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { MessageBox.Show("executed HexPackageArg: " + string.Join(" ", (obj as List<string>))); });
+            internal static void ClearTransaction()
+            {
+                Transaction = 0;
+            }
+
+            private enum KvvImitTransaction : ushort
+            {
+                Set1 = 0x01,
+                Set2 = 0x02,
+                On = 0x04,
+                Off = 0x08,
+                Main = 0x10,
+                Resv = 0x20,
+                Both = 0x40,
+                None = 0x80,
+                Ready = 0x100,
+                Busy = 0x200,
+                Me = 0x400,
+            }
+
+            private enum ShutterTransaction : ushort
+            {
+                Ufes = 0x01,
+                Vufes = 0x02,
+                Sdsh = 0x04,
+                SensOpenOn = 0x08,
+                SensOpenOff = 0x10,
+                SensCloseOn = 0x20,
+                SensCloseOff = 0x40
+            }
+
+            private enum Bm4ImitCmdTransaction : ushort
+            {
+                Tele = 0x01,
+                Receipt = 0x02,
+                Execut = 0x04
+            }
+
+            private enum PowerTransaction : ushort
+            {
+                Busk = 0x01,
+                Bund = 0x02,
+                Set1 = 0x04,
+                Set2 = 0x08,
+                On = 0x10,
+                Off = 0x20,
+                [Description("включить БУСК ПК1")]
+                BuskSet1On = Busk | Set1 | On,
+                [Description("выключить БУСК ПК1")]
+                BuskSet1Off = Busk | Set1 | Off,
+                [Description("включить БУНД ПК1")]
+                BundSet1On = Bund | Set1 | On,
+                [Description("выключить БУНД ПК1")]
+                BundSet1Off = Bund | Set1 | Off,
+                [Description("включить БУСК ПК2")]
+                BuskSet2On = Busk | Set2 | On,
+                [Description("выключить БУСК ПК2")]
+                BuskSet2Off = Busk | Set2 | Off,
+                [Description("включить БУНД ПК2")]
+                BundSet2On = Bund | Set2 | On,
+                [Description("выключить БУНД ПК2")]
+                BundSet2Off = Bund | Set2 | Off
+            }
+            private static ushort Transaction;
+
+            private static void ShutterTransactionExec(EgseBukNotify x, ushort Transaction)
+            {
+                Enum en = (ShutterTransaction)Transaction;
+                if (en.HasFlag(ShutterTransaction.Ufes))
+                {
+                    if (en.HasFlag(ShutterTransaction.SensOpenOn))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueUfesOpen = EgseBukNotify.DevEnabled.On;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensOpenOff))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueUfesOpen = EgseBukNotify.DevEnabled.Off;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensCloseOn))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueUfesClose = EgseBukNotify.DevEnabled.On;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensCloseOff))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueUfesClose = EgseBukNotify.DevEnabled.Off;
+                    }
+
+                }
+                else if (en.HasFlag(ShutterTransaction.Vufes))
+                {
+                    if (en.HasFlag(ShutterTransaction.SensOpenOn))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueVufesOpen = EgseBukNotify.DevEnabled.On;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensOpenOff))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueVufesOpen = EgseBukNotify.DevEnabled.Off;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensCloseOn))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueVufesClose = EgseBukNotify.DevEnabled.On;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensCloseOff))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueVufesClose = EgseBukNotify.DevEnabled.Off;
+                    }
+
+                }
+                else if (en.HasFlag(ShutterTransaction.Sdsh))
+                {
+                    if (en.HasFlag(ShutterTransaction.SensOpenOn))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueSdshOpen = EgseBukNotify.DevEnabled.On;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensOpenOff))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueSdshOpen = EgseBukNotify.DevEnabled.Off;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensCloseOn))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueSdshClose = EgseBukNotify.DevEnabled.On;
+                    }
+                    else if (en.HasFlag(ShutterTransaction.SensCloseOff))
+                    {
+                        x.IsIssueManualShutter = true;
+                        x.IssueSdshClose = EgseBukNotify.DevEnabled.Off;
+                    }
+
+                }
+                
+            }
+
+            private static void KvvImitTransactionExec(EgseBukNotify x, ushort Transaction)
+            {
+                Enum en = (KvvImitTransaction)Transaction;
+                if (en.HasFlag(KvvImitTransaction.Set1))
+                {
+                    if (en.HasFlag(KvvImitTransaction.On))
+                    {
+                        x.HsiNotify.IsIssueEnable1 = true;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Off))
+                    {
+                        x.HsiNotify.IsIssueEnable1 = false;
+                    }
+
+                    if (en.HasFlag(KvvImitTransaction.Main))
+                    {
+                        x.HsiNotify.IssueLine1 = EgseBukNotify.Hsi.Line.Main;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Resv))
+                    {
+                        x.HsiNotify.IssueLine1 = EgseBukNotify.Hsi.Line.Resv;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Both))
+                    {
+                        x.HsiNotify.IssueLine1 = EgseBukNotify.Hsi.Line.Both;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.None))
+                    {
+                        x.HsiNotify.IssueLine1 = EgseBukNotify.Hsi.Line.None;
+                    }
+
+                    if (en.HasFlag(KvvImitTransaction.Ready))
+                    {
+                        x.HsiNotify.IsIssueReady1 = true;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Busy))
+                    {
+                        x.HsiNotify.IsIssueBusy1 = true;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Me))
+                    {
+                        x.HsiNotify.IsIssueMe1 = true;
+                    }
+                    else if (!en.HasFlag(KvvImitTransaction.Ready))
+                    {
+                        if (x.HsiNotify.IsIssueReady1)
+                        {
+                            x.HsiNotify.IsIssueReady1 = false;
+                        }
+                    }
+                    else if (!en.HasFlag(KvvImitTransaction.Busy))
+                    {
+                        if (x.HsiNotify.IsIssueBusy1)
+                        {
+                            x.HsiNotify.IsIssueBusy1 = false;
+                        }
+                    }
+                    else if (!en.HasFlag(KvvImitTransaction.Me))
+                    {
+                        if (x.HsiNotify.IsIssueMe1)
+                        {
+                            x.HsiNotify.IsIssueMe1 = false;
+                        }
+                    }
+                }
+                else if (en.HasFlag(KvvImitTransaction.Set2))
+                {
+                    if (en.HasFlag(KvvImitTransaction.On))
+                    {
+                        x.HsiNotify.IsIssueEnable2 = true;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Off))
+                    {
+                        x.HsiNotify.IsIssueEnable2 = false;
+                    }
+
+                    if (en.HasFlag(KvvImitTransaction.Main))
+                    {
+                        x.HsiNotify.IssueLine2 = EgseBukNotify.Hsi.Line.Main;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Resv))
+                    {
+                        x.HsiNotify.IssueLine2 = EgseBukNotify.Hsi.Line.Resv;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Both))
+                    {
+                        x.HsiNotify.IssueLine2 = EgseBukNotify.Hsi.Line.Both;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.None))
+                    {
+                        x.HsiNotify.IssueLine2 = EgseBukNotify.Hsi.Line.None;
+                    }
+
+                    if (en.HasFlag(KvvImitTransaction.Ready))
+                    {
+                        x.HsiNotify.IsIssueReady2 = true;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Busy))
+                    {
+                        x.HsiNotify.IsIssueBusy2 = true;
+                    }
+                    else if (en.HasFlag(KvvImitTransaction.Me))
+                    {
+                        x.HsiNotify.IsIssueMe2 = true;
+                    }
+                    else if (!en.HasFlag(KvvImitTransaction.Ready))
+                    {
+                        if (x.HsiNotify.IsIssueReady2)
+                        {
+                            x.HsiNotify.IsIssueReady2 = false;
+                        }
+                    }
+                    else if (!en.HasFlag(KvvImitTransaction.Busy))
+                    {
+                        if (x.HsiNotify.IsIssueBusy2)
+                        {
+                            x.HsiNotify.IsIssueBusy2 = false;
+                        }
+                    }
+                    else if (!en.HasFlag(KvvImitTransaction.Me))
+                    {
+                        if (x.HsiNotify.IsIssueMe2)
+                        {
+                            x.HsiNotify.IsIssueMe2 = false;
+                        }
+                    }
+                }
+            }
+
+            private static void PowerTransactionExec(EgseBukNotify x, ushort Transaction)
+            {
+                string msgOnError = string.Format(Resource.Get(@"eDuplicate"), ((PowerTransaction)Transaction).Description());
+                bool err = false; 
+                switch ((PowerTransaction)Transaction)
+                {
+                    case PowerTransaction.BuskSet1On:
+                        {
+                            if (!x.TelemetryNotify.IsPowerBusk1)
+                            {
+                                x.TelemetryNotify.IssuePowerBusk1Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;
+                            }
+                        }
+                        break;
+                    case PowerTransaction.BuskSet1Off:
+                        {
+                            if (x.TelemetryNotify.IsPowerBusk1)
+                            {
+                                x.TelemetryNotify.IssuePowerBusk1Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;
+                            }
+                        }
+                        break;
+                    case PowerTransaction.BundSet1On:
+                        {
+                            if (!x.TelemetryNotify.IsPowerBund1)
+                            {
+                                x.TelemetryNotify.IssuePowerBund1Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;
+                            }
+                        }
+                        break;
+                    case PowerTransaction.BundSet1Off:
+                        {
+                            if (x.TelemetryNotify.IsPowerBund1)
+                            {
+                                x.TelemetryNotify.IssuePowerBund1Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;
+                            }
+                        }
+                        break;
+                    case PowerTransaction.BuskSet2On:
+                    {
+                            if (!x.TelemetryNotify.IsPowerBusk2)
+                            {
+                                x.TelemetryNotify.IssuePowerBusk2Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;
+                            }
+                        }
+                        break;
+                    case PowerTransaction.BuskSet2Off:
+                    {
+                            if (x.TelemetryNotify.IsPowerBusk2)
+                            {
+                                x.TelemetryNotify.IssuePowerBusk2Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;
+                            }
+                        }
+                        break;
+                    case PowerTransaction.BundSet2On:
+                        {
+                            if (!x.TelemetryNotify.IsPowerBund2)
+                            {
+                                x.TelemetryNotify.IssuePowerBund2Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;
+                            }
+                        }
+                        break;
+                    case PowerTransaction.BundSet2Off:
+                        {
+                            if (x.TelemetryNotify.IsPowerBund2)
+                            {
+                                x.TelemetryNotify.IssuePowerBund2Command.Execute(null);
+                            }
+                            else
+                            {
+                                err = true;                                
+                            }
+                        }
+                        break;
+                    default:
+                        break;                    
+                }
+
+                if (err)
+                {
+                    Task.Run(() => { MessageBox.Show(msgOnError); });
+                }
+            }
+
+            public static readonly Action<EgseBukNotify> BinLogKvvImitOn = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveRawData = true; });
+            public static readonly Action<EgseBukNotify> BinLogKvvImitOff = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveRawData = false; });
+            public static readonly Action<EgseBukNotify> BinLogDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveRawData = true; });
+            public static readonly Action<EgseBukNotify> BinLogDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveRawData = false; });
+            public static readonly Action<EgseBukNotify> BinLogBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveRawData = true; });
+            public static readonly Action<EgseBukNotify> BinLogBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveRawData = false; });
+            public static readonly Action<EgseBukNotify> TxtLogDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveTxtData = true; });
+            public static readonly Action<EgseBukNotify> TxtLogDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveTxtData = false; });
+            public static readonly Action<EgseBukNotify> TxtLogBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveTxtData = true; });
+            public static readonly Action<EgseBukNotify> TxtLogBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveTxtData = false; });
+            public static readonly Action<EgseBukNotify> TxtLogKvvImitOn = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveTxtData = true; });
+            public static readonly Action<EgseBukNotify> TxtLogKvvImitOff = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveTxtData = false; });
+            public static readonly Action<EgseBukNotify> ExchangeBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueExchange = true; });
+            public static readonly Action<EgseBukNotify> ExchangeBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueExchange = false; });
+            public static readonly Action<EgseBukNotify> ExchangeBukBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueExchange = true; });
+            public static readonly Action<EgseBukNotify> ExchangeBukBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueExchange = false; });
+            public static readonly Action<EgseBukNotify> IssueEep = new Action<EgseBukNotify>(x => { x.Spacewire4Notify.IsIssueEep = true; });
+            public static readonly Action<EgseBukNotify> DeviceBusk = new Action<EgseBukNotify>(x => { Transaction |= (ushort)PowerTransaction.Busk; PowerTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> DeviceBuk = new Action<EgseBukNotify>(x => { Task.Run(() => { MessageBox.Show(Resource.Get(@"eNop")); }); });
+            public static readonly Action<EgseBukNotify> DeviceBund = new Action<EgseBukNotify>(x => { Transaction |= (ushort)PowerTransaction.Bund; PowerTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SwitcherBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueEnable = true; });
+            public static readonly Action<EgseBukNotify> SwitcherBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueEnable = false; });
+            public static readonly Action<EgseBukNotify> SwitcherDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsIssueEnable = true; });
+            public static readonly Action<EgseBukNotify> SwitcherDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsIssueEnable = false; });
+            public static readonly Action<EgseBukNotify> SwitcherBukBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueEnable = true; });
+            public static readonly Action<EgseBukNotify> SwitcherBukBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueEnable = false; });
+            public static readonly Action<EgseBukNotify> SwitcherBukDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire4Notify.IsIssueEnable = true; });
+            public static readonly Action<EgseBukNotify> SwitcherBukDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire4Notify.IsIssueEnable = false; });
+            public static readonly Action<EgseBukNotify> SwitcherPowerOn = new Action<EgseBukNotify>(x => { Transaction |= (ushort)PowerTransaction.On; PowerTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SwitcherPowerOff = new Action<EgseBukNotify>(x => { Transaction |= (ushort)PowerTransaction.Off; PowerTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SwitcherKvvImitOn = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.On; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SwitcherKvvImitOff = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Off; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> StateReady = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Ready; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> StateBusy = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Busy; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> StateMe = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Me; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> ScidevDetectorImitUfes = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueDetectorDevice = EgseBukNotify.Spacewire3.DetectorDevice.Ufes; });
+            public static readonly Action<EgseBukNotify> ScidevDetectorImitVufes = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueDetectorDevice = EgseBukNotify.Spacewire3.DetectorDevice.Vufes; });
+            public static readonly Action<EgseBukNotify> ScidevDetectorImitSdsh = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueDetectorDevice = EgseBukNotify.Spacewire3.DetectorDevice.Sdchsh; });
+            public static readonly Action<EgseBukNotify> ScidevShutterUfes = new Action<EgseBukNotify>(x => { Transaction |= (ushort)ShutterTransaction.Ufes; ShutterTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> ScidevShutterVufes = new Action<EgseBukNotify>(x => { Transaction |= (ushort)ShutterTransaction.Vufes; ShutterTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> ScidevShutterSdsh = new Action<EgseBukNotify>(x => { Transaction |= (ushort)ShutterTransaction.Sdsh; ShutterTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> HalfsetDetectorImitMain = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueHalfSet = EgseBukNotify.Spacewire3.HalfSet.Main; });
+            public static readonly Action<EgseBukNotify> HalfsetDetectorImitResv = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueHalfSet = EgseBukNotify.Spacewire3.HalfSet.Resv; });
+            public static readonly Action<EgseBukNotify> HalfsetKvvImitMain = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Main; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> HalfsetKvvImitResv = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Resv; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> HalfsetKvvImitBoth = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Both; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> HalfsetKvvImitNone = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.None; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> LineA = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = false; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = false; });
+            public static readonly Action<EgseBukNotify> LineB = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = false; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = false; x.TelemetryNotify.IsBundLineB = true; });
+            public static readonly Action<EgseBukNotify> LineAB = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = true; });
+            public static readonly Action<EgseBukNotify> ControlAuto = new Action<EgseBukNotify>(x => { x.IsIssueManualShutter = false; });
+            public static readonly Action<EgseBukNotify> ChannelCh1_1 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK1BM1; });
+            public static readonly Action<EgseBukNotify> ChannelCh1_2 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK1BM2; });
+            public static readonly Action<EgseBukNotify> ChannelCh2_1 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK2BM1; });
+            public static readonly Action<EgseBukNotify> ChannelCh2_2 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK2BM2; });
+            public static readonly Action<EgseBukNotify> CommandTele = new Action<EgseBukNotify>(x => { Transaction |= (ushort)Bm4ImitCmdTransaction.Tele; });
+            public static readonly Action<EgseBukNotify> PollOn = new Action<EgseBukNotify>(x => { x.HsiNotify.IsIssuePoll = true; });
+            public static readonly Action<EgseBukNotify> PollOff = new Action<EgseBukNotify>(x => { x.HsiNotify.IsIssuePoll = false; });
+            public static readonly Action<EgseBukNotify> DataOn = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsSD1TransData = true; });
+            public static readonly Action<EgseBukNotify> DataOff = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsSD1TransData = false; });
+            public static readonly Action<EgseBukNotify, object> TimeArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire1Notify.SD1SendTime = (int)obj; });
+            public static readonly Action<EgseBukNotify> MarkReceipt = new Action<EgseBukNotify>(x => { Transaction |= (ushort)Bm4ImitCmdTransaction.Receipt; });
+            public static readonly Action<EgseBukNotify> MarkExecut = new Action<EgseBukNotify>(x => { Transaction |= (ushort)Bm4ImitCmdTransaction.Execut; });
+            public static readonly Action<EgseBukNotify> CmdActivate1 = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueCmdEnable1Command.Execute(null); });
+            public static readonly Action<EgseBukNotify> CmdActivate2 = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueCmdEnable2Command.Execute(null); });
+            public static readonly Action<EgseBukNotify, object> ApidArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire2Notify.Apid = (short)obj; });
+            public static readonly Action<EgseBukNotify> ReceiveMain = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineRecv = EgseBukNotify.Hsi.SimLine.Main; });
+            public static readonly Action<EgseBukNotify> ReceiveResv = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineRecv = EgseBukNotify.Hsi.SimLine.Resv; });
+            public static readonly Action<EgseBukNotify> SendMain = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineSend = EgseBukNotify.Hsi.SimLine.Main; });
+            public static readonly Action<EgseBukNotify> SendResv = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineSend = EgseBukNotify.Hsi.SimLine.Resv; });
+            public static readonly Action<EgseBukNotify> TickOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueTickTime = true; });
+            public static readonly Action<EgseBukNotify> TickOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueTickTime = false; });
+            public static readonly Action<EgseBukNotify> SensorOpenOn = new Action<EgseBukNotify>(x => { Transaction |= (ushort)ShutterTransaction.SensOpenOn; ShutterTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SensorOpenOff = new Action<EgseBukNotify>(x => { Transaction |= (ushort)ShutterTransaction.SensOpenOff; ShutterTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SensorCloseOn = new Action<EgseBukNotify>(x => { Transaction |= (ushort)ShutterTransaction.SensCloseOn; ShutterTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SensorCloseOff = new Action<EgseBukNotify>(x => { Transaction |= (ushort)ShutterTransaction.SensCloseOff; ShutterTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> OnBoardTimeOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueObt = true; });
+            public static readonly Action<EgseBukNotify> OnBoardTimeOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueObt = false; });
+            public static readonly Action<EgseBukNotify> SetsPower1 = new Action<EgseBukNotify>(x => { Transaction |= (ushort)PowerTransaction.Set1; PowerTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SetsPower2 = new Action<EgseBukNotify>(x => { Transaction |= (ushort)PowerTransaction.Set2; PowerTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SetsKvvImit1 = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Set1; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify> SetsKvvImit2 = new Action<EgseBukNotify>(x => { Transaction |= (ushort)KvvImitTransaction.Set2; KvvImitTransactionExec(x, Transaction); });
+            public static readonly Action<EgseBukNotify, object> BukKvvImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.HsiNotify.Data = Converter.HexStrToByteArray(string.Join(@" ", (obj as List<string>))); x.HsiNotify.IssueCmdCommand.Execute(null); });
+            public static readonly Action<EgseBukNotify, object> BukDetectorImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire4Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", (obj as List<string>))); x.Spacewire4Notify.IssuePackageCommand.Execute(null); });
+            public static readonly Action<EgseBukNotify, object> Bm4ImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire2Notify.IsConfirmExecution = ((Bm4ImitCmdTransaction)Transaction).HasFlag(Bm4ImitCmdTransaction.Execut); x.Spacewire2Notify.IsConfirmReceipt = ((Bm4ImitCmdTransaction)Transaction).HasFlag(Bm4ImitCmdTransaction.Receipt); x.Spacewire2Notify.IsMakeTeleCmd = ((Bm4ImitCmdTransaction)Transaction).HasFlag(Bm4ImitCmdTransaction.Tele); x.Spacewire2Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", (obj as List<string>))); x.Spacewire2Notify.IssuePackageCommand.Execute(null); });
         }
 
         private enum BinLogKvvImit
@@ -694,15 +1084,23 @@ namespace Egse.Cyclogram.Command
             BIN_OFF
         }
 
-        private enum Exchange
+        private enum ExchangeBukBm4Imit
         {
-            [Action(typeof(Execut), "ExchangeOn")]
+            [Action(typeof(Execut), "ExchangeBukBm4ImitOn")]
             EXCHANGE_ON,
 
-            [Action(typeof(Execut), "ExchangeOff")]
+            [Action(typeof(Execut), "ExchangeBukBm4ImitOff")]
             EXCHANGE_OFF
         }
 
+        private enum ExchangeBm4Imit
+        {
+            [Action(typeof(Execut), "ExchangeBm4ImitOn")]
+            EXCHANGE_ON,
+
+            [Action(typeof(Execut), "ExchangeBm4ImitOff")]
+            EXCHANGE_OFF
+        }
 
         private enum ScidevDetectorImit
         {
@@ -926,9 +1324,19 @@ namespace Egse.Cyclogram.Command
             APID_hex
         }
 
-        [Action(typeof(Execut), "HexPackageArg", true)]
-        private enum HexPackage
+        [Action(typeof(Execut), "BukDetectorImitHexPackageArg", true)]
+        private enum HexPackageBukDetectorImit
         { }
+
+        [Action(typeof(Execut), "Bm4ImitHexPackageArg", true)]
+        private enum HexPackageBm4Imit
+        { }
+
+        [Action(typeof(Execut), "BukKvvImitHexPackageArg", true)]
+        private enum HexPackageBukKvvImit
+        { }
+
+        
 
         private enum Receive
         {
@@ -1054,7 +1462,17 @@ namespace Egse.Cyclogram.Command
                 return IncludeTest<TEnum>(cmd[0], out errStr, ref dupl, exclude, duplNeedTest);
             }
 
-            if (typeof(HexPackage) != typeof(TEnum))
+            if (typeof(HexPackageBukDetectorImit) != typeof(TEnum))
+            {
+                throw new ArgumentException(@"TEnum");
+            }
+
+            if (typeof(HexPackageBm4Imit) != typeof(TEnum))
+            {
+                throw new ArgumentException(@"TEnum");
+            }
+
+            if (typeof(HexPackageBukKvvImit) != typeof(TEnum))
             {
                 throw new ArgumentException(@"TEnum");
             }
@@ -1081,7 +1499,7 @@ namespace Egse.Cyclogram.Command
 
         private bool IncomePackage(Type testType, string cmd, out string errStr, ref List<string> list)
         {
-            if (typeof(HexPackage) == testType)
+            if ((typeof(HexPackageBukDetectorImit) == testType) || ((typeof(HexPackageBm4Imit) == testType)) || ((typeof(HexPackageBukKvvImit) == testType)))
             {
                 if ((cmd.Length % 2) > 0)
                 {
@@ -1205,7 +1623,7 @@ namespace Egse.Cyclogram.Command
 
         private bool IncludeExec<TEnum>(string cmd, ref List<string> cmds, TEnum[] exclude = null)
         {
-            if (typeof(HexPackage) == typeof(TEnum))
+            if ((typeof(HexPackageBukKvvImit) == typeof(TEnum)) || (typeof(HexPackageBukDetectorImit) == typeof(TEnum)) || (typeof(HexPackageBm4Imit) == typeof(TEnum)))
             {
                 return IncludeExecHexPackage<TEnum>(cmds.ToArray(), exclude);
             }
@@ -1249,6 +1667,8 @@ namespace Egse.Cyclogram.Command
 
         private void IncludeExec<TEnum1>(List<string> cmds, TEnum1[] exclude1 = null)
         {
+            Execut.ClearTransaction();
+
             foreach (string str in cmds)
             {
                 if (IncludeExec<TEnum1>(str, ref cmds, exclude1))
@@ -1261,6 +1681,8 @@ namespace Egse.Cyclogram.Command
 
         private void IncludeExec<TEnum1, TEnum2>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null)
         {
+            Execut.ClearTransaction();
+
             foreach (string str in cmds)
             {
                 if (IncludeExec<TEnum1>(str, ref cmds, exclude1))
@@ -1282,6 +1704,8 @@ namespace Egse.Cyclogram.Command
 
         private void IncludeExec<TEnum1, TEnum2, TEnum3>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null)
         {
+            Execut.ClearTransaction();
+
             foreach (string str in cmds)
             {
                 if (IncludeExec<TEnum1>(str, ref cmds, exclude1))
@@ -1312,6 +1736,8 @@ namespace Egse.Cyclogram.Command
 
         private void IncludeExec<TEnum1, TEnum2, TEnum3, TEnum4>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null)
         {
+            Execut.ClearTransaction();
+
             foreach (string str in cmds)
             {
                 if (IncludeExec<TEnum1>(str, ref cmds, exclude1))
@@ -1351,6 +1777,8 @@ namespace Egse.Cyclogram.Command
 
         private void IncludeExec<TEnum1, TEnum2, TEnum3, TEnum4, TEnum5>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null, TEnum5[] exclude5 = null)
         {
+            Execut.ClearTransaction();
+
             foreach (string str in cmds)
             {
                 if (IncludeExec<TEnum1>(str, ref cmds, exclude1))
@@ -1399,6 +1827,8 @@ namespace Egse.Cyclogram.Command
 
         private void IncludeExec<TEnum1, TEnum2, TEnum3, TEnum4, TEnum5, TEnum6>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null, TEnum5[] exclude5 = null, TEnum6[] exclude6 = null)
         {
+            Execut.ClearTransaction();
+
             foreach (string str in cmds)
             {
                 if (IncludeExec<TEnum1>(str, ref cmds, exclude1))
@@ -1924,7 +2354,7 @@ namespace Egse.Cyclogram.Command
                 return false;
             }
 
-            if (!IncludeTest<Exchange, Tick, OnBoardTime>(cmdParams[2], out errParam, ref uniParam))
+            if (!IncludeTest<ExchangeBm4Imit, Tick, OnBoardTime>(cmdParams[2], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg3"), errParam);
                 return false;
@@ -1973,7 +2403,7 @@ namespace Egse.Cyclogram.Command
         {
             try
             {
-                IncludeExec<Channel, SwitcherBm4Imit, Exchange, Tick, OnBoardTime>(cmdParams.ToList());
+                IncludeExec<Channel, SwitcherBm4Imit, ExchangeBm4Imit, Tick, OnBoardTime>(cmdParams.ToList());
                 return true;
             }
             catch
@@ -2005,7 +2435,7 @@ namespace Egse.Cyclogram.Command
 
             if (2 > cmdParams.Length)
             {
-                if (!IncludeTest<HexPackage>(cmdParams[0], out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBm4Imit>(cmdParams[0], out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
@@ -2014,13 +2444,13 @@ namespace Egse.Cyclogram.Command
                 return !isParamCountErr;
             }
 
-            if (!IncludeTest<Command, HexPackage>(cmdParams[0], out errParam, ref uniParam))
+            if (!IncludeTest<Command, HexPackageBm4Imit>(cmdParams[0], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg1"), errParam);
                 return false;
             }
 
-            if (!IncludeTest<Apid, Rece, Exec, HexPackage>(cmdParams[1], out errParam, ref uniParam))
+            if (!IncludeTest<Apid, Rece, Exec, HexPackageBm4Imit>(cmdParams[1], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg2"), errParam);
                 return false;
@@ -2031,7 +2461,7 @@ namespace Egse.Cyclogram.Command
                 return !isParamCountErr;
             }
 
-            if (!IncludeTest<Rece, Exec, HexPackage>(cmdParams[2], out errParam, ref uniParam))
+            if (!IncludeTest<Rece, Exec, HexPackageBm4Imit>(cmdParams[2], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg3"), errParam);
                 return false;
@@ -2042,7 +2472,7 @@ namespace Egse.Cyclogram.Command
                 return !isParamCountErr;
             }
 
-            if (!IncludeTest<Rece, Exec, HexPackage>(cmdParams[3], out errParam, ref uniParam))
+            if (!IncludeTest<Rece, Exec, HexPackageBm4Imit>(cmdParams[3], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg4"), errParam);
                 return false;
@@ -2050,7 +2480,7 @@ namespace Egse.Cyclogram.Command
 
             if (!NeedTest<Command>(cmdParams[0], out errParam, ref uniParam))
             {
-                if (!IncludeTest<HexPackage>(cmdParams, out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBm4Imit>(cmdParams, out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
@@ -2100,7 +2530,7 @@ namespace Egse.Cyclogram.Command
                     }
                 }
 
-                if (!IncludeTest<HexPackage>(cmdParams.Skip(skipCount).ToArray(), out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBm4Imit>(cmdParams.Skip(skipCount).ToArray(), out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg5"), errParam);
                     return false;
@@ -2120,7 +2550,7 @@ namespace Egse.Cyclogram.Command
         {
             try
             {
-                IncludeExec<Command, Apid, Rece, Exec, HexPackage>(cmdParams.ToList());
+                IncludeExec<Command, Apid, Rece, Exec, HexPackageBm4Imit>(cmdParams.ToList());
                 return true;
             }
             catch
@@ -2238,7 +2668,7 @@ namespace Egse.Cyclogram.Command
 
             if (2 > cmdParams.Length)
             {
-                if (!IncludeTest<HexPackage>(cmdParams[0], out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
@@ -2247,13 +2677,13 @@ namespace Egse.Cyclogram.Command
                 return !isParamCountErr;
             }
 
-            if (!IncludeTest<Activate, HexPackage>(cmdParams[0], out errParam, ref uniParam))
+            if (!IncludeTest<Activate, HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg1"), errParam);
                 return false;
             }
 
-            if (!IncludeTest<HexPackage>(cmdParams[1], out errParam, ref uniParam))
+            if (!IncludeTest<HexPackageBukKvvImit>(cmdParams[1], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg2"), errParam);
                 return false;
@@ -2266,7 +2696,7 @@ namespace Egse.Cyclogram.Command
 
             if (!NeedTest<Activate>(cmdParams[0], out errParam, ref uniParam))
             {
-                if (!IncludeTest<HexPackage>(cmdParams, out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBukKvvImit>(cmdParams, out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg1"), errParam);
                     return false;
@@ -2274,7 +2704,7 @@ namespace Egse.Cyclogram.Command
             }
             else
             {
-                if (!IncludeTest<HexPackage>(cmdParams.Skip(1).ToArray(), out errParam, ref uniParam))
+                if (!IncludeTest<HexPackageBukKvvImit>(cmdParams.Skip(1).ToArray(), out errParam, ref uniParam))
                 {
                     errString = string.Format(Resource.Get(@"eArg2"), errParam);
                     return false;
@@ -2294,7 +2724,7 @@ namespace Egse.Cyclogram.Command
         {
             try
             {
-                IncludeExec<Activate, HexPackage>(cmdParams.ToList());
+                IncludeExec<Activate, HexPackageBukKvvImit>(cmdParams.ToList());
                 return true;
             }
             catch

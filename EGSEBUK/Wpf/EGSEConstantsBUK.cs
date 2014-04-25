@@ -380,7 +380,7 @@ namespace Egse.Constants
                 /// <summary>
                 /// Индекс свойства [Опрос данных].
                 /// </summary>
-                public readonly string IssueRequest = "e7864f46ec024878919567582b165b12";
+                public readonly string IssuePoll = "e7864f46ec024878919567582b165b12";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
@@ -879,7 +879,7 @@ namespace Egse.Constants
                 /// <summary>
                 /// Индекс свойства [включение обмена прибора БС].
                 /// </summary>
-                public readonly string IssueTrans = "c227d91e647f4b90a1f69cd5e18638e5";
+                public readonly string IssueExchange = "c227d91e647f4b90a1f69cd5e18638e5";
 
                 /// <summary>
                 /// Индекс свойства [включить выдачу секундных меток (1PPS)].
@@ -1062,7 +1062,7 @@ namespace Egse.Constants
                 /// <summary>
                 /// Индекс свойства [EEP или EOP].
                 /// </summary>
-                public readonly string IssueEEP = "2dc3af5bdee944879a5ac25dd6a45e92";
+                public readonly string Eep = "2dc3af5bdee944879a5ac25dd6a45e92";
 
                 /// <summary>
                 /// Индекс свойства [Выдача в конце посылки EOP или EEP].
@@ -1271,12 +1271,12 @@ namespace Egse.Constants
             /// <summary>
             /// Индекс свойства [СДЩ: Датчики затворов: открытие].
             /// </summary>
-            public readonly string SdchshOpen = "29b4bbd9acbd4976a67a9198abd093d7";
+            public readonly string SdshOpen = "29b4bbd9acbd4976a67a9198abd093d7";
 
             /// <summary>
             /// Индекс свойства [СДЩ: Датчики затворов: закрытие].
             /// </summary>
-            public readonly string SdchshClose = "f45ba7d713994f2f80e67c92b67cbe87";
+            public readonly string SdshClose = "f45ba7d713994f2f80e67c92b67cbe87";
 
             /// <summary>
             /// Неявно преобразует объект к типу "строка". 
