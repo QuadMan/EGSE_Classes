@@ -1,7 +1,14 @@
-﻿namespace Egse.Wpf
+﻿//-----------------------------------------------------------------------
+// <copyright file="AppEntryPoint.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Коробейщиков Иван</author>
+//-----------------------------------------------------------------------
+
+namespace Egse.Wpf
 {
-    using Egse.Utilites;
     using System;
+    using Egse.Utilites;
 
     class AppEntryPoint
     {

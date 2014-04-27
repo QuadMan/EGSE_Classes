@@ -90,14 +90,6 @@ namespace Egse.Protocols.UnitTest
 
             Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
 
-            //Assert.AreEqual(0, msg.TmInfo.BitReserve, "Ошибка в парсинге свойства TmInfo.BitReserve");
-            //Assert.AreEqual(0, msg.TmInfo.Reserve, "Ошибка в парсинге свойства TmInfo.Reserve");
-            //Assert.AreEqual(0, msg.TmInfo.Service, "Ошибка в парсинге свойства TmInfo.Service");
-            //Assert.AreEqual(0, msg.TmInfo.SubBitReserve, "Ошибка в парсинге свойства TmInfo.SubBitReserve");
-            //Assert.AreEqual(0, msg.TmInfo.SubService, "Ошибка в парсинге свойства TmInfo.SubService");
-            //Assert.AreEqual(0, msg.TmInfo.Time, "Ошибка в парсинге свойства TmInfo.Time");
-            //Assert.AreEqual(0, msg.TmInfo.Version, "Ошибка в парсинге свойства TmInfo.Version");
-
             string str = msg.TmInfo.ToString(false);
         }
 

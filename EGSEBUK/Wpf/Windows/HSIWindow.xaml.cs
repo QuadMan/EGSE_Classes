@@ -67,6 +67,27 @@ namespace Egse.Defaults
             SendToMonitor(hsiMsg);
         }
 
+        /// <summary>
+        /// Вызывается когда [пришло УКС по протоколу ВСИ].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
+        public void OnHsiCmdMsg(object sender, HsiMsgEventArgs msg)
+        {
+            new { msg }.CheckNotNull();
+            string hsiMsg;
+            if (msg.Data.Length > 30)
+            {
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
+            }
+            else
+            {
+                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+            }
+
+            SendToMonitorCmd(hsiMsg);
+        }
+
         private void SendToMonitor(string txtMsg)
         {
             if (null != MonitorList && Visibility.Visible == this.Visibility)
@@ -87,26 +108,7 @@ namespace Egse.Defaults
             }            
         }
 
-        /// <summary>
-        /// Вызывается когда [пришло УКС по протоколу ВСИ].
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="msg">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-        public void OnHsiCmdMsg(object sender, HsiMsgEventArgs msg)
-        {
-            new { msg }.CheckNotNull(); 
-            string hsiMsg;
-            if (msg.Data.Length > 30)
-            {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
-            }
-            else
-            {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
-            }
 
-            SendToMonitorCmd(hsiMsg);
-        }
 
         private void SendToMonitorCmd(string txtMsg)
         {

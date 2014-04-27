@@ -1059,6 +1059,10 @@ namespace Egse.Devices
         /// </summary>
         private bool _isShowSimSD;
 
+        private bool isShowControlBuk;
+        private bool isShowTeleBuk;
+        private bool isShowTeleKvv;
+
         /// <summary>
         /// Время, пришедшее от прибора.
         /// </summary>
@@ -1201,9 +1205,6 @@ namespace Egse.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
-        private bool isShowControlBuk;
-        private bool isShowTeleBuk;
-        private bool isShowTeleKvv;
 
         /// <summary>
         /// Состояние прибора.
@@ -1303,10 +1304,10 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Получает значение, показывающее, что [включено ручное управление датчиками затворов].
+        /// Получает или задает значение, показывающее, что [включено ручное управление датчиками затворов].
         /// </summary>
         /// <value>
-        ///   <c>true</c> если [включено ручное управление датчиками затворов]; иначе, <c>false</c>.
+        /// <c>true</c> если [включено ручное управление датчиками затворов]; иначе, <c>false</c>.
         /// </value>
         public bool IsIssueManualShutter 
         { 
@@ -2503,7 +2504,7 @@ namespace Egse.Devices
             /// <summary>
             /// Сохранять данные в файл.
             /// </summary>
-            private bool _isSaveRawData;
+            private bool isSaveRawData;
 
             /// <summary>
             /// Имя файла данных.
@@ -2559,13 +2560,7 @@ namespace Egse.Devices
             /// Экземпляр команды на [включение КВВ ПК2].
             /// </summary>
             [field: NonSerialized]
-            private ICommand _issueEnable2Command;
-            
-            /// <summary>
-            /// Экземпляр команды на [включение опроса данных].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueRequestCommand;
+            private ICommand _issueEnable2Command;           
 
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
@@ -2719,10 +2714,10 @@ namespace Egse.Devices
             public byte[] Data { get; set; }
 
             /// <summary>
-            /// Получает значение, показывающее, [состояние статуса ПК1: готов].
+            /// Получает или задает значение, показывающее, что [установлено состояние статуса ПК1: готов].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [состояние статуса ПК1: готов]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлено состояние статуса ПК1: готов]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueReady1
             {
@@ -2733,6 +2728,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueReady1)
+                    {
+                        return;
+                    }
+
                     this.isIssueReady1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -2740,10 +2740,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, [состояние статуса ПК2: готов].
+            /// Получает или задает значение, показывающее, что [установлено состояние статуса ПК2: готов].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [состояние статуса ПК2: готов]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлено состояние статуса ПК2: готов]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueReady2
             {
@@ -2754,6 +2754,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueReady2)
+                    {
+                        return;
+                    }
+
                     this.isIssueReady2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -2761,10 +2766,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, [состояние статуса ПК1: занят].
+            /// Получает или задает значение, показывающее, что [установлено состояние статуса ПК1: занят].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [состояние статуса ПК1: занят]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлено состояние статуса ПК1: занят]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueBusy1
             {
@@ -2775,6 +2780,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueBusy1)
+                    {
+                        return;
+                    }
+
                     this.isIssueBusy1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -2782,10 +2792,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, [состояние статуса ПК2: занят].
+            /// Получает или задает значение, показывающее, что [установлено состояние статуса ПК2: занят].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [состояние статуса ПК2: занят]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлено состояние статуса ПК2: занят]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueBusy2
             {
@@ -2796,6 +2806,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueBusy2)
+                    {
+                        return;
+                    }
+
                     this.isIssueBusy2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -2830,10 +2845,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, [состояние статуса ПК1: me].
+            /// Получает или задает значение, показывающее, что [установлено состояние статуса ПК1: me].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [состояние статуса ПК1: me]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлено состояние статуса ПК1: me]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueMe1
             {
@@ -2844,6 +2859,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueMe1)
+                    {
+                        return;
+                    }
+
                     this.isIssueMe1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe1, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -2851,10 +2871,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, [состояние статуса ПК2: me].
+            /// Получает или задает значение, показывающее, что [установлено состояние статуса ПК2: me].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [состояние статуса ПК2: me]; иначе, <c>false</c>.
+            /// <c>true</c> если [установлено состояние статуса ПК2: me]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueMe2
             {
@@ -2865,6 +2885,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueMe2)
+                    {
+                        return;
+                    }
+
                     this.isIssueMe2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe2, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -2893,10 +2918,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [вкл КВВ ПК1].
+            /// Получает или задает значение, показывающее, что [включен КВВ ПК1].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [вкл КВВ ПК1]; иначе, <c>false</c>.
+            ///   <c>true</c> если [включен КВВ ПК1]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueEnable1
             {
@@ -2907,6 +2932,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueEnable1)
+                    {
+                        return;
+                    }
+
                     this.isIssueEnable1 = value;
                     ControlValuesList[Global.Hsi.Line1].SetProperty(Global.Hsi.Line1.IssueEnable, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -2933,7 +2963,7 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [включен КВВ ПК2].
+            /// Получает или задает значение, показывающее, что [включен КВВ ПК2].
             /// </summary>
             /// <value>
             /// <c>true</c> если [включен КВВ ПК2]; иначе, <c>false</c>.
@@ -2947,6 +2977,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueEnable2)
+                    {
+                        return;
+                    }
+
                     this.isIssueEnable2 = value;
                     ControlValuesList[Global.Hsi.Line2].SetProperty(Global.Hsi.Line2.IssueEnable, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -3035,21 +3070,26 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что запись в файл включена.
+            /// Получает или задает значение, показывающее, что [запись данных в файл включена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если требуется запись данных в файл; иначе, <c>false</c>.
+            /// <c>true</c> если [запись данных в файл включена]; иначе, <c>false</c>.
             /// </value>
             public bool IsSaveRawData 
             { 
                 get
                 {
-                    return _isSaveRawData;
+                    return this.isSaveRawData;
                 }
 
                 set  
                 {
-                    _isSaveRawData = value;
+                    if (value == this.isSaveRawData)
+                    {
+                        return;
+                    }
+
+                    this.isSaveRawData = value;
                     if (value)
                     {
                         RawDataFile = Owner.GetNewFileName(Resource.Get(@"stHsiLogName"));                    
@@ -3269,7 +3309,7 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [включен опрос данных].
+            /// Получает или задает значение, показывающее, что [включен опрос данных].
             /// </summary>
             /// <value>
             ///   <c>true</c> если [включен опрос данных]; иначе, <c>false</c>.
@@ -3283,6 +3323,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssuePoll)
+                    {
+                        return;
+                    }
+
                     this.isIssuePoll = value;
                     ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.IssuePoll, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -3884,10 +3929,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, нужно ли [передавать релейную команду] БУСК по линии A.
+            /// Получает или задает значение, показывающее, что [передавать релейную команду БУСК необходимо по линии А].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [передавать релейную команду]; иначе, <c>false</c>.
+            /// <c>true</c> если [передавать релейную команду БУСК необходимо по линии А]; иначе, <c>false</c>.
             /// </value>
             public bool IsBuskLineA
             {
@@ -3898,16 +3943,21 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isBuskLineA)
+                    {
+                        return;
+                    }
+
                     this.isBuskLineA = value;
                     FirePropertyChangedEvent();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, нужно ли [передавать релейную команду] БУСК по линии B.
+            /// Получает или задает значение, показывающее, что [передавать релейную команду БУСК необходимо по линии Б].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [передавать релейную команду]; иначе, <c>false</c>.
+            /// <c>true</c> если [передавать релейную команду БУСК необходимо по линии Б]; иначе, <c>false</c>.
             /// </value>
             public bool IsBuskLineB
             {
@@ -3918,16 +3968,21 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isBuskLineB)
+                    {
+                        return;
+                    }
+
                     this.isBuskLineB = value;
                     FirePropertyChangedEvent();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, нужно ли [передавать релейную команду] БУНД по линии A.
+            /// Получает или задает значение, показывающее, что [передавать релейную команду БУНД необходимо по линии А].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [передавать релейную команду]; иначе, <c>false</c>.
+            /// <c>true</c> если [передавать релейную команду БУНД необходимо по линии А]; иначе, <c>false</c>.
             /// </value>
             public bool IsBundLineA
             {
@@ -3938,16 +3993,21 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isBundLineA)
+                    {
+                        return;
+                    }
+
                     this.isBundLineA = value;
                     FirePropertyChangedEvent();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, нужно ли [передавать релейную команду] БУНД по линии B.
+            /// Получает или задает значение, показывающее, что [передавать релейную команду БУНД необходимо по линии Б].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [передавать релейную команду]; иначе, <c>false</c>.
+            /// <c>true</c> если [передавать релейную команду БУНД необходимо по линии Б]; иначе, <c>false</c>.
             /// </value>
             public bool IsBundLineB
             {
@@ -3958,6 +4018,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isBundLineB)
+                    {
+                        return;
+                    }
+
                     this.isBundLineB = value;
                     FirePropertyChangedEvent();
                 }
@@ -4673,24 +4738,6 @@ namespace Egse.Devices
             /// </summary>
             [field: NonSerialized]
             private ICommand _issuePackageCommand;
-            
-            /// <summary>
-            /// Экземпляр команды на [включение обмена для НП1].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueSD1TransCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [включение обмена для НП2].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueSD2TransCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [включение выдачи пакетов данных в НП1].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueSD1TransDataCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение выдачи пакетов данных в НП2].
@@ -4798,10 +4845,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [интерфейс SpaceWire1 включен].
+            /// Получает или задает значение, показывающее, что [интерфейс включен].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [интерфейс SpaceWire1 включен]; иначе, <c>false</c>.
+            /// <c>true</c> если [интерфейс включен]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueEnable
             {
@@ -4812,6 +4859,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueEnable)
+                    {
+                        return;
+                    }
+
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.IssueEnable, Convert.ToInt32(value));
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(0));
@@ -4860,10 +4912,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [включен обмен для прибора НП1].
+            /// Получает или задает значение, показывающее, что [включен обмен для имитатора детектора].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [включен обмен для прибора НП1]; иначе, <c>false</c>.
+            /// <c>true</c> если [включен обмен для имитатора детектора]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueExchange
             {
@@ -4874,6 +4926,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueExchange)
+                    {
+                        return;
+                    }
+
                     this.isIssueExchange = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD1Trans, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -4902,10 +4959,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [можно выдавать пакеты данных в НП1].
+            /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в имитатор детектора].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [можно выдавать пакеты данных в НП1]; иначе, <c>false</c>.
+            /// <c>true</c> если [можно выдавать пакеты данных в имитатор детектора]; иначе, <c>false</c>.
             /// </value>
             public bool IsSD1TransData
             {
@@ -4916,6 +4973,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isSD1TransData)
+                    {
+                        return;
+                    }
+
                     this.isSD1TransData = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD1TransData, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -5362,206 +5424,6 @@ namespace Egse.Devices
             }
 
 
-            private void DataSend(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                if ((null == DataBytes) || (250 < DataBytes.Length))
-                {
-                    System.Windows.MessageBox.Show(Resource.Get(@"eBadDataSendMsg"));
-                    return;
-                }
-
-                byte[] buf = new byte[DataBytes.Length + 5];
-                Array.Copy(DataBytes, 0, buf, 5, DataBytes.Length);
-                buf[0] = 0;
-                buf[1] = 14;
-                buf[2] = 0;
-                buf[3] = (byte)DataBytes.Length;
-                buf[4] = 0;
-                Owner.Spacewire2Notify.Data = buf;
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdSend(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                byte[] buf = new byte[4] { 0, 0, 0, 0 };
-                int i = 0;
-                if (null != CmdBytes)
-                {
-                    foreach (byte t in CmdBytes)
-                    {
-                        buf[i++] = t;
-                    }
-                }
-                Owner.Spacewire2Notify.Data = new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdLight(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 12, 0, NumberLight, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)(LightTime) };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdShutter(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)(ShutterTime) };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdConfig(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = false;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                switch (SelConf) 
-                {
-                    case 1:
-                        { 
-                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) }; 
-                        }
-                        break;
-                    case 2: 
-                        {
-                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) }; 
-                        }
-                        break;
-                   default:
-                        return;
-                }                
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdSelDetector(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdGetTele(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = false;
-                Owner.Spacewire2Notify.IsConfirmReceipt = false;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[3] { 0, 0, 5 };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdGetFrame(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 1, 0, Convert.ToByte(IsIssueTest) };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void CmdThreshold(object obj)
-            {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = false;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, Param2, Param3 };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
-                }
-                PopSpw2Prop();
-            }
-
-            private void PushSpw2Prop()
-            {
-                this.spw2Apid = Owner.Spacewire2Notify.Apid;
-                this.spw2IsNeedSaveData = Owner.Spacewire2Notify.IsNeedSaveData;
-                this.spw2Data = Owner.Spacewire2Notify.Data;
-                this.spw2IsConfirmExecution = Owner.Spacewire2Notify.IsConfirmExecution;
-                this.spw2IsConfirmReceipt = Owner.Spacewire2Notify.IsConfirmReceipt;
-                this.spw2IsMakeTeleCmd = Owner.Spacewire2Notify.IsMakeTeleCmd;
-            }
-
-            private void PopSpw2Prop()
-            {
-                Owner.Spacewire2Notify.Apid = this.spw2Apid;
-                Owner.Spacewire2Notify.IsNeedSaveData = this.spw2IsNeedSaveData;
-                Owner.Spacewire2Notify.Data = this.spw2Data;
-                Owner.Spacewire2Notify.IsConfirmExecution = this.spw2IsConfirmExecution;
-                Owner.Spacewire2Notify.IsConfirmReceipt = this.spw2IsConfirmReceipt;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = this.spw2IsMakeTeleCmd;
-            }
-
             public byte AlgoType
             {
                 get
@@ -5673,7 +5535,7 @@ namespace Egse.Devices
                     FirePropertyChangedEvent();
                 }
             }
-            
+
             public bool ExchangeConf
             {
                 get
@@ -5771,7 +5633,7 @@ namespace Egse.Devices
                     FirePropertyChangedEvent();
                 }
             }
-            
+
 
             public byte ModeConf
             {
@@ -5786,7 +5648,7 @@ namespace Egse.Devices
                     FirePropertyChangedEvent();
                 }
             }
-            
+
 
             public bool PwrDetector
             {
@@ -5865,9 +5727,211 @@ namespace Egse.Devices
 
                 private set
                 {
-                    this.isIssueTest = value;                   
+                    this.isIssueTest = value;
                     FirePropertyChangedEvent();
                 }
+            }
+            private void DataSend(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                if ((null == DataBytes) || (250 < DataBytes.Length))
+                {
+                    System.Windows.MessageBox.Show(Resource.Get(@"eBadDataSendMsg"));
+                    return;
+                }
+
+                byte[] buf = new byte[DataBytes.Length + 5];
+                Array.Copy(DataBytes, 0, buf, 5, DataBytes.Length);
+                buf[0] = 0;
+                buf[1] = 14;
+                buf[2] = 0;
+                buf[3] = (byte)DataBytes.Length;
+                buf[4] = 0;
+                Owner.Spacewire2Notify.Data = buf;
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdSend(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                byte[] buf = new byte[4] { 0, 0, 0, 0 };
+                int i = 0;
+                if (null != CmdBytes)
+                {
+                    foreach (byte t in CmdBytes)
+                    {
+                        buf[i++] = t;
+                    }
+                }
+                Owner.Spacewire2Notify.Data = new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdLight(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 12, 0, NumberLight, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)LightTime };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdShutter(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)ShutterTime };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdConfig(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = false;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                switch (SelConf) 
+                {
+                    case 1:
+                        { 
+                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) }; 
+                        }
+                        break;
+                    case 2: 
+                        {
+                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) }; 
+                        }
+                        break;
+                   default:
+                        return;
+                }                
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdSelDetector(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdGetTele(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = false;
+                Owner.Spacewire2Notify.IsConfirmReceipt = false;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[3] { 0, 0, 5 };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdGetFrame(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = true;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 1, 0, Convert.ToByte(IsIssueTest) };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+            private void CmdThreshold(object obj)
+            {
+                PushSpw2Prop();
+                Owner.Spacewire2Notify.IsNeedSaveData = false;
+                Owner.Spacewire2Notify.Apid = 0x610;
+                Owner.Spacewire2Notify.IsConfirmExecution = false;
+                Owner.Spacewire2Notify.IsConfirmReceipt = true;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
+                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, Param2, Param3 };
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                PopSpw2Prop();
+            }
+
+
+
+
+            private void PushSpw2Prop()
+            {
+                this.spw2Apid = Owner.Spacewire2Notify.Apid;
+                this.spw2IsNeedSaveData = Owner.Spacewire2Notify.IsNeedSaveData;
+                this.spw2Data = Owner.Spacewire2Notify.Data;
+                this.spw2IsConfirmExecution = Owner.Spacewire2Notify.IsConfirmExecution;
+                this.spw2IsConfirmReceipt = Owner.Spacewire2Notify.IsConfirmReceipt;
+                this.spw2IsMakeTeleCmd = Owner.Spacewire2Notify.IsMakeTeleCmd;
+            }
+
+            private void PopSpw2Prop()
+            {
+                Owner.Spacewire2Notify.Apid = this.spw2Apid;
+                Owner.Spacewire2Notify.IsNeedSaveData = this.spw2IsNeedSaveData;
+                Owner.Spacewire2Notify.Data = this.spw2Data;
+                Owner.Spacewire2Notify.IsConfirmExecution = this.spw2IsConfirmExecution;
+                Owner.Spacewire2Notify.IsConfirmReceipt = this.spw2IsConfirmReceipt;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = this.spw2IsMakeTeleCmd;
             }
         }
 
@@ -5879,6 +5943,16 @@ namespace Egse.Devices
                 : base(owner)
             {
             }
+
+
+            public byte[] KvvData
+            {
+                get
+                {
+                    return this.tmkvvData.Buffer;
+                }
+            }
+
             internal Egse.Protocols.SpacewireTm604MsgEventArgs.TmKvv TmKvvData
             {
                 get
@@ -5890,14 +5964,6 @@ namespace Egse.Devices
                 {
                     this.tmkvvData = value;
                     FirePropertyChangedEvent(string.Empty);
-                }
-            }
-
-            public byte[] KvvData
-            {
-                get
-                {
-                    return this.tmkvvData.Buffer;
                 }
             }
         }
@@ -5912,7 +5978,15 @@ namespace Egse.Devices
             {
 
             }
-           
+
+            public byte[] BukData
+            {
+                get
+                {
+                    return this.tmbukData.Buffer;
+                }
+            }
+
             internal Egse.Protocols.SpacewireTm604MsgEventArgs.TmBuk TmBukData           
             {
                 get
@@ -5927,13 +6001,6 @@ namespace Egse.Devices
                 }
             }
 
-            public byte[] BukData
-            {
-                get
-                {
-                    return this.tmbukData.Buffer;
-                }
-            }
         }
 
         /// <summary>
@@ -6060,7 +6127,7 @@ namespace Egse.Devices
             /// <summary>
             /// Сохранять данные в файл.
             /// </summary>
-            private bool _isSaveRawData;
+            private bool isSaveRawData;
 
             /// <summary>
             /// Имя файла данных.
@@ -6071,7 +6138,7 @@ namespace Egse.Devices
             /// Для асинхронной записи в файл.
             /// </summary>
             [field: NonSerialized]
-            private FileStream _rawDataStream;
+            private FileStream binDataStream;
 
             /// <summary>
             /// Квазиасинхронная запись в файл.
@@ -6079,7 +6146,7 @@ namespace Egse.Devices
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
             [field: NonSerialized]
-            private Task _rawDataTask;
+            private Task binDataTask;
 
             /// <summary>
             /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
@@ -6092,36 +6159,6 @@ namespace Egse.Devices
             /// </summary>
             [field: NonSerialized]
             private ICommand _issueRMapCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [формирование посылки телекоманды по интерфейсу spacewire].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueMakeTKCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [включение передачи метки времени по интерфейсу spacewire].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueTimeMarkCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [включение интерфейса spacewire].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand issueEnableCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [включение обмена для прибора БУК].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueTransCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [включение выдачи КБВ для прибора БУК].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueKbvCommand;
 
             /// <summary>
             /// Экземпляр команды на [открыть из файла].
@@ -6151,6 +6188,8 @@ namespace Egse.Devices
             /// </summary>
             private bool isConfirmExecution = true;
 
+            private bool isNeedSaveData = true;
+
             /// <summary>
             /// Список возможных apid-ов.
             /// </summary>
@@ -6167,6 +6206,7 @@ namespace Egse.Devices
             /// </summary>
             [field: NonSerialized]
             private Dictionary<short, AutoCounter> counterIcd;
+            private ICommand issueEnableCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire2" />.
@@ -6254,46 +6294,8 @@ namespace Egse.Devices
                 BukTime2 = 0x0b
             }
 
-            private bool isNeedSaveData = true;
 
-            internal bool IsNeedSaveData
-            {
-                get
-                {
-                    return this.isNeedSaveData;
-                }
-
-                set
-                {
-                    this.isNeedSaveData = value;
-                }
-            }
-
-            public byte[] MakeData()
-            {
-                if ((null != this.Data) && (0 < this.Data.Length))
-                {
-
-                    if (IsNeedSaveData)
-                    {
-                        DataToSaveList();
-                    }
-
-                    if (IsMakeTeleCmd)
-                    {
-                        return this.Data.ToTk((byte)LogicBuk, (byte)LogicBusk, Apid, IsConfirmReceipt, IsConfirmExecution).ToArray();
-                    }
-                    else
-                    {
-                        return this.Data.ToSptp((byte)LogicBuk, (byte)LogicBusk).ToArray();
-                    }
-                }
-                else
-                {
-                    return new byte[] { };
-                }
-            }
-
+            
             /// <summary>
             /// Получает буфер данных для передачи в USB.
             /// </summary>
@@ -6406,22 +6408,22 @@ namespace Egse.Devices
                     _rawDataFile = value;
                     if (string.Empty != value)
                     {
-                        _rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+                        this.binDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
                     }
                     else
                     {
-                        if (null != _rawDataStream)
+                        if (null != this.binDataStream)
                         {
                             try
                             {
-                                if (null != _rawDataTask)
+                                if (null != this.binDataTask)
                                 {
-                                    _rawDataTask.Wait(WaitForWriteTime);
+                                    this.binDataTask.Wait(WaitForWriteTime);
                                 }
                             }
                             finally
                             {
-                                _rawDataStream.Close();
+                                this.binDataStream.Close();
                             }
                         }
                     }
@@ -6431,10 +6433,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что необходимо записывать текстовый лог-файл.
+            /// Получает или задает значение, показывающее, что [запись текстового лог-файла включена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если выполняется запись текстового лог-файла; иначе, <c>false</c>.
+            /// <c>true</c> если [запись текстового лог-файла включена]; иначе, <c>false</c>.
             /// </value>
             public bool IsSaveTxtData
             {
@@ -6445,6 +6447,11 @@ namespace Egse.Devices
 
                 set
                 {
+                    if (value == this.isSaveTxtData)
+                    {
+                        return;
+                    }
+
                     this.isSaveTxtData = value;
                     FirePropertyChangedEvent();
 
@@ -6458,21 +6465,26 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что включена запись данных в файл.
+            /// Получает или задает значение, показывающее, что [запись данных в файл включена].
             /// </summary>
             /// <value>
-            /// <c>true</c> исли запись данных включена; иначе, <c>false</c>.
+            /// <c>true</c> если [запись данных в файл включена]; иначе, <c>false</c>.
             /// </value>
             public bool IsSaveRawData
             {
                 get
                 {
-                    return _isSaveRawData;
+                    return this.isSaveRawData;
                 }
 
                 set 
                 {
-                    _isSaveRawData = value;
+                    if (value == this.isSaveRawData)
+                    {
+                        return;
+                    }
+
+                    this.isSaveRawData = value;
                     if (value)
                     {
                         RawDataFile = Owner.GetNewFileName(Resource.Get(@"stSpacewireLogName"));
@@ -6720,6 +6732,25 @@ namespace Egse.Devices
             }
 
             /// <summary>
+            /// Получает команду на [включение интерфейса spacewire].
+            /// </summary>
+            /// <value>
+            /// Команда на [включение интерфейса spacewire].
+            /// </value>
+            public ICommand IssueEnableCommand
+            {
+                get
+                {
+                    if (null == this.issueEnableCommand)
+                    {
+                        this.issueEnableCommand = new RelayCommand(obj => { IsIssueEnable = !IsIssueEnable; }, obj => { return true; });
+                    }
+
+                    return this.issueEnableCommand;
+                }
+            }
+
+            /// <summary>
             /// Получает строку представления [логический адрес БУСК].
             /// </summary>
             /// <value>
@@ -6802,10 +6833,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [интерфейс Spacewire включен].
+            /// Получает или задает значение, показывающее, что [интерфейс включен].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [интерфейс Spacewire включен]; иначе, <c>false</c>.
+            /// <c>true</c> если [интерфейс включен]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueEnable
             {
@@ -6816,14 +6847,17 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueEnable)
+                    {
+                        return;
+                    }
+
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.IssueEnable, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
                 }
             }
-
  
-
             /// <summary>
             /// Получает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
             /// </summary>
@@ -6907,7 +6941,7 @@ namespace Egse.Devices
             /// Получает значение, показывающее, что [запись в прибор занята].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [запись в прибор занята]; иначе, <c>false</c>.
+            /// <c>true</c> если [запись в прибор занята]; иначе, <c>false</c>.
             /// </value>
             public bool IsRecordBusy
             {
@@ -6918,10 +6952,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [необходимо формировать посылку телекоманды].
+            /// Получает или задает значение, показывающее, что [необходимо формировать посылку телекоманды].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [необходимо формировать посылку телекоманды]; иначе, <c>false</c>.
+            /// <c>true</c> если [необходимо формировать посылку телекоманды]; иначе, <c>false</c>.
             /// </value>
             public bool IsMakeTeleCmd
             {
@@ -6932,16 +6966,21 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isMakeTeleCmd)
+                    {
+                        return;
+                    }
+
                     this.isMakeTeleCmd = value;
                     FirePropertyChangedEvent();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что необходимо включить подтверждение получения телекоманды.
+            /// Получает или задает значение, показывающее, что [необходимо включить подтверждение получения телекоманды].
             /// </summary>
             /// <value>
-            /// <c>true</c> если включено подтверждение получения телекоманды; иначе, <c>false</c>.
+            /// <c>true</c> если [необходимо включить подтверждение получения телекоманды]; иначе, <c>false</c>.
             /// </value>
             public bool IsConfirmReceipt
             {
@@ -6952,16 +6991,21 @@ namespace Egse.Devices
 
                 set
                 {
+                    if (value == this.isConfirmReceipt)
+                    {
+                        return;
+                    }
+
                     this.isConfirmReceipt = value;
                     FirePropertyChangedEvent();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что необходимо включить подтверждение выполнения телекоманды.
+            /// Получает или задает значение, показывающее, что [необходимо включить подтверждение выполнения телекоманды].
             /// </summary>
             /// <value>
-            /// <c>true</c> если включено подтверждение выполнения телекоманды; иначе, <c>false</c>.
+            /// <c>true</c> если [необходимо включить подтверждение выполнения телекоманды]; иначе, <c>false</c>.
             /// </value>
             public bool IsConfirmExecution 
             { 
@@ -6972,27 +7016,13 @@ namespace Egse.Devices
 
                 set
                 {
-                    this.isConfirmExecution = value;
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает команду на [формирование посылки телекоманды по интерфейсу spacewire].
-            /// </summary>
-            /// <value>
-            /// Команда на [формирование посылки телекоманды по интерфейсу spacewire].
-            /// </value>
-            public ICommand IssueMakeTKCommand
-            {
-                get
-                {
-                    if (_issueMakeTKCommand == null)
+                    if (value == this.isConfirmExecution)
                     {
-                        _issueMakeTKCommand = new RelayCommand(obj => { IsMakeTeleCmd = !IsMakeTeleCmd; }, obj => { return true; });
+                        return;
                     }
 
-                    return _issueMakeTKCommand;
+                    this.isConfirmExecution = value;
+                    FirePropertyChangedEvent();
                 }
             }
             
@@ -7037,7 +7067,7 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [выдаются метки времени приборам].
+            /// Получает или задает значение, показывающее, что [выдаются метки времени приборам].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдаются метки времени приборам]; иначе, <c>false</c>.
@@ -7051,6 +7081,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueTickTime)
+                    {
+                        return;
+                    }
+
                     this.isIssueTickTime = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueTimeMark, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -7058,7 +7093,7 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [включен обмен для прибора БУК].
+            /// Получает или задает значение, показывающее, что [включен обмен для прибора БУК].
             /// </summary>
             /// <value>
             /// <c>true</c> если [включен обмен для прибора БУК]; иначе, <c>false</c>.
@@ -7072,6 +7107,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueExchange)
+                    {
+                        return;
+                    }
+
                     this.isIssueExchange = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueExchange, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -7079,7 +7119,7 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [выдается КБВ для прибора БУК].
+            /// Получает или задает значение, показывающее, что [выдается КБВ для прибора БУК].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдается КБВ для прибора БУК]; иначе, <c>false</c>.
@@ -7093,6 +7133,11 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueObt)
+                    {
+                        return;
+                    }
+
                     this.isIssueObt = value;
                     ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueKbv, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
@@ -7166,6 +7211,20 @@ namespace Egse.Devices
                 }
             }
 
+
+            internal bool IsNeedSaveData
+            {
+                get
+                {
+                    return this.isNeedSaveData;
+                }
+
+                set
+                {
+                    this.isNeedSaveData = value;
+                }
+            }
+
             /// <summary>
             /// Gets the <see cref="System.String"/> with the specified name.
             /// </summary>
@@ -7189,6 +7248,32 @@ namespace Egse.Devices
                     }                   
 
                     return result;
+                }
+            }
+
+
+            public byte[] MakeData()
+            {
+                if ((null != this.Data) && (0 < this.Data.Length))
+                {
+
+                    if (IsNeedSaveData)
+                    {
+                        DataToSaveList();
+                    }
+
+                    if (IsMakeTeleCmd)
+                    {
+                        return this.Data.ToTk((byte)LogicBuk, (byte)LogicBusk, Apid, IsConfirmReceipt, IsConfirmExecution).ToArray();
+                    }
+                    else
+                    {
+                        return this.Data.ToSptp((byte)LogicBuk, (byte)LogicBusk).ToArray();
+                    }
+                }
+                else
+                {
+                    return new byte[] { };
                 }
             }
 
@@ -7216,14 +7301,14 @@ namespace Egse.Devices
             /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
             public virtual void OnSpacewire2MsgRawSave(object sender, BaseMsgEventArgs e)
             {
-                if (null != _rawDataStream)
+                if (null != this.binDataStream)
                 {
-                    if (null != _rawDataTask)
+                    if (null != this.binDataTask)
                     {
-                        _rawDataTask.Wait(WaitForWriteTime);
+                        this.binDataTask.Wait(WaitForWriteTime);
                     }
 
-                    if (_rawDataStream.CanWrite)
+                    if (this.binDataStream.CanWrite)
                     {
                         SpacewireTmMsgEventArgs spw = e as SpacewireTmMsgEventArgs;
                         if (null == spw)
@@ -7231,18 +7316,14 @@ namespace Egse.Devices
                             return;
                         }
 
+                        // фильтры на кадры с apid 600 и 610 (правка от 19 апреля)
                         if ((0x600 == spw.IcdInfo.Apid) || (0x610 == spw.IcdInfo.Apid))
                         {
                             return;
                         }
 
-                        _rawDataTask = _rawDataStream.WriteAsync(spw.Data, 0, spw.Data.Length);
+                        this.binDataTask = this.binDataStream.WriteAsync(spw.Data, 0, spw.Data.Length);
 
-                        ////if (e is SpacewireSptpMsgEventArgs)
-                        ////{
-                        ////    SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
-                        ////    _rawDataTask = _rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
-                        ////}
                     }
                 }
             }
@@ -8097,34 +8178,16 @@ namespace Egse.Devices
             private ICommand _issueTimeMarkCommand;
 
             /// <summary>
-            /// Экземпляр команды на [выдачу ошибки EEP по интерфейсу spacewire, при формировании посылки].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueEEPCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [выдачу EOP по интерфейсу spacewire, при формировании посылки].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueEOPCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [выдачу посылки по интерфейсу spacewire].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand issuePackageCommand;
-            
-            /// <summary>
-            /// Экземпляр команды на [включение автоматической выдачи посылки по интерфейсу spacewire].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueAutoCommand;
-
-            /// <summary>
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
             [field: NonSerialized]
             private ICommand _fromFileCommand;
+
+            /// <summary>
+            /// Экземпляр команды на [отправить пакет].
+            /// </summary>
+            [field: NonSerialized]
+            private ICommand issuePackageCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire4" />.
@@ -8266,25 +8329,6 @@ namespace Egse.Devices
                 }
             }
 
-            ///// <summary>
-            ///// Получает команду на [выдачу ошибки EEP по интерфейсу spacewire, при формировании посылки].
-            ///// </summary>
-            ///// <value>
-            ///// Команда на [выдачу ошибки EEP по интерфейсу spacewire, при формировании посылки].
-            ///// </value>
-            //public ICommand IssueEEPCommand
-            //{
-            //    get
-            //    {
-            //        if (_issueEEPCommand == null)
-            //        {
-            //            _issueEEPCommand = new RelayCommand(obj => { IsIssueEEP = !IsIssueEEP; }, obj => { return true; });
-            //        }
-
-            //        return _issueEEPCommand;
-            //    }
-            //}
-
             /// <summary>
             /// Получает значение, показывающее, что [выдается EOP].
             /// </summary>
@@ -8303,25 +8347,6 @@ namespace Egse.Devices
                     _isIssueEOP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.EOPSend, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает команду на [выдачу EOP по интерфейсу spacewire, при формировании посылки].
-            /// </summary>
-            /// <value>
-            /// Команда на [выдачу EOP по интерфейсу spacewire, при формировании посылки].
-            /// </value>
-            public ICommand IssueEOPCommand
-            {
-                get
-                {
-                    if (_issueEOPCommand == null)
-                    {
-                        _issueEOPCommand = new RelayCommand(obj => { IsIssueEOP = !IsIssueEOP; }, obj => { return true; });
-                    }
-
-                    return _issueEOPCommand;
                 }
             }
 
@@ -8362,25 +8387,6 @@ namespace Egse.Devices
                     _isIssueAuto = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueAuto, Convert.ToInt32(value));
                     FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает команду на [включение автоматической выдачи посылки по интерфейсу spacewire].
-            /// </summary>
-            /// <value>
-            /// Команда на [включение автоматической выдачи посылки по интерфейсу spacewire].
-            /// </value>
-            public ICommand IssueAutoCommand
-            {
-                get
-                {
-                    if (_issueAutoCommand == null)
-                    {
-                        _issueAutoCommand = new RelayCommand(obj => { IsIssueAuto = !IsIssueAuto; }, obj => { return true; });
-                    }
-
-                    return _issueAutoCommand;
                 }
             }
 

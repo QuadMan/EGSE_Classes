@@ -14,9 +14,9 @@ namespace Egse.Wpf
     using System.Threading;
     using System.Windows;
     using System.Windows.Input;
+    using DetectNetVersion.DotNetFramework;
     using Egse.Defaults;
     using Egse.Utilites;
-    using DetectNetVersion.DotNetFramework;
 
     /// <summary>
     /// Interaction logic for App.xaml
@@ -118,14 +118,6 @@ namespace Egse.Wpf
 
         }
 
-        private bool IsCheckDotNetVersion(out string needVersion, out string ownerVersion)
-        {
-            NetFrameworkInfo FrameworkInfo = new NetFrameworkInfo();
-            ownerVersion = FrameworkInfo.HighestFrameworkVersion;
-            needVersion = string.Format("{0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
-            return 0 > ownerVersion.CompareTo(needVersion);
-        }
-
         /// <summary>
         /// Raises the <see cref="E:System.Windows.Application.Exit" /> event.
         /// </summary>
@@ -135,6 +127,16 @@ namespace Egse.Wpf
             Dispose();
             base.OnExit(e);
         }
+
+
+        private bool IsCheckDotNetVersion(out string needVersion, out string ownerVersion)
+        {
+            NetFrameworkInfo frameworkInfo = new NetFrameworkInfo();
+            ownerVersion = frameworkInfo.HighestFrameworkVersion;
+            needVersion = string.Format("{0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
+            return 0 > ownerVersion.CompareTo(needVersion);
+        }
+
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.

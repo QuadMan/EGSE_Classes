@@ -84,8 +84,7 @@
     </Compile>
     <Compile Include="App.xaml.Designer.cs">
       <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>App.xaml.resx</DependentUpon>
+      <DesignTime>True</DesignTime>      
     </Compile>
     <Compile Include="AppEntryPoint.cs" />
     <Compile Include="AppEntryPoint.Designer.cs">

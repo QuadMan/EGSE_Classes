@@ -43,7 +43,7 @@ namespace Egse.Cyclogram
         /// <summary>
         /// Изначальное значение задержки выполнения команды используется для восстановления значения после отсчета времени при выполненении циклограммы.
         /// </summary>
-        private int _delayOriginal;
+        private int delayOriginal;
 
         /// <summary>
         /// Значение задержки в мс.
@@ -240,7 +240,7 @@ namespace Egse.Cyclogram
         {
             set
             {
-                _delayOriginal = value;
+                this.delayOriginal = value;
             }
         }
         
@@ -277,7 +277,7 @@ namespace Egse.Cyclogram
         /// </summary>
         public void RestoreDelay()
         {
-            DelayMs = _delayOriginal;
+            DelayMs = this.delayOriginal;
         }
 
         /// <summary>
@@ -287,7 +287,7 @@ namespace Egse.Cyclogram
         {
             _command = string.Empty;
             _line = 0;
-            _delayOriginal = 0;
+            this.delayOriginal = 0;
             _delayMs = 0;
             _delayStr = string.Empty;
             this._absoluteTime = string.Empty;

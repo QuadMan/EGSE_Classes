@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
+﻿//-----------------------------------------------------------------------
+// <copyright file="EmbeddedAssembly.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Коробейщиков Иван</author>
+//-----------------------------------------------------------------------
 
 namespace Egse.Utilites
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Reflection;
+    using System.Security.Cryptography;
+
     /// <summary>
     /// A class for loading Embedded Assembly
     /// </summary>
@@ -56,7 +62,7 @@ namespace Egse.Utilites
             }
 
             bool fileOk = false;
-            string tempFile = "";
+            string tempFile = string.Empty;
 
             using (SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider())
             {

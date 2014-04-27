@@ -1,4 +1,11 @@
-﻿namespace Egse.Defaults
+﻿//-----------------------------------------------------------------------
+// <copyright file="TeleBukWindow.xaml.cs" company="IKI RSSI, laboratory №711">
+//     Copyright (c) IKI RSSI, laboratory №711. All rights reserved.
+// </copyright>
+// <author>Коробейщиков Иван</author>
+//-----------------------------------------------------------------------
+
+namespace Egse.Defaults
 {
     using System;
     using System.Windows;

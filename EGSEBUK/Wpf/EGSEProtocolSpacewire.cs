@@ -269,14 +269,6 @@ namespace Egse.Protocols
             }
         }
 
-        public override Sptp SptpInfo
-        {
-            get
-            {
-                return _icdInfo.SptpInfo;
-            }
-        }
-
         /// <summary>
         /// Тип сообщения Icd.
         /// </summary>
@@ -308,6 +300,16 @@ namespace Egse.Protocols
             /// </summary>
             HeaderEmpty = 0x00
         }
+
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return _icdInfo.SptpInfo;
+            }
+        }
+
+
 
         /// <summary>
         /// Получает данные icd сообщения. 
@@ -444,7 +446,7 @@ namespace Egse.Protocols
             /// <summary>
             /// Агрегат доступа к заголовку sptp-сообщения.
             /// </summary>
-            private SpacewireSptpMsgEventArgs.Sptp _sptpHeader;
+            private SpacewireSptpMsgEventArgs.Sptp sptpHeader;
 
             /// <summary>
             /// Заголовок icd.
@@ -456,24 +458,7 @@ namespace Egse.Protocols
             /// </summary>
             private ushort _size;
 
-            /// <summary>
-            /// Получает или задает агрегат доступа к заголовку sptp сообщения.
-            /// </summary>
-            /// <value>
-            /// Агрегат доступа к заголовку sptp сообщения.
-            /// </value>
-            internal Sptp SptpInfo
-            {
-                get
-                {
-                    return _sptpHeader;
-                }
 
-                set
-                {
-                    _sptpHeader = value;
-                }
-            }
 
             /// <summary>
             /// Получает или задает icd-поле "номер версии".
@@ -630,6 +615,25 @@ namespace Egse.Protocols
             }
 
             /// <summary>
+            /// Получает или задает агрегат доступа к заголовку sptp сообщения.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку sptp сообщения.
+            /// </value>
+            internal Sptp SptpInfo
+            {
+                get
+                {
+                    return this.sptpHeader;
+                }
+
+                set
+                {
+                    this.sptpHeader = value;
+                }
+            }
+
+            /// <summary>
             /// Returns a <see cref="System.String" /> that represents this instance.
             /// </summary>
             /// <returns>
@@ -781,24 +785,7 @@ namespace Egse.Protocols
             /// </summary>
             private uint _obt;
 
-            /// <summary>
-            /// Получает или задает агрегат доступа к заголовку icd сообщения.
-            /// </summary>
-            /// <value>
-            /// Агрегат доступа к заголовку icd сообщения.
-            /// </value>
-            internal Icd IcdInfo
-            {
-                get
-                {
-                    return _icdHeader;
-                }
 
-                set
-                {
-                    _icdHeader = value;
-                }
-            }
 
             /// <summary>
             /// Получает или задает obt-поле "Поле P: нормальное".
@@ -856,6 +843,25 @@ namespace Egse.Protocols
                     _obt = value.ReverseBytes();
                 }
             }
+
+            /// <summary>
+            /// Получает или задает агрегат доступа к заголовку icd сообщения.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку icd сообщения.
+            /// </value>
+            internal Icd IcdInfo
+            {
+                get
+                {
+                    return _icdHeader;
+                }
+
+                set
+                {
+                    _icdHeader = value;
+                }
+            }
         }
     }
 
@@ -867,17 +873,12 @@ namespace Egse.Protocols
         /// <summary>
         /// Агрегат доступа к заголовку сообщения телеметрии.
         /// </summary>
-        private Tm _telemetroInfo;
+        private Tm msgInfo;
 
         /// <summary>
         /// Данные сообщения телеметрии.
         /// </summary>
         private byte[] _data;
-
-        public override string ToString()
-        {
-            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
-        }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireTmMsgEventArgs" />.
@@ -897,7 +898,7 @@ namespace Egse.Protocols
 
             try
             {
-                _telemetroInfo = Converter.MarshalTo<Tm>(data, out _data);
+                this.msgInfo = Converter.MarshalTo<Tm>(data, out _data);
             }
             catch (Exception e)
             {
@@ -915,7 +916,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return _telemetroInfo;
+                return this.msgInfo;
             }
         }
 
@@ -931,7 +932,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return _telemetroInfo.IcdInfo;
+                return this.msgInfo.IcdInfo;
             }
         }
 
@@ -977,6 +978,7 @@ namespace Egse.Protocols
             }
         }
 
+
         /// <summary>
         /// Проверка на принадлежность к сообщению телеметрии.
         /// </summary>
@@ -998,6 +1000,11 @@ namespace Egse.Protocols
             {
                 return false;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
         }
 
         /// <summary>
@@ -1067,24 +1074,7 @@ namespace Egse.Protocols
             /// </summary>
             private int icdTime;
 
-            /// <summary>
-            /// Получает или задает агрегат доступа к заголовку icd сообщения.
-            /// </summary>
-            /// <value>
-            /// Агрегат доступа к заголовку icd сообщения.
-            /// </value>
-            internal Icd IcdInfo
-            {
-                get
-                {
-                    return _icdHeader;
-                }
 
-                set
-                {
-                    _icdHeader = value;
-                }
-            }
 
             /// <summary>
             /// Получает или задает значение резервного байта.
@@ -1222,7 +1212,26 @@ namespace Egse.Protocols
                     this.icdTime = BitConverter.ToInt32(temp, 0);
                 }
             }
-            
+
+            /// <summary>
+            /// Получает или задает агрегат доступа к заголовку icd сообщения.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку icd сообщения.
+            /// </value>
+            internal Icd IcdInfo
+            {
+                get
+                {
+                    return _icdHeader;
+                }
+
+                set
+                {
+                    _icdHeader = value;
+                }
+            }
+
             /// <summary>
             /// Returns a <see cref="System.String" /> that represents this instance.
             /// </summary>
@@ -1250,7 +1259,85 @@ namespace Egse.Protocols
 
     public class SpacewireTm604MsgEventArgs : SpacewireTmMsgEventArgs
     {
-        
+        private Tm604 msgInfo;
+
+        public SpacewireTm604MsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+            : base(data, time1, time2, error)
+        {
+            if (790 > data.Length)
+            {
+                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTm604Data"));
+            }
+
+            try
+            {
+                this.msgInfo = Converter.MarshalTo<Tm604>(data);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+
+        public Tm604 Tm604Info
+        {
+            get
+            {
+                return this.msgInfo;
+            }
+        }
+
+
+        public override Tm TmInfo
+        {
+            get
+            {
+                return this.Tm604Info.TmInfo;
+            }
+        }
+
+        public override Sptp SptpInfo
+        {
+            get
+            {
+                return this.IcdInfo.SptpInfo;
+            }
+        }
+
+        public override Icd IcdInfo
+        {
+            get
+            {
+                return this.TmInfo.IcdInfo;
+            }
+        }
+
+        public static new bool Test(byte[] data)
+        {
+            if (null != data ? 9 < data.Length : false)
+            {
+                byte[] raw = data.Skip(4).Take(4).ToArray();
+                BitVector32 head = new BitVector32(ConvertToInt(raw));
+                Icd icdInfo = new Icd();
+                icdInfo.Header = head;
+                return icdInfo.Version == 0
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
+                       && icdInfo.Apid == 0x604;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public override byte[] ToArray()
+        {
+            return base.ToArray();
+        }
+
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct TmBuk
         {
@@ -1286,7 +1373,7 @@ namespace Egse.Protocols
                         return new byte[512];
                     }
 
-                    return this.buf;                    
+                    return this.buf;
                 }
             }
         }
@@ -1294,7 +1381,7 @@ namespace Egse.Protocols
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Tm604
         {
-            private Tm tmHeader;
+            private Tm telemHeader;
 
             private TmKvv tmkvvHeader;
 
@@ -1320,12 +1407,12 @@ namespace Egse.Protocols
             {
                 get
                 {
-                    return this.tmHeader;
+                    return this.telemHeader;
                 }
 
                 set
                 {
-                    this.tmHeader = value;
+                    this.telemHeader = value;
                 }
             }
 
@@ -1339,80 +1426,12 @@ namespace Egse.Protocols
                 return extended ? this.ToString() : string.Empty;
             }
         }
-        public SpacewireTm604MsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
-            : base(data, time1, time2, error)
-        {
-            if (790 > data.Length)
-            {
-                throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTm604Data"));
-            }
 
-            try
-            {
-                this.msgInfo = Converter.MarshalTo<Tm604>(data);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }
-        private Tm604 msgInfo;
 
-        public static new bool Test(byte[] data)
-        {
-            if (null != data ? 9 < data.Length : false)
-            {
-                byte[] raw = data.Skip(4).Take(4).ToArray();
-                BitVector32 head = new BitVector32(ConvertToInt(raw));
-                Icd icdInfo = new Icd();
-                icdInfo.Header = head;
-                return icdInfo.Version == 0
-                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tm
-                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill
-                       && icdInfo.Apid == 0x604;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
-        public Tm604 Tm604Info
-        {
-            get
-            {
-                return this.msgInfo;
-            }
-        }
 
-        public override byte[] ToArray()
-        {
-            return base.ToArray();
-        }
 
-        public override Tm TmInfo
-        {
-            get
-            {
-                return this.Tm604Info.TmInfo;
-            }
-        }
 
-        public override Sptp SptpInfo
-        {
-            get
-            {
-                return this.IcdInfo.SptpInfo;
-            }
-        }
-
-        public override Icd IcdInfo
-        {
-            get
-            {
-                return this.TmInfo.IcdInfo;
-            }
-        }
     }
 
     /// <summary>
@@ -1420,6 +1439,9 @@ namespace Egse.Protocols
     /// </summary>
     public class SpacewireTkMsgEventArgs : SpacewireIcdMsgEventArgs
     {
+        private const int HeaderSize = 3;
+        private const int CrcSize = sizeof(ushort);
+
         /// <summary>
         /// Для счетчика последовательности телекоманд.
         /// </summary>
@@ -1430,18 +1452,12 @@ namespace Egse.Protocols
         /// </summary>
         private Tk msgInfo;
 
-        public override string ToString()
-        {
-            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
-        }
-
         /// <summary>
         /// Данные телекоманды.
         /// </summary>
         private byte[] data;
 
-        private const int HeaderSize = 3;
-        private const int CrcSize = sizeof(ushort);
+
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireTkMsgEventArgs" />.
@@ -1542,29 +1558,6 @@ namespace Egse.Protocols
         }
 
         /// <summary>
-        /// Проверка на принадлежность к сообщению телекоманды.
-        /// </summary>
-        /// <param name="data">"сырые" данные посылки.</param>
-        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
-        public static new bool Test(byte[] data)
-        {
-            if (null != data ? 9 < data.Length : false)
-            {
-                byte[] raw = data.Skip(4).Take(4).ToArray();
-                BitVector32 head = new BitVector32(ConvertToInt(raw));
-                Icd icdInfo = new Icd();
-                icdInfo.Header = head;
-                return icdInfo.Version == 0
-                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
-                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Формирует телекоманду в виде посылки.
         /// </summary>
         /// <param name="data">Данные телекоманды.</param>
@@ -1619,6 +1612,36 @@ namespace Egse.Protocols
         }
 
         /// <summary>
+        /// Проверка на принадлежность к сообщению телекоманды.
+        /// </summary>
+        /// <param name="data">"сырые" данные посылки.</param>
+        /// <returns><c>true</c> если проверка пройдена успешно, иначе <c>false</c>.</returns>
+        public static new bool Test(byte[] data)
+        {
+            if (null != data ? 9 < data.Length : false)
+            {
+                byte[] raw = data.Skip(4).Take(4).ToArray();
+                BitVector32 head = new BitVector32(ConvertToInt(raw));
+                Icd icdInfo = new Icd();
+                icdInfo.Header = head;
+                return icdInfo.Version == 0
+                       && icdInfo.Type == SpacewireIcdMsgEventArgs.IcdType.Tk
+                       && icdInfo.Flag == SpacewireIcdMsgEventArgs.IcdFlag.HeaderFill;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+        }
+
+
+
+        /// <summary>
         /// Получить "сырое" представление посылки.
         /// </summary>
         /// <returns>
@@ -1646,24 +1669,7 @@ namespace Egse.Protocols
 
             private byte subService;
 
-            /// <summary>
-            /// Получает или задает агрегат доступа к заголовку icd.
-            /// </summary>
-            /// <value>
-            /// Агрегат доступа к заголовку icd.
-            /// </value>
-            internal Icd IcdInfo
-            {
-                get
-                {
-                    return this.icdHeader;
-                }
 
-                set
-                {
-                    this.icdHeader = value;
-                }
-            }
 
             /// <summary>
             /// Получает или задает тип сервиса.
@@ -1761,6 +1767,25 @@ namespace Egse.Protocols
             }
 
             /// <summary>
+            /// Получает или задает агрегат доступа к заголовку icd.
+            /// </summary>
+            /// <value>
+            /// Агрегат доступа к заголовку icd.
+            /// </value>
+            internal Icd IcdInfo
+            {
+                get
+                {
+                    return this.icdHeader;
+                }
+
+                set
+                {
+                    this.icdHeader = value;
+                }
+            }
+
+            /// <summary>
             /// Returns a <see cref="System.String" /> that represents this instance.
             /// </summary>
             /// <returns>
@@ -1796,11 +1821,6 @@ namespace Egse.Protocols
         /// </summary>
         private string errorMsg;
 
-        public override string ToString()
-        {
-            return string.Format(Resource.Get(@"stErrorMsgToString"), this.DataLen, Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.ErrorMessage());
-        }
-
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireErrorMsgEventArgs" />.
         /// </summary>
@@ -1835,6 +1855,11 @@ namespace Egse.Protocols
             {
                 return base.Data;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stErrorMsgToString"), this.DataLen, Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.ErrorMessage());
         }
 
         /// <summary>
@@ -1916,11 +1941,6 @@ namespace Egse.Protocols
         /// Данные сообщения.
         /// </summary>
         private byte[] _data;
-
-        public override string ToString()
-        {
-            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true));
-        }
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
@@ -2072,6 +2092,14 @@ namespace Egse.Protocols
         {
             return null != data ? 3 < data.Length : false;
         }
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true));
+        }
+
+
+
 
         /// <summary>
         /// Преобразует данные экземпляра к массиву байт.

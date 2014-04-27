@@ -6,25 +6,22 @@
 //-----------------------------------------------------------------------
 
 namespace Egse.CustomAttributes
-{    
+{
     using System;
-    using System.Linq.Expressions;
-    using Egse.Utilites;
     using Egse.Devices;
-
+    using Egse.Utilites;
+    
     [System.AttributeUsage(System.AttributeTargets.Field | System.AttributeTargets.Enum, Inherited = false)]
     public class ActionAttribute : System.Attribute
     {
         private Type host;
 
-        public Action<EgseBukNotify> Act { get; private set; }
 
-        public Action<EgseBukNotify, object> ActArg { get; private set; }
 
         public ActionAttribute(Type hostingType, string hostingField, bool needArg = false)
         {
             host = hostingType;
-            System.Reflection.FieldInfo field = hostingType.GetField(hostingField);
+            System.Reflection.FieldInfo field = hostingType.GetField(hostingField, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
             if (null != field)
             {
                 if (needArg)
@@ -41,6 +38,10 @@ namespace Egse.CustomAttributes
                 System.Windows.MessageBox.Show(string.Format(Resource.Get(@"eHostingField"), hostingField));
             }
         }
+
+        public Action<EgseBukNotify> Act { get; private set; }
+
+        public Action<EgseBukNotify, object> ActArg { get; private set; }
     }
  
 }
