@@ -10,7 +10,10 @@ namespace Egse.Wpf
     using System;
     using Egse.Utilites;
 
-    class AppEntryPoint
+    /// <summary>
+    /// Реализует "точку входа" для приложения.
+    /// </summary>
+    public class AppEntryPoint
     {
         /// <summary>
         /// Entry point.
@@ -34,6 +37,12 @@ namespace Egse.Wpf
             }
         }
 
+        /// <summary>
+        /// Handles the AssemblyResolve event of the CurrentDomain control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="args">The <see cref="ResolveEventArgs"/> instance containing the event data.</param>
+        /// <returns></returns>
         private static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             return EmbeddedAssembly.Get(args.Name);

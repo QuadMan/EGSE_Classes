@@ -59,6 +59,10 @@ namespace Egse.Defaults
             SendToMonitor(spacewireMsg);            
         }
 
+        /// <summary>
+        /// Sends to monitor.
+        /// </summary>
+        /// <param name="txtMsg">The text MSG.</param>
         private void SendToMonitor(string txtMsg)
         {
             if (null != MonitorList && Visibility.Visible == this.Visibility)

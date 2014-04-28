@@ -108,14 +108,13 @@ namespace Egse.Wpf
             }
 
             string ownVer, needVer;
-            // выходим из приложения если не хватает версии DotNet Framework (необходима .Net Framework 4.5)
+            //// выходим из приложения если не хватает версии DotNet Framework (необходима .Net Framework 4.5)
             if (IsCheckDotNetVersion(out needVer, out ownVer))
             {
                 MessageBox.Show(string.Format(Resource.Get(@"eNetVersion"), needVer, ownVer));
                 Current.Shutdown();
                 return; 
             }
-
         }
 
         /// <summary>
@@ -128,7 +127,12 @@ namespace Egse.Wpf
             base.OnExit(e);
         }
 
-
+        /// <summary>
+        /// Determines whether [is check dot net version] [the specified need version].
+        /// </summary>
+        /// <param name="needVersion">The need version.</param>
+        /// <param name="ownerVersion">The owner version.</param>
+        /// <returns></returns>
         private bool IsCheckDotNetVersion(out string needVersion, out string ownerVersion)
         {
             NetFrameworkInfo frameworkInfo = new NetFrameworkInfo();
@@ -136,7 +140,6 @@ namespace Egse.Wpf
             needVersion = string.Format("{0}.{1}.{2}", Environment.Version.Major, Environment.Version.Minor, Environment.Version.Build);
             return 0 > ownerVersion.CompareTo(needVersion);
         }
-
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.

@@ -703,7 +703,7 @@ namespace Egse.Constants
                 BuskLogic = new CVSPTPLogicBusk();
                 BukLogic = new CVSPTPLogicBuk();
                 SPTPLogicBkp = new CVSPTPLogicBkp();
-                SPTPControl = new CVSPTPControl();
+                SptpControl = new CVSPTPControl();
             }
 
             /// <summary>
@@ -734,7 +734,7 @@ namespace Egse.Constants
             /// <summary>
             /// Получает индекс объекта "Управление обменом с приборами по SPTP" в массиве ControlValuesList.
             /// </summary>
-            public static CVSPTPControl SPTPControl { get; private set; }
+            public static CVSPTPControl SptpControl { get; private set; }
 
             /// <summary>
             /// Индексы свойств [Управление].
@@ -851,26 +851,6 @@ namespace Egse.Constants
             /// </summary>
             public class CVSPTPControl
             {
-                /// <summary>
-                /// Индекс свойства [можно выдавать пакет в БКП].
-                /// </summary>
-                public readonly string BkpTransData = "3e19221ddd6b4aab838307a8e342f193";
-
-                /// <summary>
-                /// Индекс свойства [выдача КБВ прибору БКП (только при «1 PPS» == 1)].
-                /// </summary>
-                public readonly string BkpKbv = "57cbe2d9fd13479aa4e3eb3c14939471";
-
-                /// <summary>
-                /// Индекс свойства [включение обмена прибора БКП].
-                /// </summary>
-                public readonly string BkpTrans = "2d1516e3b36e4490bb2984e23ec18d34";
-
-                /// <summary>
-                /// Индекс свойства [можно выдавать пакет в БС].
-                /// </summary>
-                public readonly string TransData = "738ad555b28c4f8b83754699aaad66de";
-
                 /// <summary>
                 /// Индекс свойства [выдача КБВ прибору БС (только при «1 PPS» == 1)].
                 /// </summary>
@@ -1170,12 +1150,12 @@ namespace Egse.Constants
             /// <summary>
             /// Индекс свойства [Телеметрия:  Подсветка СДЩ (осн)].
             /// </summary>
-            public readonly string SdchshLight1 = "09033a4f5c064af58241ce7bff73198a";
+            public readonly string SdshLight1 = "09033a4f5c064af58241ce7bff73198a";
 
             /// <summary>
             /// Индекс свойства [Телеметрия:  Подсветка СДЩ (рез)].
             /// </summary>
-            public readonly string SdchshLight2 = "979aa9840c644636988aa7e96487a973";
+            public readonly string SdshLight2 = "979aa9840c644636988aa7e96487a973";
 
             /// <summary>
             /// Индекс свойства [Телеметрия:  Затвор УФЭС (осн)].

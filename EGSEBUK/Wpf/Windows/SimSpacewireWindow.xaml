@@ -32,10 +32,15 @@
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="3"
                 Content="Управление"
-                Style="{StaticResource FlatHeader}"/>
-            <Label Grid.Row="1" Grid.ColumnSpan="2"
-                Content="{Binding ShowLogicBusk}"
-                Template="{StaticResource FlatLabel}"/>
+                Style="{StaticResource FlatHeader}"/>            
+            <TextBlock Grid.Row="1"
+                       Grid.ColumnSpan="2"
+                       Style="{StaticResource FormattedTextBlock}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Имитатор БУК (для БМ-4) (адрес: {0})">
+                        <Binding Path="LogicBusk" />
+                    </MultiBinding>
+                </TextBlock.Text></TextBlock>
             <Button Grid.Row="1"
                 Grid.Column="2"                               
 
@@ -46,15 +51,18 @@
                 Grid.ColumnSpan="3"
                 Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
                 Template="{StaticResource FlatLabelConnected}"/>
-            <Label Grid.Row="3" 
+            <Label Grid.Row="3"
                    Grid.ColumnSpan="2"
-                Content="Прибор"
-                Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="3" 
+                   Content="Прибор"
+                   Template="{StaticResource FlatLabel}" />
+            <TextBlock Grid.Row="3"
                 Grid.Column="2"
-
-                Content="{Binding ShowLogicSD1}"
-                Template="{StaticResource FlatLabel}"/>
+                Style="{StaticResource FormattedTextBlock}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}БУК (адрес: {0})">
+                        <Binding Path="LogicSD1" />
+                    </MultiBinding>
+                </TextBlock.Text></TextBlock>
             <Label Grid.Row="4" Grid.ColumnSpan="2"
                 Content="Обмен с прибором"
                 Template="{StaticResource FlatLabel}"/>

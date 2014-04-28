@@ -1027,51 +1027,62 @@ namespace Egse.Devices
         /// <summary>
         /// Текущее состояние подключения устройства.
         /// </summary>
-        private bool _isConnected;
+        private bool isConnected;
 
         /// <summary>
         /// Отображать ли [окно "имитатор ВСИ"].
         /// </summary>
-        private bool _isShowHsi;
+        private bool isShowHsi;
 
         /// <summary>
         /// Отображать ли [окно "имитатор БУСК"].
         /// </summary>
-        private bool _isShowSpacewire;
+        private bool isShowSpacewire;
 
         /// <summary>
         /// Отображать ли [окно "имитатор НП"].
         /// </summary>
-        private bool _isShowSD;
+        private bool isShowSD;
 
         /// <summary>
         /// Отображать ли [окно "имитатор БУК (для ВСИ)"].
         /// </summary>
-        private bool _isShowSimHsi;
+        private bool isShowSimHsi;
 
         /// <summary>
         /// Отображать ли [окно "имитатор БУК (для БУСК)"].
         /// </summary>
-        private bool _isShowSimSpacewire;
+        private bool isShowSimSpacewire;
 
         /// <summary>
         /// Отображать ли [окно "имитатор БУК (для НП)"].
         /// </summary>
-        private bool _isShowSimSD;
+        private bool isShowSimSD;
 
+        /// <summary>
+        /// The is show control buk
+        /// </summary>
         private bool isShowControlBuk;
+
+        /// <summary>
+        /// The is show tele buk
+        /// </summary>
         private bool isShowTeleBuk;
+
+        /// <summary>
+        /// The is show tele KVV
+        /// </summary>
         private bool isShowTeleKvv;
+
+        /// <summary>
+        /// Отображать ли [окно "монитор USB"].
+        /// </summary>
+        private bool isShowUsbSendsMonitor;
 
         /// <summary>
         /// Время, пришедшее от прибора.
         /// </summary>
         private EgseTime _deviceTime;
-
-        /// <summary>
-        /// Отображать ли [окно "монитор USB"].
-        /// </summary>
-        private bool _isShowUsbSendsMonitor;
 
         /// <summary>
         /// Датчики затворов: бит выбора режима.
@@ -1081,32 +1092,32 @@ namespace Egse.Devices
         /// <summary>
         /// СДЩ: Датчики затворов: закрытия.
         /// </summary>
-        private DevEnabled issueSdshClose = DevEnabled.Off;
+        private SciDevState issueSdshClose = SciDevState.Off;
 
         /// <summary>
         /// СДЩ: Датчики затворов: открытия.
         /// </summary>
-        private DevEnabled issueSdshOpen = DevEnabled.Off;
+        private SciDevState issueSdshOpen = SciDevState.Off;
 
         /// <summary>
         /// ВУФЭС: Датчики затворов: закрытия.
         /// </summary>
-        private DevEnabled issueVufesClose = DevEnabled.Off;
+        private SciDevState issueVufesClose = SciDevState.Off;
 
         /// <summary>
         /// ВУФЭС: Датчики затворов: открытия.
         /// </summary>
-        private DevEnabled issueVufesOpen = DevEnabled.Off;
+        private SciDevState issueVufesOpen = SciDevState.Off;
 
         /// <summary>
         /// УФЭС: Датчики затворов: закрытия.
         /// </summary>
-        private DevEnabled issueUfesClose = DevEnabled.Off;
+        private SciDevState issueUfesClose = SciDevState.Off;
 
         /// <summary>
         /// УФЭС: Датчики затворов: открытия.
         /// </summary>
-        private DevEnabled issueUfesOpen = DevEnabled.Off;
+        private SciDevState issueUfesOpen = SciDevState.Off;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="EgseBukNotify" />.
@@ -1173,12 +1184,12 @@ namespace Egse.Devices
 
             ControlValuesList.Add(Global.Shutters, new ControlValue());
             ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.Auto, 14, 1, Device.CmdAutoShutters, value => IsIssueManualShutter = !Convert.ToBoolean(value));
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesOpen, 10, 1, Device.CmdShutters, value => IssueUfesOpen = (DevEnabled)value);
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesClose, 8, 1, Device.CmdShutters, value => IssueUfesClose = (DevEnabled)value);
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesOpen, 6, 1, Device.CmdShutters, value => IssueVufesOpen = (DevEnabled)value);
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesClose, 4, 1, Device.CmdShutters, value => IssueVufesClose = (DevEnabled)value);
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.SdshOpen, 2, 1, Device.CmdShutters, value => IssueSdshOpen = (DevEnabled)value);
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.SdshClose, 0, 1, Device.CmdShutters, value => IssueSdshClose = (DevEnabled)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesOpen, 10, 1, Device.CmdShutters, value => IssueUfesOpen = (SciDevState)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesClose, 8, 1, Device.CmdShutters, value => IssueUfesClose = (SciDevState)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesOpen, 6, 1, Device.CmdShutters, value => IssueVufesOpen = (SciDevState)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesClose, 4, 1, Device.CmdShutters, value => IssueVufesClose = (SciDevState)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.SdshOpen, 2, 1, Device.CmdShutters, value => IssueSdshOpen = (SciDevState)value);
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.SdshClose, 0, 1, Device.CmdShutters, value => IssueSdshClose = (SciDevState)value);
         }
 
         /// <summary>
@@ -1209,7 +1220,7 @@ namespace Egse.Devices
         /// <summary>
         /// Состояние прибора.
         /// </summary>
-        public enum DevEnabled
+        public enum SciDevState
         {
             /// <summary>
             /// Прибор включен.
@@ -1262,8 +1273,20 @@ namespace Egse.Devices
         /// </value>
         public Spacewire2 Spacewire2Notify { get; private set; }
 
+        /// <summary>
+        /// Gets the tele buk notify.
+        /// </summary>
+        /// <value>
+        /// The tele buk notify.
+        /// </value>
         public TeleBuk TeleBukNotify { get; private set; }
 
+        /// <summary>
+        /// Gets the tele KVV notify.
+        /// </summary>
+        /// <value>
+        /// The tele KVV notify.
+        /// </value>
         public TeleKvv TeleKvvNotify { get; private set; }
 
         /// <summary>
@@ -1282,6 +1305,12 @@ namespace Egse.Devices
         /// </value>
         public Spacewire4 Spacewire4Notify { get; private set; }
 
+        /// <summary>
+        /// Gets the control buk notify.
+        /// </summary>
+        /// <value>
+        /// The control buk notify.
+        /// </value>
         public ControlBuk ControlBukNotify { get; private set; }
 
         /// <summary>
@@ -1304,10 +1333,10 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Получает или задает значение, показывающее, что [включено ручное управление датчиками затворов].
+        /// Получает или задает значение, показывающее, что [ручное управление датчиками затворов включено].
         /// </summary>
         /// <value>
-        /// <c>true</c> если [включено ручное управление датчиками затворов]; иначе, <c>false</c>.
+        /// <c>true</c> если [ручное управление датчиками затворов включено]; иначе, <c>false</c>.
         /// </value>
         public bool IsIssueManualShutter 
         { 
@@ -1325,17 +1354,17 @@ namespace Egse.Devices
 
                 this.isIssueManualShutter = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.Auto, Convert.ToInt32(!value));
-                FirePropertyChangedEvent();
+                this.OnPropertyChanged();
             } 
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика открытия для НП УФЭС].
+        /// Получает или задает значение [состояния датчика открытия затвора для канала УФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика открытия для НП УФЭС].
+        /// Значение [состояния датчика открытия затвора для канала УФЭС].
         /// </value>
-        public DevEnabled IssueUfesOpen
+        public SciDevState IssueUfesOpen
         {
             get
             {
@@ -1344,19 +1373,24 @@ namespace Egse.Devices
 
             set 
             {
+                if (value == this.issueUfesOpen)
+                {
+                    return;
+                }
+
                 this.issueUfesOpen = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.UfesOpen, (int)value);
-                FirePropertyChangedEvent();
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика закрытия для НП УФЭС].
+        /// Получает или задает значение [состояния датчика закрытия затвора для канала УФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика закрытия для НП УФЭС].
+        /// Значение [состояния датчика закрытия затвора для канала УФЭС].
         /// </value>
-        public DevEnabled IssueUfesClose
+        public SciDevState IssueUfesClose
         {
             get
             {
@@ -1365,19 +1399,24 @@ namespace Egse.Devices
 
             set 
             {
+                if (value == this.issueUfesClose)
+                {
+                    return;
+                }
+
                 this.issueUfesClose = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.UfesClose, (int)value);
-                FirePropertyChangedEvent();
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика открытия для НП ВУФЭС].
+        /// Получает или задает значение [состояния датчика открытия затвора для канала ВУФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика открытия для НП ВУФЭС].
+        /// Значение [состояния датчика открытия затвора для канала ВУФЭС].
         /// </value>
-        public DevEnabled IssueVufesOpen
+        public SciDevState IssueVufesOpen
         {
             get
             {
@@ -1386,19 +1425,24 @@ namespace Egse.Devices
 
             set 
             {
+                if (value == this.issueVufesOpen)
+                {
+                    return;
+                }
+
                 this.issueVufesOpen = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.VufesOpen, (int)value);
-                FirePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика закрытия для НП ВУФЭС].
+        /// Получает или задает значение [состояния датчика закрытия затвора для канала ВУФЭС].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика закрытия для НП ВУФЭС].
+        /// Значение [состояния датчика закрытия затвора для канала ВУФЭС].
         /// </value>
-        public DevEnabled IssueVufesClose
+        public SciDevState IssueVufesClose
         {
             get
             {
@@ -1409,17 +1453,17 @@ namespace Egse.Devices
             {
                 this.issueVufesClose = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.VufesClose, (int)value);
-                FirePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика открытия для НП СДЩ].
+        /// Получает или задает значение [состояния датчика открытия затвора для канала СДЩ].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика открытия для НП СДЩ].
+        /// Значение [состояния датчика открытия затвора для канала СДЩ].
         /// </value>
-        public DevEnabled IssueSdshOpen
+        public SciDevState IssueSdshOpen
         {
             get
             {
@@ -1430,17 +1474,17 @@ namespace Egse.Devices
             {
                 this.issueSdshOpen = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.SdshOpen, (int)value);
-                FirePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Получает команду на [включение датчика закрытия для НП СДЩ].
+        /// Получает или задает значение [состояния датчика закрытия затвора для канала СДЩ].
         /// </summary>
         /// <value>
-        /// Команда на [включение датчика закрытия для НП СДЩ].
+        /// Значение [состояния датчика закрытия затвора для канала СДЩ].
         /// </value>
-        public DevEnabled IssueSdshClose 
+        public SciDevState IssueSdshClose 
         { 
             get 
             {
@@ -1451,27 +1495,27 @@ namespace Egse.Devices
             {
                 this.issueSdshClose = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.SdshClose, (int)value);
-                FirePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Получает значение, показывающее, что [подключен прибор].
+        /// Получает значение, показывающее, что [прибор подключен].
         /// </summary>
         /// <value>
-        ///   <c>true</c> если [подключен прибор]; иначе, <c>false</c>.
+        /// <c>true</c> если [прибор подключен]; иначе, <c>false</c>.
         /// </value>
         public bool IsConnected
         {
             get
             {
-                return _isConnected;
+                return this.isConnected;
             }
 
             private set 
             {
-                _isConnected = value;
-                FirePropertyChangedEvent();
+                this.isConnected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1485,13 +1529,13 @@ namespace Egse.Devices
         {
             get
             {
-                return _isShowHsi;
+                return this.isShowHsi;
             }
 
             private set 
             {
-                _isShowHsi = value;
-                FirePropertyChangedEvent();
+                this.isShowHsi = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1505,13 +1549,13 @@ namespace Egse.Devices
         {
             get
             {
-                return _isShowSpacewire;
+                return this.isShowSpacewire;
             }
 
             private set 
             {
-                _isShowSpacewire = value;
-                FirePropertyChangedEvent();
+                this.isShowSpacewire = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1525,13 +1569,13 @@ namespace Egse.Devices
         {
             get
             {
-                return _isShowSD;
+                return this.isShowSD;
             }
 
             private set 
             {
-                _isShowSD = value;
-                FirePropertyChangedEvent();
+                this.isShowSD = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1545,13 +1589,13 @@ namespace Egse.Devices
         {
             get
             {
-                return _isShowSimHsi;
+                return this.isShowSimHsi;
             }
 
             private set 
             {
-                _isShowSimHsi = value;
-                FirePropertyChangedEvent();
+                this.isShowSimHsi = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1565,13 +1609,13 @@ namespace Egse.Devices
         {
             get
             {
-                return _isShowUsbSendsMonitor;
+                return this.isShowUsbSendsMonitor;
             }
 
             private set 
             {
-                _isShowUsbSendsMonitor = value;
-                FirePropertyChangedEvent();
+                this.isShowUsbSendsMonitor = value;
+                OnPropertyChanged();
             }
         }
         
@@ -1585,13 +1629,13 @@ namespace Egse.Devices
         {
             get
             {
-                return _isShowSimSpacewire;
+                return this.isShowSimSpacewire;
             }
 
             private set 
             {
-                _isShowSimSpacewire = value;
-                FirePropertyChangedEvent();
+                this.isShowSimSpacewire = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1605,16 +1649,22 @@ namespace Egse.Devices
         {
             get
             {
-                return _isShowSimSD;
+                return this.isShowSimSD;
             }
 
             private set 
             {
-                _isShowSimSD = value;
-                FirePropertyChangedEvent();
+                this.isShowSimSD = value;
+                OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is show control buk.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is show control buk; otherwise, <c>false</c>.
+        /// </value>
         public bool IsShowControlBuk
         {
             get
@@ -1625,10 +1675,16 @@ namespace Egse.Devices
             private set
             {
                 this.isShowControlBuk = value;
-                FirePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is show tele buk.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is show tele buk; otherwise, <c>false</c>.
+        /// </value>
         public bool IsShowTeleBuk
         {
             get
@@ -1639,10 +1695,16 @@ namespace Egse.Devices
             private set
             {
                 this.isShowTeleBuk = value;
-                FirePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is show tele KVV.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is show tele KVV; otherwise, <c>false</c>.
+        /// </value>
         public bool IsShowTeleKvv
         {
             get
@@ -1653,7 +1715,7 @@ namespace Egse.Devices
             private set
             {
                 this.isShowTeleKvv = value;
-                FirePropertyChangedEvent();
+                OnPropertyChanged();
             }
         }
         
@@ -1979,14 +2041,24 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Вынуждает обновить отображаемые свойства на UI. 
+        /// Called when [property changed].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="propertyName">Name of the property.</param>
+        protected void OnPropertyChanged(INotifyPropertyChanged sender, [CallerMemberName] string propertyName = null)
+        {
+            OnPropertyChangedExplicit(sender, propertyName);
+        }
+
+        /// <summary>
+        /// Принудительно обновляет свойства. 
         /// </summary>
         private void UpdateProperties()
         {
-            FirePropertyChangedEvent(null, @"DeviceTime");
-            FirePropertyChangedEvent(null, @"DeviceSpeed");
-            FirePropertyChangedEvent(null, @"DeviceTrafic");
-            FirePropertyChangedEvent(null, @"BytesAvailable");
+            OnPropertyChanged(() => this.DeviceTime);
+            OnPropertyChanged(() => this.DeviceSpeed);
+            OnPropertyChanged(() => this.DeviceTrafic);
+            OnPropertyChanged(() => this.BytesAvailable);
         }
 
         /// <summary>
@@ -2102,7 +2174,7 @@ namespace Egse.Devices
                         ControlValuesList[Global.Spacewire2.Record].UsbValue = msg.Data[10]; 
                         ControlValuesList[Global.Spacewire2.BuskLogic].UsbValue = msg.Data[11];
                         ControlValuesList[Global.Spacewire2.BukLogic].UsbValue = msg.Data[12];
-                        ControlValuesList[Global.Spacewire2.SPTPControl].UsbValue = msg.Data[14];
+                        ControlValuesList[Global.Spacewire2.SptpControl].UsbValue = msg.Data[14];
                         ControlValuesList[Global.Spacewire3.Control].UsbValue = msg.Data[15];  
                         ControlValuesList[Global.Spacewire1.Control].UsbValue = msg.Data[17];
                         ControlValuesList[Global.Spacewire1.Record].UsbValue = msg.Data[20];
@@ -2143,11 +2215,34 @@ namespace Egse.Devices
         }
 
         /// <summary>
-        /// Fires the property changed event.
+        /// Called when [property changed].
+        /// </summary>
+        /// <param name="propertyName">Name of the property.</param>
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            OnPropertyChangedExplicit(this, propertyName);
+        }
+
+        /// <summary>
+        /// Called when [property changed].
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <param name="propertyExpressions">The property expressions.</param>
+        private void OnPropertyChanged<TProperty>(params System.Linq.Expressions.Expression<Func<TProperty>>[] propertyExpressions)
+        {
+            foreach (var projection in propertyExpressions)
+            {
+                System.Linq.Expressions.MemberExpression memberExpression = (System.Linq.Expressions.MemberExpression)projection.Body;
+                OnPropertyChangedExplicit(this, memberExpression.Member.Name);
+            }
+        }
+
+        /// <summary>
+        /// Called when [property changed explicit].
         /// </summary>
         /// <param name="sender">The sender.</param>
-        /// <param name="propertyName">Имя свойства.</param>
-        private void FirePropertyChangedEvent(INotifyPropertyChanged sender = null, [CallerMemberName] string propertyName = null)
+        /// <param name="propertyName">Name of the property.</param>
+        private void OnPropertyChangedExplicit(INotifyPropertyChanged sender = null, string propertyName = null)
         {
             if ((null != PropertyChanged) && (null != propertyName))
             {
@@ -2173,7 +2268,7 @@ namespace Egse.Devices
             /// Список отправленных команд(данных).
             /// </summary>
             [field: NonSerialized]
-            private ObservableCollection<string> _dataList = new ObservableCollection<string>();
+            private ObservableCollection<string> dataList = new ObservableCollection<string>();
 
             /// <summary>
             /// Получает список отправленных команд(данных).
@@ -2185,7 +2280,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _dataList;
+                    return this.dataList;
                 }
             }
 
@@ -2394,19 +2489,30 @@ namespace Egse.Devices
                         }
                     }
 
-                    this.FirePropertyChangedEvent(string.Empty);
+                    this.OnPropertyChanged(string.Empty);
                 }
             }
 
             /// <summary>
-            /// Fires the property changed event.
+            /// Called when [property changed].
             /// </summary>
             /// <param name="propertyName">Name of the property.</param>
-            protected void FirePropertyChangedEvent([CallerMemberName] string propertyName = null)
+            protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
             {
-                if ((null != Owner) && (null != PropertyChanged))
+                OnPropertyChangedExplicit(propertyName);
+            }
+
+            /// <summary>
+            /// Called when [property changed].
+            /// </summary>
+            /// <typeparam name="TProperty">The type of the property.</typeparam>
+            /// <param name="propertyExpressions">The property expressions.</param>
+            protected void OnPropertyChanged<TProperty>(params System.Linq.Expressions.Expression<Func<TProperty>>[] propertyExpressions)
+            {
+                foreach (var projection in propertyExpressions)
                 {
-                    Owner.FirePropertyChangedEvent(this, propertyName);
+                    System.Linq.Expressions.MemberExpression memberExpression = (System.Linq.Expressions.MemberExpression)projection.Body;
+                    OnPropertyChangedExplicit(memberExpression.Member.Name);
                 }
             }
 
@@ -2422,6 +2528,18 @@ namespace Egse.Devices
             /// </summary>
             protected virtual void InitProperties()
             {
+            }
+
+            /// <summary>
+            /// Called when [property changed explicit].
+            /// </summary>
+            /// <param name="propertyName">Name of the property.</param>
+            private void OnPropertyChangedExplicit(string propertyName)
+            {
+                if ((null != Owner) && (null != PropertyChanged))
+                {
+                    Owner.OnPropertyChanged(this, propertyName);
+                }
             }
         }
 
@@ -2454,27 +2572,27 @@ namespace Egse.Devices
             /// <summary>
             /// КВВ ПК1: Счетчик выданных статусов.
             /// </summary>
-            private int _stateCounter1;
+            private int stateCounter1;
 
             /// <summary>
             /// КВВ ПК1: Счетчик выданных кадров.
             /// </summary>
-            private int _frameCounter1;
+            private int frameCounter1;
 
             /// <summary>
             /// КВВ ПК2: Счетчик выданных статусов.
             /// </summary>
-            private int _stateCounter2;
+            private int stateCounter2;
 
             /// <summary>
             /// КВВ ПК2: Счетчик выданных кадров.
             /// </summary>
-            private int _frameCounter2;
+            private int frameCounter2;
 
             /// <summary>
             /// Выдача УКС: Выдача УКС.
             /// </summary>
-            private bool _isIssueCmd;
+            private bool isIssueCmd;
 
             /// <summary>
             /// Управление: Опрос данных.
@@ -2509,13 +2627,13 @@ namespace Egse.Devices
             /// <summary>
             /// Имя файла данных.
             /// </summary>
-            private string _rawDataFile;
+            private string rawDataFile;
             
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
             [field: NonSerialized]
-            private FileStream _rawDataStream;
+            private FileStream rawDataStream;
             
             /// <summary>
             /// Квазиасинхронная запись в файл.
@@ -2523,32 +2641,32 @@ namespace Egse.Devices
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
             [field: NonSerialized]
-            private Task _rawDataTask;
+            private Task rawDataTask;
 
             /// <summary>
             /// Количество запросов статуса по основной линии.
             /// </summary>
-            private long _requestStateMain;
+            private long requestStateMain;
 
             /// <summary>
             /// Количество запросов статуса по резервной линии.
             /// </summary>
-            private long _requestStateResv;
+            private long requestStateResv;
 
             /// <summary>
             /// Количество запросов данных по резервной линии.
             /// </summary>
-            private long _requestDataResv;
+            private long requestDataResv;
 
             /// <summary>
             /// Количество запросов данных по основной линии.
             /// </summary>
-            private long _requestDataMain;
+            private long requestDataMain;
 
             /// <summary>
             /// Количество переданных УКС ПК1.
             /// </summary>
-            private long _cmdCounter1;
+            private long cmdCounter1;
             
             /// <summary>
             /// Экземпляр команды на [включение КВВ ПК1].
@@ -2601,7 +2719,7 @@ namespace Egse.Devices
             /// <summary>
             /// Количество переданных УКС ПК2.
             /// </summary>
-            private long _cmdCounter2;
+            private long cmdCounter2;
 
             /// <summary>
             /// ПК1 статус: готов.
@@ -2636,12 +2754,12 @@ namespace Egse.Devices
             /// <summary>
             /// Активность первого полукомплекта.
             /// </summary>
-            private bool _isActive1;
+            private bool isActive1;
 
             /// <summary>
             /// Активность второго полукомплекта.
             /// </summary>
-            private bool _isActive2;
+            private bool isActive2;
 
             /// <summary>
             /// Сохранять в текстовый лог-файл.
@@ -2735,7 +2853,7 @@ namespace Egse.Devices
 
                     this.isIssueReady1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -2761,7 +2879,7 @@ namespace Egse.Devices
 
                     this.isIssueReady2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -2787,7 +2905,7 @@ namespace Egse.Devices
 
                     this.isIssueBusy1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -2813,15 +2931,15 @@ namespace Egse.Devices
 
                     this.isIssueBusy2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueBusy2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что необходимо записывать текстовый лог-файл.
+            /// Получает или задает значение, показывающее, что [запись текстового лог-файла включена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если выполняется запись текстового лог-файла; иначе, <c>false</c>.
+            /// <c>true</c> если [запись текстового лог-файла включена]; иначе, <c>false</c>.
             /// </value>
             public bool IsSaveTxtData
             {
@@ -2832,15 +2950,19 @@ namespace Egse.Devices
 
                 set
                 {
-                    this.isSaveTxtData = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.isSaveTxtData)
+                    {
+                        return;
+                    }
 
+                    this.isSaveTxtData = value;
+                    OnPropertyChanged();
                     if (value)
                     {
                         LogsClass.LogHsi.NewLog();
                     }
 
-                    FirePropertyChangedEvent("TxtDataFile");
+                    OnPropertyChanged(() => this.TxtDataFile);
                 }
             }
 
@@ -2866,7 +2988,7 @@ namespace Egse.Devices
 
                     this.isIssueMe1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -2892,7 +3014,7 @@ namespace Egse.Devices
 
                     this.isIssueMe2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueMe2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -2939,7 +3061,7 @@ namespace Egse.Devices
 
                     this.isIssueEnable1 = value;
                     ControlValuesList[Global.Hsi.Line1].SetProperty(Global.Hsi.Line1.IssueEnable, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -2984,7 +3106,7 @@ namespace Egse.Devices
 
                     this.isIssueEnable2 = value;
                     ControlValuesList[Global.Hsi.Line2].SetProperty(Global.Hsi.Line2.IssueEnable, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3008,64 +3130,74 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает количество выданных статусов по первому полукомплекту.
+            /// Получает значение [количества выданных статусов по 1 ПК].
             /// </summary>
             /// <value>
-            /// Количество выданных статусов.
+            /// Значение [количества выданных статусов по 1 ПК].
             /// </value>
             public int StateCounter1
             {
                 get
                 {
-                    return _stateCounter1;
+                    return this.stateCounter1;
                 }
 
                 private set 
                 {
-                    _stateCounter1 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.stateCounter1)
+                    {
+                        return;
+                    }
+
+                    this.stateCounter1 = value;
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает наименование файла для записи.
+            /// Получает наименование [файла для записи данных].
             /// </summary>
             /// <value>
-            /// Наименование файла для записи.
+            /// Наименование [файла для записи данных].
             /// </value>
             public string RawDataFile
             {
                 get
                 {
-                    return _rawDataFile;
+                    return this.rawDataFile;
                 }
 
                 private set 
                 {
-                    _rawDataFile = value;
+                    if (value == this.rawDataFile)
+                    {
+                        return;
+                    }
+
+                    this.rawDataFile = value;
                     if (string.Empty != value)
                     {
-                        _rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+                        this.rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
                     }
                     else
                     {
-                        if (null != _rawDataStream)
+                        if (null != this.rawDataStream)
                         {
                             try
                             {
-                                if (null != _rawDataTask)
+                                if (null != this.rawDataTask)
                                 {
-                                    _rawDataTask.Wait(WaitForWriteTime);
+                                    this.rawDataTask.Wait(WaitForWriteTime);
                                 }
                             }
                             finally
                             {
-                                _rawDataStream.Close();
+                                this.rawDataStream.Close();
                             }                            
                         }
                     }
 
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3099,7 +3231,7 @@ namespace Egse.Devices
                        RawDataFile = string.Empty;
                     }
 
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3123,22 +3255,27 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает количество выданных кадров по первому полукомплекту.
+            /// Получает количество выданных кадров по ПК1.
             /// </summary>
             /// <value>
-            /// Количество выданных кадров.
+            /// Количество выданных кадров по ПК1.
             /// </value>
             public int FrameCounter1
             {
                 get
                 {
-                    return _frameCounter1;
+                    return this.frameCounter1;
                 }
 
                 private set 
                 {
-                    _frameCounter1 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.frameCounter1)
+                    {
+                        return;
+                    }
+
+                    this.frameCounter1 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3152,13 +3289,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _stateCounter2;
+                    return this.stateCounter2;
                 }
 
                 private set 
                 {
-                    _stateCounter2 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.stateCounter2)
+                    {
+                        return;
+                    }
+
+                    this.stateCounter2 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3172,21 +3314,26 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _frameCounter2;
+                    return this.frameCounter2;
                 }
 
                 private set 
                 {
-                    _frameCounter2 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.frameCounter2)
+                    { 
+                        return;
+                    }
+
+                    this.frameCounter2 = value;
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает линию передачи ПК1.
+            /// Получает или задает линию передачи первого полукомплекта.
             /// </summary>
             /// <value>
-            /// Линия передачи ПК1.
+            /// Линия передачи первого полукомплекта.
             /// </value>
             public Line IssueLine1
             {
@@ -3197,9 +3344,14 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.line1)
+                    {
+                        return;
+                    }
+
                     this.line1 = value;
                     ControlValuesList[Global.Hsi.Line1].SetProperty(Global.Hsi.Line1.Line, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3213,14 +3365,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isActive1;
+                    return this.isActive1;
                 }
 
                 private set 
                 {
-                    _isActive1 = value;
+                    if (value == this.isActive1)
+                    {
+                        return;
+                    }
+
+                    this.isActive1 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.Active1, Convert.ToInt32(value), false);                    
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3234,22 +3391,27 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isActive2;
+                    return this.isActive2;
                 }
 
                 private set 
                 {
-                    _isActive2 = value;
+                    if (value == this.isActive2)
+                    {
+                        return;
+                    }
+
+                    this.isActive2 = value;
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.Active2, Convert.ToInt32(value), false);  
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает линию передачи ПК2.
+            /// Получает или задает линию передачи второго полукомплекта.
             /// </summary>
             /// <value>
-            /// Линия передачи ПК2.
+            /// Линия передачи второго полукомплекта.
             /// </value>
             public Line IssueLine2
             {
@@ -3260,14 +3422,19 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.line2)
+                    {
+                        return;
+                    }
+
                     this.line2 = value;
                     ControlValuesList[Global.Hsi.Line2].SetProperty(Global.Hsi.Line2.Line, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает линию приема.
+            /// Получает или задает линию приема.
             /// </summary>
             /// <value>
             /// Линия приема.
@@ -3281,14 +3448,19 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.lineRecv)
+                    {
+                        return;
+                    }
+
                     this.lineRecv = value;
                     ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.LineIn, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает линию передачи.
+            /// Получает или задает линию передачи.
             /// </summary>
             /// <value>
             /// Линия передачи.
@@ -3302,9 +3474,14 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.lineSend)
+                    {
+                        return;
+                    }
+
                     this.lineSend = value;
                     ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.LineOut, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3330,7 +3507,7 @@ namespace Egse.Devices
 
                     this.isIssuePoll = value;
                     ControlValuesList[Global.SimHsi.Control].SetProperty(Global.SimHsi.Control.IssuePoll, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
          
@@ -3344,13 +3521,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isIssueCmd;
+                    return this.isIssueCmd;
                 }
 
                 private set 
                 {
-                    _isIssueCmd = value;                   
-                    FirePropertyChangedEvent();
+                    if (value == this.isIssueCmd)
+                    {
+                        return;
+                    }
+
+                    this.isIssueCmd = value;                   
+                    OnPropertyChanged();
                 }
             }
 
@@ -3459,13 +3641,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestStateMain;
+                    return this.requestStateMain;
                 }
 
                 set 
                 {
-                    _requestStateMain = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestStateMain)
+                    {
+                        return;
+                    }
+
+                    this.requestStateMain = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3479,13 +3666,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestStateResv;
+                    return this.requestStateResv;
                 }
 
                 set 
                 {
-                    _requestStateResv = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestStateResv)
+                    {
+                        return;
+                    }
+
+                    this.requestStateResv = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3499,13 +3691,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestDataMain;
+                    return this.requestDataMain;
                 }
 
                 set 
                 {
-                    _requestDataMain = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestDataMain)
+                    {
+                        return;
+                    }
+
+                    this.requestDataMain = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3519,13 +3716,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestDataResv;
+                    return this.requestDataResv;
                 }
 
                 set 
                 {
-                    _requestDataResv = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestDataResv)
+                    {
+                        return;
+                    }
+
+                    this.requestDataResv = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3539,13 +3741,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _cmdCounter1;
+                    return this.cmdCounter1;
                 }
 
                 set 
                 {
-                    _cmdCounter1 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.cmdCounter1)
+                    { 
+                        return; 
+                    }
+
+                    this.cmdCounter1 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3559,13 +3766,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _cmdCounter2;
+                    return this.cmdCounter2;
                 }
 
                 set 
                 {
-                    _cmdCounter2 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.cmdCounter2)
+                    {
+                        return;
+                    }
+
+                    this.cmdCounter2 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -3631,7 +3843,7 @@ namespace Egse.Devices
             public void OpenFromFile(object obj)
             {
                 Data = Owner.OpenFromFile();
-                FirePropertyChangedEvent("Data");
+                OnPropertyChanged(() => this.Data);
             }
 
             /// <summary>
@@ -3641,16 +3853,16 @@ namespace Egse.Devices
             /// <param name="e">The <see cref="HsiMsgEventArgs"/> instance containing the event data.</param>
             public virtual void OnHsiMsgRawSave(object sender, HsiMsgEventArgs e)
             {
-                if (null != _rawDataStream)
+                if (null != this.rawDataStream)
                 {
-                    if (null != _rawDataTask)
+                    if (null != this.rawDataTask)
                     {
-                        _rawDataTask.Wait(WaitForWriteTime);
+                        this.rawDataTask.Wait(WaitForWriteTime);
                     }
 
-                    if (_rawDataStream.CanWrite)
+                    if (this.rawDataStream.CanWrite)
                     {
-                        _rawDataTask = _rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
+                        this.rawDataTask = this.rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
                     }
                 }
             }
@@ -3671,7 +3883,7 @@ namespace Egse.Devices
                     DataList.Insert(0, str);
                 }
 
-                FirePropertyChangedEvent("DataList");
+                OnPropertyChanged(() => this.DataList);
             }
 
             /// <summary>
@@ -3727,7 +3939,7 @@ namespace Egse.Devices
             /// <summary>
             /// Путь к usb-лог файлу.
             /// </summary>
-            private string _usbLogFile;
+            private string usbLogFile;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="UITest" />.
@@ -3748,13 +3960,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return this._usbLogFile;
+                    return this.usbLogFile;
                 }
 
                 set 
                 {
-                    this._usbLogFile = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.usbLogFile)
+                    {
+                        return;
+                    }
+
+                    this.usbLogFile = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3798,102 +4015,102 @@ namespace Egse.Devices
             /// <summary>
             /// Телеметрия: Запитан ПК1 от БУНД.
             /// </summary>
-            private bool _powerBund1;
+            private bool powerBund1;
 
             /// <summary>
             /// Телеметрия: Запитан ПК2 от БУНД.
             /// </summary>
-            private bool _isPowerBund2;
+            private bool isPowerBund2;
 
             /// <summary>
             /// Телеметрия: Питание УФЭС ОСН.
             /// </summary>
-            private bool _ufesPower1;
+            private bool ufesPower1;
 
             /// <summary>
             /// Телеметрия: Питание УФЭС РЕЗ.
             /// </summary>
-            private bool _ufesPower2;
+            private bool ufesPower2;
 
             /// <summary>
             /// Телеметрия: Питание ВУФЭС ОСН.
             /// </summary>
-            private bool _vufesPower1;
+            private bool vufesPower1;
 
             /// <summary>
             /// Телеметрия: Питание ВУФЭС РЕЗ.
             /// </summary>
-            private bool _vufesPower2;
+            private bool vufesPower2;
 
             /// <summary>
             /// Телеметрия: Питание СДЩ ОСН.
             /// </summary>
-            private bool _sdchshPower1;
+            private bool sdshPower1;
 
             /// <summary>
             /// Телеметрия: Питание СДЩ РЕЗ.
             /// </summary>
-            private bool _sdchshPower2;
+            private bool sdshPower2;
 
             /// <summary>
             /// Телеметрия: Подсветка УФЭС ОСН.
             /// </summary>
-            private bool _ufesLight1;
+            private bool ufesLight1;
 
             /// <summary>
             /// Телеметрия: Подсветка УФЭС РЕЗ.
             /// </summary>
-            private bool _ufesLight2;
+            private bool ufesLight2;
 
             /// <summary>
             /// Телеметрия: Подсветка ВУФЭС ОСН.
             /// </summary>
-            private bool _vufesLight1;
+            private bool vufesLight1;
 
             /// <summary>
             /// Телеметрия: Подсветка ВУФЭС РЕЗ.
             /// </summary>
-            private bool _vufesLight2;
+            private bool vufesLight2;
 
             /// <summary>
             /// Телеметрия: Подсветка СДЩ ОСН.
             /// </summary>
-            private bool _sdchshLight1;
+            private bool sdshLight1;
 
             /// <summary>
             /// Телеметрия: Подсветка СДЩ РЕЗ.
             /// </summary>
-            private bool _sdchshLight2;
+            private bool sdshLight2;
 
             /// <summary>
             /// Телеметрия: Затвор УФЭС ОСН.
             /// </summary>
-            private bool _ufesLock1;
+            private bool ufesLock1;
 
             /// <summary>
             /// Телеметрия: Затвор УФЭС РЕЗ.
             /// </summary>
-            private bool _ufesLock2;
+            private bool ufesLock2;
 
             /// <summary>
             /// Телеметрия: Затвор ВУФЭС ОСН.
             /// </summary>
-            private bool _vufesLock1;
+            private bool vufesLock1;
 
             /// <summary>
             /// Телеметрия: Затвор ВУФЭС РЕЗ.
             /// </summary>
-            private bool _vufesLock2;
+            private bool vufesLock2;
 
             /// <summary>
             /// Телеметрия: Затвор СДЩ ОСН.
             /// </summary>
-            private bool _sdchshLock1;
+            private bool sdshLock1;
 
             /// <summary>
             /// Телеметрия: Затвор СДЩ РЕЗ.
             /// </summary>
-            private bool _sdchshLock2;
+            private bool sdshLock2;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУСК ПК1].
@@ -3949,7 +4166,7 @@ namespace Egse.Devices
                     }
 
                     this.isBuskLineA = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3974,7 +4191,7 @@ namespace Egse.Devices
                     }
 
                     this.isBuskLineB = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -3999,7 +4216,7 @@ namespace Egse.Devices
                     }
 
                     this.isBundLineA = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4024,7 +4241,7 @@ namespace Egse.Devices
                     }
 
                     this.isBundLineB = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4043,9 +4260,14 @@ namespace Egse.Devices
 
                 private set 
                 {
+                    if (value == this.isPowerBusk1)
+                    {
+                        return;
+                    }
+
                     this.isPowerBusk1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4083,9 +4305,14 @@ namespace Egse.Devices
 
                 private set 
                 {
+                    if (value == this.isPowerBusk2)
+                    {
+                        return;
+                    }
+
                     this.isPowerBusk2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4118,14 +4345,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _powerBund1;
+                    return this.powerBund1;
                 }
 
                 private set 
                 {
-                    _powerBund1 = value;
+                    if (value == this.powerBund1)
+                    {
+                        return;
+                    }
+
+                    this.powerBund1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4158,14 +4390,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isPowerBund2;
+                    return this.isPowerBund2;
                 }
 
                 private set 
                 {
-                    _isPowerBund2 = value;
+                    if (value == this.isPowerBund2)
+                    {
+                        return;
+                    }
+
+                    this.isPowerBund2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4198,14 +4435,19 @@ namespace Egse.Devices
             { 
                 get
                 {
-                    return _ufesLock1;
+                    return this.ufesLock1;
                 }
 
                 private set 
                 {
-                    _ufesLock1 = value;
+                    if (value == this.ufesLock1)
+                    {
+                        return;
+                    }
+
+                    this.ufesLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4219,14 +4461,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _ufesLock2;
+                    return this.ufesLock2;
                 }
 
                 private set 
                 {
-                    _ufesLock2 = value;
+                    if (value == this.ufesLock2)
+                    {
+                        return;
+                    }
+
+                    this.ufesLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLock2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4240,14 +4487,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _vufesLock1;
+                    return this.vufesLock1;
                 }
 
                 private set 
                 {
-                    _vufesLock1 = value;
+                    if (value == this.vufesLock1)
+                    {
+                        return;
+                    }
+
+                    this.vufesLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4261,14 +4513,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _vufesLock2;
+                    return this.vufesLock2;
                 }
 
                 private set 
                 {
-                    _vufesLock2 = value;
+                    if (value == this.vufesLock2)
+                    {
+                        return;
+                    }
+
+                    this.vufesLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLock2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4282,14 +4539,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _sdchshLock1;
+                    return this.sdshLock1;
                 }
 
                 private set 
                 {
-                    _sdchshLock1 = value;
+                    if (value == this.sdshLock1)
+                    {
+                        return;
+                    }
+
+                    this.sdshLock1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock1, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4303,14 +4565,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _sdchshLock2;
+                    return this.sdshLock2;
                 }
 
                 private set 
                 {
-                    _sdchshLock2 = value;
+                    if (value == this.sdshLock2)
+                    {
+                        return;
+                    }
+
+                    this.sdshLock2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLock2, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4324,14 +4591,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _ufesPower1;
+                    return this.ufesPower1;
                 }
 
                 private set 
                 {
-                    _ufesPower1 = value;
+                    if (value == this.ufesPower1)
+                    {
+                        return;
+                    }
+
+                    this.ufesPower1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesPower1, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4345,14 +4617,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _ufesPower2;
+                    return this.ufesPower2;
                 }
 
                 private set 
                 {
-                    _ufesPower2 = value;
+                    if (value == this.ufesPower2)
+                    {
+                        return;
+                    }
+
+                    this.ufesPower2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesPower2, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4366,14 +4643,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _vufesPower1;
+                    return this.vufesPower1;
                 }
 
                 private set 
                 {
-                    _vufesPower1 = value;
+                    if (value == this.vufesPower1)
+                    {
+                        return;
+                    }
+
+                    this.vufesPower1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesPower1, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4387,14 +4669,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _vufesPower2;
+                    return this.vufesPower2;
                 }
 
                 private set 
                 {
-                    _vufesPower2 = value;
+                    if (value == this.vufesPower2)
+                    {
+                        return;
+                    }
+
+                    this.vufesPower2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesPower2, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4408,14 +4695,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _sdchshPower1;
+                    return this.sdshPower1;
                 }
 
                 private set 
                 {
-                    _sdchshPower1 = value;
+                    if (value == this.sdshPower1)
+                    {
+                        return;
+                    }
+
+                    this.sdshPower1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshPower1, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4429,140 +4721,175 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _sdchshPower2;
+                    return this.sdshPower2;
                 }
 
                 private set 
                 {
-                    _sdchshPower2 = value;
+                    if (value == this.sdshPower2)
+                    {
+                        return;
+                    }
+
+                    this.sdshPower2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshPower2, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка УФЭС ОСН].
+            /// Получает значение, показывающее, что [подсветка УФЭС включена (сигнал по основному каналу)].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка УФЭС ОСН]; иначе, <c>false</c>.
+            /// <c>true</c> если [подсветка УФЭС включена (сигнал по основному каналу)]; иначе, <c>false</c>.
             /// </value>
             public bool UfesLight1
             {
                 get
                 {
-                    return _ufesLight1;
+                    return this.ufesLight1;
                 }
 
                 private set 
                 {
-                    _ufesLight1 = value;
+                    if (value == this.ufesLight1)
+                    {
+                        return;
+                    }
+
+                    this.ufesLight1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLight1, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка УФЭС РЕЗ].
+            /// Получает значение, показывающее, что [подсветка УФЭС включена (сигнал по резервному каналу)].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка УФЭС РЕЗ]; иначе, <c>false</c>.
+            /// <c>true</c> если [подсветка УФЭС включена (сигнал по резервному каналу)]; иначе, <c>false</c>.
             /// </value>
             public bool UfesLight2
             {
                 get
                 {
-                    return _ufesLight2;
+                    return this.ufesLight2;
                 }
 
                 private set 
                 {
-                    _ufesLight2 = value;
+                    if (value == this.ufesLight2)
+                    {
+                        return;
+                    }
+
+                    this.ufesLight2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.UfesLight2, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка ВУФЭС ОСН].
+            /// Получает значение, показывающее, что [подсветка ВУФЭС включена (сигнал по основному каналу)].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка ВУФЭС ОСН]; иначе, <c>false</c>.
+            /// <c>true</c> если [подсветка ВУФЭС включена (сигнал по основному каналу)]; иначе, <c>false</c>.
             /// </value>
             public bool VufesLight1
             {
                 get
                 {
-                    return _vufesLight1;
+                    return this.vufesLight1;
                 }
 
                 private set 
                 {
-                    _vufesLight1 = value;
+                    if (value == this.vufesLight1)
+                    {
+                        return;
+                    }
+
+                    this.vufesLight1 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLight1, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
             
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка ВУФЭС РЕЗ].
+            /// Получает значение, показывающее, что [подсветка ВУФЭС включена (сигнал по резервному каналу)].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка ВУФЭС РЕЗ]; иначе, <c>false</c>.
+            /// <c>true</c> если [подсветка ВУФЭС включена (сигнал по резервному каналу)]; иначе, <c>false</c>.
             /// </value>
             public bool VufesLight2
             {
                 get
                 {
-                    return _vufesLight2;
+                    return this.vufesLight2;
                 }
 
                 private set 
                 {
-                    _vufesLight2 = value;
+                    if (value == this.vufesLight2)
+                    {
+                        return;
+                    }
+
+                    this.vufesLight2 = value;
                     ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.VufesLight2, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка СДЩ ОСН].
+            /// Получает значение, показывающее, что [подсветка СДЩ включена (сигнал по основному каналу)].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка СДЩ ОСН]; иначе, <c>false</c>.
+            /// <c>true</c> если [подсветка СДЩ включена (сигнал по основному каналу)]; иначе, <c>false</c>.
             /// </value>
             public bool SdchshLight1
             {
                 get
                 {
-                    return _sdchshLight1;
+                    return this.sdshLight1;
                 }
 
                 private set 
                 {
-                    _sdchshLight1 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLight1, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    if (value == this.sdshLight1)
+                    {
+                        return;
+                    }
+
+                    this.sdshLight1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdshLight1, Convert.ToInt32(value), false);
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, есть ли [подсветка СДЩ РЕЗ].
+            /// Получает значение, показывающее, что [подсветка СДЩ включена (сигнал по резервному каналу)].
             /// </summary>
             /// <value>
-            ///   <c>true</c> если [подсветка СДЩ РЕЗ]; иначе, <c>false</c>.
+            /// <c>true</c> если [подсветка СДЩ включена (сигнал по резервному каналу)]; иначе, <c>false</c>.
             /// </value>
             public bool SdchshLight2
             {
                 get
                 {
-                    return _sdchshLight2;
+                    return this.sdshLight2;
                 }
 
                 private set 
                 {
-                    _sdchshLight2 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdchshLight2, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    if (value == this.sdshLight2)
+                    {
+                        return;
+                    }
+
+                    this.sdshLight2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.SdshLight2, Convert.ToInt32(value), false);
+                    OnPropertyChanged();
                 }
             }
 
@@ -4634,8 +4961,8 @@ namespace Egse.Devices
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 9, 1, delegate { }, value => UfesLight2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight2, 7, 1, delegate { }, value => VufesLight2 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight1, 6, 1, delegate { }, value => SdchshLight1 = 1 == value, true);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdchshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdshLight1, 6, 1, delegate { }, value => SdchshLight1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.SdshLight2, 11, 1, delegate { }, value => SdchshLight2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower1, 20, 1, delegate { }, value => UfesPower1 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesPower2, 21, 1, delegate { }, value => UfesPower2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesPower1, 19, 1, delegate { }, value => VufesPower1 = 1 == value, true);
@@ -4673,29 +5000,19 @@ namespace Egse.Devices
             private bool isIssueExchange;
 
             /// <summary>
-            /// SPTP: включение обмена прибора НП2.
-            /// </summary>
-            private bool _isSD2Trans;
-
-            /// <summary>
             /// SPTP: можно выдавать пакет в НП1.
             /// </summary>
             private bool isSD1TransData;
 
             /// <summary>
-            /// SPTP: можно выдавать пакет в НП2.
-            /// </summary>
-            private bool _isSD2TransData;
-
-            /// <summary>
             /// SPTP: Адрес БУСК.
             /// </summary>
-            private int _logicBusk = 0;
+            private int logicBusk = 0;
 
             /// <summary>
             /// SPTP: Адрес НП1.
             /// </summary>
-            private int _logicSD1 = 0;
+            private int logicSD1 = 0;
 
             /// <summary>
             /// SPTP: Счетчик миллисекунд для НП1 (через сколько готовы данные).
@@ -4703,29 +5020,19 @@ namespace Egse.Devices
             private int sd1SendTime = 1000;
 
             /// <summary>
-            /// SPTP: Счетчик миллисекунд для НП2 (через сколько готовы данные).
-            /// </summary>
-            private int _sd2SendTime = 0;
-
-            /// <summary>
             /// SPTP: Кол-во байт в пакете НП1.
             /// </summary>
-            private int _sd1DataSize = 0;
-
-            /// <summary>
-            /// SPTP: Кол-во байт в пакете НП2.
-            /// </summary>
-            private int _sd2DataSize = 0;
+            private int sd1DataSize = 0;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Бит занятости.
             /// </summary>
-            private bool _isRecordBusy;
+            private bool isRecordBusy;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Бит выдачи посылки.
             /// </summary>
-            private bool _isRecordSend;
+            private bool isRecordSend;
 
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
@@ -4738,12 +5045,6 @@ namespace Egse.Devices
             /// </summary>
             [field: NonSerialized]
             private ICommand _issuePackageCommand;
-
-            /// <summary>
-            /// Экземпляр команды на [включение выдачи пакетов данных в НП2].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand _issueSD2TransDataCommand;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire1" />.
@@ -4763,25 +5064,6 @@ namespace Egse.Devices
             public byte[] Data { get; private set; }
 
             /// <summary>
-            /// Получает строку представления [логический адрес БУСК].
-            /// </summary>
-            /// <value>
-            /// Строка [логический адрес БУСК].
-            /// </value>
-            public string ShowLogicBusk
-            {
-                get
-                {
-                    return string.Format(Resource.Get(@"stShowSimLogicBusk"), LogicBusk.ToString(/*"X2"*/));
-                }
-
-                private set 
-                {
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
             /// Получает или задает [логический адрес БУСК].
             /// </summary>
             /// <value>
@@ -4791,34 +5073,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _logicBusk;
+                    return this.logicBusk;
                 }
 
                 set 
                 {
-                    _logicBusk = value;
-                    ControlValuesList[Global.Spacewire1.BuskLogic].SetProperty(Global.Spacewire1.BuskLogic, value);                    
-                    FirePropertyChangedEvent();
-                    ShowLogicBusk = string.Empty;
-                }
-            }
+                    if (value == this.logicBusk)
+                    {
+                        return;
+                    }
 
-            /// <summary>
-            /// Получает строку представления [логический адрес НП1].
-            /// </summary>
-            /// <value>
-            /// Строка [логический адрес НП1].
-            /// </value>
-            public string ShowLogicSD1
-            {
-                get
-                {
-                    return string.Format(Resource.Get(@"stShowSimLogicSD1"), LogicSD1.ToString(/*"X2"*/));
-                }
-
-                private set 
-                { 
-                    FirePropertyChangedEvent(); 
+                    this.logicBusk = value;
+                    ControlValuesList[Global.Spacewire1.BuskLogic].SetProperty(Global.Spacewire1.BuskLogic, value);
+                    OnPropertyChanged();
                 }
             }
 
@@ -4832,15 +5099,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _logicSD1;
+                    return this.logicSD1;
                 }
 
                 set 
                 {
-                    _logicSD1 = value;
+                    if (value == this.logicSD1)
+                    {
+                        return;
+                    }
+
+                    this.logicSD1 = value;
                     ControlValuesList[Global.Spacewire1.SD1Logic].SetProperty(Global.Spacewire1.SD1Logic, value);
-                    FirePropertyChangedEvent();
-                    ShowLogicSD1 = string.Empty;                    
+                    OnPropertyChanged();                  
                 }
             }
 
@@ -4867,7 +5138,7 @@ namespace Egse.Devices
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.IssueEnable, Convert.ToInt32(value));
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(0));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4891,10 +5162,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
+            /// Получает значение, показывающее, что [связь по интерфейсу установлена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [установлена связь по интерфейсу Spacewire]; иначе, <c>false</c>.
+            /// <c>true</c> если [связь по интерфейсу установлена]; иначе, <c>false</c>.
             /// </value>
             public bool IsConnect
             {
@@ -4905,9 +5176,14 @@ namespace Egse.Devices
 
                 private set 
                 {
+                    if (value == this.isConnect)
+                    {
+                        return;
+                    }
+
                     this.isConnect = value;
                     ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.Connect, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -4933,36 +5209,15 @@ namespace Egse.Devices
 
                     this.isIssueExchange = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD1Trans, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [включен обмен для прибора НП2].
+            /// Получает или задает значение, показывающее, что [необходимо выдавать пакеты данных из имитатора детекторов].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [включен обмен для прибора НП2]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsSD2Trans
-            {
-                get
-                {
-                    return _isSD2Trans;
-                }
-
-                private set 
-                {
-                    _isSD2Trans = value;
-                    ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD2Trans, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение, показывающее, что [можно выдавать пакеты данных в имитатор детектора].
-            /// </summary>
-            /// <value>
-            /// <c>true</c> если [можно выдавать пакеты данных в имитатор детектора]; иначе, <c>false</c>.
+            /// <c>true</c> если [необходимо выдавать пакеты данных из имитатора детекторов]; иначе, <c>false</c>.
             /// </value>
             public bool IsSD1TransData
             {
@@ -4980,55 +5235,15 @@ namespace Egse.Devices
 
                     this.isSD1TransData = value;
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD1TransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [можно выдавать пакеты данных в НП2].
+            /// Получает или задает значение [счетчика миллисекунд для имитатора детекторов (через сколько готовы данные)].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [можно выдавать пакеты данных в НП2]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsSD2TransData
-            {
-                get
-                {
-                    return _isSD2TransData;
-                }
-
-                private set 
-                {
-                    _isSD2TransData = value;
-                    ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD2TransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает команду на [включение выдачи пакетов данных в НП2].
-            /// </summary>
-            /// <value>
-            /// Команда на [включение выдачи пакетов данных в НП2].
-            /// </value>
-            public ICommand IssueSD2TransDataCommand
-            {
-                get
-                {
-                    if (null == _issueSD2TransDataCommand)
-                    {
-                        _issueSD2TransDataCommand = new RelayCommand(obj => { IsSD2TransData = !IsSD2TransData; }, obj => { return true; });
-                    }
-
-                    return _issueSD2TransDataCommand;
-                }
-            }
-
-            /// <summary>
-            /// Получает или задает значение [Счетчик миллисекунд для НП1 (через сколько готовы данные)].
-            /// </summary>
-            /// <value>
-            /// Счетчик миллисекунд для НП1 (через сколько готовы данные).
+            /// Значение [счетчика миллисекунд для имитатора детекторов (через сколько готовы данные)].
             /// </value>
             public int SD1SendTime
             {
@@ -5039,30 +5254,14 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.sd1SendTime)
+                    {
+                        return;
+                    }
+
                     this.sd1SendTime = value;
                     ControlValuesList[Global.Spacewire1.SD1SendTime].SetProperty(Global.Spacewire1.SD1SendTime, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает значение [Счетчик миллисекунд для НП2 (через сколько готовы данные)].
-            /// </summary>
-            /// <value>
-            /// Счетчик миллисекунд для НП2 (через сколько готовы данные).
-            /// </value>
-            public int SD2SendTime
-            {
-                get
-                {
-                    return _sd2SendTime;
-                }
-
-                private set 
-                {
-                    _sd2SendTime = value;
-                    ControlValuesList[Global.Spacewire1.SD2SendTime].SetProperty(Global.Spacewire1.SD2SendTime, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -5076,35 +5275,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _sd1DataSize;
+                    return this.sd1DataSize;
                 }
 
                 private set 
                 {
-                    _sd1DataSize = value;
+                    if (value == this.sd1DataSize)
+                    {
+                        return;
+                    }
+
+                    this.sd1DataSize = value;
                     ControlValuesList[Global.Spacewire1.SD1DataSize].SetProperty(Global.Spacewire1.SD1DataSize, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
-            /// Получает значение [кол-во байт в пакете НП2].
-            /// </summary>
-            /// <value>
-            /// Кол-во байт в пакете НП2.
-            /// </value>
-            public int SD2DataSize
-            {
-                get
-                {
-                    return _sd2DataSize;
-                }
-
-                private set 
-                {
-                    _sd2DataSize = value;
-                    ControlValuesList[Global.Spacewire1.SD2DataSize].SetProperty(Global.Spacewire1.SD2DataSize, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -5118,13 +5301,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isRecordBusy || IsIssuePackage;
+                    return this.isRecordBusy || IsIssuePackage;
                 }
 
                 private set 
                 {
-                    _isRecordBusy = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.isRecordBusy)
+                    { 
+                        return;
+                    }
+
+                    this.isRecordBusy = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -5138,13 +5326,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isRecordSend;
+                    return this.isRecordSend;
                 }
 
                 private set 
                 {
-                    _isRecordSend = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.isRecordSend)
+                    {
+                        return;
+                    }
+
+                    this.isRecordSend = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -5250,63 +5443,220 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire1.SD1Logic].AddProperty(Global.Spacewire1.SD1Logic, 0, 8, Device.CmdSpacewire1LogicSD1, value => LogicSD1 = value);
 
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.SD1Trans, 0, 1, Device.CmdSpacewire1ControlSPTP, value => IsIssueExchange = 1 == value);
-                ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.SD2Trans, 2, 1, Device.CmdSpacewire1ControlSPTP, value => IsSD2Trans = 1 == value);
                 ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.SD1TransData, 1, 1, Device.CmdSpacewire1ControlSPTP, value => IsSD1TransData = 1 == value);
-                ControlValuesList[Global.Spacewire1.SPTPControl].AddProperty(Global.Spacewire1.SPTPControl.SD2TransData, 3, 1, Device.CmdSpacewire1ControlSPTP, value => IsSD2TransData = 1 == value);
 
                 ControlValuesList[Global.Spacewire1.SD1SendTime].AddProperty(Global.Spacewire1.SD1SendTime, 0, 16, Device.CmdSpacewire1SPTPControlSD1SendTime, value => SD1SendTime = value);
-                ControlValuesList[Global.Spacewire1.SD2SendTime].AddProperty(Global.Spacewire1.SD2SendTime, 0, 16, Device.CmdSpacewire1SPTPControlSD2SendTime, value => SD2SendTime = value);
                 ControlValuesList[Global.Spacewire1.SD1DataSize].AddProperty(Global.Spacewire1.SD1DataSize, 0, 16, Device.CmdSpacewire1SPTPControlSD1DataSize, value => SD1DataSize = value);
-                ControlValuesList[Global.Spacewire1.SD2DataSize].AddProperty(Global.Spacewire1.SD2DataSize, 0, 16, Device.CmdSpacewire1SPTPControlSD2DataSize, value => SD2DataSize = value);
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.Busy, 3, 1, delegate { }, value => IsRecordBusy = 1 == value);
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.IssuePackage, 0, 1, Device.CmdSpacewire1Record, value => IsIssuePackage = 1 == value);
             }
         }
 
+        /// <summary>
+        /// Содержит нотификатор команд для управления БУК.
+        /// </summary>
         public class ControlBuk : SubNotify
         {
+            /// <summary>
+            /// The issue command get frame
+            /// </summary>
             private ICommand issueCmdGetFrame;
+
+            /// <summary>
+            /// The SPW2 is need save data
+            /// </summary>
             private bool spw2IsNeedSaveData;
+
+            /// <summary>
+            /// The SPW2 data
+            /// </summary>
             private byte[] spw2Data;
+
+            /// <summary>
+            /// The SPW2 is confirm execution
+            /// </summary>
             private bool spw2IsConfirmExecution;
+
+            /// <summary>
+            /// The SPW2 is confirm receipt
+            /// </summary>
             private bool spw2IsConfirmReceipt;
+
+            /// <summary>
+            /// The SPW2 is make tele command
+            /// </summary>
             private bool spw2IsMakeTeleCmd;
+
+            /// <summary>
+            /// The is issue test
+            /// </summary>
             private bool isIssueTest;
+
+            /// <summary>
+            /// The SPW2 apid
+            /// </summary>
             private short spw2Apid;
+
+            /// <summary>
+            /// The threshold
+            /// </summary>
             private short threshold;
+
+            /// <summary>
+            /// The issue command threshold
+            /// </summary>
             private ICommand issueCmdThreshold;
+
+            /// <summary>
+            /// The algo type
+            /// </summary>
             private byte algoType;
+
+            /// <summary>
+            /// The param1
+            /// </summary>
             private byte param1;
+
+            /// <summary>
+            /// The param3
+            /// </summary>
             private byte param3;
+
+            /// <summary>
+            /// The param2
+            /// </summary>
             private byte param2;
+
+            /// <summary>
+            /// The issue command get tele
+            /// </summary>
             private ICommand issueCmdGetTele;
+
+            /// <summary>
+            /// The sel detector
+            /// </summary>
             private byte selDetector;
+
+            /// <summary>
+            /// The PWR detector
+            /// </summary>
             private bool pwrDetector;
+
+            /// <summary>
+            /// The issue command sel detector
+            /// </summary>
             private ICommand issueCmdSelDetector;
+
+            /// <summary>
+            /// The sel conf
+            /// </summary>
             private byte selConf;
+
+            /// <summary>
+            /// The issue command configuration
+            /// </summary>
             private ICommand issueCmdConfig;
+
+            /// <summary>
+            /// The mode conf
+            /// </summary>
             private byte modeConf;
+
+            /// <summary>
+            /// The compress conf
+            /// </summary>
             private byte compressConf;
+
+            /// <summary>
+            /// The line recv conf
+            /// </summary>
             private byte lineRecvConf;
+
+            /// <summary>
+            /// The line send conf
+            /// </summary>
             private byte lineSendConf;
+
+            /// <summary>
+            /// The activate conf
+            /// </summary>
             private byte activateConf;
+
+            /// <summary>
+            /// The exchange conf
+            /// </summary>
             private bool exchangeConf;
+
+            /// <summary>
+            /// The number shutter
+            /// </summary>
             private byte numberShutter;
+
+            /// <summary>
+            /// The shutter time
+            /// </summary>
             private int shutterTime;
+
+            /// <summary>
+            /// The issue command shutter
+            /// </summary>
             private ICommand issueCmdShutter;
+
+            /// <summary>
+            /// The number light
+            /// </summary>
             private byte numberLight;
+
+            /// <summary>
+            /// The light time
+            /// </summary>
             private int lightTime;
+
+            /// <summary>
+            /// The issue command light
+            /// </summary>
             private ICommand issueCmdLight;
+
+            /// <summary>
+            /// The command bytes
+            /// </summary>
             private byte[] cmdBytes;
+
+            /// <summary>
+            /// The issue command send
+            /// </summary>
             private ICommand issueCmdSend;
+
+            /// <summary>
+            /// The issue data send
+            /// </summary>
             private ICommand issueDataSend;
+
+            /// <summary>
+            /// The data bytes
+            /// </summary>
             private byte[] dataBytes;
+
+            /// <summary>
+            /// The line shutter
+            /// </summary>
             private byte lineShutter;
+
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="ControlBuk" />.
+            /// </summary>
+            /// <param name="owner">The owner.</param>
             public ControlBuk(EgseBukNotify owner)
                 : base(owner)
             {                
             }
 
+            /// <summary>
+            /// Gets the issue command get frame.
+            /// </summary>
+            /// <value>
+            /// The issue command get frame.
+            /// </value>
             public ICommand IssueCmdGetFrame
             {
                 get
@@ -5320,6 +5670,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Gets the issue command threshold.
+            /// </summary>
+            /// <value>
+            /// The issue command threshold.
+            /// </value>
             public ICommand IssueCmdThreshold
             {
                 get
@@ -5333,6 +5689,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Gets the issue command get tele.
+            /// </summary>
+            /// <value>
+            /// The issue command get tele.
+            /// </value>
             public ICommand IssueCmdGetTele
             {
                 get
@@ -5345,6 +5707,13 @@ namespace Egse.Devices
                     return this.issueCmdGetTele;
                 }
             }
+
+            /// <summary>
+            /// Gets the issue command sel detector.
+            /// </summary>
+            /// <value>
+            /// The issue command sel detector.
+            /// </value>
             public ICommand IssueCmdSelDetector
             {
                 get
@@ -5358,6 +5727,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Gets the issue command configuration.
+            /// </summary>
+            /// <value>
+            /// The issue command configuration.
+            /// </value>
             public ICommand IssueCmdConfig
             {
                 get
@@ -5371,6 +5746,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Gets the issue command shutter.
+            /// </summary>
+            /// <value>
+            /// The issue command shutter.
+            /// </value>
             public ICommand IssueCmdShutter
             {
                 get
@@ -5384,6 +5765,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Gets the issue command light.
+            /// </summary>
+            /// <value>
+            /// The issue command light.
+            /// </value>
             public ICommand IssueCmdLight
             {
                 get
@@ -5397,6 +5784,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Gets the issue command send.
+            /// </summary>
+            /// <value>
+            /// The issue command send.
+            /// </value>
             public ICommand IssueCmdSend
             {
                 get
@@ -5410,6 +5803,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Gets the issue data send.
+            /// </summary>
+            /// <value>
+            /// The issue data send.
+            /// </value>
             public ICommand IssueDataSend
             {
                 get
@@ -5423,7 +5822,12 @@ namespace Egse.Devices
                 }
             }
 
-
+            /// <summary>
+            /// Gets the type of the algo.
+            /// </summary>
+            /// <value>
+            /// The type of the algo.
+            /// </value>
             public byte AlgoType
             {
                 get
@@ -5433,11 +5837,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.algoType)
+                    {
+                        return;
+                    }
+
                     this.algoType = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the sel conf.
+            /// </summary>
+            /// <value>
+            /// The sel conf.
+            /// </value>
             public byte SelConf
             {
                 get
@@ -5447,11 +5862,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.selConf)
+                    {
+                        return;
+                    }
+
                     this.selConf = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the data bytes.
+            /// </summary>
+            /// <value>
+            /// The data bytes.
+            /// </value>
             public byte[] DataBytes
             {
                 get
@@ -5461,11 +5887,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.dataBytes)
+                    {
+                        return;
+                    }
+
                     this.dataBytes = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the command bytes.
+            /// </summary>
+            /// <value>
+            /// The command bytes.
+            /// </value>
             public byte[] CmdBytes
             {
                 get
@@ -5475,11 +5912,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value.Equals(this.cmdBytes))
+                    {
+                        return;
+                    }
+
                     this.cmdBytes = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the sel detector.
+            /// </summary>
+            /// <value>
+            /// The sel detector.
+            /// </value>
             public byte SelDetector
             {
                 get
@@ -5489,11 +5937,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.selDetector)
+                    {
+                        return;
+                    }
+
                     this.selDetector = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the compress conf.
+            /// </summary>
+            /// <value>
+            /// The compress conf.
+            /// </value>
             public byte CompressConf
             {
                 get
@@ -5503,11 +5962,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.compressConf)
+                    {
+                        return;
+                    }
+
                     this.compressConf = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the line send conf.
+            /// </summary>
+            /// <value>
+            /// The line send conf.
+            /// </value>
             public byte LineSendConf
             {
                 get
@@ -5517,11 +5987,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.lineSendConf)
+                    {
+                        return;
+                    }
+
                     this.lineSendConf = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the activate conf.
+            /// </summary>
+            /// <value>
+            /// The activate conf.
+            /// </value>
             public byte ActivateConf
             {
                 get
@@ -5531,11 +6012,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.activateConf)
+                    {
+                        return;
+                    }
+
                     this.activateConf = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets a value indicating whether [exchange conf].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> if [exchange conf]; otherwise, <c>false</c>.
+            /// </value>
             public bool ExchangeConf
             {
                 get
@@ -5545,11 +6037,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.exchangeConf)
+                    { 
+                        return;
+                    }
+
                     this.exchangeConf = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the number light.
+            /// </summary>
+            /// <value>
+            /// The number light.
+            /// </value>
             public byte NumberLight
             {
                 get
@@ -5559,11 +6062,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.numberLight)
+                    { 
+                        return;
+                    }
+
                     this.numberLight = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the light time.
+            /// </summary>
+            /// <value>
+            /// The light time.
+            /// </value>
             public int LightTime
             {
                 get
@@ -5573,11 +6087,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.lightTime)
+                    {
+                        return;
+                    }
+
                     this.lightTime = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the line shutter.
+            /// </summary>
+            /// <value>
+            /// The line shutter.
+            /// </value>
             public byte LineShutter
             {
                 get
@@ -5587,11 +6112,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.lineShutter)
+                    {
+                        return;
+                    }
+
                     this.lineShutter = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the number shutter.
+            /// </summary>
+            /// <value>
+            /// The number shutter.
+            /// </value>
             public byte NumberShutter
             {
                 get
@@ -5601,11 +6137,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.numberShutter)
+                    {
+                        return;
+                    }
+
                     this.numberShutter = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the shutter time.
+            /// </summary>
+            /// <value>
+            /// The shutter time.
+            /// </value>
             public int ShutterTime
             {
                 get
@@ -5615,11 +6162,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.shutterTime)
+                    { 
+                        return;
+                    }
+
                     this.shutterTime = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the line recv conf.
+            /// </summary>
+            /// <value>
+            /// The line recv conf.
+            /// </value>
             public byte LineRecvConf
             {
                 get
@@ -5629,12 +6187,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.lineRecvConf)
+                    {
+                        return;
+                    }
+
                     this.lineRecvConf = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
-
+            /// <summary>
+            /// Gets the mode conf.
+            /// </summary>
+            /// <value>
+            /// The mode conf.
+            /// </value>
             public byte ModeConf
             {
                 get
@@ -5644,12 +6212,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.modeConf)
+                    {
+                        return;
+                    }
+
                     this.modeConf = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
-
+            /// <summary>
+            /// Gets a value indicating whether [PWR detector].
+            /// </summary>
+            /// <value>
+            ///   <c>true</c> if [PWR detector]; otherwise, <c>false</c>.
+            /// </value>
             public bool PwrDetector
             {
                 get
@@ -5659,11 +6237,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.pwrDetector)
+                    {
+                        return;
+                    }
+
                     this.pwrDetector = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the param1.
+            /// </summary>
+            /// <value>
+            /// The param1.
+            /// </value>
             public byte Param1
             {
                 get
@@ -5673,10 +6262,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.param1)
+                    {
+                        return;
+                    }
+
                     this.param1 = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
+
+            /// <summary>
+            /// Gets the param2.
+            /// </summary>
+            /// <value>
+            /// The param2.
+            /// </value>
             public byte Param2
             {
                 get
@@ -5686,10 +6287,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.param2)
+                    {
+                        return;
+                    }
+
                     this.param2 = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
+
+            /// <summary>
+            /// Gets the param3.
+            /// </summary>
+            /// <value>
+            /// The param3.
+            /// </value>
             public byte Param3
             {
                 get
@@ -5699,11 +6312,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.param3)
+                    {
+                        return;
+                    }
+
                     this.param3 = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets the threshold.
+            /// </summary>
+            /// <value>
+            /// The threshold.
+            /// </value>
             public short Threshold
             {
                 get
@@ -5713,11 +6337,22 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.threshold)
+                    { 
+                        return;
+                    }
+
                     this.threshold = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
+            /// <summary>
+            /// Gets a value indicating whether this instance is issue test.
+            /// </summary>
+            /// <value>
+            /// <c>true</c> if this instance is issue test; otherwise, <c>false</c>.
+            /// </value>
             public bool IsIssueTest
             {
                 get
@@ -5727,10 +6362,20 @@ namespace Egse.Devices
 
                 private set
                 {
+                    if (value == this.isIssueTest)
+                    {
+                        return;
+                    }
+
                     this.isIssueTest = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
+
+            /// <summary>
+            /// Datas the send.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void DataSend(object obj)
             {
                 PushSpw2Prop();
@@ -5757,9 +6402,14 @@ namespace Egse.Devices
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the send.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdSend(object obj)
             {
                 PushSpw2Prop();
@@ -5777,14 +6427,20 @@ namespace Egse.Devices
                         buf[i++] = t;
                     }
                 }
+
                 Owner.Spacewire2Notify.Data = new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 };
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the light.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdLight(object obj)
             {
                 PushSpw2Prop();
@@ -5798,9 +6454,14 @@ namespace Egse.Devices
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the shutter.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdShutter(object obj)
             {
                 PushSpw2Prop();
@@ -5814,9 +6475,14 @@ namespace Egse.Devices
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the configuration.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdConfig(object obj)
             {
                 PushSpw2Prop();
@@ -5831,22 +6497,30 @@ namespace Egse.Devices
                         { 
                             Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) }; 
                         }
+
                         break;
                     case 2: 
                         {
                             Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) }; 
                         }
+
                         break;
                    default:
                         return;
-                }                
+                }
+
                 if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the sel detector.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdSelDetector(object obj)
             {
                 PushSpw2Prop();
@@ -5860,9 +6534,14 @@ namespace Egse.Devices
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the get tele.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdGetTele(object obj)
             {
                 PushSpw2Prop();
@@ -5876,9 +6555,14 @@ namespace Egse.Devices
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the get frame.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdGetFrame(object obj)
             {
                 PushSpw2Prop();
@@ -5892,9 +6576,14 @@ namespace Egse.Devices
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
+            /// <summary>
+            /// Commands the threshold.
+            /// </summary>
+            /// <param name="obj">The object.</param>
             private void CmdThreshold(object obj)
             {
                 PushSpw2Prop();
@@ -5908,12 +6597,13 @@ namespace Egse.Devices
                 {
                     Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
                 }
+
                 PopSpw2Prop();
             }
 
-
-
-
+            /// <summary>
+            /// Pushes the SPW2 property.
+            /// </summary>
             private void PushSpw2Prop()
             {
                 this.spw2Apid = Owner.Spacewire2Notify.Apid;
@@ -5924,27 +6614,45 @@ namespace Egse.Devices
                 this.spw2IsMakeTeleCmd = Owner.Spacewire2Notify.IsMakeTeleCmd;
             }
 
+            /// <summary>
+            /// Pops the SPW2 property.
+            /// </summary>
             private void PopSpw2Prop()
             {
                 Owner.Spacewire2Notify.Apid = this.spw2Apid;
                 Owner.Spacewire2Notify.IsNeedSaveData = this.spw2IsNeedSaveData;
-                Owner.Spacewire2Notify.Data = this.spw2Data;
+                Owner.Spacewire2Notify.Data = null == this.spw2Data ? new byte[] { } : this.spw2Data;
                 Owner.Spacewire2Notify.IsConfirmExecution = this.spw2IsConfirmExecution;
                 Owner.Spacewire2Notify.IsConfirmReceipt = this.spw2IsConfirmReceipt;
                 Owner.Spacewire2Notify.IsMakeTeleCmd = this.spw2IsMakeTeleCmd;
             }
         }
 
+        /// <summary>
+        /// Предоставляет информацию по телеметрии КВВ.
+        /// </summary>
         public class TeleKvv : SubNotify
         {
+            /// <summary>
+            /// The TMKVV data
+            /// </summary>
             private Egse.Protocols.SpacewireTm604MsgEventArgs.TmKvv tmkvvData = new SpacewireTm604MsgEventArgs.TmKvv();
 
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="TeleKvv" />.
+            /// </summary>
+            /// <param name="owner">The owner.</param>
             public TeleKvv(EgseBukNotify owner)
                 : base(owner)
             {
             }
 
-
+            /// <summary>
+            /// Gets the KVV data.
+            /// </summary>
+            /// <value>
+            /// The KVV data.
+            /// </value>
             public byte[] KvvData
             {
                 get
@@ -5953,6 +6661,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает данные телеметрии КВВ.
+            /// </summary>
+            /// <value>
+            /// Данные телеметрии КВВ.
+            /// </value>
             internal Egse.Protocols.SpacewireTm604MsgEventArgs.TmKvv TmKvvData
             {
                 get
@@ -5963,22 +6677,36 @@ namespace Egse.Devices
                 set
                 {
                     this.tmkvvData = value;
-                    FirePropertyChangedEvent(string.Empty);
+                    OnPropertyChanged(string.Empty);
                 }
             }
         }
 
+        /// <summary>
+        /// Предоставляет информацию по телеметрии БУК.
+        /// </summary>
         public class TeleBuk : SubNotify
         {
-
+            /// <summary>
+            /// The tmbuk data
+            /// </summary>
             private Egse.Protocols.SpacewireTm604MsgEventArgs.TmBuk tmbukData = new SpacewireTm604MsgEventArgs.TmBuk();
-            
+
+            /// <summary>
+            /// Инициализирует новый экземпляр класса <see cref="TeleBuk" />.
+            /// </summary>
+            /// <param name="owner">The owner.</param>
             public TeleBuk(EgseBukNotify owner)
                 : base(owner)
             {
-
             }
 
+            /// <summary>
+            /// Gets the buk data.
+            /// </summary>
+            /// <value>
+            /// The buk data.
+            /// </value>
             public byte[] BukData
             {
                 get
@@ -5987,6 +6715,12 @@ namespace Egse.Devices
                 }
             }
 
+            /// <summary>
+            /// Получает или задает данные телеметрии БУК.
+            /// </summary>
+            /// <value>
+            /// Данные телеметрии БУК.
+            /// </value>
             internal Egse.Protocols.SpacewireTm604MsgEventArgs.TmBuk TmBukData           
             {
                 get
@@ -5997,10 +6731,9 @@ namespace Egse.Devices
                 set
                 {
                     this.tmbukData = value;
-                    FirePropertyChangedEvent(string.Empty);
+                    OnPropertyChanged(string.Empty);
                 }
             }
-
         }
 
         /// <summary>
@@ -6017,12 +6750,12 @@ namespace Egse.Devices
             /// <summary>
             /// SPTP: Адрес ИМИТАТОРА БУСКа.
             /// </summary>
-            private int _logicBusk = 0;
+            private int logicBusk = 0;
 
             /// <summary>
             /// SPTP: Адрес БС.
             /// </summary>
-            private int _logicBuk = 0;
+            private int logicBuk = 0;
 
             /// <summary>
             /// Управление: вкл/выкл интерфейса Spacewire.
@@ -6032,12 +6765,12 @@ namespace Egse.Devices
             /// <summary>
             /// Управление: Установлена связь.
             /// </summary>
-            private bool _isConnect;
+            private bool isConnect;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Выдача посылки RMAP (самосбр.).
             /// </summary>
-            private bool _isIssueRMap;
+            private bool isIssueRMap;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): 1 – выдача посылки в прибор БС (самосбр.).
@@ -6055,11 +6788,6 @@ namespace Egse.Devices
             private bool isIssueExchange;
 
             /// <summary>
-            /// Управление обменом с приборами по SPTP: можно выдавать пакет в БС.
-            /// </summary>
-            private bool isTransData;
-
-            /// <summary>
             /// Управление обменом с приборами по SPTP: выдача КБВ прибору БС (только при «1 PPS» == 1).
             /// </summary>
             private bool isIssueObt;
@@ -6072,27 +6800,27 @@ namespace Egse.Devices
             /// <summary>
             /// Количество предоставления квот от БУСК.
             /// </summary>
-            private long _replyQueueFromBusk;
+            private long replyQueueFromBusk;
 
             /// <summary>
             /// Количество предоставления квот от БУК.
             /// </summary>
-            private long _replyQueueFromBuk;
+            private long replyQueueFromBuk;
 
             /// <summary>
             /// Количество запросов квот от БУК.
             /// </summary>
-            private long _requestQueueFromBuk;
+            private long requestQueueFromBuk;
 
             /// <summary>
             /// Количество запросов квот от БУСК.
             /// </summary>
-            private long _requestQueueFromBusk;
+            private long requestQueueFromBusk;
 
             /// <summary>
             /// Текущее КБВ.
             /// </summary>
-            private long _codeOnboardTime;
+            private long codeOnboardTime;
 
             /// <summary>
             /// APID для формирования команды.
@@ -6102,22 +6830,22 @@ namespace Egse.Devices
             /// <summary>
             /// Текущее значение Timetick1 от БУСК.
             /// </summary>
-            private byte _buskTickTime1;
+            private byte buskTickTime1;
 
             /// <summary>
             /// Текущее значение Timetick2 от БУСК.
             /// </summary>
-            private byte _buskTickTime2;
+            private byte buskTickTime2;
 
             /// <summary>
             /// Текущее значение Timetick1 от БУК.
             /// </summary>
-            private byte _bukTickTime1;
+            private byte bukTickTime1;
 
             /// <summary>
             /// Текущее значение Timetick2 от БУК.
             /// </summary>
-            private byte _bukTickTime2;
+            private byte bukTickTime2;
 
             /// <summary>
             /// Формировать телекоманду.
@@ -6132,7 +6860,7 @@ namespace Egse.Devices
             /// <summary>
             /// Имя файла данных.
             /// </summary>
-            private string _rawDataFile;
+            private string rawDataFile;
 
             /// <summary>
             /// Для асинхронной записи в файл.
@@ -6164,7 +6892,7 @@ namespace Egse.Devices
             /// Экземпляр команды на [открыть из файла].
             /// </summary>
             [field: NonSerialized]
-            private ICommand _fromFileCommand;
+            private ICommand fromFileCommand;
 
             /// <summary>
             /// Экземпляр команды на [включение записи в файл].
@@ -6188,6 +6916,9 @@ namespace Egse.Devices
             /// </summary>
             private bool isConfirmExecution = true;
 
+            /// <summary>
+            /// The is need save data
+            /// </summary>
             private bool isNeedSaveData = true;
 
             /// <summary>
@@ -6206,6 +6937,10 @@ namespace Egse.Devices
             /// </summary>
             [field: NonSerialized]
             private Dictionary<short, AutoCounter> counterIcd;
+
+            /// <summary>
+            /// The issue enable command
+            /// </summary>
             private ICommand issueEnableCommand;
 
             /// <summary>
@@ -6294,13 +7029,11 @@ namespace Egse.Devices
                 BukTime2 = 0x0b
             }
 
-
-            
             /// <summary>
-            /// Получает буфер данных для передачи в USB.
+            /// Получает или задает буфер данных для передачи в USB.
             /// </summary>
             /// <value>
-            /// Буфер данных.
+            /// Буфер данных для передачи в USB.
             /// </value>            
             public byte[] Data
             { 
@@ -6311,6 +7044,11 @@ namespace Egse.Devices
 
                 set
                 {
+                    if (value.Equals(this.data))
+                    {
+                        return;                    
+                    }
+
                     this.data = value;
                 }
             }
@@ -6339,13 +7077,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestQueueFromBusk;
+                    return this.requestQueueFromBusk;
                 }
 
                 set 
                 {
-                    _requestQueueFromBusk = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestQueueFromBusk)
+                    {
+                        return;
+                    }
+
+                    this.requestQueueFromBusk = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6359,13 +7102,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _buskTickTime1;
+                    return this.buskTickTime1;
                 }
 
                 set 
                 {
-                    _buskTickTime1 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.buskTickTime1)
+                    {
+                        return;
+                    }
+
+                    this.buskTickTime1 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6391,21 +7139,26 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает наименование файла для записи данных.
+            /// Получает наименование [файла для записи данных].
             /// </summary>
             /// <value>
-            /// Наименование файла для записи данных.
+            /// Наименование [файла для записи данных].
             /// </value>
             public string RawDataFile
             {
                 get
                 {
-                    return _rawDataFile;
+                    return this.rawDataFile;
                 }
 
                 private set 
                 {
-                    _rawDataFile = value;
+                    if (value == this.rawDataFile)
+                    {
+                        return;
+                    }
+
+                    this.rawDataFile = value;
                     if (string.Empty != value)
                     {
                         this.binDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
@@ -6428,7 +7181,7 @@ namespace Egse.Devices
                         }
                     }
 
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -6453,14 +7206,14 @@ namespace Egse.Devices
                     }
 
                     this.isSaveTxtData = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
 
                     if (value)
                     {
                         LogsClass.LogSpacewire2.NewLog();                        
                     }
 
-                    FirePropertyChangedEvent("TxtDataFile");
+                    OnPropertyChanged(() => this.TxtDataFile);
                 }
             }
 
@@ -6494,7 +7247,7 @@ namespace Egse.Devices
                         RawDataFile = string.Empty;
                     }
 
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -6527,13 +7280,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _buskTickTime2;
+                    return this.buskTickTime2;
                 }
 
                 set 
                 {
-                    _buskTickTime2 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.buskTickTime2)
+                    {
+                        return;
+                    }
+
+                    this.buskTickTime2 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6547,13 +7305,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _bukTickTime1;
+                    return this.bukTickTime1;
                 }
 
                 set 
                 {
-                    _bukTickTime1 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.bukTickTime1)
+                    {
+                        return;
+                    }
+
+                    this.bukTickTime1 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6567,13 +7330,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _bukTickTime2;
+                    return this.bukTickTime2;
                 }
 
                 set 
                 {
-                    _bukTickTime2 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.bukTickTime2)
+                    {
+                        return;
+                    }
+
+                    this.bukTickTime2 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6634,13 +7402,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _replyQueueFromBusk;
+                    return this.replyQueueFromBusk;
                 }
 
                 set 
                 {
-                    _replyQueueFromBusk = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.replyQueueFromBusk)
+                    {
+                        return;
+                    }
+
+                    this.replyQueueFromBusk = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6654,13 +7427,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestQueueFromBuk;
+                    return this.requestQueueFromBuk;
                 }
 
                 set 
                 {
-                    _requestQueueFromBuk = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestQueueFromBuk)
+                    {
+                        return;
+                    }
+
+                    this.requestQueueFromBuk = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6674,13 +7452,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _replyQueueFromBuk;
+                    return this.replyQueueFromBuk;
                 }
 
                 set 
                 {
-                    _replyQueueFromBuk = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.replyQueueFromBuk)
+                    {
+                        return;
+                    }
+
+                    this.replyQueueFromBuk = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6694,18 +7477,23 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _codeOnboardTime;
+                    return this.codeOnboardTime;
                 }
 
                 set 
                 {
-                    _codeOnboardTime = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.codeOnboardTime)
+                    { 
+                        return; 
+                    }
+
+                    this.codeOnboardTime = value;
+                    OnPropertyChanged();
                 }
             }        
 
             /// <summary>
-            /// Получает канал имитатора БМ-4.
+            /// Получает или задает канал имитатора БМ-4.
             /// </summary>
             /// <value>
             /// Канал имитатора БМ-4.
@@ -6726,7 +7514,7 @@ namespace Egse.Devices
 
                     this.spacewireChannel = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Channel, (int)value);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                     Device.CmdSetDeviceLogicAddr();
                 }
             }
@@ -6751,25 +7539,6 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает строку представления [логический адрес БУСК].
-            /// </summary>
-            /// <value>
-            /// Строка [логический адрес БУСК].
-            /// </value>
-            public string ShowLogicBusk
-            {
-                get
-                {
-                    return string.Format(Resource.Get(@"stShowLogicBusk"), LogicBusk.ToString(/*"X2"*/));
-                }
-
-                private set 
-                {
-                    FirePropertyChangedEvent();
-                }
-            }
-
-            /// <summary>
             /// Получает или задает [логический адрес БУСК].
             /// </summary>
             /// <value>
@@ -6779,34 +7548,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _logicBusk;
+                    return this.logicBusk;
                 }
 
                 set 
                 {
-                    _logicBusk = value;
+                    if (value == this.logicBusk)
+                    {
+                        return;
+                    }
+
+                    this.logicBusk = value;
                     ControlValuesList[Global.Spacewire2.BuskLogic].SetProperty(Global.Spacewire2.BuskLogic, value);
-                    FirePropertyChangedEvent();
-                    ShowLogicBusk = string.Empty;
-                }
-            }
-
-            /// <summary>
-            /// Получает строку представления [логический адрес БУК].
-            /// </summary>
-            /// <value>
-            /// Строка [логический адрес БУК].
-            /// </value>
-            public string ShowLogicBuk
-            {
-                get
-                {
-                    return string.Format(Resource.Get(@"stShowLogicBuk"), LogicBuk.ToString(/*"X2"*/));
-                }
-
-                private set 
-                {
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -6820,15 +7574,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _logicBuk;
+                    return this.logicBuk;
                 }
 
                 set 
                 {
-                    _logicBuk = value;
+                    if (value == this.logicBuk)
+                    {
+                        return;
+                    }
+
+                    this.logicBuk = value;
                     ControlValuesList[Global.Spacewire2.BukLogic].SetProperty(Global.Spacewire2.BukLogic, value);
-                    FirePropertyChangedEvent();
-                    ShowLogicBuk = string.Empty;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6854,28 +7612,33 @@ namespace Egse.Devices
 
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.IssueEnable, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
  
             /// <summary>
-            /// Получает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
+            /// Получает значение, показывающее, что [связь по интерфейсу установлена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [связь по интерфейсу Spacewire установлена]; иначе, <c>false</c>.
+            /// <c>true</c> если [связь по интерфейсу установлена]; иначе, <c>false</c>.
             /// </value>
             public bool IsConnect
             {
                 get
                 {
-                    return _isConnect;
+                    return this.isConnect;
                 }
 
                 private set 
                 {
-                    _isConnect = value;
+                    if (value == this.isConnect)
+                    {
+                        return;
+                    }
+
+                    this.isConnect = value;
                     ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -6889,13 +7652,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isIssueRMap;
+                    return this.isIssueRMap;
                 }
 
                 private set 
                 {
-                    _isIssueRMap = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.isIssueRMap)
+                    {
+                        return;
+                    }
+
+                    this.isIssueRMap = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -6928,12 +7696,12 @@ namespace Egse.Devices
             {
                 get
                 {
-                    if (_fromFileCommand == null)
+                    if (this.fromFileCommand == null)
                     {
-                        _fromFileCommand = new RelayCommand(OpenFromFile, obj => { return true; });
+                        this.fromFileCommand = new RelayCommand(OpenFromFile, obj => { return true; });
                     }
 
-                    return _fromFileCommand;
+                    return this.fromFileCommand;
                 }
             }
 
@@ -6947,7 +7715,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return IsIssueRMap || IsIssuePackage || !IsConnect;
+                    return IsIssueRMap || IsIssuePackage || !IsConnect || !IsIssueExchange;
                 }
             }
 
@@ -6972,7 +7740,7 @@ namespace Egse.Devices
                     }
 
                     this.isMakeTeleCmd = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -6997,7 +7765,7 @@ namespace Egse.Devices
                     }
 
                     this.isConfirmReceipt = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -7022,7 +7790,7 @@ namespace Egse.Devices
                     }
 
                     this.isConfirmExecution = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
             
@@ -7041,9 +7809,14 @@ namespace Egse.Devices
 
                 private set 
                 {
+                    if (value == this.isIssuePackage)
+                    {
+                        return;
+                    }
+
                     this.isIssuePackage = value;
                     ControlValuesList[Global.Spacewire2.Record].SetProperty(Global.Spacewire2.Record.IssuePackage, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -7087,8 +7860,8 @@ namespace Egse.Devices
                     }
 
                     this.isIssueTickTime = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueTimeMark, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    ControlValuesList[Global.Spacewire2.SptpControl].SetProperty(Global.Spacewire2.SptpControl.IssueTimeMark, Convert.ToInt32(value));
+                    OnPropertyChanged();
                 }
             }
 
@@ -7113,16 +7886,16 @@ namespace Egse.Devices
                     }
 
                     this.isIssueExchange = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueExchange, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    ControlValuesList[Global.Spacewire2.SptpControl].SetProperty(Global.Spacewire2.SptpControl.IssueExchange, Convert.ToInt32(value));
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает или задает значение, показывающее, что [выдается КБВ для прибора БУК].
+            /// Получает или задает значение, показывающее, что [необходимо выдавать КБВ для прибора БУК].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [выдается КБВ для прибора БУК]; иначе, <c>false</c>.
+            /// <c>true</c> если [необходимо выдавать КБВ для прибора БУК]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueObt
             {
@@ -7139,29 +7912,8 @@ namespace Egse.Devices
                     }
 
                     this.isIssueObt = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.IssueKbv, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
-                }
-            }
-            
-            /// <summary>
-            /// Получает значение, показывающее, что [можно выдавать пакеты данных в БУК].
-            /// </summary>
-            /// <value>
-            /// <c>true</c> если [можно выдавать пакеты данных в БУК]; иначе, <c>false</c>.
-            /// </value>
-            public bool IsTransData
-            {
-                get
-                {
-                    return this.isTransData;
-                }
-
-                set 
-                {
-                    this.isTransData = value;
-                    ControlValuesList[Global.Spacewire2.SPTPControl].SetProperty(Global.Spacewire2.SPTPControl.TransData, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    ControlValuesList[Global.Spacewire2.SptpControl].SetProperty(Global.Spacewire2.SptpControl.IssueKbv, Convert.ToInt32(value));
+                    OnPropertyChanged();
                 }
             }
 
@@ -7180,7 +7932,7 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает текущий APID для формирования посылки.
+            /// Получает или задает текущий APID для формирования посылки.
             /// </summary>
             /// <value>
             /// Текущий APID для формирования посылки.
@@ -7194,8 +7946,13 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.setApid)
+                    {
+                        return;
+                    }
+
                     this.setApid = value;
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -7211,7 +7968,12 @@ namespace Egse.Devices
                 }
             }
 
-
+            /// <summary>
+            /// Получает или задает значение, показывающее, что [необходимо сохранять данные в список].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [необходимо сохранять данные в список]; иначе, <c>false</c>.
+            /// </value>
             internal bool IsNeedSaveData
             {
                 get
@@ -7221,6 +7983,11 @@ namespace Egse.Devices
 
                 set
                 {
+                    if (value == this.isNeedSaveData)
+                    {
+                        return;
+                    }
+
                     this.isNeedSaveData = value;
                 }
             }
@@ -7251,12 +8018,14 @@ namespace Egse.Devices
                 }
             }
 
-
+            /// <summary>
+            /// Makes the data.
+            /// </summary>
+            /// <returns></returns>
             public byte[] MakeData()
             {
                 if ((null != this.Data) && (0 < this.Data.Length))
                 {
-
                     if (IsNeedSaveData)
                     {
                         DataToSaveList();
@@ -7323,7 +8092,6 @@ namespace Egse.Devices
                         }
 
                         this.binDataTask = this.binDataStream.WriteAsync(spw.Data, 0, spw.Data.Length);
-
                     }
                 }
             }
@@ -7335,7 +8103,7 @@ namespace Egse.Devices
             public void OpenFromFile(object obj)
             {
                 Data = Owner.OpenFromFile();
-                FirePropertyChangedEvent("Data");
+                OnPropertyChanged(() => this.Data);
             }
 
             /// <summary>
@@ -7354,7 +8122,7 @@ namespace Egse.Devices
                     DataList.Insert(0, str);
                 }
 
-                FirePropertyChangedEvent("DataList");
+                OnPropertyChanged(() => this.DataList);
             }
 
             /// <summary>
@@ -7364,7 +8132,7 @@ namespace Egse.Devices
             {
                 ControlValuesList.Add(Global.Spacewire2.Control, new ControlValue());
                 ControlValuesList.Add(Global.Spacewire2.Record, new ControlValue());
-                ControlValuesList.Add(Global.Spacewire2.SPTPControl, new ControlValue());
+                ControlValuesList.Add(Global.Spacewire2.SptpControl, new ControlValue());
                 ControlValuesList.Add(Global.Spacewire2.BuskLogic, new ControlValue());
                 ControlValuesList.Add(Global.Spacewire2.BukLogic, new ControlValue());
                 ControlValuesList.Add(Global.Spacewire2.SPTPLogicBkp, new ControlValue());
@@ -7382,10 +8150,9 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire2.Record].AddProperty(Global.Spacewire2.Record.IssuePackage, 1, 1, Device.CmdSpacewire2Record, value => IsIssuePackage = 1 == value, true);
                 ControlValuesList[Global.Spacewire2.BuskLogic].AddProperty(Global.Spacewire2.BuskLogic, 0, 8, Device.CmdSpacewire2LogicBusk, value => LogicBusk = value);
                 ControlValuesList[Global.Spacewire2.BukLogic].AddProperty(Global.Spacewire2.BukLogic, 0, 8, Device.CmdSpacewire2LogicBuk, value => LogicBuk = value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.IssueTimeMark, 0, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueTickTime = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.IssueExchange, 1, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueExchange = 1 == value);
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.IssueKbv, 2, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueObt = 1 == value);               
-                ControlValuesList[Global.Spacewire2.SPTPControl].AddProperty(Global.Spacewire2.SPTPControl.TransData, 3, 1, Device.CmdSpacewire2SPTPControl, value => IsTransData = 1 == value);
+                ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueTimeMark, 0, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueTickTime = 1 == value);
+                ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueExchange, 1, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueExchange = 1 == value);
+                ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueKbv, 2, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueObt = 1 == value);
             }
         }
 
@@ -7413,28 +8180,28 @@ namespace Egse.Devices
             /// <summary>
             /// Управление: Установлена связь.
             /// </summary>
-            private bool _isConnect;
+            private bool isConnect;
 
             /// <summary>
             /// Управление: Сигнал передачи кадров.
             /// </summary>
-            private bool _isIssueTransmission;
+            private bool isIssueTransmission;
 
             /// <summary>
             /// Сохранять данные в файл.
             /// </summary>
-            private bool _isSaveRawData;
+            private bool isSaveRawData;
 
             /// <summary>
             /// Имя файла данных.
             /// </summary>
-            private string _rawDataFile;
+            private string rawDataFile;
 
             /// <summary>
             /// Для асинхронной записи в файл.
             /// </summary>
             [field: NonSerialized]
-            private FileStream _rawDataStream;
+            private FileStream rawDataStream;
 
             /// <summary>
             /// Квазиасинхронная запись в файл.
@@ -7442,7 +8209,7 @@ namespace Egse.Devices
             /// Используется для сигнала, что все данные записались в файл.
             /// </summary>
             [field: NonSerialized]
-            private Task _rawDataTask;
+            private Task rawDataTask;
 
             /// <summary>
             /// Полукомплект рабочего прибора.
@@ -7464,42 +8231,42 @@ namespace Egse.Devices
             /// <summary>
             /// Текущее значение Timetick1 от БУК.
             /// </summary>
-            private byte _bukTickTime1;
+            private byte bukTickTime1;
 
             /// <summary>
             /// Текущее значение Timetick2 от БУК.
             /// </summary>
-            private byte _bukTickTime2;
+            private byte bukTickTime2;
 
             /// <summary>
             /// Текущее значение Timetick2 от НП.
             /// </summary>
-            private byte _scidevTickTime2;
+            private byte scidevTickTime2;
 
             /// <summary>
             /// Текущее значение Timetick1 от НП.
             /// </summary>
-            private byte _scidevTickTime1;
+            private byte scidevTickTime1;
 
             /// <summary>
             /// Количество запросов квоты от БУК.
             /// </summary>
-            private long _requestQueueFromBuk;
+            private long requestQueueFromBuk;
 
             /// <summary>
             /// Количество предоставления квот от БУК.
             /// </summary>
-            private long _replyQueueFromBuk;
+            private long replyQueueFromBuk;
 
             /// <summary>
             /// Количество запросов квоты от НП.
             /// </summary>
-            private long _replyQueueFromSD;
+            private long replyQueueFromSD;
 
             /// <summary>
             /// Количество предоставления квот от НП.
             /// </summary>
-            private long _requestQueueFromSD;
+            private long requestQueueFromSD;
 
             /// <summary>
             /// Сохранять ли текстовый лог-файл.
@@ -7604,10 +8371,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [интерфейс Spacewire включен].
+            /// Получает или задает значение, показывающее, что [интерфейс включен].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
+            /// <c>true</c> если [интерфейс включен]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueEnable
             {
@@ -7618,10 +8385,15 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueEnable)
+                    {
+                        return;
+                    }
+
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.IssueEnable, Convert.ToInt32(value));
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(0));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -7645,23 +8417,28 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [связь по интерфейсу Spacewire установлена].
+            /// Получает значение, показывающее, что [связь по интерфейсу установлена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [связь по интерфейсу SpaceWire установлена]; иначе, <c>false</c>.
+            /// <c>true</c> если [связь по интерфейсу установлена]; иначе, <c>false</c>.
             /// </value>
             public bool IsConnect
             {
                 get
                 {
-                    return _isConnect;
+                    return this.isConnect;
                 }
 
                 private set 
                 {
-                    _isConnect = value;
+                    if (value == this.isConnect)
+                    {
+                        return;
+                    }
+
+                    this.isConnect = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -7687,10 +8464,10 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что необходимо записывать текстовый лог-файл.
+            /// Получает или задает значение, показывающее, что [запись текстового лог-файла включена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если запись текстового лог-файла осуществляется; иначе, <c>false</c>.
+            /// <c>true</c> если [запись текстового лог-файла включена]; иначе, <c>false</c>.
             /// </value>
             public bool IsSaveTxtData
             {
@@ -7701,15 +8478,19 @@ namespace Egse.Devices
 
                 set
                 {
-                    this.isSaveTxtData = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.isSaveTxtData)
+                    {
+                        return;
+                    }
 
+                    this.isSaveTxtData = value;                    
                     if (value)
                     {
                         LogsClass.LogSpacewire3.NewLog();
                     }
 
-                    FirePropertyChangedEvent("TxtDataFile");
+                    OnPropertyChanged();
+                    OnPropertyChanged(() => this.TxtDataFile);
                 }
             }
 
@@ -7723,19 +8504,24 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isIssueTransmission;
+                    return this.isIssueTransmission;
                 }
 
                 private set 
                 {
-                    _isIssueTransmission = value;
+                    if (value == this.isIssueTransmission)
+                    {
+                        return;
+                    }
+
+                    this.isIssueTransmission = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Transmission, Convert.ToInt32(value), false);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает полукомплект прибора.
+            /// Получает или задает полукомплект прибора.
             /// </summary>
             /// <value>
             /// Полукомплект прибора.
@@ -7749,17 +8535,22 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.halfSet)
+                    {
+                        return;
+                    }
+
                     this.halfSet = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.HalfSet, (int)value);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает рабочий прибор.
+            /// Получает или задает рабочий детектор.
             /// </summary>
             /// <value>
-            /// Рабочий прибор.
+            /// Рабочий детектор.
             /// </value>
             public DetectorDevice IssueDetectorDevice
             {
@@ -7770,70 +8561,85 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.detectorDevice)
+                    {
+                        return;
+                    }
+
                     this.detectorDevice = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.WorkDevice, (int)value);
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает наименование файла для записи данных.
+            /// Получает наименование [файла для записи данных].
             /// </summary>
             /// <value>
-            /// Наименование файла для записи данных.
+            /// Наименование [файла для записи данных].
             /// </value>
             public string RawDataFile
             {
                 get
                 {
-                    return _rawDataFile;
+                    return this.rawDataFile;
                 }
 
                 private set 
                 {
-                    _rawDataFile = value;
+                    if (value == this.rawDataFile)
+                    {
+                        return;
+                    }
+
+                    this.rawDataFile = value;
                     if (string.Empty != value)
                     {
-                        _rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
+                        this.rawDataStream = new FileStream(value, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: true);
                     }
                     else
                     {
-                        if (null != _rawDataStream)
+                        if (null != this.rawDataStream)
                         {
                             try
                             {
-                                if (null != _rawDataTask)
+                                if (null != this.rawDataTask)
                                 {
-                                    _rawDataTask.Wait(WaitForWriteTime);
+                                    this.rawDataTask.Wait(WaitForWriteTime);
                                 }
                             }
                             finally
                             {
-                                _rawDataStream.Close();
+                                this.rawDataStream.Close();
                             }
                         }
                     }
 
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что активна запись данных в файл.
+            /// Получает или задает значение, показывающее, что [запись данных в файл включена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если активна запись данных в файл; иначе, <c>false</c>.
+            /// <c>true</c> если [запись данных в файл включена]; иначе, <c>false</c>.
             /// </value>
             public bool IsSaveRawData
             {
                 get
                 {
-                    return _isSaveRawData;
+                    return this.isSaveRawData;
                 }
 
                 set 
                 {
-                    _isSaveRawData = value;
+                    if (value == this.isSaveRawData)
+                    {
+                        return;
+                    }
+
+                    this.isSaveRawData = value;
                     if (value)
                     {
                         RawDataFile = Owner.GetNewFileName(Resource.Get(@"stSdLogName"));
@@ -7843,7 +8649,7 @@ namespace Egse.Devices
                         RawDataFile = string.Empty;
                     }
 
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -7876,13 +8682,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestQueueFromBuk;
+                    return this.requestQueueFromBuk;
                 }
 
                 private set 
                 {
-                    _requestQueueFromBuk = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestQueueFromBuk)
+                    {
+                        return;
+                    }
+
+                    this.requestQueueFromBuk = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -7896,13 +8707,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _replyQueueFromBuk;
+                    return this.replyQueueFromBuk;
                 }
 
                 private set 
                 {
-                    _replyQueueFromBuk = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.replyQueueFromBuk)
+                    {
+                        return;
+                    }
+
+                    this.replyQueueFromBuk = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -7916,13 +8732,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _requestQueueFromSD;
+                    return this.requestQueueFromSD;
                 }
 
                 private set 
                 {
-                    _requestQueueFromSD = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.requestQueueFromSD)
+                    {
+                        return;
+                    }
+
+                    this.requestQueueFromSD = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -7936,13 +8757,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _replyQueueFromSD;
+                    return this.replyQueueFromSD;
                 }
 
                 private set 
                 {
-                    _replyQueueFromSD = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.replyQueueFromSD)
+                    {
+                        return;
+                    }
+
+                    this.replyQueueFromSD = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -7956,13 +8782,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _scidevTickTime1;
+                    return this.scidevTickTime1;
                 }
 
                 set 
                 {
-                    _scidevTickTime1 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.scidevTickTime1)
+                    {
+                        return;
+                    }
+
+                    this.scidevTickTime1 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -7976,13 +8807,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _scidevTickTime2;
+                    return this.scidevTickTime2;
                 }
 
                 set 
                 {
-                    _scidevTickTime2 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.scidevTickTime2)
+                    {
+                        return;
+                    }
+
+                    this.scidevTickTime2 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -7996,13 +8832,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _bukTickTime1;
+                    return this.bukTickTime1;
                 }
 
                 set 
                 {
-                    _bukTickTime1 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.bukTickTime1)
+                    {
+                        return;
+                    }
+
+                    this.bukTickTime1 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -8016,13 +8857,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _bukTickTime2;
+                    return this.bukTickTime2;
                 }
 
                 set 
                 {
-                    _bukTickTime2 = value;
-                    FirePropertyChangedEvent();
+                    if (value == this.bukTickTime2)
+                    {
+                        return;
+                    }
+
+                    this.bukTickTime2 = value;
+                    OnPropertyChanged();
                 }
             }
 
@@ -8080,19 +8926,19 @@ namespace Egse.Devices
             /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
             public virtual void OnSpacewire3MsgRawSave(object sender, BaseMsgEventArgs e)
             {
-                if (null != _rawDataStream)
+                if (null != this.rawDataStream)
                 {
-                    if (null != _rawDataTask)
+                    if (null != this.rawDataTask)
                     {
-                        _rawDataTask.Wait(WaitForWriteTime);
+                        this.rawDataTask.Wait(WaitForWriteTime);
                     }
 
-                    if (_rawDataStream.CanWrite)
+                    if (this.rawDataStream.CanWrite)
                     {
                         if (e is SpacewireSptpMsgEventArgs)
                         {
                             SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
-                            _rawDataTask = _rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
+                            this.rawDataTask = this.rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
                         }
                     }
                 }
@@ -8133,12 +8979,12 @@ namespace Egse.Devices
             /// <summary>
             /// Управление: Установлена связь.
             /// </summary>
-            private bool _isConnect;
+            private bool isConnect;
 
             /// <summary>
             /// Управление: Включение метки времени (1 Гц).
             /// </summary>
-            private bool _isIssueTimeMark;
+            private bool isIssueTimeMark;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): EEP или EOP.
@@ -8148,22 +8994,22 @@ namespace Egse.Devices
             /// <summary>
             /// Запись данных(до 1 Кбайт): Выдача в конце посылки EOP или EEP.
             /// </summary>
-            private bool _isIssueEOP = true;
+            private bool isIssueEOP = true;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Автоматическая выдача.
             /// </summary>
-            private bool _isIssueAuto;
+            private bool isIssueAuto;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Бит занятости.
             /// </summary>
-            private bool _isRecordBusy;
+            private bool isRecordBusy;
 
             /// <summary>
             /// Запись данных(до 1 Кбайт): Бит занятости.
             /// </summary>
-            private bool _isIssuePackage;
+            private bool isIssuePackage;
 
             /// <summary>
             /// Экземпляр команды на [включение интерфейса spacewire].
@@ -8199,18 +9045,18 @@ namespace Egse.Devices
             }           
 
             /// <summary>
-            /// Получает буфер данных для передачи в USB.
+            /// Получает или задает буфер данных для передачи в USB.
             /// </summary>
             /// <value>
-            /// Буфер данных.
+            /// Буфер данных для передачи в USB.
             /// </value>
             public byte[] Data { get; set; }
 
             /// <summary>
-            /// Получает значение, показывающее, что [интерфейс Spacewire включен].
+            /// Получает или задает значение, показывающее, что [интерфейс включен].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [интерфейс SpaceWire включен]; иначе, <c>false</c>.
+            /// <c>true</c> если [интерфейс включен]; иначе, <c>false</c>.
             /// </value>
             public bool IsIssueEnable
             {
@@ -8221,10 +9067,15 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueEnable)
+                    {
+                        return;
+                    }
+
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.IssueEnable, Convert.ToInt32(value));
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(0));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -8248,23 +9099,28 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Получает значение, показывающее, что [установлена связь по интерфейсу Spacewire].
+            /// Получает значение, показывающее, что [связь по интерфейсу установлена].
             /// </summary>
             /// <value>
-            /// <c>true</c> если [установлена связь по интерфейсу Spacewire]; иначе, <c>false</c>.
+            /// <c>true</c> если [связь по интерфейсу установлена]; иначе, <c>false</c>.
             /// </value>
             public bool IsConnect
             {
                 get
                 {
-                    return _isConnect;
+                    return this.isConnect;
                 }
 
                 private set 
                 {
-                    _isConnect = value;
+                    if (value == this.isConnect)
+                    {
+                        return;
+                    }
+
+                    this.isConnect = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -8278,14 +9134,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isIssueTimeMark;
+                    return this.isIssueTimeMark;
                 }
 
                 private set 
                 {
-                    _isIssueTimeMark = value;
-                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.TimeMark, Convert.ToInt32(_isIssueTimeMark));
-                    FirePropertyChangedEvent();
+                    if (value == this.isIssueTimeMark)
+                    {
+                        return;
+                    }
+
+                    this.isIssueTimeMark = value;
+                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.TimeMark, Convert.ToInt32(value));
+                    OnPropertyChanged();
                 }
             }
 
@@ -8309,7 +9170,7 @@ namespace Egse.Devices
             }
             
             /// <summary>
-            /// Получает значение, показывающее, что [выдается EEP].
+            /// Получает или задает значение, показывающее, что [выдается EEP].
             /// </summary>
             /// <value>
             /// <c>true</c> если [выдается EEP]; иначе, <c>false</c>.
@@ -8323,9 +9184,14 @@ namespace Egse.Devices
 
                 set 
                 {
+                    if (value == this.isIssueEEP)
+                    {
+                        return;
+                    }
+
                     this.isIssueEEP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.Eep, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -8339,14 +9205,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isIssueEOP;
+                    return this.isIssueEOP;
                 }
 
                 private set 
                 {
-                    _isIssueEOP = value;
+                    if (value == this.isIssueEOP)
+                    {
+                        return;
+                    }
+
+                    this.isIssueEOP = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.EOPSend, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -8379,14 +9250,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isIssueAuto;
+                    return this.isIssueAuto;
                 }
 
                 private set 
                 {
-                    _isIssueAuto = value;
+                    if (value == this.isIssueAuto)
+                    {
+                        return;
+                    }
+
+                    this.isIssueAuto = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssueAuto, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();
+                    OnPropertyChanged();
                 }
             }
 
@@ -8400,13 +9276,18 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isRecordBusy || IsIssuePackage;
+                    return this.isRecordBusy || IsIssuePackage;
                 }
 
                 private set 
                 {
-                    _isRecordBusy = value;
-                    FirePropertyChangedEvent();                    
+                    if (value == this.isRecordBusy)
+                    {
+                        return;
+                    }
+
+                    this.isRecordBusy = value;
+                    OnPropertyChanged();                    
                 }
             }
 
@@ -8420,14 +9301,19 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return _isIssuePackage;
+                    return this.isIssuePackage;
                 }
 
                 private set 
                 {
-                    _isIssuePackage = value;
+                    if (value == this.isIssuePackage)
+                    {
+                        return;
+                    }
+
+                    this.isIssuePackage = value;
                     ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.IssuePackage, Convert.ToInt32(value));
-                    FirePropertyChangedEvent();                   
+                    OnPropertyChanged();                   
                 }
             }
 
@@ -8443,7 +9329,16 @@ namespace Egse.Devices
                 {
                     if (this.issuePackageCommand == null)
                     {
-                        this.issuePackageCommand = new RelayCommand(obj => { IsIssuePackage = true; if (IsIssueEep) { IsIssueEep = false; } }, obj => { return !IsRecordBusy; });
+                        this.issuePackageCommand = new RelayCommand(
+                            obj => 
+                            { 
+                                IsIssuePackage = true; 
+                                if (IsIssueEep) 
+                                { 
+                                    IsIssueEep = false; 
+                                } 
+                            }, 
+                            obj => { return !IsRecordBusy; });
                     }
 
                     return this.issuePackageCommand;
@@ -8511,8 +9406,8 @@ namespace Egse.Devices
             /// <param name="obj">The object.</param>
             public void OpenFromFile(object obj)
             {
-                Data = Owner.OpenFromFile();
-                FirePropertyChangedEvent("Data");
+                Data = Owner.OpenFromFile();                
+                OnPropertyChanged(() => this.Data);
             }
 
             /// <summary>
@@ -8531,7 +9426,7 @@ namespace Egse.Devices
                     DataList.Insert(0, str);
                 }
 
-                FirePropertyChangedEvent("DataList");
+                OnPropertyChanged(() => this.DataList);
             }
 
             /// <summary>

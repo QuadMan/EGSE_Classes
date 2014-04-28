@@ -225,7 +225,7 @@
                                          Content="ВКЛ "
                                          GroupName="ufesOpen"
                                          IsChecked="{Binding IssueUfesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="11" />
                             <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
@@ -235,7 +235,7 @@
                                          Content="ВЫКЛ "
                                          GroupName="ufesOpen"
                                          IsChecked="{Binding IssueUfesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="12" />
                         </Grid>
@@ -250,7 +250,7 @@
                                          Content="ВКЛ "
                                          GroupName="vufesOpen"
                                          IsChecked="{Binding IssueVufesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="13" />
                             <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
@@ -260,7 +260,7 @@
                                          Content="ВЫКЛ "
                                          GroupName="vufesOpen"
                                          IsChecked="{Binding IssueVufesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="14" />
                         </Grid>
@@ -275,7 +275,7 @@
                                          Content="ВКЛ "
                                          GroupName="sdshOpen"
                                          IsChecked="{Binding IssueSdshOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="15" />
                             <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
@@ -285,7 +285,7 @@
                                          Content="ВЫКЛ "
                                          GroupName="sdshOpen"
                                          IsChecked="{Binding IssueSdshOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="16" />
                         </Grid>
@@ -300,7 +300,7 @@
                                          Content="ВКЛ "
                                          GroupName="ufesClose"
                                          IsChecked="{Binding IssueUfesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="17" />
                             <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
@@ -310,7 +310,7 @@
                                          Content="ВЫКЛ "
                                          GroupName="ufesClose"
                                          IsChecked="{Binding IssueUfesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="18" />
                         </Grid>
@@ -325,7 +325,7 @@
                                          Content="ВКЛ "
                                          GroupName="vufesClose"
                                          IsChecked="{Binding IssueVufesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="19" />
                             <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
@@ -335,7 +335,7 @@
                                          Content="ВЫКЛ "
                                          GroupName="vufesClose"
                                          IsChecked="{Binding IssueVufesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="20" />
                         </Grid>
@@ -350,7 +350,7 @@
                                          Content="ВКЛ "
                                          GroupName="sdshClose"
                                          IsChecked="{Binding IssueSdshClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.On},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="21" />
                             <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
@@ -360,7 +360,7 @@
                                          Content="ВЫКЛ "
                                          GroupName="sdshClose"
                                          IsChecked="{Binding IssueSdshClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+DevEnabled.Off},
+                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
                                                              Converter={StaticResource EnumToBoolConverter}}"
                                          TabIndex="22" />
                         </Grid>

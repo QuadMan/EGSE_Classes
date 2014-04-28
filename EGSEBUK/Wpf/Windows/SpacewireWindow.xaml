@@ -38,10 +38,15 @@
             <Label Grid.ColumnSpan="3"
                    Content="Управление"
                    Style="{StaticResource FlatHeader}" />
-            <Label Grid.Row="1"
-                   Grid.ColumnSpan="2"
-                   Content="{Binding ShowLogicBusk}"
-                   Template="{StaticResource FlatLabel}" />
+            <TextBlock Grid.Row="1"
+                       Grid.ColumnSpan="2"
+                       Style="{StaticResource FormattedTextBlock}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Имитатор БМ-4 (БУСК или БУНД) (адрес: {0})">
+                        <Binding Path="LogicBusk" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <ComboBox Grid.Row="1"
                       Grid.Column="2"
                       Margin="1"
@@ -70,10 +75,15 @@
                    Grid.ColumnSpan="2"
                    Content="Прибор"
                    Template="{StaticResource FlatLabel}" />
-            <Label Grid.Row="4"
-                   Grid.Column="2"
-                   Content="{Binding ShowLogicBuk}"
-                   Template="{StaticResource FlatLabel}" />
+            <TextBlock Grid.Row="4"
+                Grid.Column="2"
+                Style="{StaticResource FormattedTextBlock}">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}БУК (адрес: {0})">
+                        <Binding Path="LogicBuk" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
             <Label Grid.Row="6"
                    Grid.ColumnSpan="2"
                    Content="Выдавать метки времени"

@@ -18,10 +18,19 @@ namespace Egse.Defaults
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// The win tele KVV
+        /// </summary>
         private TeleKvvWindow winTeleKvv;
 
+        /// <summary>
+        /// The win tele buk
+        /// </summary>
         private TeleBukWindow winTeleBuk;
 
+        /// <summary>
+        /// The win control buk
+        /// </summary>
         private ControlBukWindow winControlBuk;
 
         /// <summary>

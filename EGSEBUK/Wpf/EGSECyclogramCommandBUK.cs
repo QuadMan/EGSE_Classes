@@ -47,65 +47,128 @@ namespace Egse.Cyclogram.Command
             CyclogramCommandsAvailable.AddCommand("a4c3ce1691ca4135abdf865959c81b8a", new CyclogramLine("BUK_DETECTOR_IMIT_CMD", BukDetectorImitCmdTest, BukDetectorImitCmdExec, string.Empty));
         }
 
+        /// <summary>
+        /// Аргумент "статус для полукомплекта".
+        /// </summary>
         private enum StateReady
         {
+            /// <summary>
+            /// Параметр "готов" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "StateReady")]
             READY
         }
 
+        /// <summary>
+        /// Аргумент "статус для полукомплекта".
+        /// </summary>
         private enum StateBusy
         {
+            /// <summary>
+            /// Параметр "занят" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "StateBusy")]
             BUSY
         }
 
+        /// <summary>
+        /// Аргумент "статус для полукомплекта".
+        /// </summary>
         private enum StateMe
         {
+            /// <summary>
+            /// Параметр "me" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "StateMe")]
             ME
         }
 
+        /// <summary>
+        /// Аргумент "переключатель состояния".
+        /// </summary>
         private enum SwitcherDetectorImit
         {
+            /// <summary>
+            /// Параметр "включения/активации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherDetectorImitOn")]
             ON,
 
+            /// <summary>
+            /// Параметр "выключения/деактивации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherDetectorImitOff")]
             OFF
         }
 
+        /// <summary>
+        /// Аргумент "переключатель состояния".
+        /// </summary>
         private enum SwitcherBukBm4Imit
         {
+            /// <summary>
+            /// Параметр "включения/активации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherBukBm4ImitOn")]
             ON,
 
+            /// <summary>
+            /// Параметр "выключения/деактивации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherBukBm4ImitOff")]
             OFF
         }
 
+        /// <summary>
+        /// Аргумент "переключатель состояния".
+        /// </summary>
         private enum SwitcherBukDetectorImit
         {
+            /// <summary>
+            /// Параметр "включения/активации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherBukDetectorImitOn")]
             ON,
 
+            /// <summary>
+            /// Параметр "выключения/деактивации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherBukDetectorImitOff")]
             OFF
         }
 
+        /// <summary>
+        /// Аргумент "переключатель состояния".
+        /// </summary>
         private enum SwitcherPower
         {
+            /// <summary>
+            /// Параметр "включения/активации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherPowerOn")]
             ON,
 
+            /// <summary>
+            /// Параметр "выключения/деактивации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherPowerOff")]
             OFF
         }
 
+        /// <summary>
+        /// Аргумент "переключатель состояния".
+        /// </summary>
         private enum SwitcherKvvImit
         {
+            /// <summary>
+            /// Параметр "включения/активации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherKvvImitOn")]
             ON,
 
+            /// <summary>
+            /// Параметр "выключения/деактивации" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SwitcherKvvImitOff")]
             OFF
         }
@@ -152,84 +215,165 @@ namespace Egse.Cyclogram.Command
             BUND
         }
 
+        /// <summary>
+        /// Аргумент "флаг наличия ошибки в сообщении".
+        /// </summary>
         private enum ErrorEndPoint
         {
+            /// <summary>
+            /// Параметр "выдавать флаг наличия ошибки в сообщении" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "IssueEep")]
             EEP
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл текстовый лог-файл".
+        /// </summary>
         private enum TxtLogDetectorImit
         {
+            /// <summary>
+            /// Параметр "вкл текстовый лог-файл" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "TxtLogDetectorImitOn")]
             TXT_ON,
 
+            /// <summary>
+            /// Параметр "выкл текстовый лог-файл" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "TxtLogDetectorImitOff")]
             TXT_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл текстовый лог-файл".
+        /// </summary>
         private enum TxtLogKvvImit
         {
+            /// <summary>
+            /// Параметр "вкл текстовый лог-файл" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "TxtLogKvvImitOn")]
             TXT_ON,
 
+            /// <summary>
+            /// Параметр "выкл текстовый лог-файл" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "TxtLogKvvImitOff")]
             TXT_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл текстовый лог-файл".
+        /// </summary>
         private enum TxtLogBm4Imit
         {
+            /// <summary>
+            /// Параметр "вкл текстовый лог-файл" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "TxtLogBm4ImitOn")]
             TXT_ON,
 
+            /// <summary>
+            /// Параметр "выкл текстовый лог-файл" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "TxtLogBm4ImitOff")]
             TXT_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл бинарный лог".
+        /// </summary>
         private enum BinLogKvvImit
         {
+            /// <summary>
+            /// Параметр "вкл бинарный лог" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "BinLogKvvImitOn")]
             BIN_ON,
 
+            /// <summary>
+            /// Параметр "выкл бинарный лог" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "BinLogKvvImitOff")]
             BIN_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл бинарный лог".
+        /// </summary>
         private enum BinLogDetectorImit
         {
+            /// <summary>
+            /// Параметр "вкл бинарный лог" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "BinLogDetectorImitOn")]
             BIN_ON,
 
+            /// <summary>
+            /// Параметр "выкл бинарный лог" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "BinLogDetectorImitOff")]
             BIN_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл бинарный лог".
+        /// </summary>
         private enum BinLogBm4Imit
         {
+            /// <summary>
+            /// Параметр "вкл бинарный лог" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "BinLogBm4ImitOn")]
             BIN_ON,
 
+            /// <summary>
+            /// Параметр "выкл бинарный лог" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "BinLogBm4ImitOff")]
             BIN_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл обмен для имитатора БМ-4".
+        /// </summary>
         private enum ExchangeBukBm4Imit
         {
+            /// <summary>
+            /// Параметр "вкл обмен для имитатора БМ-4" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "ExchangeBukBm4ImitOn")]
             EXCHANGE_ON,
 
+            /// <summary>
+            /// Параметр "выкл обмен для имитатора БМ-4" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "ExchangeBukBm4ImitOff")]
             EXCHANGE_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл обмен для БМ-4".
+        /// </summary>
         private enum ExchangeBm4Imit
         {
+            /// <summary>
+            /// Параметр "вкл обмен для БМ-4" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "ExchangeBm4ImitOn")]
             EXCHANGE_ON,
 
+            /// <summary>
+            /// Параметр "выкл обмен для БМ-4" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "ExchangeBm4ImitOff")]
             EXCHANGE_OFF
         }
 
+        /// <summary>
+        /// Аргумент "выбор канала БС".
+        /// </summary>
         private enum ScidevDetectorImit
         {
             /// <summary>
@@ -275,11 +419,20 @@ namespace Egse.Cyclogram.Command
             SDSH
         }
 
+        /// <summary>
+        /// Аргумент "выбор линии передачи".
+        /// </summary>
         private enum HalfsetDetectorImit
         {
+            /// <summary>
+            /// Параметр "основная линия" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "HalfsetDetectorImitMain")]
             MAIN,
 
+            /// <summary>
+            /// Параметр "резервная линия" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "HalfsetDetectorImitResv")]
             RESV
         }
@@ -358,25 +511,25 @@ namespace Egse.Cyclogram.Command
             /// <summary>
             /// Параметр "канал spacewire БУК ПК1 - БУСК ПК1" аргумента.
             /// </summary>
-            [Action(typeof(Execut), "ChannelCh1_1")]
+            [Action(typeof(Execut), "ChannelCh11")]
             CH1_1,
 
             /// <summary>
             /// Параметр "канал spacewire БУК ПК1 - БУСК ПК2" аргумента.
             /// </summary>
-            [Action(typeof(Execut), "ChannelCh1_2")]
+            [Action(typeof(Execut), "ChannelCh12")]
             CH1_2,
 
             /// <summary>
             /// Параметр "канал spacewire БУК ПК2 - БУСК ПК1" аргумента.
             /// </summary>
-            [Action(typeof(Execut), "ChannelCh2_1")]
+            [Action(typeof(Execut), "ChannelCh21")]
             CH2_1,
 
             /// <summary>
             /// Параметр "канал spacewire БУК ПК2 - БУСК ПК2" аргумента.
             /// </summary>
-            [Action(typeof(Execut), "ChannelCh2_2")]
+            [Action(typeof(Execut), "ChannelCh22")]
             CH2_2
         }
 
@@ -410,76 +563,146 @@ namespace Egse.Cyclogram.Command
             POLL_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл выдачу пакетов данных в прибор".
+        /// </summary>
         private enum Data
         {
+            /// <summary>
+            /// Параметр "вкл выдачу пакетов данных в прибор" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "DataOn")]
             DATA_ON,
 
+            /// <summary>
+            /// Параметр "выкл выдачу пакетов данных в прибор" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "DataOff")]
             DATA_OFF
         }
 
+        /// <summary>
+        /// Аргумент "частота выдачи пакетов данных (в миллисекундах)".
+        /// </summary>
         private enum Time
         {
+            /// <summary>
+            /// Параметр "частота выдачи пакетов данных (в миллисекундах)" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "TimeArg", true)]
             TIME_dec
         }
 
+        /// <summary>
+        /// Аргумент "подтверждение получения телекоманды".
+        /// </summary>
         private enum Rece
         {
+            /// <summary>
+            /// Параметр "установить флаг подтверждения получения телекоманды" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "MarkReceipt")]
             RECEIPT
         }
 
+        /// <summary>
+        /// Аргумент "подтверждение выполнения телекоманды".
+        /// </summary>
         private enum Exec
         {
+            /// <summary>
+            /// Параметр "установить флаг подтверждения выполнения телекоманды" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "MarkExecut")]
             EXECUT
         }
 
+        /// <summary>
+        /// Аргумент "выдать УКС активации".
+        /// </summary>
         private enum Activate
         {
+            /// <summary>
+            /// Параметр "УКС активации первого полукомплекта" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "CmdActivate1")]
             ACTIVATE1,
 
+            /// <summary>
+            /// Параметр "УКС активации второго полукомплекта" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "CmdActivate2")]
             ACTIVATE2
         }
 
+        /// <summary>
+        /// Аргумент "установить APID для телекоманды".
+        /// </summary>
         private enum Apid
         {
+            /// <summary>
+            /// Параметр "APID для телекоманды" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "ApidArg", true)]
             APID_hex
         }
 
+        /// <summary>
+        /// Аргумент "посылка данных (в байтах)".
+        /// </summary>
         [Action(typeof(Execut), "BukDetectorImitHexPackageArg", true)]
         private enum HexPackageBukDetectorImit
-        { }
+        { 
+        }
 
+        /// <summary>
+        /// Аргумент "посылка данных (в байтах)".
+        /// </summary>
         [Action(typeof(Execut), "Bm4ImitHexPackageArg", true)]
         private enum HexPackageBm4Imit
-        { }
+        { 
+        }
 
+        /// <summary>
+        /// Аргумент "посылка данных (в байтах)".
+        /// </summary>
         [Action(typeof(Execut), "BukKvvImitHexPackageArg", true)]
         private enum HexPackageBukKvvImit
-        { }
+        { 
+        }
 
-
-
+        /// <summary>
+        /// Аргумент "выбор линии приема".
+        /// </summary>
         private enum Receive
         {
+            /// <summary>
+            /// Параметр "основная линия приема" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "ReceiveMain")]
             RECV_MAIN,
 
+            /// <summary>
+            /// Параметр "резервная линия приема" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "ReceiveResv")]
             RECV_RESV
         }
 
+        /// <summary>
+        /// Аргумент "выбор линии передачи".
+        /// </summary>
         private enum Send
         {
+            /// <summary>
+            /// Параметр "основная линия передачи" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SendMain")]
             SEND_MAIN,
 
+            /// <summary>
+            /// Параметр "резервная линия передачи" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SendResv")]
             SEND_RESV
         }
@@ -502,20 +725,38 @@ namespace Egse.Cyclogram.Command
             TICK_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл датчик открытия затвора".
+        /// </summary>
         private enum SensorOpen
         {
+            /// <summary>
+            /// Параметр "вкл датчик открытия затвора" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SensorOpenOn")]
             SENS_OPEN_ON,
 
+            /// <summary>
+            /// Параметр "выкл датчик открытия затвора" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SensorOpenOff")]
             SENS_OPEN_OFF
         }
 
+        /// <summary>
+        /// Аргумент "вкл/выкл датчик закрытия затвора".
+        /// </summary>
         private enum SensorClose
         {
+            /// <summary>
+            /// Параметр "вкл датчик закрытия затвора" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SensorCloseOn")]
             SENS_CLOSE_ON,
 
+            /// <summary>
+            /// Параметр "выкл датчик закрытия затвора" аргумента.
+            /// </summary>
             [Action(typeof(Execut), "SensorCloseOff")]
             SENS_CLOSE_OFF
         }
@@ -556,6 +797,9 @@ namespace Egse.Cyclogram.Command
             SET2
         }
 
+        /// <summary>
+        /// Аргумент "выбор полукомплекта".
+        /// </summary>
         private enum SetsKvvImit
         {
             /// <summary>
@@ -571,7 +815,6 @@ namespace Egse.Cyclogram.Command
             SET2
         }
 
-
         /// <summary>
         /// Получает набор доступных цикломанд для устройства.
         /// </summary>
@@ -582,6 +825,11 @@ namespace Egse.Cyclogram.Command
         /// </summary>
         public EgseBukNotify BukNotify { get; set; }
 
+        /// <summary>
+        /// Buks the detector imit command execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns></returns>
         private bool BukDetectorImitCmdExec(string[] cmdParams)
         {
             try
@@ -595,6 +843,12 @@ namespace Egse.Cyclogram.Command
             } 
         }
 
+        /// <summary>
+        /// Buks the detector imit command test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns></returns>
         private bool BukDetectorImitCmdTest(string[] cmdParams, out string errString)
         {
             string errParam = string.Empty;
@@ -658,6 +912,11 @@ namespace Egse.Cyclogram.Command
             return true;
         }
 
+        /// <summary>
+        /// Buks the detector imit execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns></returns>
         private bool BukDetectorImitExec(string[] cmdParams)
         {
             try
@@ -671,6 +930,12 @@ namespace Egse.Cyclogram.Command
             } 
         }
 
+        /// <summary>
+        /// Buks the detector imit test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns></returns>
         private bool BukDetectorImitTest(string[] cmdParams, out string errString)
         {
             string errParam = string.Empty;
@@ -707,6 +972,11 @@ namespace Egse.Cyclogram.Command
             return true;
         }
 
+        /// <summary>
+        /// Buks the BM4 imit execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns></returns>
         private bool BukBm4ImitExec(string[] cmdParams)
         {
             try
@@ -720,6 +990,12 @@ namespace Egse.Cyclogram.Command
             }  
         }
 
+        /// <summary>
+        /// Buks the BM4 imit test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns></returns>
         private bool BukBm4ImitTest(string[] cmdParams, out string errString)
         {
             string errParam = string.Empty;
@@ -792,6 +1068,12 @@ namespace Egse.Cyclogram.Command
             return true;
         }
 
+        /// <summary>
+        /// Detectors the imit log test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns></returns>
         private bool DetectorImitLogTest(string[] cmdParams, out string errString)
         {
             string errParam = string.Empty;
@@ -842,6 +1124,11 @@ namespace Egse.Cyclogram.Command
             return true;
         }
 
+        /// <summary>
+        /// Detectors the imit log execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns></returns>
         private bool DetectorImitLogExec(string[] cmdParams)
         {
             try
@@ -855,6 +1142,12 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// BM4s the imit log test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns></returns>
         private bool Bm4ImitLogTest(string[] cmdParams, out string errString)
         {
             string errParam = string.Empty;
@@ -905,6 +1198,11 @@ namespace Egse.Cyclogram.Command
             return true;
         }
 
+        /// <summary>
+        /// BM4s the imit log execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns></returns>
         private bool Bm4ImitLogExec(string[] cmdParams)
         {            
             try
@@ -918,6 +1216,12 @@ namespace Egse.Cyclogram.Command
             }   
         }
 
+        /// <summary>
+        /// KVVs the imit log test.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <param name="errString">The error string.</param>
+        /// <returns></returns>
         private bool KvvImitLogTest(string[] cmdParams, out string errString)
         {
             string errParam = string.Empty;
@@ -968,6 +1272,11 @@ namespace Egse.Cyclogram.Command
             return true;
         }
 
+        /// <summary>
+        /// KVVs the imit log execute.
+        /// </summary>
+        /// <param name="cmdParams">The command parameters.</param>
+        /// <returns></returns>
         private bool KvvImitLogExec(string[] cmdParams)
         {
             try
@@ -980,9 +1289,26 @@ namespace Egse.Cyclogram.Command
                 return false;
             } 
         }
-      
 
-
+        /// <summary>
+        /// Includes the test.
+        /// </summary>
+        /// <typeparam name="TEnum">The type of the enum.</typeparam>
+        /// <param name="cmd">The command.</param>
+        /// <param name="errStr">The error string.</param>
+        /// <param name="dupl">The dupl.</param>
+        /// <param name="exclude">The exclude.</param>
+        /// <param name="duplNeedTest">if set to <c>true</c> [dupl need test].</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentException">
+        /// @TEnum
+        /// or
+        /// @TEnum
+        /// or
+        /// @TEnum
+        /// or
+        /// @exclude
+        /// </exception>
         private bool IncludeTest<TEnum>(string[] cmd, out string errStr, ref List<Type> dupl, TEnum[] exclude = null, bool duplNeedTest = true) 
         {
             new { dupl }.CheckNotNull();
@@ -1021,12 +1347,20 @@ namespace Egse.Cyclogram.Command
                     errStr = string.Format(Resource.Get(@"eBadPackage"), hex);
                     return false;
                 }
-
             }
+
             errStr = string.Empty;
             return true;
         }
 
+        /// <summary>
+        /// Incomes the package.
+        /// </summary>
+        /// <param name="testType">Type of the test.</param>
+        /// <param name="cmd">The command.</param>
+        /// <param name="errStr">The error string.</param>
+        /// <param name="list">The list.</param>
+        /// <returns></returns>
         private bool IncomePackage(Type testType, string cmd, out string errStr, ref List<string> list)
         {
             if ((typeof(HexPackageBukDetectorImit) == testType) || (typeof(HexPackageBm4Imit) == testType) || (typeof(HexPackageBukKvvImit) == testType))
@@ -1057,8 +1391,13 @@ namespace Egse.Cyclogram.Command
         /// </summary>
         /// <typeparam name="TEnum">Перечисление параметров.</typeparam>
         /// <param name="cmd">Наименование команды.</param>
+        /// <param name="errStr">Текст ошибки.</param>
+        /// <param name="dupl">Список обнаруженных аргументов.</param>
         /// <param name="exclude">Список исключенных параметров.</param>
-        /// <returns><c>true</c> если параметры существуют, иначе <c>false</c></returns>
+        /// <param name="duplNeedTest">if set to <c>true</c> [dupl need test].</param>
+        /// <returns>
+        ///   <c>true</c> если параметры существуют, иначе <c>false</c>
+        /// </returns>
         private bool IncludeTest<TEnum>(string cmd, out string errStr, ref List<Type> dupl, TEnum[] exclude = null, bool duplNeedTest = true)
         {
             new { dupl }.CheckNotNull();
@@ -1075,6 +1414,7 @@ namespace Egse.Cyclogram.Command
                     return false;
                 }
             }
+
             int dec = -1;
             int hex = -1;
             if (!GetAllList<TEnum>(exclude).Exists(x => 
@@ -1102,6 +1442,15 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Needs the test.
+        /// </summary>
+        /// <typeparam name="TEnum">The type of the enum.</typeparam>
+        /// <param name="cmd">The command.</param>
+        /// <param name="errStr">The error string.</param>
+        /// <param name="dupl">The dupl.</param>
+        /// <param name="exclude">The exclude.</param>
+        /// <returns></returns>
         private bool NeedTest<TEnum>(string cmd, out string errStr, ref List<Type> dupl, TEnum[] exclude = null)
         {
             if (IncludeTest<TEnum>(cmd, out errStr, ref dupl, exclude, false))
@@ -1112,6 +1461,14 @@ namespace Egse.Cyclogram.Command
             return false;
         }
 
+        /// <summary>
+        /// Equalses the command.
+        /// </summary>
+        /// <param name="x">The x.</param>
+        /// <param name="cmd">The command.</param>
+        /// <param name="dec">The decimal.</param>
+        /// <param name="hex">The hexadecimal.</param>
+        /// <returns></returns>
         private bool EqualsCmd(string x, string cmd, ref int dec, ref int hex)
         {
             if (x.Contains(@"dec"))
@@ -1128,6 +1485,13 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the execute hexadecimal package.
+        /// </summary>
+        /// <typeparam name="TEnum">The type of the enum.</typeparam>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude">The exclude.</param>
+        /// <returns></returns>
         private bool IncludeExecHexPackage<TEnum>(string[] cmds, TEnum[] exclude = null)
         {
             ActionAttribute attribute = (ActionAttribute)typeof(TEnum).GetCustomAttributes(typeof(ActionAttribute), false).FirstOrDefault();
@@ -1142,6 +1506,7 @@ namespace Egse.Cyclogram.Command
                         list.Add(cmds[0].Substring(i, 2));
                     }
                 }
+
                 attribute.ActArg(this.BukNotify, list);               
                 return true;
             }
@@ -1151,6 +1516,14 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the execute.
+        /// </summary>
+        /// <typeparam name="TEnum">The type of the enum.</typeparam>
+        /// <param name="cmd">The command.</param>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude">The exclude.</param>
+        /// <returns></returns>
         private bool IncludeExec<TEnum>(string cmd, ref List<string> cmds, TEnum[] exclude = null)
         {
             if ((typeof(HexPackageBukKvvImit) == typeof(TEnum)) || (typeof(HexPackageBukDetectorImit) == typeof(TEnum)) || (typeof(HexPackageBm4Imit) == typeof(TEnum)))
@@ -1186,15 +1559,21 @@ namespace Egse.Cyclogram.Command
                         {
                             attribute.Act(this.BukNotify);
                         }
+
                         return true;
                     }
                 }
-
             }
 
             return false;
         }
 
+        /// <summary>
+        /// Includes the execute.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude1">The exclude1.</param>
         private void IncludeExec<TEnum1>(List<string> cmds, TEnum1[] exclude1 = null)
         {
             Execut.ClearTransaction();
@@ -1209,6 +1588,14 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the execute.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
         private void IncludeExec<TEnum1, TEnum2>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null)
         {
             Execut.ClearTransaction();
@@ -1232,6 +1619,16 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the execute.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <typeparam name="TEnum3">The type of the enum3.</typeparam>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
+        /// <param name="exclude3">The exclude3.</param>
         private void IncludeExec<TEnum1, TEnum2, TEnum3>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null)
         {
             Execut.ClearTransaction();
@@ -1264,6 +1661,18 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the execute.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <typeparam name="TEnum3">The type of the enum3.</typeparam>
+        /// <typeparam name="TEnum4">The type of the enum4.</typeparam>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
+        /// <param name="exclude3">The exclude3.</param>
+        /// <param name="exclude4">The exclude4.</param>
         private void IncludeExec<TEnum1, TEnum2, TEnum3, TEnum4>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null)
         {
             Execut.ClearTransaction();
@@ -1305,6 +1714,20 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the execute.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <typeparam name="TEnum3">The type of the enum3.</typeparam>
+        /// <typeparam name="TEnum4">The type of the enum4.</typeparam>
+        /// <typeparam name="TEnum5">The type of the enum5.</typeparam>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
+        /// <param name="exclude3">The exclude3.</param>
+        /// <param name="exclude4">The exclude4.</param>
+        /// <param name="exclude5">The exclude5.</param>
         private void IncludeExec<TEnum1, TEnum2, TEnum3, TEnum4, TEnum5>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null, TEnum5[] exclude5 = null)
         {
             Execut.ClearTransaction();
@@ -1355,6 +1778,22 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the execute.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <typeparam name="TEnum3">The type of the enum3.</typeparam>
+        /// <typeparam name="TEnum4">The type of the enum4.</typeparam>
+        /// <typeparam name="TEnum5">The type of the enum5.</typeparam>
+        /// <typeparam name="TEnum6">The type of the enum6.</typeparam>
+        /// <param name="cmds">The CMDS.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
+        /// <param name="exclude3">The exclude3.</param>
+        /// <param name="exclude4">The exclude4.</param>
+        /// <param name="exclude5">The exclude5.</param>
+        /// <param name="exclude6">The exclude6.</param>
         private void IncludeExec<TEnum1, TEnum2, TEnum3, TEnum4, TEnum5, TEnum6>(List<string> cmds, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null, TEnum5[] exclude5 = null, TEnum6[] exclude6 = null)
         {
             Execut.ClearTransaction();
@@ -1414,6 +1853,17 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Includes the test.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <param name="cmd">The command.</param>
+        /// <param name="errStr">The error string.</param>
+        /// <param name="dupl">The dupl.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
+        /// <returns></returns>
         private bool IncludeTest<TEnum1, TEnum2>(string cmd, out string errStr, ref List<Type> dupl, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null)
         {
             if (IncludeTest<TEnum2>(cmd, out errStr, ref dupl, exclude2))
@@ -1429,6 +1879,19 @@ namespace Egse.Cyclogram.Command
             return false;
         }
 
+        /// <summary>
+        /// Includes the test.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <typeparam name="TEnum3">The type of the enum3.</typeparam>
+        /// <param name="cmd">The command.</param>
+        /// <param name="errStr">The error string.</param>
+        /// <param name="dupl">The dupl.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
+        /// <param name="exclude3">The exclude3.</param>
+        /// <returns></returns>
         private bool IncludeTest<TEnum1, TEnum2, TEnum3>(string cmd, out string errStr, ref List<Type> dupl, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null)
         {
             if (IncludeTest<TEnum3>(cmd, out errStr, ref dupl, exclude3))
@@ -1449,6 +1912,21 @@ namespace Egse.Cyclogram.Command
             return false;
         }
 
+        /// <summary>
+        /// Includes the test.
+        /// </summary>
+        /// <typeparam name="TEnum1">The type of the enum1.</typeparam>
+        /// <typeparam name="TEnum2">The type of the enum2.</typeparam>
+        /// <typeparam name="TEnum3">The type of the enum3.</typeparam>
+        /// <typeparam name="TEnum4">The type of the enum4.</typeparam>
+        /// <param name="cmd">The command.</param>
+        /// <param name="errStr">The error string.</param>
+        /// <param name="dupl">The dupl.</param>
+        /// <param name="exclude1">The exclude1.</param>
+        /// <param name="exclude2">The exclude2.</param>
+        /// <param name="exclude3">The exclude3.</param>
+        /// <param name="exclude4">The exclude4.</param>
+        /// <returns></returns>
         private bool IncludeTest<TEnum1, TEnum2, TEnum3, TEnum4>(string cmd, out string errStr, ref List<Type> dupl, TEnum1[] exclude1 = null, TEnum2[] exclude2 = null, TEnum3[] exclude3 = null, TEnum4[] exclude4 = null)
         {
             if (IncludeTest<TEnum4>(cmd, out errStr, ref dupl, exclude4))
@@ -1492,6 +1970,11 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Attributes the specified effect type.
+        /// </summary>
+        /// <param name="effectType">Type of the effect.</param>
+        /// <returns></returns>
         private Action Attribute(Enum effectType)
         {
             System.Reflection.MemberInfo memberInfo = effectType.GetType().GetMember(effectType.ToString()).FirstOrDefault();
@@ -2349,163 +2832,661 @@ namespace Egse.Cyclogram.Command
             }
         }
 
+        /// <summary>
+        /// Набор статических команд, для выполнения циклограммы.
+        /// </summary>
         public static class Execut
         {
-            private static readonly Action<EgseBukNotify> BinLogKvvImitOn = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveRawData = true; });
-            private static readonly Action<EgseBukNotify> BinLogKvvImitOff = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveRawData = false; });
-            private static readonly Action<EgseBukNotify> BinLogDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveRawData = true; });
-            private static readonly Action<EgseBukNotify> BinLogDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveRawData = false; });
-            private static readonly Action<EgseBukNotify> BinLogBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveRawData = true; });
-            private static readonly Action<EgseBukNotify> BinLogBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveRawData = false; });
-            private static readonly Action<EgseBukNotify> TxtLogDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveTxtData = true; });
+            /// <summary>
+            /// The bin log KVV imit on
+            /// </summary>
+            private static readonly Action<EgseBukNotify> BinLogKvvImitOn = new Action<EgseBukNotify>(x => x.HsiNotify.IsSaveRawData = true);
+            
+            /// <summary>
+            /// The bin log KVV imit off
+            /// </summary>
+            private static readonly Action<EgseBukNotify> BinLogKvvImitOff = new Action<EgseBukNotify>(x => x.HsiNotify.IsSaveRawData = false);
+            
+            /// <summary>
+            /// The bin log detector imit on
+            /// </summary>
+            private static readonly Action<EgseBukNotify> BinLogDetectorImitOn = new Action<EgseBukNotify>(x => x.Spacewire3Notify.IsSaveRawData = true);
+           
+            /// <summary>
+            /// The bin log detector imit off
+            /// </summary>           
+            private static readonly Action<EgseBukNotify> BinLogDetectorImitOff = new Action<EgseBukNotify>(x => x.Spacewire3Notify.IsSaveRawData = false);
+           
+            /// <summary>
+            /// The bin log BM4 imit on
+            /// </summary>
+            private static readonly Action<EgseBukNotify> BinLogBm4ImitOn = new Action<EgseBukNotify>(x => x.Spacewire2Notify.IsSaveRawData = true);
+            
+            /// <summary>
+            /// The bin log BM4 imit off
+            /// </summary>
+            private static readonly Action<EgseBukNotify> BinLogBm4ImitOff = new Action<EgseBukNotify>(x => x.Spacewire2Notify.IsSaveRawData = false);
+           
+            /// <summary>
+            /// The text log detector imit on
+            /// </summary>
+            private static readonly Action<EgseBukNotify> TxtLogDetectorImitOn = new Action<EgseBukNotify>(x => x.Spacewire3Notify.IsSaveTxtData = true);
+           
+            /// <summary>
+            /// The text log detector imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> TxtLogDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsSaveTxtData = false; });
+            
+            /// <summary>
+            /// The text log BM4 imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> TxtLogBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveTxtData = true; });
+           
+            /// <summary>
+            /// The text log BM4 imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> TxtLogBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsSaveTxtData = false; });
+            
+            /// <summary>
+            /// The text log KVV imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> TxtLogKvvImitOn = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveTxtData = true; });
+            
+            /// <summary>
+            /// The text log KVV imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> TxtLogKvvImitOff = new Action<EgseBukNotify>(x => { x.HsiNotify.IsSaveTxtData = false; });
+           
+            /// <summary>
+            /// The exchange BM4 imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> ExchangeBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueExchange = true; });
+           
+            /// <summary>
+            /// The exchange BM4 imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> ExchangeBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueExchange = false; });
+           
+            /// <summary>
+            /// The exchange buk BM4 imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> ExchangeBukBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueExchange = true; });
+            
+            /// <summary>
+            /// The exchange buk BM4 imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> ExchangeBukBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueExchange = false; });
+           
+            /// <summary>
+            /// The issue eep
+            /// </summary>
             private static readonly Action<EgseBukNotify> IssueEep = new Action<EgseBukNotify>(x => { x.Spacewire4Notify.IsIssueEep = true; });
+           
+            /// <summary>
+            /// The device busk
+            /// </summary>
             private static readonly Action<EgseBukNotify> DeviceBusk = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.Busk; PowerTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The device buk
+            /// </summary>
             private static readonly Action<EgseBukNotify> DeviceBuk = new Action<EgseBukNotify>(x => { Task.Run(() => { MessageBox.Show(Resource.Get(@"eNop")); }); });
+            
+            /// <summary>
+            /// The device bund
+            /// </summary>
             private static readonly Action<EgseBukNotify> DeviceBund = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.Bund; PowerTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The switcher BM4 imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueEnable = true; });
+          
+            /// <summary>
+            /// The switcher BM4 imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueEnable = false; });
+           
+            /// <summary>
+            /// The switcher detector imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsIssueEnable = true; });
+           
+            /// <summary>
+            /// The switcher detector imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IsIssueEnable = false; });
+            
+            /// <summary>
+            /// The switcher buk BM4 imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherBukBm4ImitOn = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueEnable = true; });
+           
+            /// <summary>
+            /// The switcher buk BM4 imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherBukBm4ImitOff = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsIssueEnable = false; });
+           
+            /// <summary>
+            /// The switcher buk detector imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherBukDetectorImitOn = new Action<EgseBukNotify>(x => { x.Spacewire4Notify.IsIssueEnable = true; });
+          
+            /// <summary>
+            /// The switcher buk detector imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherBukDetectorImitOff = new Action<EgseBukNotify>(x => { x.Spacewire4Notify.IsIssueEnable = false; });
+          
+            /// <summary>
+            /// The switcher power on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherPowerOn = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.On; PowerTransactionExec(x, transaction); });
+         
+            /// <summary>
+            /// The switcher power off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherPowerOff = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.Off; PowerTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The switcher KVV imit on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherKvvImitOn = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.On; KvvImitTransactionExec(x, transaction); });
+            
+            /// <summary>
+            /// The switcher KVV imit off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SwitcherKvvImitOff = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Off; KvvImitTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The state ready
+            /// </summary>
             private static readonly Action<EgseBukNotify> StateReady = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Ready; KvvImitTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The state busy
+            /// </summary>
             private static readonly Action<EgseBukNotify> StateBusy = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Busy; KvvImitTransactionExec(x, transaction); });
+            
+            /// <summary>
+            /// The state me
+            /// </summary>
             private static readonly Action<EgseBukNotify> StateMe = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Me; KvvImitTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The scidev detector imit ufes
+            /// </summary>
             private static readonly Action<EgseBukNotify> ScidevDetectorImitUfes = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueDetectorDevice = EgseBukNotify.Spacewire3.DetectorDevice.Ufes; });
+          
+            /// <summary>
+            /// The scidev detector imit vufes
+            /// </summary>
             private static readonly Action<EgseBukNotify> ScidevDetectorImitVufes = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueDetectorDevice = EgseBukNotify.Spacewire3.DetectorDevice.Vufes; });
+          
+            /// <summary>
+            /// The scidev detector imit SDSH
+            /// </summary>
             private static readonly Action<EgseBukNotify> ScidevDetectorImitSdsh = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueDetectorDevice = EgseBukNotify.Spacewire3.DetectorDevice.Sdchsh; });
+           
+            /// <summary>
+            /// The scidev shutter ufes
+            /// </summary>
             private static readonly Action<EgseBukNotify> ScidevShutterUfes = new Action<EgseBukNotify>(x => { transaction |= (ushort)ShutterTransaction.Ufes; ShutterTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The scidev shutter vufes
+            /// </summary>
             private static readonly Action<EgseBukNotify> ScidevShutterVufes = new Action<EgseBukNotify>(x => { transaction |= (ushort)ShutterTransaction.Vufes; ShutterTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The scidev shutter SDSH
+            /// </summary>
             private static readonly Action<EgseBukNotify> ScidevShutterSdsh = new Action<EgseBukNotify>(x => { transaction |= (ushort)ShutterTransaction.Sdsh; ShutterTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The halfset detector imit main
+            /// </summary>
             private static readonly Action<EgseBukNotify> HalfsetDetectorImitMain = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueHalfSet = EgseBukNotify.Spacewire3.HalfSet.Main; });
+          
+            /// <summary>
+            /// The halfset detector imit resv
+            /// </summary>
             private static readonly Action<EgseBukNotify> HalfsetDetectorImitResv = new Action<EgseBukNotify>(x => { x.Spacewire3Notify.IssueHalfSet = EgseBukNotify.Spacewire3.HalfSet.Resv; });
+           
+            /// <summary>
+            /// The halfset KVV imit main
+            /// </summary>
             private static readonly Action<EgseBukNotify> HalfsetKvvImitMain = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Main; KvvImitTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The halfset KVV imit resv
+            /// </summary>
             private static readonly Action<EgseBukNotify> HalfsetKvvImitResv = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Resv; KvvImitTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The halfset KVV imit both
+            /// </summary>
             private static readonly Action<EgseBukNotify> HalfsetKvvImitBoth = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Both; KvvImitTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The halfset KVV imit none
+            /// </summary>
             private static readonly Action<EgseBukNotify> HalfsetKvvImitNone = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.None; KvvImitTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The line a
+            /// </summary>
             private static readonly Action<EgseBukNotify> LineA = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = false; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = false; });
+          
+            /// <summary>
+            /// The line b
+            /// </summary>
             private static readonly Action<EgseBukNotify> LineB = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = false; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = false; x.TelemetryNotify.IsBundLineB = true; });
+           
+            /// <summary>
+            /// The line ab
+            /// </summary>
             private static readonly Action<EgseBukNotify> LineAB = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = true; });
+            
+            /// <summary>
+            /// The control automatic
+            /// </summary>
             private static readonly Action<EgseBukNotify> ControlAuto = new Action<EgseBukNotify>(x => { x.IsIssueManualShutter = false; });
-            private static readonly Action<EgseBukNotify> ChannelCh1_1 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK1BM1; });
-            private static readonly Action<EgseBukNotify> ChannelCh1_2 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK1BM2; });
-            private static readonly Action<EgseBukNotify> ChannelCh2_1 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK2BM1; });
-            private static readonly Action<EgseBukNotify> ChannelCh2_2 = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK2BM2; });
-            private static readonly Action<EgseBukNotify> CommandTele = new Action<EgseBukNotify>(x => { transaction |= (ushort)Bm4ImitCmdTransaction.Tele; });
-            private static readonly Action<EgseBukNotify> PollOn = new Action<EgseBukNotify>(x => { x.HsiNotify.IsIssuePoll = true; });
-            private static readonly Action<EgseBukNotify> PollOff = new Action<EgseBukNotify>(x => { x.HsiNotify.IsIssuePoll = false; });
-            private static readonly Action<EgseBukNotify> DataOn = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsSD1TransData = true; });
-            private static readonly Action<EgseBukNotify> DataOff = new Action<EgseBukNotify>(x => { x.Spacewire1Notify.IsSD1TransData = false; });
-            private static readonly Action<EgseBukNotify, object> TimeArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire1Notify.SD1SendTime = (int)obj; });
-            private static readonly Action<EgseBukNotify> MarkReceipt = new Action<EgseBukNotify>(x => { transaction |= (ushort)Bm4ImitCmdTransaction.Receipt; });
-            private static readonly Action<EgseBukNotify> MarkExecut = new Action<EgseBukNotify>(x => { transaction |= (ushort)Bm4ImitCmdTransaction.Execut; });
-            private static readonly Action<EgseBukNotify> CmdActivate1 = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueCmdEnable1Command.Execute(null); });
-            private static readonly Action<EgseBukNotify> CmdActivate2 = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueCmdEnable2Command.Execute(null); });
+
+            /// <summary>
+            /// Выполняет команду: установить канал БМ-4 в режим БУК ПК1 : БМ-4 ПК1.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> ChannelCh11 = new Action<EgseBukNotify>(x => x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK1BM1);
+            
+            /// <summary>
+            /// Выполняет команду: установить канал БМ-4 в режим БУК ПК1 : БМ-4 ПК2.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> ChannelCh12 = new Action<EgseBukNotify>(x => x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK1BM2);
+           
+            /// <summary>
+            /// Выполняет команду: установить канал БМ-4 в режим БУК ПК2 : БМ-4 ПК1.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> ChannelCh21 = new Action<EgseBukNotify>(x => x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK2BM1);
+ 
+            /// <summary>
+            /// Выполняет команду: установить канал БМ-4 в режим БУК ПК2 : БМ-4 ПК2.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> ChannelCh22 = new Action<EgseBukNotify>(x => x.Spacewire2Notify.IssueSpacewireChannel = EgseBukNotify.Spacewire2.Channel.BUK2BM2);
+
+            /// <summary>
+            /// Устанавливает признак команды: формировать телекоманду.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> CommandTele = new Action<EgseBukNotify>(x => transaction |= (ushort)Bm4ImitCmdTransaction.Tele);
+
+            /// <summary>
+            /// Выполняет команду: включить опрос данных для ВСИ интерфейса.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> PollOn = new Action<EgseBukNotify>(x => x.HsiNotify.IsIssuePoll = true);
+ 
+            /// <summary>
+            /// Выполняет команду: выключить опрос данных для ВСИ интерфейса.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> PollOff = new Action<EgseBukNotify>(x => x.HsiNotify.IsIssuePoll = false);
+
+            /// <summary>
+            /// Выполняет команду: включить выдачу пакетов данных от имитатор детекторов.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> DataOn = new Action<EgseBukNotify>(x => x.Spacewire1Notify.IsSD1TransData = true);
+
+            /// <summary>
+            /// Выполняет команду: выключить выдачу пакетов данных от имитатор детекторов.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> DataOff = new Action<EgseBukNotify>(x => x.Spacewire1Notify.IsSD1TransData = false);
+
+            /// <summary>
+            /// Выполняет команду: установить заданое число миллисекунд для выдачи данных от имитатора детекторов.
+            /// </summary>
+            private static readonly Action<EgseBukNotify, object> TimeArg = new Action<EgseBukNotify, object>((x, obj) => x.Spacewire1Notify.SD1SendTime = (int)obj);
+            
+            /// <summary>
+            /// Устанавливает признак команды: включить подтверждение получения телекоманды.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> MarkReceipt = new Action<EgseBukNotify>(x => transaction |= (ushort)Bm4ImitCmdTransaction.Receipt);
+ 
+            /// <summary>
+            /// Устанавливает признак команды: включить подтверждение исполнения телекоманды.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> MarkExecut = new Action<EgseBukNotify>(x => transaction |= (ushort)Bm4ImitCmdTransaction.Execut);
+
+            /// <summary>
+            /// Выполняет команду: выдать УКС активации первого полукомплекта по интерфейсу ВСИ.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> CmdActivate1 = new Action<EgseBukNotify>(x => x.HsiNotify.IssueCmdEnable1Command.Execute(null));
+
+            /// <summary>
+            /// Выполняет команду: выдать УКС активации второго полукомплекта по интерфейсу ВСИ.
+            /// </summary>
+            private static readonly Action<EgseBukNotify> CmdActivate2 = new Action<EgseBukNotify>(x => x.HsiNotify.IssueCmdEnable2Command.Execute(null));
+            
+            /// <summary>
+            /// The apid argument
+            /// </summary>
             private static readonly Action<EgseBukNotify, object> ApidArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire2Notify.Apid = (short)obj; });
+            
+            /// <summary>
+            /// The receive main
+            /// </summary>
             private static readonly Action<EgseBukNotify> ReceiveMain = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineRecv = EgseBukNotify.Hsi.SimLine.Main; });
+           
+            /// <summary>
+            /// The receive resv
+            /// </summary>
             private static readonly Action<EgseBukNotify> ReceiveResv = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineRecv = EgseBukNotify.Hsi.SimLine.Resv; });
+          
+            /// <summary>
+            /// The send main
+            /// </summary>
             private static readonly Action<EgseBukNotify> SendMain = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineSend = EgseBukNotify.Hsi.SimLine.Main; });
+          
+            /// <summary>
+            /// The send resv
+            /// </summary>
             private static readonly Action<EgseBukNotify> SendResv = new Action<EgseBukNotify>(x => { x.HsiNotify.IssueLineSend = EgseBukNotify.Hsi.SimLine.Resv; });
+          
+            /// <summary>
+            /// The tick on
+            /// </summary>
             private static readonly Action<EgseBukNotify> TickOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueTickTime = true; });
+           
+            /// <summary>
+            /// The tick off
+            /// </summary>
             private static readonly Action<EgseBukNotify> TickOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueTickTime = false; });
+          
+            /// <summary>
+            /// The sensor open on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SensorOpenOn = new Action<EgseBukNotify>(x => { transaction |= (ushort)ShutterTransaction.SensOpenOn; ShutterTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The sensor open off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SensorOpenOff = new Action<EgseBukNotify>(x => { transaction |= (ushort)ShutterTransaction.SensOpenOff; ShutterTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The sensor close on
+            /// </summary>
             private static readonly Action<EgseBukNotify> SensorCloseOn = new Action<EgseBukNotify>(x => { transaction |= (ushort)ShutterTransaction.SensCloseOn; ShutterTransactionExec(x, transaction); });
+            
+            /// <summary>
+            /// The sensor close off
+            /// </summary>
             private static readonly Action<EgseBukNotify> SensorCloseOff = new Action<EgseBukNotify>(x => { transaction |= (ushort)ShutterTransaction.SensCloseOff; ShutterTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The on board time on
+            /// </summary>
             private static readonly Action<EgseBukNotify> OnBoardTimeOn = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueObt = true; });
+           
+            /// <summary>
+            /// The on board time off
+            /// </summary>
             private static readonly Action<EgseBukNotify> OnBoardTimeOff = new Action<EgseBukNotify>(x => { x.Spacewire2Notify.IsIssueObt = false; });
+           
+            /// <summary>
+            /// The sets power1
+            /// </summary>
             private static readonly Action<EgseBukNotify> SetsPower1 = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.Set1; PowerTransactionExec(x, transaction); });
+           
+            /// <summary>
+            /// The sets power2
+            /// </summary>
             private static readonly Action<EgseBukNotify> SetsPower2 = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.Set2; PowerTransactionExec(x, transaction); });
+          
+            /// <summary>
+            /// The sets KVV imit1
+            /// </summary>
             private static readonly Action<EgseBukNotify> SetsKvvImit1 = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Set1; KvvImitTransactionExec(x, transaction); });
+        
+            /// <summary>
+            /// The sets KVV imit2
+            /// </summary>
             private static readonly Action<EgseBukNotify> SetsKvvImit2 = new Action<EgseBukNotify>(x => { transaction |= (ushort)KvvImitTransaction.Set2; KvvImitTransactionExec(x, transaction); });
+
+            /// <summary>
+            /// The buk KVV imit hexadecimal package argument
+            /// </summary>
             private static readonly Action<EgseBukNotify, object> BukKvvImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.HsiNotify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.HsiNotify.IssueCmdCommand.Execute(null); });
+         
+            /// <summary>
+            /// The buk detector imit hexadecimal package argument
+            /// </summary>
             private static readonly Action<EgseBukNotify, object> BukDetectorImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire4Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.Spacewire4Notify.IssuePackageCommand.Execute(null); });
+         
+            /// <summary>
+            /// The BM4 imit hexadecimal package argument
+            /// </summary>
             private static readonly Action<EgseBukNotify, object> Bm4ImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire2Notify.IsConfirmExecution = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Execut); x.Spacewire2Notify.IsConfirmReceipt = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Receipt); x.Spacewire2Notify.IsMakeTeleCmd = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Tele); x.Spacewire2Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.Spacewire2Notify.IssuePackageCommand.Execute(null); });
 
-
+            /// <summary>
+            /// Используется для формирования команды.
+            /// </summary>
             private static ushort transaction;
 
-
-
+            /// <summary>
+            /// Возможные состояния формирования команды KVV_IMIT.
+            /// </summary>
             private enum KvvImitTransaction : ushort
             {
+                /// <summary>
+                /// The set1
+                /// </summary>
                 Set1 = 0x01,
+
+                /// <summary>
+                /// The set2
+                /// </summary>
                 Set2 = 0x02,
+
+                /// <summary>
+                /// The on
+                /// </summary>
                 On = 0x04,
+
+                /// <summary>
+                /// The off
+                /// </summary>
                 Off = 0x08,
+
+                /// <summary>
+                /// The main
+                /// </summary>
                 Main = 0x10,
+
+                /// <summary>
+                /// The resv
+                /// </summary>
                 Resv = 0x20,
+
+                /// <summary>
+                /// The both
+                /// </summary>
                 Both = 0x40,
+
+                /// <summary>
+                /// The none
+                /// </summary>
                 None = 0x80,
+
+                /// <summary>
+                /// The ready
+                /// </summary>
                 Ready = 0x100,
+
+                /// <summary>
+                /// The busy
+                /// </summary>
                 Busy = 0x200,
+
+                /// <summary>
+                /// The Me
+                /// </summary>
                 Me = 0x400,
             }
 
+            /// <summary>
+            /// Возможные состояния формирования команды SHUTTER.
+            /// </summary>
             private enum ShutterTransaction : ushort
             {
+                /// <summary>
+                /// The ufes
+                /// </summary>
                 Ufes = 0x01,
+
+                /// <summary>
+                /// The vufes
+                /// </summary>
                 Vufes = 0x02,
+
+                /// <summary>
+                /// The SDSH
+                /// </summary>
                 Sdsh = 0x04,
+
+                /// <summary>
+                /// The sens open on
+                /// </summary>
                 SensOpenOn = 0x08,
+
+                /// <summary>
+                /// The sens open off
+                /// </summary>
                 SensOpenOff = 0x10,
+
+                /// <summary>
+                /// The sens close on
+                /// </summary>
                 SensCloseOn = 0x20,
+
+                /// <summary>
+                /// The sens close off
+                /// </summary>
                 SensCloseOff = 0x40
             }
 
+            /// <summary>
+            /// Возможные состояния формирования команды BM4_IMIT_CMD.
+            /// </summary>
             private enum Bm4ImitCmdTransaction : ushort
             {
+                /// <summary>
+                /// The tele
+                /// </summary>
                 Tele = 0x01,
+
+                /// <summary>
+                /// The receipt
+                /// </summary>
                 Receipt = 0x02,
+
+                /// <summary>
+                /// The execut
+                /// </summary>
                 Execut = 0x04
             }
 
+            /// <summary>
+            /// Возможные состояния формирования команды POWER.
+            /// </summary>
             private enum PowerTransaction : ushort
             {
+                /// <summary>
+                /// The busk
+                /// </summary>
                 Busk = 0x01,
+
+                /// <summary>
+                /// The bund
+                /// </summary>
                 Bund = 0x02,
+
+                /// <summary>
+                /// The set1
+                /// </summary>
                 Set1 = 0x04,
+
+                /// <summary>
+                /// The set2
+                /// </summary>
                 Set2 = 0x08,
+
+                /// <summary>
+                /// The on
+                /// </summary>
                 On = 0x10,
+
+                /// <summary>
+                /// The off
+                /// </summary>
                 Off = 0x20,
+
+                /// <summary>
+                /// The busk set1 on
+                /// </summary>
                 [Description("включить БУСК ПК1")]
                 BuskSet1On = Busk | Set1 | On,
+
+                /// <summary>
+                /// The busk set1 off
+                /// </summary>
                 [Description("выключить БУСК ПК1")]
                 BuskSet1Off = Busk | Set1 | Off,
+
+                /// <summary>
+                /// The bund set1 on
+                /// </summary>
                 [Description("включить БУНД ПК1")]
                 BundSet1On = Bund | Set1 | On,
+
+                /// <summary>
+                /// The bund set1 off
+                /// </summary>
                 [Description("выключить БУНД ПК1")]
                 BundSet1Off = Bund | Set1 | Off,
+
+                /// <summary>
+                /// The busk set2 on
+                /// </summary>
                 [Description("включить БУСК ПК2")]
                 BuskSet2On = Busk | Set2 | On,
+
+                /// <summary>
+                /// The busk set2 off
+                /// </summary>
                 [Description("выключить БУСК ПК2")]
                 BuskSet2Off = Busk | Set2 | Off,
+
+                /// <summary>
+                /// The bund set2 on
+                /// </summary>
                 [Description("включить БУНД ПК2")]
                 BundSet2On = Bund | Set2 | On,
+
+                /// <summary>
+                /// The bund set2 off
+                /// </summary>
                 [Description("выключить БУНД ПК2")]
                 BundSet2Off = Bund | Set2 | Off
             }
 
+            /// <summary>
+            /// Очищает вспомогательное поля для формирования новой команды.
+            /// </summary>
             internal static void ClearTransaction()
             {
                 transaction = 0;
             }
 
+            /// <summary>
+            /// Выпоняет команду SHUTTER, если она сформирована.
+            /// </summary>
+            /// <param name="x">Нотификатор прибора.</param>
+            /// <param name="ta">Состояние формирования команды.</param>
             private static void ShutterTransactionExec(EgseBukNotify x, ushort ta)
             {
                 Enum en = (ShutterTransaction)ta;
@@ -2514,76 +3495,77 @@ namespace Egse.Cyclogram.Command
                     if (en.HasFlag(ShutterTransaction.SensOpenOn))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueUfesOpen = EgseBukNotify.DevEnabled.On;
+                        x.IssueUfesOpen = EgseBukNotify.SciDevState.On;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensOpenOff))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueUfesOpen = EgseBukNotify.DevEnabled.Off;
+                        x.IssueUfesOpen = EgseBukNotify.SciDevState.Off;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensCloseOn))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueUfesClose = EgseBukNotify.DevEnabled.On;
+                        x.IssueUfesClose = EgseBukNotify.SciDevState.On;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensCloseOff))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueUfesClose = EgseBukNotify.DevEnabled.Off;
+                        x.IssueUfesClose = EgseBukNotify.SciDevState.Off;
                     }
-
                 }
                 else if (en.HasFlag(ShutterTransaction.Vufes))
                 {
                     if (en.HasFlag(ShutterTransaction.SensOpenOn))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueVufesOpen = EgseBukNotify.DevEnabled.On;
+                        x.IssueVufesOpen = EgseBukNotify.SciDevState.On;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensOpenOff))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueVufesOpen = EgseBukNotify.DevEnabled.Off;
+                        x.IssueVufesOpen = EgseBukNotify.SciDevState.Off;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensCloseOn))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueVufesClose = EgseBukNotify.DevEnabled.On;
+                        x.IssueVufesClose = EgseBukNotify.SciDevState.On;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensCloseOff))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueVufesClose = EgseBukNotify.DevEnabled.Off;
+                        x.IssueVufesClose = EgseBukNotify.SciDevState.Off;
                     }
-
                 }
                 else if (en.HasFlag(ShutterTransaction.Sdsh))
                 {
                     if (en.HasFlag(ShutterTransaction.SensOpenOn))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueSdshOpen = EgseBukNotify.DevEnabled.On;
+                        x.IssueSdshOpen = EgseBukNotify.SciDevState.On;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensOpenOff))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueSdshOpen = EgseBukNotify.DevEnabled.Off;
+                        x.IssueSdshOpen = EgseBukNotify.SciDevState.Off;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensCloseOn))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueSdshClose = EgseBukNotify.DevEnabled.On;
+                        x.IssueSdshClose = EgseBukNotify.SciDevState.On;
                     }
                     else if (en.HasFlag(ShutterTransaction.SensCloseOff))
                     {
                         x.IsIssueManualShutter = true;
-                        x.IssueSdshClose = EgseBukNotify.DevEnabled.Off;
+                        x.IssueSdshClose = EgseBukNotify.SciDevState.Off;
                     }
-
                 }
-
             }
 
+            /// <summary>
+            /// Выпоняет команду KVV_IMIT, если она сформирована.
+            /// </summary>
+            /// <param name="x">Нотификатор прибора.</param>
+            /// <param name="ta">Состояние формирования команды.</param>
             private static void KvvImitTransactionExec(EgseBukNotify x, ushort ta)
             {
                 Enum en = (KvvImitTransaction)ta;
@@ -2713,6 +3695,11 @@ namespace Egse.Cyclogram.Command
                 }
             }
 
+            /// <summary>
+            /// Выпоняет команду POWER, если она сформирована.
+            /// </summary>
+            /// <param name="x">Нотификатор прибора.</param>
+            /// <param name="ta">Состояние формирования команды.</param>
             private static void PowerTransactionExec(EgseBukNotify x, ushort ta)
             {
                 string msgOnError = string.Format(Resource.Get(@"eDuplicate"), ((PowerTransaction)ta).Description());
@@ -2730,6 +3717,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     case PowerTransaction.BuskSet1Off:
                         {
@@ -2742,6 +3730,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     case PowerTransaction.BundSet1On:
                         {
@@ -2754,6 +3743,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     case PowerTransaction.BundSet1Off:
                         {
@@ -2766,6 +3756,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     case PowerTransaction.BuskSet2On:
                         {
@@ -2778,6 +3769,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     case PowerTransaction.BuskSet2Off:
                         {
@@ -2790,6 +3782,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     case PowerTransaction.BundSet2On:
                         {
@@ -2802,6 +3795,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     case PowerTransaction.BundSet2Off:
                         {
@@ -2814,6 +3808,7 @@ namespace Egse.Cyclogram.Command
                                 err = true;
                             }
                         }
+
                         break;
                     default:
                         break;
@@ -2824,8 +3819,6 @@ namespace Egse.Cyclogram.Command
                     Task.Run(() => { MessageBox.Show(msgOnError); });
                 }
             }
-
         }
-
     }
 }

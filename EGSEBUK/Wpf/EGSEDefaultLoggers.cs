@@ -133,6 +133,9 @@ namespace Egse.Defaults
             }
         }
 
+        /// <summary>
+        /// Получает USB-лог (исходящий).
+        /// </summary>
         public static TxtLogger LogUSB
         {
             get

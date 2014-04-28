@@ -861,7 +861,6 @@ namespace Egse.Utilites
                 {
                     return new byte[] { };
                 }
-
             }
 
             return outBuf;

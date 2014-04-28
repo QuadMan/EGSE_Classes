@@ -18,9 +18,10 @@ namespace Egse.Utilites
     /// </summary>
     public class EmbeddedAssembly
     {
-        // Version 1.3
-
-        static Dictionary<string, Assembly> dic = null;
+        /// <summary>
+        /// The dic
+        /// </summary>
+        private static Dictionary<string, Assembly> dic = null;
 
         /// <summary>
         /// Load Assembly, DLL from Embedded Resources into memory.
@@ -29,8 +30,10 @@ namespace Egse.Utilites
         /// <param name="fileName">File Name. Example: SomeTools.dll</param>
         public static void Load(string embeddedResource, string fileName)
         {
-            if (dic == null)
+            if (null == dic)
+            {
                 dic = new Dictionary<string, Assembly>();
+            }
 
             byte[] ba = null;
             Assembly asm = null;
@@ -38,26 +41,21 @@ namespace Egse.Utilites
 
             using (Stream stm = curAsm.GetManifestResourceStream(embeddedResource))
             {
-                // Either the file is not existed or it is not mark as embedded resource
-                if (stm == null)
+                if (null == stm)
+                {
                     throw new Exception(embeddedResource + " is not found in Embedded Resources.");
+                }
 
-                // Get byte[] from the file from embedded resource
                 ba = new byte[(int)stm.Length];
                 stm.Read(ba, 0, (int)stm.Length);
                 try
                 {
                     asm = Assembly.Load(ba);
-
-                    // Add the assembly/dll into dictionary
                     dic.Add(asm.FullName, asm);
                     return;
                 }
                 catch
                 {
-                    // Purposely do nothing
-                    // Unmanaged dll or assembly cannot be loaded directly from byte[]
-                    // Let the process fall through for next part
                 }
             }
 
@@ -114,15 +112,19 @@ namespace Egse.Utilites
         /// <summary>
         /// Retrieve specific loaded DLL/assembly from memory
         /// </summary>
-        /// <param name="assemblyFullName"></param>
-        /// <returns></returns>
+        /// <param name="assemblyFullName">Full name of the assembly.</param>
+        /// <returns>Экземпляр сборки, содержащей ресурсы.</returns>
         public static Assembly Get(string assemblyFullName)
         {
-            if (dic == null || dic.Count == 0)
+            if ((null == dic) || (0 == dic.Count))
+            {
                 return null;
+            }
 
             if (dic.ContainsKey(assemblyFullName))
+            {
                 return dic[assemblyFullName];
+            }
 
             return null;
 
