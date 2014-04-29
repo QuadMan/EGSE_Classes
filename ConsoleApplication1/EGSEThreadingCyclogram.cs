@@ -10,6 +10,7 @@ namespace Egse.Threading
     using System;
     using System.Threading;
     using Egse.Cyclogram;
+    using Egse.Utilites;
 
     /// <summary>
     /// Делегат, вызываемый при изменении состояния циклограмм (выполняет, пауза)
@@ -90,7 +91,7 @@ namespace Egse.Threading
         /// <summary>
         /// текущая позиция в файле циклограмм
         /// </summary>
-        private CycPosition _cycloPos;
+        private CycPosition cycloPos;
 
         /// <summary>
         /// Событие, вызываемое при переходе на следующую команду
@@ -106,7 +107,7 @@ namespace Egse.Threading
             _cycloThreadTerminated = false;
 
             CycloFile = new CyclogramFile();
-            _cycloPos = new CycPosition(CycloFile);
+            this.cycloPos = new CycPosition(CycloFile);
 
             _setNextCmd = false;
         }
@@ -140,7 +141,7 @@ namespace Egse.Threading
             set
             {
                 _nextCommandEvent = value;
-                _cycloPos.SetCmdEvent = value;
+                this.cycloPos.SetCmdEvent = value;
             }
         }
 
@@ -198,7 +199,7 @@ namespace Egse.Threading
                 {
                     ChangeState(CurState.cycloLoaded);
                     CycloFile.CalcAbsoluteTime();
-                    _cycloPos.SetToLine(0, true);
+                    this.cycloPos.SetToLine(0, true);
                 }
             }
             catch
@@ -232,7 +233,7 @@ namespace Egse.Threading
         /// <param name="lineNum">Номер строки, с которой нужно запускать выполнение циклограммы</param>
         public void Start(int lineNum)
         {
-            if ((_cycloState != CurState.cycloLoaded) || (_cycloPos.SetToLine(lineNum, true) == null))
+            if ((_cycloState != CurState.cycloLoaded) || (this.cycloPos.SetToLine(lineNum, true) == null))
             {
                 return;
             }
@@ -253,20 +254,20 @@ namespace Egse.Threading
         /// <param name="lineNum">Номер строки, которую нужно выполнить</param>
         public void Step(int lineNum)
         {
-            if ((_cycloState != CurState.cycloLoaded) || (_cycloPos.SetToLine(lineNum, true) == null))
+            if ((_cycloState != CurState.cycloLoaded) || (this.cycloPos.SetToLine(lineNum, true) == null))
             {
                 return;
             }
 
             ExecCurCmdFunction();
-            if (_cycloPos.GetNextCmd() == null)
+            if (this.cycloPos.GetNextCmd() == null)
             {
                 ChangeState(CurState.cycloLoaded);       // больше команд нет, останавливаем поток выполнения циклограммы                
             }
 
             if (NextCommandEvent != null)
             {
-                NextCommandEvent(_cycloPos.CurCmd);
+                NextCommandEvent(this.cycloPos.CurCmd);
             }
         }
 
@@ -315,17 +316,18 @@ namespace Egse.Threading
         /// </summary>
         private void ExecCurCmdFunction()
         {
-            if (_cycloPos.CurCmd == null)
+            if (this.cycloPos.CurCmd == null)
             {
                 return;
             }
 
-            bool cmdResult = _cycloPos.CurCmd.ExecFunction(_cycloPos.CurCmd.Parameters);
+            Egse.Defaults.LogsClass.LogCyclo.LogText = this.cycloPos.CurCmd.AbsoluteTime + StringExtensions.Space + this.cycloPos.CurCmd.Str;
+            bool cmdResult = this.cycloPos.CurCmd.ExecFunction(this.cycloPos.CurCmd.Parameters);
 
             // если команда выполнилась с ошибкой, вызовем соответствующий делегат
             if ((!cmdResult) && (CommandExecErrorEvent != null))
             {
-                CommandExecErrorEvent(_cycloPos.CurCmd);
+                CommandExecErrorEvent(this.cycloPos.CurCmd);
             }
         }
 
@@ -341,10 +343,10 @@ namespace Egse.Threading
                 // в состоянии выполнения циклограммы
                 if (_cycloState == CurState.cycloRunning)
                 {
-                    delayMs = (_cycloPos.CurCmd.DelayMs > 1000) ? 1000 : _cycloPos.CurCmd.DelayMs;
+                    delayMs = (this.cycloPos.CurCmd.DelayMs > 1000) ? 1000 : this.cycloPos.CurCmd.DelayMs;
                     if (DelaySecondEvent != null)
                     {
-                        DelaySecondEvent(_cycloPos.CurCmd);
+                        DelaySecondEvent(this.cycloPos.CurCmd);
                     }
                 }
                 else
@@ -353,10 +355,10 @@ namespace Egse.Threading
                     ChangeState(CurState.cycloLoaded);
                     if (_setNextCmd)
                     {
-                        _cycloPos.GetNextCmd();
+                        this.cycloPos.GetNextCmd();
                         if (NextCommandEvent != null)
                         {
-                            NextCommandEvent(_cycloPos.CurCmd);
+                            NextCommandEvent(this.cycloPos.CurCmd);
                         }
                     }
 
@@ -366,31 +368,31 @@ namespace Egse.Threading
                 System.Threading.Thread.Sleep(delayMs);
 
                 // уменьшаем время до выполнения команды
-                _cycloPos.CurCmd.DelayMs -= delayMs;
+                this.cycloPos.CurCmd.DelayMs -= delayMs;
 
                 // пришло время выполнить команду и мы не остановлены извне
-                if ((_cycloPos.CurCmd.DelayMs <= 0) && (!_cycloThreadTerminated))
+                if ((this.cycloPos.CurCmd.DelayMs <= 0) && (!_cycloThreadTerminated))
                 {
                     ExecCurCmdFunction();
-                    _cycloPos.CurCmd.RestoreDelay();
+                    this.cycloPos.CurCmd.RestoreDelay();
 
                     // больше команд нет, останавливаем поток выполнения циклограммы
-                    if (_cycloPos.GetNextCmd() == null)
+                    if (this.cycloPos.GetNextCmd() == null)
                     {
                         ChangeState(CurState.cycloLoaded);
                     }
 
                     if (NextCommandEvent != null)
                     {
-                        NextCommandEvent(_cycloPos.CurCmd);
+                        NextCommandEvent(this.cycloPos.CurCmd);
                     }
                 }
             }
 
             // восстанавливаем предыдущее значение задержки, если принудительно остановили циклограмму (по кнопку Стоп)
-            if (_cycloPos.CurCmd != null)
+            if (this.cycloPos.CurCmd != null)
             {
-                _cycloPos.CurCmd.RestoreDelay();
+                this.cycloPos.CurCmd.RestoreDelay();
             }
 
             // циклограмма остановлена
@@ -400,7 +402,7 @@ namespace Egse.Threading
             }
 
             // проверим, кончилась ли циклограмма
-            if (_cycloPos.IsLastCommand && (FinishedEvent != null))
+            if (this.cycloPos.IsLastCommand && (FinishedEvent != null))
             {
                 FinishedEvent(CycloFile.FileName);
             }

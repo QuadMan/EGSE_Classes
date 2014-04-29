@@ -17,7 +17,7 @@ namespace Egse.Defaults
         /// <summary>
         /// Список имен лог-файлов.
         /// </summary>
-        private static string[] logsNames = new string[8] 
+        private static string[] logsNames = new string[9] 
         { 
             Resource.Get("stMainLog"),
             Resource.Get("stOperatorLog"),
@@ -26,7 +26,8 @@ namespace Egse.Defaults
             Resource.Get("stProtoEncoderLog"),
             Resource.Get("stSpacewire2"),
             Resource.Get("stSpacewire3"),
-            Resource.Get("stUSBLog")
+            Resource.Get("stUSBLog"),
+            Resource.Get("stCycloLog")
         };
 
         /// <summary>
@@ -42,17 +43,17 @@ namespace Egse.Defaults
         /// <summary>
         /// Множество экземпляров лог-класса.
         /// </summary>
-        private TxtLoggers _loggers;
+        private TxtLoggers loggers;
 
         /// <summary>
         /// Предотвращает вызов конструктора по умолчанию для класса <see cref="LogsClass" />.
         /// </summary>
         private LogsClass()
         {
-            this._loggers = new TxtLoggers();
+            this.loggers = new TxtLoggers();
             foreach (string fileName in logsNames)
             {
-                this._loggers.AddFile(fileName);
+                this.loggers.AddFile(fileName);
             }
         }
 
@@ -63,7 +64,7 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[0];
+                return Instance.loggers[0];
             }            
         }
 
@@ -74,7 +75,7 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[5];
+                return Instance.loggers[5];
             }
         }
 
@@ -85,7 +86,7 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[6];
+                return Instance.loggers[6];
             }
         }
 
@@ -96,7 +97,7 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[1];
+                return Instance.loggers[1];
             }
         }
 
@@ -107,7 +108,7 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[2];
+                return Instance.loggers[2];
             }
         }
 
@@ -118,7 +119,7 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[3];
+                return Instance.loggers[3];
             }
         }
 
@@ -129,7 +130,7 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[4];
+                return Instance.loggers[4];
             }
         }
 
@@ -140,9 +141,18 @@ namespace Egse.Defaults
         {
             get
             {
-                return Instance._loggers[7];
+                return Instance.loggers[7];
             }
         }
+
+        public static TxtLogger LogCyclo
+        {
+            get
+            {
+                return Instance.loggers[8];
+            }
+        }
+
 
         /// <summary>
         /// Получает экземпляр класса.

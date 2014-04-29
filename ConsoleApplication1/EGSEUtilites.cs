@@ -360,6 +360,11 @@ namespace Egse.Utilites
         }
     }
 
+    public static class StringExtensions
+    {
+        public static readonly string Space = string.Empty.PadLeft(1);
+    }
+
     /// <summary>
     /// Для проверки входных аргументов на null.
     /// Использовать:

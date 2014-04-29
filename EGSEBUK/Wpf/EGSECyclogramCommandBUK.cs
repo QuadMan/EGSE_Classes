@@ -1318,17 +1318,7 @@ namespace Egse.Cyclogram.Command
                 return IncludeTest<TEnum>(cmd[0], out errStr, ref dupl, exclude, duplNeedTest);
             }
 
-            if (typeof(HexPackageBukDetectorImit) != typeof(TEnum))
-            {
-                throw new ArgumentException(@"TEnum");
-            }
-
-            if (typeof(HexPackageBm4Imit) != typeof(TEnum))
-            {
-                throw new ArgumentException(@"TEnum");
-            }
-
-            if (typeof(HexPackageBukKvvImit) != typeof(TEnum))
+            if ((typeof(HexPackageBukDetectorImit) != typeof(TEnum)) && (typeof(HexPackageBm4Imit) != typeof(TEnum)) && (typeof(HexPackageBukKvvImit) != typeof(TEnum)))
             {
                 throw new ArgumentException(@"TEnum");
             }
