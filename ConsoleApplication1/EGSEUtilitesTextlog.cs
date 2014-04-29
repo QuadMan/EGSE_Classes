@@ -35,7 +35,9 @@ namespace Egse.Utilites
         /// Разрешена/запрещена запись времени в log-файл
         /// </summary>
         private bool _enableTimeWrite;
-        
+
+        private FileSystemWatcher logWatcher = new FileSystemWatcher();
+
         /// <summary>
         /// Объект StreamWriter, работающий с log-файлом
         /// </summary>
@@ -68,7 +70,11 @@ namespace Egse.Utilites
             _enableTimeWrite = true;
             this.defaultFileName = fileName;
             MakeNewFile(this.defaultFileName);
+            this.logWatcher.Changed += new FileSystemEventHandler(OnLogChanged);
+            this.logWatcher.Created += new FileSystemEventHandler(OnLogChanged);
         }
+
+        public event FileSystemEventHandler GotLogChange;
 
         /// <summary>
         /// Получает наименование лог-файла.
@@ -262,8 +268,20 @@ namespace Egse.Utilites
         private void MakeNewFile(string fileName)
         {
             this.logTime = new DateTime();
-            this.fileName = MakeLoggerDir() + "\\" + GetLoggerFileName(fileName);
+            string dir = MakeLoggerDir() + "\\";
+            string name = GetLoggerFileName(fileName);
+            this.fileName = dir + name;
             this.streamWriter = new StreamWriter(this.fileName, true);
+            this.logWatcher.Path = dir;
+            this.logWatcher.Filter = name;
+        }
+
+        private void OnLogChanged(object sender, FileSystemEventArgs e)
+        {
+            if (this.GotLogChange != null)
+            {
+                this.GotLogChange(sender, e);
+            }
         }
     }
 

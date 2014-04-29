@@ -2064,6 +2064,9 @@ namespace Egse.Devices
             Spacewire3Notify.UpdateProperties();
             Spacewire4Notify.UpdateProperties();
             HsiNotify.UpdateProperties();
+            ControlBukNotify.UpdateProperties();
+            TeleBukNotify.UpdateProperties();
+            TeleKvvNotify.UpdateProperties();
         }
 
         /// <summary>
@@ -2782,6 +2785,7 @@ namespace Egse.Devices
             public Hsi(EgseBukNotify owner)
                 : base(owner)
             {
+                LogsClass.LogHsi.GotLogChange += (sender, e) => OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 
             /// <summary>
@@ -2890,12 +2894,6 @@ namespace Egse.Devices
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady2, Convert.ToInt32(value));
                     OnPropertyChanged();
                 }
-            }
-
-            public override void UpdateProperties()
-            {
-                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
-                OnPropertyChanged(() => this.RawDataFileSizeFormated);
             }
 
             /// <summary>
@@ -3908,6 +3906,7 @@ namespace Egse.Devices
                     if (this.rawDataStream.CanWrite)
                     {
                         this.rawDataTask = this.rawDataStream.WriteAsync(e.Data, 0, e.Data.Length);
+                        OnPropertyChanged(() => this.RawDataFileSizeFormated);
                     }
                 }
             }
@@ -5731,6 +5730,11 @@ namespace Egse.Devices
                 }
             }
 
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.IntfReady);
+            }
+
             /// <summary>
             /// Gets the issue command threshold.
             /// </summary>
@@ -7004,6 +7008,7 @@ namespace Egse.Devices
                 : base(owner)
             {
                 counterIcd = new Dictionary<short, AutoCounter>();
+                LogsClass.LogSpacewire2.GotLogChange += (sender, e) => OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 
             /// <summary>
@@ -8176,6 +8181,7 @@ namespace Egse.Devices
                         }
 
                         this.binDataTask = this.binDataStream.WriteAsync(spw.Data, 0, spw.Data.Length);
+                        OnPropertyChanged(() => this.RawDataFileSizeFormated);
                     }
                 }
             }
@@ -8237,12 +8243,6 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueTimeMark, 0, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueTickTime = 1 == value);
                 ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueExchange, 1, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueExchange = 1 == value);
                 ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueKbv, 2, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueObt = 1 == value);
-            }
-
-            public override void UpdateProperties()
-            {
-                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
-                OnPropertyChanged(() => this.RawDataFileSizeFormated);
             }
         }
 
@@ -8370,6 +8370,7 @@ namespace Egse.Devices
             public Spacewire3(EgseBukNotify owner)
                 : base(owner)
             {
+                LogsClass.LogSpacewire3.GotLogChange += (sender, e) => OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 
             /// <summary>
@@ -8770,12 +8771,6 @@ namespace Egse.Devices
                 }
             }
 
-            public override void UpdateProperties()
-            {
-                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
-                OnPropertyChanged(() => this.RawDataFileSizeFormated);
-            }
-
             public long RawDataFileSize
             {
                 get
@@ -9065,6 +9060,7 @@ namespace Egse.Devices
                         {
                             SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
                             this.rawDataTask = this.rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
+                            OnPropertyChanged(() => this.RawDataFileSizeFormated);
                         }
                     }
                 }
