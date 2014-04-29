@@ -54,7 +54,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire2+Channel}}}"
                       SelectedValue="{Binding IssueSpacewireChannel}"
                       SelectedValuePath="Value"
-                      TabIndex="1" />
+                      TabIndex="10" />
             <Label Grid.Row="2"
                    Grid.ColumnSpan="2"
                    Content="Интерфейс Spacewire"
@@ -62,7 +62,7 @@
             <Button Grid.Row="2"
                     Grid.Column="2"
                     Command="{Binding IssueEnableCommand}"
-                    TabIndex="2"
+                    TabIndex="20"
                     Tag="{Binding IsIssueEnable,
                                   Converter={StaticResource BoolToIndexConverter}}"
                     Template="{StaticResource FlatButtonCheck}" />
@@ -96,7 +96,7 @@
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       IsChecked="{Binding IsIssueTickTime}"
-                      TabIndex="4" />
+                      TabIndex="40" />
             <Label Grid.Row="7"
                    Grid.ColumnSpan="2"
                    Content="Выдавать КБВ прибору"
@@ -109,7 +109,7 @@
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       IsChecked="{Binding IsIssueObt}"
-                      TabIndex="5" />
+                      TabIndex="50" />
             <Label Grid.Row="5"
                    Grid.ColumnSpan="2"
                    Content="Обмен с прибором"
@@ -122,7 +122,7 @@
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       IsChecked="{Binding IsIssueExchange}"
-                      TabIndex="3" />
+                      TabIndex="30" />
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -161,7 +161,7 @@
                         Grid.ColumnSpan="2"
                         Command="{Binding FromFileCommand}"
                         Content="из файла..."
-                        TabIndex="6" />
+                        TabIndex="60" />
                 <Label Grid.Row="1"
                        Grid.ColumnSpan="2"
                        Content="Формировать телекоманду"
@@ -174,7 +174,7 @@
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           IsChecked="{Binding IsMakeTeleCmd}"
-                          TabIndex="7" />
+                          TabIndex="70" />
                 <Label Grid.Row="1"
                        Grid.Column="3"
                        Content="APID"
@@ -187,7 +187,7 @@
                           SelectedIndex="{Binding ApidSelected,
                                                   Mode=OneWay}"
                           Style="{StaticResource ComboBoxInError}"
-                          TabIndex="8"
+                          TabIndex="80"
                           Text="{Binding Apid,
                                          Converter={StaticResource ShortToStrConverter},
                                          ValidatesOnDataErrors=True}"
@@ -207,7 +207,7 @@
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           IsChecked="{Binding IsConfirmReceipt}"
-                          TabIndex="7" />
+                          TabIndex="90" />
                 <Label Grid.Row="1"
                        Grid.Column="8"
                        Grid.ColumnSpan="2"
@@ -221,7 +221,7 @@
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           IsChecked="{Binding IsConfirmExecution}"
-                          TabIndex="7" />
+                          TabIndex="100" />
             </Grid>
             <ComboBox Grid.Row="1"
                       Grid.ColumnSpan="3"
@@ -229,7 +229,7 @@
                       IsReadOnly="False"
                       ItemsSource="{Binding DataList}"
                       Style="{StaticResource ComboBoxInError}"
-                      TabIndex="9"
+                      TabIndex="110"
                       Text="{Binding Data,
                                      Converter={StaticResource BytesToStrConverter},
                                      ValidatesOnDataErrors=True}"
@@ -240,7 +240,7 @@
                     Grid.ColumnSpan="3"
                     Command="{Binding IssuePackageCommand}"
                     Content="Передать в БУК"
-                    TabIndex="10" />
+                    TabIndex="120" />
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
@@ -266,7 +266,7 @@
                           VerticalAlignment="Center"
                           DockPanel.Dock="Left"
                           IsChecked="{Binding IsSaveRawData}"
-                          TabIndex="11" />
+                          TabIndex="130" />
                 <TextBox IsReadOnly="True"
                          IsTabStop="False"
                          Text="{Binding RawDataFile,
@@ -284,7 +284,7 @@
                           VerticalAlignment="Center"
                           DockPanel.Dock="Left"
                           IsChecked="{Binding IsSaveTxtData}"
-                          TabIndex="11" />
+                          TabIndex="140" />
                 <TextBox IsReadOnly="True"
                          IsTabStop="False"
                          Text="{Binding TxtDataFile,
@@ -356,7 +356,7 @@
                        Content="{Binding CodeOnboardTime}"
                        Template="{StaticResource FlatLabel}" />
             </Grid>
-            <ListBox x:Name="MonitorList"
+            <ListBox TabIndex="150" x:Name="MonitorList"
                      Grid.Row="4"
                      Margin="1"
                      BorderThickness="0"
@@ -365,7 +365,7 @@
             <Button Grid.Row="5"
                     Click="Button_Click"
                     Content="Очистить монитор Spacewire"
-                    TabIndex="12" />
+                    TabIndex="160" />
         </Grid>
     </Grid>
 </Window>

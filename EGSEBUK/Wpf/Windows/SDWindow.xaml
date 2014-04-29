@@ -45,7 +45,7 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+DetectorDevice}}}"
                       SelectedValue="{Binding IssueDetectorDevice}"
                       SelectedValuePath="Value"
-                      TabIndex="1" />
+                      TabIndex="10" />
             <Label Grid.Row="2"
                    Content="Линия передачи"
                    Template="{StaticResource FlatLabel}" />
@@ -56,14 +56,14 @@
                       ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+HalfSet}}}"
                       SelectedValue="{Binding IssueHalfSet}"
                       SelectedValuePath="Value"
-                      TabIndex="2" />
+                      TabIndex="20" />
             <Label Grid.Row="3"
                    Content="Интерфейс Spacewire"
                    Template="{StaticResource FlatLabel}" />
             <Button Grid.Row="3"
                     Grid.Column="1"
                     Command="{Binding IssueEnableCommand}"
-                    TabIndex="3"
+                    TabIndex="30"
                     Tag="{Binding IsIssueEnable,
                                   Converter={StaticResource BoolToIndexConverter}}"
                     Template="{StaticResource FlatButtonCheck}" />
@@ -100,7 +100,7 @@
                           VerticalAlignment="Center"
                           DockPanel.Dock="Left"
                           IsChecked="{Binding IsSaveRawData}"
-                          TabIndex="4" />
+                          TabIndex="40" />
                 <TextBox IsReadOnly="True"
                          IsTabStop="False"
                          Text="{Binding RawDataFile,
@@ -118,7 +118,7 @@
                           VerticalAlignment="Center"
                           DockPanel.Dock="Left"
                           IsChecked="{Binding IsSaveTxtData}"
-                          TabIndex="11" />
+                          TabIndex="50" />
                 <TextBox IsReadOnly="True"
                          IsTabStop="False"
                          Text="{Binding TxtDataFile,
@@ -133,11 +133,12 @@
                      Margin="1"
                      BorderThickness="0"
                      ItemsSource="{Binding MonitorListItem}"
+                     TabIndex="60"
                      l:ListBoxExtensions.IsAutoscroll="true" />
             <Button Grid.Row="5"
                     Click="Button_Click"
                     Content="Очистить монитор Spacewire"
-                    TabIndex="5" />
+                    TabIndex="70" />
         </Grid>
     </Grid>
 </Window>

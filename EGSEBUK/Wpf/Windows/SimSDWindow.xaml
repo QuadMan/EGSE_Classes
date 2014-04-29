@@ -1,101 +1,119 @@
 ﻿<Window x:Class="Egse.Defaults.SimSDWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"     
-        xmlns:l="clr-namespace:Egse.Defaults"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
+        xmlns:l="clr-namespace:Egse.Defaults"
         Title="Имитатор БУК (для каналов БС)"
+        Height="auto"
+        Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
-        Closing="Window_Closing"
-        Height="auto"
-        Visibility="{Binding IsShowSimSD, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+        Visibility="{Binding IsShowSimSD,
+                             Converter={StaticResource BooleanToVisibilityConverter},
+                             Mode=TwoWay}">
     <Grid x:Name="GridSimSD"
-          Background="{StaticResource BackBrush}"
-          Margin="4">
+          Margin="4"
+          Background="{StaticResource BackBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid>            
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="3"
-                Content="Управление"
-                Style="{StaticResource FlatHeader}"/>
-            <Label Grid.Row="1"  
-                Content="Имитатор БУК"
-                Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Column="1"                               
-                Grid.Row="1"    
-                Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueEnableCommand}"
-                Template="{StaticResource FlatButtonCheck}" TabIndex="1"/>
-            <Label Grid.Row="2" 
-                Grid.ColumnSpan="2"
-                Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
-                Template="{StaticResource FlatLabelConnected}"/>
+                   Content="Управление"
+                   Style="{StaticResource FlatHeader}" />
+            <Label Grid.Row="1"
+                   Content="Имитатор БУК"
+                   Template="{StaticResource FlatLabel}" />
+            <Button Grid.Row="1"
+                    Grid.Column="1"
+                    Command="{Binding IssueEnableCommand}"
+                    TabIndex="10"
+                    Tag="{Binding IsIssueEnable,
+                                  Converter={StaticResource BoolToIndexConverter}}"
+                    Template="{StaticResource FlatButtonCheck}" />
+            <Label Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   Tag="{Binding IsConnect,
+                                 Converter={StaticResource BoolToIndexConverter}}"
+                   Template="{StaticResource FlatLabelConnected}" />
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Передать данные"
-                Style="{StaticResource FlatHeader}"/>
-            <Button Grid.Column="2"    
-                Command="{Binding FromFileCommand}"
-                Content="из файла..." TabIndex="3"/>
+                   Content="Передать данные"
+                   Style="{StaticResource FlatHeader}" />
+            <Button Grid.Column="2"
+                    Command="{Binding FromFileCommand}"
+                    Content="из файла..."
+                    TabIndex="20" />
             <ComboBox Grid.Row="1"
                       Grid.ColumnSpan="3"
-                      IsReadOnly="False" 
                       IsEditable="True"
+                      IsReadOnly="False"
                       ItemsSource="{Binding DataList}"
                       Style="{StaticResource ComboBoxInError}"
+                      TabIndex="30"
+                      Text="{Binding Data,
+                                     Converter={StaticResource BytesToStrConverter},
+                                     ValidatesOnDataErrors=True}"
                       b:WatermarkComboBox.EnableWatermark="True"
                       b:WatermarkComboBox.Label="Введите данные, например: AB 45 FF EE"
-                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}"
-                      Text="{Binding Data, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}"  
-                      TabIndex="4"/>
-            <Label Grid.Row="2"   
-                Grid.ColumnSpan="2"	
-                Content="Выдавать ошибку EEP"
-                Template="{StaticResource FlatLabel}"/>
-            <Label Grid.Row="2" Grid.Column="2"
-                Template="{StaticResource FlatLabel}"/>
-            <CheckBox Grid.Row="2"   
-                      VerticalAlignment="Center" 
+                      b:WatermarkComboBox.LabelStyle="{StaticResource WatermarkLabelStyle}" />
+            <Label Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   Content="Выдавать ошибку EEP"
+                   Template="{StaticResource FlatLabel}" />
+            <Label Grid.Row="2"
+                   Grid.Column="2"
+                   Template="{StaticResource FlatLabel}" />
+            <CheckBox Grid.Row="2"
+                      Grid.Column="2"
                       HorizontalAlignment="Center"
-                Grid.Column="2"  
-                IsChecked="{Binding IsIssueEep}" TabIndex="5"/>
-            <Label Grid.Row="3"   
-                Grid.ColumnSpan="2"	
-                Content="Выдавать в конце посылки EOP или EEP"
-                Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-            <Label Grid.Row="3" Grid.Column="2"
-                Template="{StaticResource FlatLabel}" Visibility="Collapsed"/>
-            <CheckBox Grid.Row="3"  VerticalAlignment="Center" HorizontalAlignment="Center" 
-                Grid.Column="2"            
-                      IsChecked="{Binding IsIssueEOP}" TabIndex="6" Visibility="Collapsed"/>
-            <Button Grid.Row="4"  
-                Grid.ColumnSpan="3"    	
-                Content="Передать посылку"
-                Command="{Binding IssuePackageCommand}" TabIndex="7"/>           
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding IsIssueEep}"
+                      TabIndex="40" />
+            <Label Grid.Row="3"
+                   Grid.ColumnSpan="2"
+                   Content="Выдавать в конце посылки EOP или EEP"
+                   Template="{StaticResource FlatLabel}"
+                   Visibility="Collapsed" />
+            <Label Grid.Row="3"
+                   Grid.Column="2"
+                   Template="{StaticResource FlatLabel}"
+                   Visibility="Collapsed" />
+            <CheckBox Grid.Row="3"
+                      Grid.Column="2"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding IsIssueEOP}"
+                      TabIndex="6"
+                      Visibility="Collapsed" />
+            <Button Grid.Row="4"
+                    Grid.ColumnSpan="3"
+                    Command="{Binding IssuePackageCommand}"
+                    Content="Передать посылку"
+                    TabIndex="50" />
         </Grid>
 
     </Grid>
