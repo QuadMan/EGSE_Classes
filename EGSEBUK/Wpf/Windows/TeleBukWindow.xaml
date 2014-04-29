@@ -21,8 +21,17 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <StackPanel>
+            <TextBlock Grid.ColumnSpan="3"
+                       Style="{StaticResource FormattedTextBlock}"
+                       TextAlignment="Right">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Время последнего обновления: {0}">
+                        <Binding Path="UpdateTime" />
+                    </MultiBinding>
+                </TextBlock.Text></TextBlock>
+            <StackPanel Grid.Row="1">
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Наименование параметра" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Номер версии прошивки ПЛИС" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Номер версии программы процессора" />
@@ -49,7 +58,7 @@
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Порог ЗНЩ 15-8" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Порог ЗНЩ 7-0" />
             </StackPanel>
-            <StackPanel Grid.Column="1">
+            <StackPanel Grid.Row="1" Grid.Column="1">
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Телеметрия БУК" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="{Binding BukData[1], StringFormat={}{0:X2}h}" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}">

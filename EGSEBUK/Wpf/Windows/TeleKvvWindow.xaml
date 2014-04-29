@@ -22,8 +22,19 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
-            <StackPanel>
+            <TextBlock Grid.ColumnSpan="3"
+                       Style="{StaticResource FormattedTextBlock}"
+                       TextAlignment="Right">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Время последнего обновления: {0}">
+                        <Binding Path="UpdateTime" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <StackPanel Grid.Row="1">
+                
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Наименование параметра" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Адресная метка" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Номер версии прошивки" />
@@ -155,7 +166,7 @@
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM31" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="TERM32" />
             </StackPanel>
-            <StackPanel Grid.Column="1">
+            <StackPanel Grid.Row="1" Grid.Column="1">
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Телеметрия КВВ1" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}">
                     <TextBlock.Text>
@@ -1188,7 +1199,7 @@
                     </TextBlock.Text>
                 </TextBlock>
             </StackPanel>
-            <StackPanel Grid.Column="2">
+            <StackPanel Grid.Row="1" Grid.Column="2">
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Телеметрия КВВ2" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}">
                     <TextBlock.Text>

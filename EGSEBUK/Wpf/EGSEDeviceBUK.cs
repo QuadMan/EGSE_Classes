@@ -6675,6 +6675,16 @@ namespace Egse.Devices
                 }
             }
 
+            private EgseTime updateTime;
+
+            public string UpdateTime
+            {
+                get
+                {
+                    return this.updateTime.ToString();
+                }
+            }
+
             /// <summary>
             /// Получает или задает данные телеметрии КВВ.
             /// </summary>
@@ -6690,6 +6700,7 @@ namespace Egse.Devices
 
                 set
                 {
+                    this.updateTime = base.Owner.DeviceTime;
                     this.tmkvvData = value;
                     OnPropertyChanged(string.Empty);
                 }
@@ -6729,6 +6740,16 @@ namespace Egse.Devices
                 }
             }
 
+            private EgseTime updateTime;
+
+            public string UpdateTime
+            {
+                get
+                {
+                    return this.updateTime.ToString();
+                }
+            }
+
             /// <summary>
             /// Получает или задает данные телеметрии БУК.
             /// </summary>
@@ -6744,6 +6765,7 @@ namespace Egse.Devices
 
                 set
                 {
+                    this.updateTime = base.Owner.DeviceTime;
                     this.tmbukData = value;
                     OnPropertyChanged(string.Empty);
                 }
