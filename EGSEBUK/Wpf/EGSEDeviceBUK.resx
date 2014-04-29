@@ -154,6 +154,9 @@
     <value>spacewirebuk</value>
   </data>
   <data name="eBadDataSendMsg" xml:space="preserve">
-    <value>Размер посылки более 250 байт!</value>
+    <value>Не корректный размер посылки!</value>
+  </data>
+  <data name="eNotSendCmd" xml:space="preserve">
+    <value>Команду не удалось отправить!</value>
   </data>
 </root>

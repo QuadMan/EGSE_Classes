@@ -61,7 +61,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Размер посылки более 250 байт!.
+        ///   Looks up a localized string similar to Не корректный размер посылки!.
         /// </summary>
         internal static string eBadDataSendMsg {
             get {
@@ -75,6 +75,15 @@ namespace Wpf {
         internal static string eNotAssigned {
             get {
                 return ResourceManager.GetString("eNotAssigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Команду не удалось отправить!.
+        /// </summary>
+        internal static string eNotSendCmd {
+            get {
+                return ResourceManager.GetString("eNotSendCmd", resourceCulture);
             }
         }
         

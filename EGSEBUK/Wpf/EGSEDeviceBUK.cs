@@ -5777,7 +5777,7 @@ namespace Egse.Devices
                 {
                     if (this.issueCmdLight == null)
                     {
-                        this.issueCmdLight = new RelayCommand(CmdLight, obj => { return true; });
+                        this.issueCmdLight = new RelayCommand(CmdLight, obj => true);
                     }
 
                     return this.issueCmdLight;
@@ -6372,38 +6372,52 @@ namespace Egse.Devices
                 }
             }
 
+            private void SetSpw2Prop(bool needSaveData, short apid, bool needExec, bool needRece, bool makeTele, byte[] bufData)
+            {
+                Owner.Spacewire2Notify.IsNeedSaveData = needSaveData;
+                Owner.Spacewire2Notify.Apid = apid;
+                Owner.Spacewire2Notify.IsConfirmExecution = needExec;
+                Owner.Spacewire2Notify.IsConfirmReceipt = needRece;
+                Owner.Spacewire2Notify.IsMakeTeleCmd = makeTele;
+                Owner.Spacewire2Notify.Data = bufData;
+                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                {
+                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show(Resource.Get(@"eNotSendCmd"));
+                }
+            }
+
             /// <summary>
             /// Datas the send.
             /// </summary>
             /// <param name="obj">The object.</param>
             private void DataSend(object obj)
             {
-                PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                if ((null == DataBytes) || (250 < DataBytes.Length))
+                PushSpw2Prop();                
+                try
                 {
-                    System.Windows.MessageBox.Show(Resource.Get(@"eBadDataSendMsg"));
-                    return;
-                }
+                    if ((null == DataBytes) || (250 < DataBytes.Length))
+                    {
+                        System.Windows.MessageBox.Show(Resource.Get(@"eBadDataSendMsg"));
+                        return;
+                    }
 
-                byte[] buf = new byte[DataBytes.Length + 5];
-                Array.Copy(DataBytes, 0, buf, 5, DataBytes.Length);
-                buf[0] = 0;
-                buf[1] = 14;
-                buf[2] = 0;
-                buf[3] = (byte)DataBytes.Length;
-                buf[4] = 0;
-                Owner.Spacewire2Notify.Data = buf;
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                    byte[] buf = new byte[DataBytes.Length + 5];
+                    Array.Copy(DataBytes, 0, buf, 5, DataBytes.Length);
+                    buf[0] = 0;
+                    buf[1] = 14;
+                    buf[2] = 0;
+                    buf[3] = (byte)DataBytes.Length;
+                    buf[4] = 0;
+                    SetSpw2Prop(false, 0x610, true, true, true, buf);
+                }
+                finally
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    PopSpw2Prop();
                 }
-
-                PopSpw2Prop();
             }
 
             /// <summary>
@@ -6413,70 +6427,63 @@ namespace Egse.Devices
             private void CmdSend(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                byte[] buf = new byte[4] { 0, 0, 0, 0 };
-                int i = 0;
-                if (null != CmdBytes)
-                {
-                    foreach (byte t in CmdBytes)
+                try
+                {                   
+                    if ((null == CmdBytes) || (250 < CmdBytes.Length))
                     {
-                        buf[i++] = t;
+                        System.Windows.MessageBox.Show(Resource.Get(@"eBadDataSendMsg"));
+                        return;
                     }
-                }
 
-                Owner.Spacewire2Notify.Data = new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                    byte[] buf = new byte[4] { 0, 0, 0, 0 };
+                    int i = 0;
+                    if (null != CmdBytes)
+                    {
+                        foreach (byte t in CmdBytes)
+                        {
+                            buf[i++] = t;
+                        }
+                    }
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 });
+                }
+                finally
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    PopSpw2Prop();
                 }
-
-                PopSpw2Prop();
             }
 
             /// <summary>
-            /// Commands the light.
+            /// Управление БУК: команда "управление засветкой".
             /// </summary>
             /// <param name="obj">The object.</param>
             private void CmdLight(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 12, 0, NumberLight, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)LightTime };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                try
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[9] { 0, 0, 12, 0, NumberLight, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)LightTime });
                 }
-
-                PopSpw2Prop();
+                finally
+                {
+                    PopSpw2Prop();
+                }
             }
 
             /// <summary>
-            /// Commands the shutter.
+            /// Управление БУК: команда "открытие затворов".
             /// </summary>
             /// <param name="obj">The object.</param>
             private void CmdShutter(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)ShutterTime };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                try
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[9] { 0, 0, 11, 0, (byte)((LineShutter << 4) | NumberShutter), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)ShutterTime });
                 }
-
-                PopSpw2Prop();
+                finally
+                {
+                    PopSpw2Prop();
+                }
             }
 
             /// <summary>
@@ -6486,35 +6493,14 @@ namespace Egse.Devices
             private void CmdConfig(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = false;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                switch (SelConf) 
+                try
                 {
-                    case 1:
-                        { 
-                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) }; 
-                        }
-
-                        break;
-                    case 2: 
-                        {
-                            Owner.Spacewire2Notify.Data = new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) }; 
-                        }
-
-                        break;
-                   default:
-                        return;
+                    SetSpw2Prop(false, 0x610, false, true, true, 1 == SelConf ? new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) } : new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) });
                 }
-
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                finally
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    PopSpw2Prop();
                 }
-
-                PopSpw2Prop();
             }
 
             /// <summary>
@@ -6524,18 +6510,14 @@ namespace Egse.Devices
             private void CmdSelDetector(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                try
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[5] { 0, 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) });
                 }
-
-                PopSpw2Prop();
+                finally
+                {
+                    PopSpw2Prop();
+                }
             }
 
             /// <summary>
@@ -6545,18 +6527,14 @@ namespace Egse.Devices
             private void CmdGetTele(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = false;
-                Owner.Spacewire2Notify.IsConfirmReceipt = false;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[3] { 0, 0, 5 };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                try
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    SetSpw2Prop(false, 0x610, false, false, true, new byte[3] { 0, 0, 5 });
                 }
-
-                PopSpw2Prop();
+                finally
+                {
+                    PopSpw2Prop();
+                }
             }
 
             /// <summary>
@@ -6566,18 +6544,14 @@ namespace Egse.Devices
             private void CmdGetFrame(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = true;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[5] { 0, 0, 1, 0, Convert.ToByte(IsIssueTest) };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
+                try
                 {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[5] { 0, 0, 1, 0, Convert.ToByte(IsIssueTest) });
                 }
-
-                PopSpw2Prop();
+                finally
+                {
+                    PopSpw2Prop();
+                }
             }
 
             /// <summary>
@@ -6587,18 +6561,14 @@ namespace Egse.Devices
             private void CmdThreshold(object obj)
             {
                 PushSpw2Prop();
-                Owner.Spacewire2Notify.IsNeedSaveData = false;
-                Owner.Spacewire2Notify.Apid = 0x610;
-                Owner.Spacewire2Notify.IsConfirmExecution = false;
-                Owner.Spacewire2Notify.IsConfirmReceipt = true;
-                Owner.Spacewire2Notify.IsMakeTeleCmd = true;
-                Owner.Spacewire2Notify.Data = new byte[9] { 0, 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, Param2, Param3 };
-                if (Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null))
-                {
-                    Owner.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                try
+                { 
+                    SetSpw2Prop(false, 0x610, false, true, true, new byte[9] { 0, 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, Param2, Param3 });
                 }
-
-                PopSpw2Prop();
+                finally
+                {
+                    PopSpw2Prop();
+                }
             }
 
             /// <summary>
