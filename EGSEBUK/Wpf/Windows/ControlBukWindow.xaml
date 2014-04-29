@@ -18,6 +18,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -30,14 +31,39 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
+            <TextBlock Grid.ColumnSpan="9" TextAlignment="Center" Margin="1">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IntfReady}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource ConnectedBrush}" />
+                                <Setter Property="Text"
+                                        Value="Интерфейс spacewire готов" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IntfReady}"
+                                     Value="False">
+                                <Setter Property="Background"
+                                        Value="{StaticResource UnConnectedBrush}" />
+                                <Setter Property="Text"
+                                        Value="Интерфейс spacewire не готов" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
             <Label Grid.ColumnSpan="2"
+                   Grid.Row="1"
                    Content="Команда"
                    Template="{StaticResource FlatLabel}" />
             <Label Grid.Column="2"
+                   Grid.Row="1"
                    Grid.ColumnSpan="6"
                    Content="Настройки"
                    Template="{StaticResource FlatLabel}" />
             <Label Grid.Column="8"
+                   Grid.Row="1"
                    Content="Управление"
                    Template="{StaticResource FlatLabel}" />
         </Grid>

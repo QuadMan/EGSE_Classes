@@ -5671,6 +5671,20 @@ namespace Egse.Devices
             }
 
             /// <summary>
+            /// Получает значение, показывющее, что [интерфейс spacewire готов к приему посылок].
+            /// </summary>
+            /// <value>
+            /// <c>true</c> если [интерфейс spacewire готов к приему посылок]; иначе, <c>false</c>.
+            /// </value>
+            public bool IntfReady
+            {
+                get
+                {
+                    return Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null);
+                }
+            }
+
+            /// <summary>
             /// Gets the issue command threshold.
             /// </summary>
             /// <value>

@@ -1,127 +1,143 @@
 ﻿<Window x:Class="Egse.Defaults.SDWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-        xmlns:l="clr-namespace:Egse.Defaults"
-        xmlns:d="clr-namespace:Egse.Devices"  
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:b="clr-namespace:Egse.Wpf.Behaviors"
-        Title="Имитатор каналов БС" 
+        xmlns:d="clr-namespace:Egse.Devices"
+        xmlns:l="clr-namespace:Egse.Defaults"
+        Title="Имитатор каналов БС"
+        Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
-        Closing="Window_Closing"
-        Visibility="{Binding IsShowSD, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay}">
+        Visibility="{Binding IsShowSD,
+                             Converter={StaticResource BooleanToVisibilityConverter},
+                             Mode=TwoWay}">
     <Grid x:Name="GridSD"
-          Background="{StaticResource BackBrush}"
-          Margin="4">
+          Margin="4"
+          Background="{StaticResource BackBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                Content="Управление"
-                Style="{StaticResource FlatHeader}"/>
+                   Content="Управление"
+                   Style="{StaticResource FlatHeader}" />
             <Label Grid.Row="1"
-                Content="Канал БС"
-                Template="{StaticResource FlatLabel}"/>
-            <ComboBox Grid.Column="1"                               
-                      Grid.Row="1"
+                   Content="Канал БС"
+                   Template="{StaticResource FlatLabel}" />
+            <ComboBox Grid.Row="1"
+                      Grid.Column="1"
                       Margin="1"
-                      ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+DetectorDevice}}}" 
-                      DisplayMemberPath="Description" 
-                      SelectedValue="{Binding IssueDetectorDevice}"  
-                      SelectedValuePath="Value" TabIndex="1"/>
+                      DisplayMemberPath="Description"
+                      ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+DetectorDevice}}}"
+                      SelectedValue="{Binding IssueDetectorDevice}"
+                      SelectedValuePath="Value"
+                      TabIndex="1" />
             <Label Grid.Row="2"
-                Content="Линия передачи"
-                Template="{StaticResource FlatLabel}"/>
-            <ComboBox Grid.Column="1"                               
-                      Grid.Row="2"
+                   Content="Линия передачи"
+                   Template="{StaticResource FlatLabel}" />
+            <ComboBox Grid.Row="2"
+                      Grid.Column="1"
                       Margin="1"
-                      ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+HalfSet}}}" 
-                      DisplayMemberPath="Description" 
-                      SelectedValue="{Binding IssueHalfSet}"  
-                      SelectedValuePath="Value" TabIndex="2"/>         
+                      DisplayMemberPath="Description"
+                      ItemsSource="{Binding Source={l:Enumeration {x:Type d:EgseBukNotify+Spacewire3+HalfSet}}}"
+                      SelectedValue="{Binding IssueHalfSet}"
+                      SelectedValuePath="Value"
+                      TabIndex="2" />
             <Label Grid.Row="3"
-                Content="Интерфейс Spacewire"
-                Template="{StaticResource FlatLabel}"/>
-            <Button Grid.Column="1"                               
-                Grid.Row="3"  
-                Tag="{Binding IsIssueEnable, Converter={StaticResource BoolToIndexConverter}}"
-                Command="{Binding IssueEnableCommand}"
-                Template="{StaticResource FlatButtonCheck}" TabIndex="3"/>
-            <Label Grid.Row="4" 
-                Grid.ColumnSpan="2"
-                Tag="{Binding IsConnect, Converter={StaticResource BoolToIndexConverter}}"     
-                Template="{StaticResource FlatLabelConnected}"/>
-            <Label Grid.Row="5" 
-                Grid.ColumnSpan="2"
-                Tag="{Binding IsIssueTransmission, Converter={StaticResource BoolToIndexConverter}}"   
-                Template="{StaticResource FlatLabelTransmission}"/>
+                   Content="Интерфейс Spacewire"
+                   Template="{StaticResource FlatLabel}" />
+            <Button Grid.Row="3"
+                    Grid.Column="1"
+                    Command="{Binding IssueEnableCommand}"
+                    TabIndex="3"
+                    Tag="{Binding IsIssueEnable,
+                                  Converter={StaticResource BoolToIndexConverter}}"
+                    Template="{StaticResource FlatButtonCheck}" />
+            <Label Grid.Row="4"
+                   Grid.ColumnSpan="2"
+                   Tag="{Binding IsConnect,
+                                 Converter={StaticResource BoolToIndexConverter}}"
+                   Template="{StaticResource FlatLabelConnected}" />
+            <Label Grid.Row="5"
+                   Grid.ColumnSpan="2"
+                   Tag="{Binding IsIssueTransmission,
+                                 Converter={StaticResource BoolToIndexConverter}}"
+                   Template="{StaticResource FlatLabelTransmission}" />
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label 
-                Content="Монитор Spacewire"
-                Style="{StaticResource FlatHeader}"/>
-            <DockPanel Grid.Row="1"
-                LastChildFill="True">
-                <Label DockPanel.Dock="Left" Content="Запись в файл" Width="140"
-                    Template="{StaticResource FlatLabel}"/>
-                <CheckBox DockPanel.Dock="Left"   VerticalAlignment="Center"    Margin="1"  
-                          IsChecked="{Binding IsSaveRawData}" TabIndex="4"/>
-                <TextBox              
-                    IsReadOnly="True"
-                    Text="{Binding RawDataFile, ValidatesOnDataErrors=True}"
-                    b:WatermarkTextBox.EnableWatermark="True"
-                    b:WatermarkTextBox.Label="Файл отсутствует..."
-                    b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
-                    IsTabStop="False"/>
+            <Label Content="Монитор Spacewire" Style="{StaticResource FlatHeader}" />
+            <DockPanel Grid.Row="1" LastChildFill="True">
+                <Label Width="140"
+                       Content="Запись в файл"
+                       DockPanel.Dock="Left"
+                       Template="{StaticResource FlatLabel}" />
+                <CheckBox Margin="1"
+                          VerticalAlignment="Center"
+                          DockPanel.Dock="Left"
+                          IsChecked="{Binding IsSaveRawData}"
+                          TabIndex="4" />
+                <TextBox IsReadOnly="True"
+                         IsTabStop="False"
+                         Text="{Binding RawDataFile,
+                                        ValidatesOnDataErrors=True}"
+                         b:WatermarkTextBox.EnableWatermark="True"
+                         b:WatermarkTextBox.Label="Файл отсутствует..."
+                         b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}" />
             </DockPanel>
-            <DockPanel Grid.Row="2"
-                LastChildFill="True" >
-                <Label DockPanel.Dock="Left" Content="Запись лог-файла" Width="140"
-                    Template="{StaticResource FlatLabel}"/>
-                <CheckBox DockPanel.Dock="Left" VerticalAlignment="Center" Margin="1"                                        
-                    IsChecked="{Binding IsSaveTxtData}"
-                    TabIndex="11"/>
-                <TextBox              
-                    IsReadOnly="True"
-                    Text="{Binding TxtDataFile, ValidatesOnDataErrors=True, Mode=OneWay}"
-                    b:WatermarkTextBox.EnableWatermark="True"
-                    b:WatermarkTextBox.Label="Лог-файл отсутствует..."
-                    b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}"            		
-                    IsTabStop="False"/>
+            <DockPanel Grid.Row="2" LastChildFill="True">
+                <Label Width="140"
+                       Content="Запись лог-файла"
+                       DockPanel.Dock="Left"
+                       Template="{StaticResource FlatLabel}" />
+                <CheckBox Margin="1"
+                          VerticalAlignment="Center"
+                          DockPanel.Dock="Left"
+                          IsChecked="{Binding IsSaveTxtData}"
+                          TabIndex="11" />
+                <TextBox IsReadOnly="True"
+                         IsTabStop="False"
+                         Text="{Binding TxtDataFile,
+                                        ValidatesOnDataErrors=True,
+                                        Mode=OneWay}"
+                         b:WatermarkTextBox.EnableWatermark="True"
+                         b:WatermarkTextBox.Label="Лог-файл отсутствует..."
+                         b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}" />
             </DockPanel>
-            <ListBox x:Name="MonitorList" 
-                      l:ListBoxExtensions.IsAutoscroll="true"
+            <ListBox x:Name="MonitorList"
+                     Grid.Row="4"
+                     Margin="1"
+                     BorderThickness="0"
                      ItemsSource="{Binding MonitorListItem}"
-                Grid.Row="4"
-                Margin="1"
-                BorderThickness="0"/>
-            <Button Grid.Row="5"  
-                Content="Очистить монитор Spacewire" Click="Button_Click" TabIndex="5"/>
+                     l:ListBoxExtensions.IsAutoscroll="true" />
+            <Button Grid.Row="5"
+                    Click="Button_Click"
+                    Content="Очистить монитор Spacewire"
+                    TabIndex="5" />
         </Grid>
     </Grid>
 </Window>

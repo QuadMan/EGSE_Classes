@@ -231,6 +231,7 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+
         <ControlTemplate x:Key="FlatLabelConnected" TargetType="{x:Type Label}">
             <Border x:Name="Border"
                     Margin="1"
