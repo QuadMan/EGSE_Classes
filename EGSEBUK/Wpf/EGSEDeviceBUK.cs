@@ -2059,6 +2059,11 @@ namespace Egse.Devices
             OnPropertyChanged(() => this.DeviceSpeed);
             OnPropertyChanged(() => this.DeviceTrafic);
             OnPropertyChanged(() => this.BytesAvailable);
+            Spacewire1Notify.UpdateProperties();
+            Spacewire2Notify.UpdateProperties();
+            Spacewire3Notify.UpdateProperties();
+            Spacewire4Notify.UpdateProperties();
+            HsiNotify.UpdateProperties();
         }
 
         /// <summary>
@@ -2523,6 +2528,10 @@ namespace Egse.Devices
             {
             }
 
+            public virtual void UpdateProperties()
+            {
+            }
+
             /// <summary>
             /// Initializes the properties.
             /// </summary>
@@ -2881,6 +2890,12 @@ namespace Egse.Devices
                     ControlValuesList[Global.Hsi.State].SetProperty(Global.Hsi.State.IssueReady2, Convert.ToInt32(value));
                     OnPropertyChanged();
                 }
+            }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
+                OnPropertyChanged(() => this.RawDataFileSizeFormated);
             }
 
             /// <summary>
@@ -5480,6 +5495,8 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.Busy, 3, 1, delegate { }, value => IsRecordBusy = 1 == value);
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.IssuePackage, 0, 1, Device.CmdSpacewire1Record, value => IsIssuePackage = 1 == value);
             }
+
+
         }
 
         /// <summary>
@@ -7243,6 +7260,7 @@ namespace Egse.Devices
                     }
                 }
             }
+
             public string RawDataFileSizeFormated
             {
                 get
@@ -8220,6 +8238,12 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueExchange, 1, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueExchange = 1 == value);
                 ControlValuesList[Global.Spacewire2.SptpControl].AddProperty(Global.Spacewire2.SptpControl.IssueKbv, 2, 1, Device.CmdSpacewire2SPTPControl, value => IsIssueObt = 1 == value);
             }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
+                OnPropertyChanged(() => this.RawDataFileSizeFormated);
+            }
         }
 
         /// <summary>
@@ -8744,6 +8768,12 @@ namespace Egse.Devices
 
                     return _saveRawDataCommand;
                 }
+            }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
+                OnPropertyChanged(() => this.RawDataFileSizeFormated);
             }
 
             public long RawDataFileSize
