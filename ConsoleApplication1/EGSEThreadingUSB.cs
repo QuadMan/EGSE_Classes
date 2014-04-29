@@ -48,7 +48,7 @@ namespace Egse.Threading
         /// <summary>
         /// Очередь команд в USB.
         /// </summary>
-        private Queue<byte[]> _cmdQueue;
+        private Queue<byte[]> cmdQueue;
 
         /// <summary>
         /// Поток чтения/записи в USB.
@@ -58,7 +58,7 @@ namespace Egse.Threading
         /// <summary>
         /// Доступ к функциям контроллера FTDI.
         /// </summary>
-        private USBFTDI _ftdi;
+        private USBFTDI ftdi;
 
         /// <summary>
         /// Конфигурация устройства.
@@ -103,10 +103,10 @@ namespace Egse.Threading
             _lastTickCount = 0;
             _dataReaded = 0;
             _terminateFlag = false;
-            _cmdQueue = new Queue<byte[]>();
+            this.cmdQueue = new Queue<byte[]>();
             _cfg = cfg;
             BigBuf = new BigBufferManager(bufSize);
-            _ftdi = new USBFTDI(serial, _cfg);
+            this.ftdi = new USBFTDI(serial, _cfg);
             _thread = new Thread(Execution);
             _thread.IsBackground = true;
         }
@@ -165,17 +165,32 @@ namespace Egse.Threading
             _thread.Start();
         }
 
-        /// <summary>
-        /// Функция добавляет в очередь сообщений новое
-        /// Если прибор не подсоединен, то ничего и не добавляем
-        /// </summary>
-        /// <param name="data">Буфер для отправки в USB</param>
-        /// <returns>если в очереди есть место, возвращает TRUE</returns>
-        public bool WriteBuf(byte[] data)
+        public class DeviceNotOpenedException : ApplicationException
         {
-            if (_ftdi.IsOpen && (_cmdQueue.Count < FTDIMaxCMDQueueSize))
+            public DeviceNotOpenedException(string message)
+                : base (message)
             {
-                _cmdQueue.Enqueue(data);
+            }
+        }
+
+        /// <summary>
+        /// Пытается добавить данные в очередь отправки в USB.
+        /// </summary>
+        /// <param name="data">Данные для отправки в USB.</param>
+        /// <returns>
+        /// <c>true</c> если в очереди есть место; иначе <c>false</c>.
+        /// </returns>
+        /// <exception cref="Egse.Threading.FTDIThread.DeviceNotOpenedException">Возникает, если вызов метода произошел до инициализации устройства USB.</exception>
+        public bool TryWrite(byte[] data)
+        {
+            if (!this.ftdi.IsOpen)
+            {
+                throw new DeviceNotOpenedException(Resource.Get(@"eDeviceNotOpened"));
+            }
+
+            if (this.cmdQueue.Count < FTDIMaxCMDQueueSize)
+            {
+                this.cmdQueue.Enqueue(data);
                 return true;
             }
 
@@ -224,15 +239,15 @@ namespace Egse.Threading
             while (!_terminateFlag)
             {
                 // устройство не открыто, пытаемся открыть
-                if (!_ftdi.IsOpen)
+                if (!this.ftdi.IsOpen)
                 {
                     // очищаем очередь сообщений на отправку, если мы отсоединились
-                    if (_cmdQueue.Count > 0)
+                    if (this.cmdQueue.Count > 0)
                     {
-                        _cmdQueue.Clear();
+                        this.cmdQueue.Clear();
                     }
                     
-                    if ((_ftdi.Open() == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && _ftdi.IsOpen)
+                    if ((this.ftdi.Open() == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && this.ftdi.IsOpen)
                     {
                         // производим настройки устройства
                         // !config _ftdi cfg
@@ -246,21 +261,21 @@ namespace Egse.Threading
                 {
                     // устройство открыто, читаем, сколько можно из буфера USB
                     // если есть команды для выдачи в USB
-                    if (_cmdQueue.Count > 0)
+                    if (this.cmdQueue.Count > 0)
                     {
-                        byte[] buf = _cmdQueue.Peek();
-                        FTD2XXNET.FTDICustom.FT_STATUS res = _ftdi.WriteBuf(ref buf, out bytesWritten);
+                        byte[] buf = this.cmdQueue.Peek();
+                        FTD2XXNET.FTDICustom.FT_STATUS res = this.ftdi.WriteBuf(ref buf, out bytesWritten);
                         if ((res == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesWritten == buf.Length))
                         {
                             Egse.Defaults.LogsClass.LogUSB.LogText = Converter.ByteArrayToHexStr(buf);
-                            _cmdQueue.Dequeue();
+                            this.cmdQueue.Dequeue();
                         }
                     }
 
                     // данные в буфере USB накопилось достаточно, читаем их в буфер
-                    if ((_ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDIMinBufferSize))
+                    if ((this.ftdi.GetBytesAvailable(ref bytesAvailable) == FTD2XXNET.FTDICustom.FT_STATUS.FT_OK) && (bytesAvailable > FTDIMinBufferSize))
                     {
-                        _ftdi.ReadBuf(BigBuf.WriteBuf, bytesAvailable, ref bytesReaded);
+                        this.ftdi.ReadBuf(BigBuf.WriteBuf, bytesAvailable, ref bytesReaded);
                         if (bytesReaded > 0)
                         {
                             BigBuf.MoveNextWrite(bytesReaded);
@@ -271,12 +286,12 @@ namespace Egse.Threading
                 }
 
                 // если состояние устройства изменилось
-                if (_lastOpened != _ftdi.IsOpen)
+                if (_lastOpened != this.ftdi.IsOpen)
                 {
-                    _lastOpened = _ftdi.IsOpen;
+                    _lastOpened = this.ftdi.IsOpen;
                     if (StateChangeEvent != null)
                     {
-                        StateChangeEvent(_ftdi.IsOpen);           
+                        StateChangeEvent(this.ftdi.IsOpen);           
                     }
                 }
 

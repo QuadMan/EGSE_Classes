@@ -28,7 +28,7 @@ namespace Egse
         /// <summary>
         /// Поток чтения данных из USB.
         /// </summary>
-        private FTDIThread _readThread;
+        private FTDIThread readThread;
 
         /// <summary>
         /// Настройки устройства USB и потока чтения данных из USB.
@@ -38,7 +38,7 @@ namespace Egse
         /// <summary>
         /// Протокол, исполтьзуемый в USB.
         /// </summary>
-        private ProtocolUSBBase _dec;
+        private ProtocolUSBBase decoder;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="Device" />.
@@ -49,11 +49,11 @@ namespace Egse
         /// <param name="cfg">Конфигурация драйвера USB (настройка параметров потока, буферов чтения и тд)</param>
         public Device(string serial, ProtocolUSBBase dec, USBCfg cfg)
         {
-            _dec = dec;
+            this.decoder = dec;
             _cfg = cfg;
-            _readThread = new FTDIThread(serial, _cfg);            
-            _readThread.StateChangeEvent = OnDevStateChanged;
-            _decodeThread = new ProtocolThread(_dec, _readThread);
+            this.readThread = new FTDIThread(serial, _cfg);            
+            this.readThread.StateChangeEvent = OnDevStateChanged;
+            _decodeThread = new ProtocolThread(this.decoder, this.readThread);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Egse
         {
             get
             {
-                return _readThread.SpeedBytesSec;
+                return this.readThread.SpeedBytesSec;
             }
         }
 
@@ -85,7 +85,7 @@ namespace Egse
         {
             get
             {
-                return _readThread.Trafic;
+                return this.readThread.Trafic;
             }
         }
 
@@ -112,7 +112,7 @@ namespace Egse
         {
             get
             {
-                return _readThread.BigBuf.BytesAvailable;
+                return this.readThread.BigBuf.BytesAvailable;
             }
         }
 
@@ -121,7 +121,7 @@ namespace Egse
         /// </summary>
         public void Start()
         {
-            _readThread.Start();
+            this.readThread.Start();
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Egse
         /// </summary>
         public void FinishAll()
         {
-            _readThread.Finish();
+            this.readThread.Finish();
             _decodeThread.Finish();
         }
 
@@ -166,8 +166,22 @@ namespace Egse
             if (0 != data.Length)
             {
                 byte[] dataOut;
-                _dec.Encode(addr, data, out dataOut);
-                return _readThread.WriteBuf(dataOut);
+                this.decoder.Encode(addr, data, out dataOut);
+                try
+                {
+                    if (this.readThread.TryWrite(dataOut))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        System.Windows.MessageBox.Show(Resource.Get(@"eNotAddToQueue"));
+                    }
+                }
+                catch (Egse.Threading.FTDIThread.DeviceNotOpenedException e)
+                {
+                    System.Windows.MessageBox.Show(e.Message);
+                }
             }        
 
             return false;
