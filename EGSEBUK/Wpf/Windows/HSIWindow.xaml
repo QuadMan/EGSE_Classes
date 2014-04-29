@@ -198,43 +198,125 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Content="Монитор ВСИ" Style="{StaticResource FlatHeader}" />
-            <DockPanel Grid.Row="1" LastChildFill="True">
-                <Label Width="140"
-                       Content="Запись УКС в файл"
-                       DockPanel.Dock="Left"
-                       Template="{StaticResource FlatLabel}" />
-                <CheckBox Margin="1"
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="140" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Запись УКС в файл" Template="{StaticResource FlatLabel}" />
+                <Label Grid.Column="1" Template="{StaticResource FlatLabel}" />
+                <CheckBox Grid.Column="1"
+                          Margin="1"
+                          HorizontalAlignment="Center"
                           VerticalAlignment="Center"
-                          DockPanel.Dock="Left"
                           IsChecked="{Binding IsSaveRawData}"
                           TabIndex="10" />
-                <TextBox IsReadOnly="True"
+                <TextBox Grid.Column="2"
+                         IsReadOnly="True"
                          IsTabStop="False"
-                         Text="{Binding RawDataFile,
-                                        ValidatesOnDataErrors=True}"
                          b:WatermarkTextBox.EnableWatermark="True"
                          b:WatermarkTextBox.Label="Файл отсутствует..."
-                         b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}" />
-            </DockPanel>
-            <DockPanel Grid.Row="2" LastChildFill="True">
-                <Label Width="140"
-                       Content="Запись лог-файла"
-                       DockPanel.Dock="Left"
-                       Template="{StaticResource FlatLabel}" />
-                <CheckBox Margin="1"
+                         b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}">
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="{}{0}">
+                            <Binding Mode="OneWay"
+                                     Path="RawDataFile"
+                                     ValidatesOnDataErrors="True" />
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBlock Grid.Column="3" Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}">
+                            <Binding Mode="OneWay" Path="RawDataFileSizeFormated" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="140" />
+                </Grid.ColumnDefinitions>
+                <Label Content="Запись лог-файла" Template="{StaticResource FlatLabel}" />
+                <Label Grid.Column="1" Template="{StaticResource FlatLabel}" />
+                <CheckBox Grid.Column="1"
+                          Margin="1"
+                          HorizontalAlignment="Center"
                           VerticalAlignment="Center"
-                          DockPanel.Dock="Left"
                           IsChecked="{Binding IsSaveTxtData}"
-                          TabIndex="11" />
-                <TextBox IsReadOnly="True"
+                          TabIndex="20" />
+                <TextBox Grid.Column="2"
+                         IsReadOnly="True"
                          IsTabStop="False"
-                         Text="{Binding TxtDataFile,
-                                        ValidatesOnDataErrors=True,
-                                        Mode=OneWay}"
                          b:WatermarkTextBox.EnableWatermark="True"
                          b:WatermarkTextBox.Label="Лог-файл отсутствует..."
-                         b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}" />
-            </DockPanel>
+                         b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}">
+                    <TextBox.Text>
+                        <MultiBinding StringFormat="{}{0}">
+                            <Binding Mode="OneWay"
+                                     Path="TxtDataFile"
+                                     ValidatesOnDataErrors="True" />
+                        </MultiBinding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBlock Grid.Column="3" Style="{StaticResource FormattedTextBlock}">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}">
+                            <Binding Mode="OneWay" Path="TxtDataFileSizeFormated" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+            <!--
+                <DockPanel Grid.Row="1" LastChildFill="True">
+                <Label Width="140"
+                Content="Запись УКС в файл"
+                DockPanel.Dock="Left"
+                Template="{StaticResource FlatLabel}" />
+                <CheckBox Margin="1"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                IsChecked="{Binding IsSaveRawData}"
+                TabIndex="10" />
+                <TextBox IsReadOnly="True"
+                IsTabStop="False"
+                Text="{Binding RawDataFile,
+                ValidatesOnDataErrors=True}"
+                b:WatermarkTextBox.EnableWatermark="True"
+                b:WatermarkTextBox.Label="Файл отсутствует..."
+                b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}" />
+                </DockPanel>
+                <DockPanel Grid.Row="2" LastChildFill="True">
+                <Label Width="140"
+                Content="Запись лог-файла"
+                DockPanel.Dock="Left"
+                Template="{StaticResource FlatLabel}" />
+                <CheckBox Margin="1"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                IsChecked="{Binding IsSaveTxtData}"
+                TabIndex="11" />
+                <TextBox IsReadOnly="True"
+                IsTabStop="False"
+                Text="{Binding TxtDataFile,
+                ValidatesOnDataErrors=True,
+                Mode=OneWay}"
+                b:WatermarkTextBox.EnableWatermark="True"
+                b:WatermarkTextBox.Label="Лог-файл отсутствует..."
+                b:WatermarkTextBox.LabelStyle="{StaticResource WatermarkLabelStyle}" />
+                </DockPanel>
+            -->
             <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />

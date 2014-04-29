@@ -23,48 +23,82 @@ namespace Egse.Utilites
     using System.Windows;
     using Egse.Protocols;
 
-    ////public class SampleMarshaler : ICustomMarshaler
-    ////{
-    ////    static SampleMarshaler marshaler;
+    public class FileSizeFormatProvider : IFormatProvider, ICustomFormatter
+    {
+        public object GetFormat(Type formatType)
+        {
+            if (formatType == typeof(ICustomFormatter)) return this;
+            return null;
+        }
 
-    ////    public object MarshalNativeToManaged(IntPtr pNativeData)
-    ////    {
-    ////        return null;
-    ////    }
+        private const string fileSizeFormat = "fs";
+        private const Decimal OneKiloByte = 1024M;
+        private const Decimal OneMegaByte = OneKiloByte * 1024M;
+        private const Decimal OneGigaByte = OneMegaByte * 1024M;
 
-    ////    public IntPtr MarshalManagedToNative(object managedObj)
-    ////    {
-    ////        if (managedObj == null)
-    ////            return IntPtr.Zero;
-    ////        if (!(managedObj is IManaged))
-    ////            throw new MarshalDirectiveException("This custom marshaler must be used on a IManaged derived type.");
+        public string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            if (format == null || !format.StartsWith(fileSizeFormat))
+            {
+                return defaultFormat(format, arg, formatProvider);
+            }
 
-    ////        ManagedIUnmanaged customObject = new ManagedIUnmanaged((IManaged)managedObj);
-    ////        return Marshal.GetComInterfaceForObject(customObject, typeof(UCOMIUnmanaged));
-    ////    }
+            if (arg is string)
+            {
+                return defaultFormat(format, arg, formatProvider);
+            }
 
-    ////    public void CleanUpNativeData(IntPtr pNativeData)
-    ////    {
-    ////        Marshal.Release(pNativeData);
-    ////    }
+            Decimal size;
 
-    ////    public void CleanUpManagedData(object managedObj)
-    ////    {
+            try
+            {
+                size = Convert.ToDecimal(arg);
+            }
+            catch (InvalidCastException)
+            {
+                return defaultFormat(format, arg, formatProvider);
+            }
 
-    ////    }
+            string suffix;
+            if (size > OneGigaByte)
+            {
+                size /= OneGigaByte;
+                suffix = " ГБ";
+            }
+            else if (size > OneMegaByte)
+            {
+                size /= OneMegaByte;
+                suffix = " МБ";
+            }
+            else if (size > OneKiloByte)
+            {
+                size /= OneKiloByte;
+                suffix = " кБ";
+            }
+            else
+            {
+                suffix = " Б";
+            }
 
-    ////    public int GetNativeDataSize()
-    ////    {
-    ////        return -1;
-    ////    }
+            string precision = format.Substring(2);
+            if (String.IsNullOrEmpty(precision)) precision = "2";
+            return String.Format("{0:N" + precision + "}{1}", size, suffix);
 
-    ////    public static ICustomMarshaler GetInstance(string cookie)
-    ////    {
-    ////        if (marshaler == null)
-    ////            return marshaler = new SampleMarshaler();
-    ////        return marshaler;
-    ////    }
-    ////}
+        }
+
+
+
+        private static string defaultFormat(string format, object arg, IFormatProvider formatProvider)
+        {
+            IFormattable formattableArg = arg as IFormattable;
+            if (formattableArg != null)
+            {
+                return formattableArg.ToString(format, formatProvider);
+            }
+            return arg.ToString();
+        }
+
+    }
 
     /// <summary>
     /// Отвечает за упаковку времени в посылках данных.
@@ -357,6 +391,14 @@ namespace Egse.Utilites
         public static SpacewireTkMsgEventArgs ToTk(this byte[] obj, byte to, byte from, short apid, bool isReceipt, bool isExec)
         {
             return SpacewireTkMsgEventArgs.GetNew(obj, to, from, apid, isReceipt, isExec);
+        }
+    }
+
+    public static class ExtensionMethods
+    {
+        public static string AsFileSizeString(this long l)
+        {         
+            return String.Format(new FileSizeFormatProvider(), "{0:fs}", l);
         }
     }
 

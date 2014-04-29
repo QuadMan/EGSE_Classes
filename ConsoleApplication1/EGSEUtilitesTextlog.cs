@@ -84,6 +84,14 @@ namespace Egse.Utilites
             }
         }
 
+        public long FileSize
+        {
+            get
+            {
+                return new FileInfo(FileName).Length;
+            }
+        }
+
         /// <summary>
         /// Получает или задает метод, реализующий запись текста и времени в log-файл.
         /// Примечание: 

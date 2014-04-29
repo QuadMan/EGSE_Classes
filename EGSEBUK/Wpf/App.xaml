@@ -81,6 +81,8 @@
         <Style x:Key="FormattedTextBlock" TargetType="{x:Type TextBlock}">
             <Setter Property="Background" Value="{StaticResource TextBrush}" />
             <Setter Property="Margin" Value="1" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextAlignment" Value="Center" />
         </Style>
         <Style x:Key="TextBoxInError" TargetType="{x:Type TextBox}">
@@ -274,6 +276,14 @@
                 <ContentPresenter HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
                                   Content="{TemplateBinding Content}" />
+            </Border>
+        </ControlTemplate>
+        <ControlTemplate x:Key="FlatLabelWithoutAligment" TargetType="{x:Type Label}">
+            <Border x:Name="Border"
+                    Margin="1"
+                    Background="{StaticResource TextBrush}"
+                    BorderThickness="0">
+                <ContentPresenter VerticalAlignment="Center" Content="{TemplateBinding Content}" />
             </Border>
         </ControlTemplate>
         <ControlTemplate x:Key="DataSendInError" TargetType="{x:Type TextBox}">

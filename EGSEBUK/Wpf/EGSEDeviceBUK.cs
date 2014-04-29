@@ -3039,6 +3039,14 @@ namespace Egse.Devices
                 }
             }
 
+            public string TxtDataFileSizeFormated
+            {
+                get
+                {
+                    return LogsClass.LogHsi.FileSize.AsFileSizeString();
+                }
+            }
+
             /// <summary>
             /// Получает или задает значение, показывающее, что [включен КВВ ПК1].
             /// </summary>
@@ -3251,6 +3259,28 @@ namespace Egse.Devices
                     }
 
                     return _saveRawDataCommand;
+                }
+            }
+
+            public long RawDataFileSize
+            {
+                get
+                {
+                    if ((null != RawDataFile) && (string.Empty != RawDataFile))
+                    {
+                        return new FileInfo(RawDataFile).Length;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+            public string RawDataFileSizeFormated
+            {
+                get
+                {
+                    return RawDataFileSize.AsFileSizeString();
                 }
             }
 
@@ -7122,6 +7152,14 @@ namespace Egse.Devices
                 }
             }
 
+            public string TxtDataFileSizeFormated
+            {
+                get
+                {
+                    return LogsClass.LogSpacewire2.FileSize.AsFileSizeString();
+                }
+            }
+
             /// <summary>
             /// Получает наименование [файла для записи данных].
             /// </summary>
@@ -7169,6 +7207,28 @@ namespace Egse.Devices
                 }
             }
 
+            public long RawDataFileSize
+            {
+                get
+                {
+                    if ((null != RawDataFile) && (string.Empty != RawDataFile))
+                    {
+                        return new FileInfo(RawDataFile).Length;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+            public string RawDataFileSizeFormated
+            {
+                get
+                {
+                    return RawDataFileSize.AsFileSizeString();
+                }
+            }
+            
             /// <summary>
             /// Получает или задает значение, показывающее, что [запись текстового лог-файла включена].
             /// </summary>
@@ -8447,6 +8507,14 @@ namespace Egse.Devices
                 }
             }
 
+            public string TxtDataFileSizeFormated
+            {
+                get
+                {
+                    return LogsClass.LogSpacewire3.FileSize.AsFileSizeString();
+                }
+            }
+
             /// <summary>
             /// Получает или задает значение, показывающее, что [запись текстового лог-файла включена].
             /// </summary>
@@ -8653,6 +8721,28 @@ namespace Egse.Devices
                     }
 
                     return _saveRawDataCommand;
+                }
+            }
+
+            public long RawDataFileSize
+            {
+                get
+                {
+                    if ((null != RawDataFile) && (string.Empty != RawDataFile))
+                    {
+                        return new FileInfo(RawDataFile).Length;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+            public string RawDataFileSizeFormated
+            {
+                get
+                {
+                    return RawDataFileSize.AsFileSizeString();
                 }
             }
 
