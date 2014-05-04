@@ -23,83 +23,6 @@ namespace Egse.Utilites
     using System.Windows;
     using Egse.Protocols;
 
-    public class FileSizeFormatProvider : IFormatProvider, ICustomFormatter
-    {
-        public object GetFormat(Type formatType)
-        {
-            if (formatType == typeof(ICustomFormatter)) return this;
-            return null;
-        }
-
-        private const string fileSizeFormat = "fs";
-        private const Decimal OneKiloByte = 1024M;
-        private const Decimal OneMegaByte = OneKiloByte * 1024M;
-        private const Decimal OneGigaByte = OneMegaByte * 1024M;
-
-        public string Format(string format, object arg, IFormatProvider formatProvider)
-        {
-            if (format == null || !format.StartsWith(fileSizeFormat))
-            {
-                return defaultFormat(format, arg, formatProvider);
-            }
-
-            if (arg is string)
-            {
-                return defaultFormat(format, arg, formatProvider);
-            }
-
-            Decimal size;
-
-            try
-            {
-                size = Convert.ToDecimal(arg);
-            }
-            catch (InvalidCastException)
-            {
-                return defaultFormat(format, arg, formatProvider);
-            }
-
-            string suffix;
-            if (size > OneGigaByte)
-            {
-                size /= OneGigaByte;
-                suffix = " ГБ";
-            }
-            else if (size > OneMegaByte)
-            {
-                size /= OneMegaByte;
-                suffix = " МБ";
-            }
-            else if (size > OneKiloByte)
-            {
-                size /= OneKiloByte;
-                suffix = " кБ";
-            }
-            else
-            {
-                suffix = " Б";
-            }
-
-            string precision = format.Substring(2);
-            if (String.IsNullOrEmpty(precision)) precision = "2";
-            return String.Format("{0:N" + precision + "}{1}", size, suffix);
-
-        }
-
-
-
-        private static string defaultFormat(string format, object arg, IFormatProvider formatProvider)
-        {
-            IFormattable formattableArg = arg as IFormattable;
-            if (formattableArg != null)
-            {
-                return formattableArg.ToString(format, formatProvider);
-            }
-            return arg.ToString();
-        }
-
-    }
-
     /// <summary>
     /// Отвечает за упаковку времени в посылках данных.
     /// </summary>
@@ -398,7 +321,7 @@ namespace Egse.Utilites
     {
         public static string AsFileSizeString(this long l)
         {         
-            return String.Format(new FileSizeFormatProvider(), "{0:fs}", l);
+            return string.Format(new FileSizeFormatProvider(), "{0:fs}", l);
         }
     }
 
@@ -1119,6 +1042,88 @@ namespace Egse.Utilites
             T stuff = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(T));
             handle.Free();
             return stuff;
+        }
+    }
+
+    public class FileSizeFormatProvider : IFormatProvider, ICustomFormatter
+    {
+        private const string FileSizeFormat = "fs";
+        private const decimal OneKiloByte = 1024M;
+        private const decimal OneMegaByte = OneKiloByte * 1024M;
+        private const decimal OneGigaByte = OneMegaByte * 1024M;
+
+        public object GetFormat(Type formatType)
+        {
+            if (typeof(ICustomFormatter) == formatType)
+            {
+                return this;
+            }
+
+            return null;
+        }
+
+        public string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            if (format == null || !format.StartsWith(FileSizeFormat))
+            {
+                return DefaultFormat(format, arg, formatProvider);
+            }
+
+            if (arg is string)
+            {
+                return DefaultFormat(format, arg, formatProvider);
+            }
+
+            decimal size;
+
+            try
+            {
+                size = Convert.ToDecimal(arg);
+            }
+            catch (InvalidCastException)
+            {
+                return DefaultFormat(format, arg, formatProvider);
+            }
+
+            string suffix;
+            if (size > OneGigaByte)
+            {
+                size /= OneGigaByte;
+                suffix = " ГБ";
+            }
+            else if (size > OneMegaByte)
+            {
+                size /= OneMegaByte;
+                suffix = " МБ";
+            }
+            else if (size > OneKiloByte)
+            {
+                size /= OneKiloByte;
+                suffix = " кБ";
+            }
+            else
+            {
+                suffix = " Б";
+            }
+
+            string precision = format.Substring(2);
+            if (string.IsNullOrEmpty(precision))
+            {
+                precision = "2";
+            }
+
+            return string.Format("{0:N" + precision + "}{1}", size, suffix);
+        }
+
+        private static string DefaultFormat(string format, object arg, IFormatProvider formatProvider)
+        {
+            IFormattable formattableArg = arg as IFormattable;
+            if (formattableArg != null)
+            {
+                return formattableArg.ToString(format, formatProvider);
+            }
+
+            return arg.ToString();
         }
     }
 

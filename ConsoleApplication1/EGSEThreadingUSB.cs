@@ -165,14 +165,6 @@ namespace Egse.Threading
             _thread.Start();
         }
 
-        public class DeviceNotOpenedException : ApplicationException
-        {
-            public DeviceNotOpenedException(string message)
-                : base (message)
-            {
-            }
-        }
-
         /// <summary>
         /// Пытается добавить данные в очередь отправки в USB.
         /// </summary>
@@ -296,6 +288,14 @@ namespace Egse.Threading
                 }
 
                 System.Threading.Thread.Sleep(_cfg.Sleep);
+            }
+        }
+
+        public class DeviceNotOpenedException : ApplicationException
+        {
+            public DeviceNotOpenedException(string message)
+                : base(message)
+            {
             }
         }
     }

@@ -8,6 +8,7 @@
 namespace Egse.Defaults
 {
     using System;
+    using System.Threading;
     using System.Windows;
     using Egse.Devices;
     using Egse.Protocols;
@@ -22,6 +23,7 @@ namespace Egse.Defaults
         /// Интерфейс управления прибором.
         /// </summary>
         private EgseBukNotify _intfEGSE;
+        private Timer timer;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireWindow" />.
@@ -42,7 +44,7 @@ namespace Egse.Defaults
             DataContext = _intfEGSE;
             GridSpacewire.DataContext = _intfEGSE.Spacewire2Notify;
             MonitorList.DataContext = new MonitorListViewModel();
-        }       
+        }
 
         /// <summary>
         /// Вызывается когда [пришло сообщение по протоколу spacewire].
@@ -64,8 +66,8 @@ namespace Egse.Defaults
         /// </summary>
         /// <param name="txtMsg">The text MSG.</param>
         private void SendToMonitor(string txtMsg)
-        {
-            if (null != MonitorList && Visibility.Visible == this.Visibility)
+        {            
+            if (null != MonitorList)
             {
                 try
                 {
@@ -109,6 +111,14 @@ namespace Egse.Defaults
             {
                 MessageBox.Show(exc.Message);
             }            
+        }
+
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (true == (bool)e.NewValue)
+            {
+                MonitorList.SetValue(ListBoxExtensions.IsScrollingProperty, true);
+            }
         }
     }
 }

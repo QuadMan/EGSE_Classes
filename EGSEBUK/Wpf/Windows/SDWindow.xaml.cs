@@ -81,7 +81,7 @@ namespace Egse.Defaults
         /// <param name="txtMsg">The text MSG.</param>
         private void SendToMonitor(string txtMsg)
         {
-            if (null != MonitorList && Visibility.Visible == this.Visibility)
+            if (null != MonitorList)
             {
                 try
                 {
@@ -124,6 +124,14 @@ namespace Egse.Defaults
             catch (Exception exc)
             {
                 MessageBox.Show(exc.Message);
+            }
+        }
+
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (true == (bool)e.NewValue)
+            {
+                MonitorList.SetValue(ListBoxExtensions.IsScrollingProperty, true);
             }
         }
     }

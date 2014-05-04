@@ -1618,7 +1618,7 @@ namespace Egse.Devices
                 OnPropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Получает значение, показывающее, открыто ли [окно "имитатор БУК (для БУСК)"].
         /// </summary>
@@ -2501,6 +2501,10 @@ namespace Egse.Devices
                 }
             }
 
+            public virtual void UpdateProperties()
+            {
+            }
+
             /// <summary>
             /// Called when [property changed].
             /// </summary>
@@ -2523,15 +2527,11 @@ namespace Egse.Devices
                     OnPropertyChangedExplicit(memberExpression.Member.Name);
                 }
             }
-
+                       
             /// <summary>
             /// Initializes the control value.
             /// </summary>
             protected virtual void InitControlValue()
-            {
-            }
-
-            public virtual void UpdateProperties()
             {
             }
 
@@ -3056,7 +3056,14 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return LogsClass.LogHsi.FileSize.AsFileSizeString();
+                    if (IsSaveTxtData)
+                    {
+                        return LogsClass.LogHsi.FileSize.AsFileSizeString();
+                    }
+                    else
+                    {
+                        return ((long)0).AsFileSizeString();
+                    }
                 }
             }
 
@@ -3279,7 +3286,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    if ((null != RawDataFile) && (string.Empty != RawDataFile))
+                    if ((null != RawDataFile) && IsSaveRawData)
                     {
                         return new FileInfo(RawDataFile).Length;
                     }
@@ -3289,6 +3296,7 @@ namespace Egse.Devices
                     }
                 }
             }
+
             public string RawDataFileSizeFormated
             {
                 get
@@ -3860,6 +3868,11 @@ namespace Egse.Devices
 
                     return result;
                 }
+            }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 
             /// <summary>
@@ -5494,8 +5507,6 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.Busy, 3, 1, delegate { }, value => IsRecordBusy = 1 == value);
                 ControlValuesList[Global.Spacewire1.Record].AddProperty(Global.Spacewire1.Record.IssuePackage, 0, 1, Device.CmdSpacewire1Record, value => IsIssuePackage = 1 == value);
             }
-
-
         }
 
         /// <summary>
@@ -5728,11 +5739,6 @@ namespace Egse.Devices
                 {
                     return Owner.Spacewire2Notify.IssuePackageCommand.CanExecute(null);
                 }
-            }
-
-            public override void UpdateProperties()
-            {
-                OnPropertyChanged(() => this.IntfReady);
             }
 
             /// <summary>
@@ -6437,6 +6443,11 @@ namespace Egse.Devices
                 }
             }
 
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.IntfReady);
+            }
+
             private void SetSpw2Prop(bool needSaveData, short apid, bool needExec, bool needRece, bool makeTele, byte[] bufData)
             {
                 Owner.Spacewire2Notify.IsNeedSaveData = needSaveData;
@@ -6509,6 +6520,7 @@ namespace Egse.Devices
                             buf[i++] = t;
                         }
                     }
+
                     SetSpw2Prop(false, 0x610, true, true, true, new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 });
                 }
                 finally
@@ -6673,6 +6685,8 @@ namespace Egse.Devices
             /// </summary>
             private Egse.Protocols.SpacewireTm604MsgEventArgs.TmKvv tmkvvData = new SpacewireTm604MsgEventArgs.TmKvv();
 
+            private EgseTime updateTime;
+ 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="TeleKvv" />.
             /// </summary>
@@ -6695,8 +6709,6 @@ namespace Egse.Devices
                     return this.tmkvvData.Buffer;
                 }
             }
-
-            private EgseTime updateTime;
 
             public string UpdateTime
             {
@@ -6721,7 +6733,7 @@ namespace Egse.Devices
 
                 set
                 {
-                    this.updateTime = base.Owner.DeviceTime;
+                    this.updateTime = Owner.DeviceTime;
                     this.tmkvvData = value;
                     OnPropertyChanged(string.Empty);
                 }
@@ -6737,7 +6749,9 @@ namespace Egse.Devices
             /// The tmbuk data
             /// </summary>
             private Egse.Protocols.SpacewireTm604MsgEventArgs.TmBuk tmbukData = new SpacewireTm604MsgEventArgs.TmBuk();
-
+ 
+            private EgseTime updateTime;
+ 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="TeleBuk" />.
             /// </summary>
@@ -6760,8 +6774,6 @@ namespace Egse.Devices
                     return this.tmbukData.Buffer;
                 }
             }
-
-            private EgseTime updateTime;
 
             public string UpdateTime
             {
@@ -6786,7 +6798,7 @@ namespace Egse.Devices
 
                 set
                 {
-                    this.updateTime = base.Owner.DeviceTime;
+                    this.updateTime = Owner.DeviceTime;
                     this.tmbukData = value;
                     OnPropertyChanged(string.Empty);
                 }
@@ -7200,7 +7212,14 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return LogsClass.LogSpacewire2.FileSize.AsFileSizeString();
+                    if (IsSaveTxtData)
+                    {
+                        return LogsClass.LogSpacewire2.FileSize.AsFileSizeString();
+                    }
+                    else
+                    {
+                        return ((long)0).AsFileSizeString();
+                    }
                 }
             }
 
@@ -7255,7 +7274,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    if ((null != RawDataFile) && (string.Empty != RawDataFile))
+                    if ((null != RawDataFile) && IsSaveRawData)
                     {
                         return new FileInfo(RawDataFile).Length;
                     }
@@ -8135,6 +8154,11 @@ namespace Egse.Devices
                 }
             }
 
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
+            }
+
             /// <summary>
             /// Serializes the specified object.
             /// </summary>
@@ -8558,7 +8582,14 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return LogsClass.LogSpacewire3.FileSize.AsFileSizeString();
+                    if (IsSaveTxtData)
+                    {
+                        return LogsClass.LogSpacewire3.FileSize.AsFileSizeString();
+                    }
+                    else
+                    {
+                        return ((long)0).AsFileSizeString();
+                    }
                 }
             }
 
@@ -8775,7 +8806,7 @@ namespace Egse.Devices
             {
                 get
                 {
-                    if ((null != RawDataFile) && (string.Empty != RawDataFile))
+                    if ((null != RawDataFile) && IsSaveRawData)
                     {
                         return new FileInfo(RawDataFile).Length;
                     }
@@ -8785,6 +8816,7 @@ namespace Egse.Devices
                     }
                 }
             }
+
             public string RawDataFileSizeFormated
             {
                 get
@@ -9021,6 +9053,11 @@ namespace Egse.Devices
 
                     return result;
                 }
+            }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 
             /// <summary>

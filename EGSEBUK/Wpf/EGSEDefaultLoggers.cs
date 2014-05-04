@@ -153,7 +153,6 @@ namespace Egse.Defaults
             }
         }
 
-
         /// <summary>
         /// Получает экземпляр класса.
         /// </summary>

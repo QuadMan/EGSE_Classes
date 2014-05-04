@@ -8,6 +8,7 @@
         Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
+        IsVisibleChanged="Window_IsVisibleChanged"
         Visibility="{Binding IsShowHsi,
                              Converter={StaticResource BooleanToVisibilityConverter},
                              Mode=TwoWay}">

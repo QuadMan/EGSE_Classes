@@ -10,7 +10,8 @@
         FontSize="{StaticResource BaseFontSize}"
         Visibility="{Binding IsShowSpacewire,
                              Converter={StaticResource BooleanToVisibilityConverter},
-                             Mode=TwoWay}">
+                             Mode=TwoWay}"
+        IsVisibleChanged="Window_IsVisibleChanged">
     <Grid x:Name="GridSpacewire"
           Margin="4"
           Background="{StaticResource BackBrush}">
@@ -406,7 +407,7 @@
                      BorderThickness="0"
                      ItemsSource="{Binding MonitorListItem}"
                      TabIndex="150"
-                     l:ListBoxExtensions.IsAutoscroll="true" />
+                     l:ListBoxExtensions.IsAutoscroll="true" />                        
             <Button Grid.Row="5"
                     Click="Button_Click"
                     Content="Очистить монитор Spacewire"
