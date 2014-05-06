@@ -15,8 +15,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ИКИ РАН")]
-[assembly: AssemblyProduct("КИА")]
-[assembly: AssemblyCopyright("(с) ИКИ РАН")]
+[assembly: AssemblyProduct("КИА БУК ПО")]
+[assembly: AssemblyCopyright("© 2014 - IKI RSSI, laboratory №711")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

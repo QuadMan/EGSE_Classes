@@ -59,6 +59,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -97,6 +98,9 @@
     <Compile Include="Behaviors\UIElementAdorner.cs" />
     <Compile Include="Behaviors\WatermarkComboBox.cs" />
     <Compile Include="Behaviors\WatermarkTextBox.cs" />
+    <Compile Include="Windows\AboutBoxSimple.xaml.cs">
+      <DependentUpon>AboutBoxSimple.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ControlBukWindow.xaml.cs">
       <DependentUpon>ControlBukWindow.xaml</DependentUpon>
     </Compile>
@@ -177,6 +181,10 @@
       <Link>Windows\EGSECyclogramControl.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\AboutBoxSimple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ControlBukWindow.xaml">
       <SubType>Designer</SubType>

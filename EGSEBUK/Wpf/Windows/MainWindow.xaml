@@ -39,7 +39,8 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0"
                     Content="О программе"
-                    TabIndex="33" />
+                    TabIndex="33"
+                    Click="Button_Click" />
             <Button Grid.Column="1"
                     Click="CloseButton_Click"
                     Content="Выход"

@@ -150,5 +150,11 @@ namespace Egse.Defaults
             GridShutter.DataContext = _intfEGSE;
             ManualControlSet.DataContext = _intfEGSE;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            AboutBoxSimple aboutBox = new AboutBoxSimple(this);
+            aboutBox.ShowDialog();
+        }
     }
 }

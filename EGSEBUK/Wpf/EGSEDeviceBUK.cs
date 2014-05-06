@@ -4222,6 +4222,11 @@ namespace Egse.Devices
                         return;
                     }
 
+                    if (!value && !this.isBuskLineB)
+                    {
+                        return;
+                    }
+
                     this.isBuskLineA = value;
                     OnPropertyChanged();
                 }
@@ -4243,6 +4248,11 @@ namespace Egse.Devices
                 set 
                 {
                     if (value == this.isBuskLineB)
+                    {
+                        return;
+                    }
+
+                    if (!value && !this.isBuskLineA)
                     {
                         return;
                     }
@@ -4272,6 +4282,11 @@ namespace Egse.Devices
                         return;
                     }
 
+                    if (!value && !this.isBundLineB)
+                    {
+                        return;
+                    }
+
                     this.isBundLineA = value;
                     OnPropertyChanged();
                 }
@@ -4293,6 +4308,11 @@ namespace Egse.Devices
                 set 
                 {
                     if (value == this.isBundLineB)
+                    {
+                        return;
+                    }
+
+                    if (!value && !this.isBundLineA)
                     {
                         return;
                     }
