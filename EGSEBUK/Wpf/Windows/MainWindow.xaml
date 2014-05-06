@@ -17,7 +17,6 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
-            <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
@@ -26,12 +25,12 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <local:CyclogramControl x:Name="CycloGrid"
-                                Grid.RowSpan="3"
+                                Grid.RowSpan="2"
                                 Grid.Column="1"
                                 IsTabStop="True"
                                 TabIndex="33" />
-        
-        <StackPanel Grid.Row="2" Grid.Column="0">
+        <DockPanel Grid.Row="1">
+        <StackPanel DockPanel.Dock="Top">
             <Grid x:Name="GridTelemetry"
                   Margin="0"
                   Background="{StaticResource BackBrush}">
@@ -611,20 +610,23 @@
             </Grid>
             
         </StackPanel>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0"
-                    Content="О программе"
-                    TabIndex="33"
-                    Click="Button_Click" />
-            <Button Grid.Column="1"
-                    Click="CloseButton_Click"
-                    Content="Выход"
-                    TabIndex="100" />
-        </Grid>
+            <Grid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Height="40">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0"
+                        Content="О программе"
+                        TabIndex="33"
+                        Margin="7"
+                        Click="Button_Click" />
+                <Button Grid.Column="1"
+                        Click="CloseButton_Click"
+                        Content="Выход"
+                        Margin="7"
+                        TabIndex="100" />
+            </Grid>
+        </DockPanel>
         <Label x:Name="ConnectionLabel"
                Margin="1"
                Padding="0"
@@ -634,7 +636,7 @@
                BorderBrush="LightBlue"
                BorderThickness="1"
                FontSize="20" />
-        <StatusBar Grid.Row="3"
+        <StatusBar Grid.Row="2"
                    Grid.ColumnSpan="2"
                    Background="{StaticResource BackBrush}">
             <StatusBar.ItemsPanel>
@@ -653,7 +655,8 @@
                               Content="Монитор USB (исходящий)"
                               IsChecked="{Binding IsShowUsbSendsMonitor,
                                                   Mode=TwoWay}"
-                              TabIndex="32" />
+                              TabIndex="32"
+                              Visibility="Hidden" />
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem Grid.Column="1"

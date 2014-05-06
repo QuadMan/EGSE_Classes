@@ -120,4 +120,7 @@
   <data name="eNotAddToQueue" xml:space="preserve">
     <value>Не удалось добавить посылку в очередь USB!</value>
   </data>
+  <data name="eNotEncode" xml:space="preserve">
+    <value>Не удалось закодировать посылку!</value>
+  </data>
 </root>

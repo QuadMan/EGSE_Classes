@@ -11,6 +11,7 @@ namespace Egse.Protocols
 {
     using System;
     using System.IO;
+    using System.Linq;
     using Egse.Utilites;
 
     /// <summary>
@@ -28,7 +29,7 @@ namespace Egse.Protocols
         /// Примечание:
         /// Размер по протоколу.
         /// </summary>
-        private const uint DecoderMaxDataLength = 256;
+        private const int DecoderMaxDataLength = 256;
 
         /// <summary>
         /// Текущее состояние декодера.
@@ -265,20 +266,23 @@ namespace Egse.Protocols
         /// <returns>True - если выполнено успешно.</returns>
         public override bool Encode(uint addr, byte[] buf, out byte[] bufOut)
         {
-            bufOut = null; 
-            if ((buf.Length > 256) || (addr > 255))
+            bufOut = new byte[] {};
+            int cntPacks = 1;
+
+            if (256 < buf.Length)
             {
-                return false;
+                cntPacks = buf.Length == (buf.Length / DecoderMaxDataLength) * DecoderMaxDataLength ? buf.Length / DecoderMaxDataLength : (buf.Length / DecoderMaxDataLength) + 1;
             }
 
-            byte bufLen = (buf.Length == 256) ? (byte)0 : (byte)buf.Length;
+            for (int i = 0; i < cntPacks; i++)
+            {
+                bufOut = Combine(bufOut, GetPack((byte)addr, buf.Skip(i * DecoderMaxDataLength).Take(DecoderMaxDataLength).ToArray()));
+            }
 
-            bufOut = new byte[buf.Length + 4];
-            bufOut[0] = 0x7C;
-            bufOut[1] = 0x6E;
-            bufOut[2] = (byte)addr; 
-            bufOut[3] = bufLen;
-            Array.Copy(buf, 0, bufOut, 4, buf.Length);
+            if (0xFFFF < bufOut.Length)
+            {
+                throw new MaxBufferFtdiException(Resource.Get(@"eMaxBufferFtdi"));
+            }
 
             if (_writeEncLog && (_encodeStream != null)) 
             {
@@ -286,6 +290,25 @@ namespace Egse.Protocols
             }
 
             return true;
+        }
+
+        public static byte[] Combine(byte[] first, byte[] second)
+        {
+            byte[] ret = new byte[first.Length + second.Length];
+            Buffer.BlockCopy(first, 0, ret, 0, first.Length);
+            Buffer.BlockCopy(second, 0, ret, first.Length, second.Length);
+            return ret;
+        }
+        private byte[] GetPack(byte addr, byte[] buf)
+        {
+            byte[] bufOut;
+            bufOut = new byte[buf.Length + 4];
+            bufOut[0] = 0x7C;
+            bufOut[1] = 0x6E;
+            bufOut[2] = addr;
+            bufOut[3] = (buf.Length == 256) ? (byte)0 : (byte)buf.Length; 
+            Array.Copy(buf, 0, bufOut, 4, buf.Length);
+            return bufOut;
         }
 
         /// <summary>

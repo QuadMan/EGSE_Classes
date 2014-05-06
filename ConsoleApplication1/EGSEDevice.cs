@@ -166,9 +166,14 @@ namespace Egse
             if (0 != data.Length)
             {
                 byte[] dataOut;
-                this.decoder.Encode(addr, data, out dataOut);
+                
                 try
                 {
+                    if (!this.decoder.Encode(addr, data, out dataOut))
+                    {
+                        System.Windows.MessageBox.Show(Resource.Get(@"eNotEncode"));
+                    }
+
                     if (this.readThread.TryWrite(dataOut))
                     {
                         return true;
@@ -177,6 +182,10 @@ namespace Egse
                     {
                         System.Windows.MessageBox.Show(Resource.Get(@"eNotAddToQueue"));
                     }
+                }
+                catch (Egse.Protocols.ProtocolUSBBase.MaxBufferFtdiException e)
+                {
+                    System.Windows.MessageBox.Show(e.Message);
                 }
                 catch (Egse.Threading.FTDIThread.DeviceNotOpenedException e)
                 {

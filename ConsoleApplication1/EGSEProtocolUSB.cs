@@ -307,6 +307,14 @@ namespace Egse.Protocols
             return false;
         }
 
+        public class MaxBufferFtdiException : ApplicationException
+        {
+            public MaxBufferFtdiException(string message)
+                : base(message)
+            {
+            }
+        }
+
         /// <summary>
         /// Обертка события: возникновение ошибки протокола в декодере.
         /// </summary>

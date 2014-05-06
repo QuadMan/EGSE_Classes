@@ -175,6 +175,7 @@ namespace Egse.Threading
         /// <exception cref="Egse.Threading.FTDIThread.DeviceNotOpenedException">Возникает, если вызов метода произошел до инициализации устройства USB.</exception>
         public bool TryWrite(byte[] data)
         {
+            new { data }.CheckNotNull();
             if (!this.ftdi.IsOpen)
             {
                 throw new DeviceNotOpenedException(Resource.Get(@"eDeviceNotOpened"));
