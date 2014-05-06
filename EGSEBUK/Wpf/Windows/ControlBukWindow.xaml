@@ -137,7 +137,7 @@
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdGetFrame}"
                     Content="Выдать"
-                    TabIndex="1" />
+                    TabIndex="1"/>
         </Grid>
         <Grid>
             <Grid.RowDefinitions>

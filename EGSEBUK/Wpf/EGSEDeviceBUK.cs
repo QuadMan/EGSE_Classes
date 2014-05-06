@@ -5598,12 +5598,12 @@ namespace Egse.Devices
             /// <summary>
             /// The param3
             /// </summary>
-            private byte param3;
+            //private byte param3;
 
             /// <summary>
             /// The param2
             /// </summary>
-            private byte param2;
+            //private byte param2;
 
             /// <summary>
             /// The issue command get tele
@@ -5668,7 +5668,7 @@ namespace Egse.Devices
             /// <summary>
             /// The number shutter
             /// </summary>
-            private byte numberShutter;
+            //private byte numberShutter;
 
             /// <summary>
             /// The shutter time
@@ -5683,7 +5683,7 @@ namespace Egse.Devices
             /// <summary>
             /// The number light
             /// </summary>
-            private byte numberLight;
+            //private byte numberLight;
 
             /// <summary>
             /// The light time
@@ -6681,13 +6681,11 @@ namespace Egse.Devices
                         return;
                     }
 
-                    byte[] buf = new byte[DataBytes.Length + 5];
-                    Array.Copy(DataBytes, 0, buf, 5, DataBytes.Length);
-                    buf[0] = 0;
-                    buf[1] = 14;
-                    buf[2] = 0;
-                    buf[3] = (byte)DataBytes.Length;
-                    buf[4] = 0;
+                    byte[] buf = new byte[DataBytes.Length + 3];
+                    Array.Copy(DataBytes, 0, buf, 2, DataBytes.Length);
+                    buf[0] = 0x0E;
+                    buf[1] = 0;
+                    buf[2] = (byte)DataBytes.Length;
                     SetSpw2Prop(false, 0x610, true, true, true, buf);
                 }
                 finally
@@ -6721,7 +6719,7 @@ namespace Egse.Devices
                         }
                     }
 
-                    SetSpw2Prop(false, 0x610, true, true, true, new byte[8] { 0, 13, buf[0], buf[1], buf[2], buf[3], 0, 0 });
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[7] { 13, 0, 0, buf[0], buf[1], buf[2], buf[3] });
                 }
                 finally
                 {
@@ -6738,7 +6736,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 {
-                    SetSpw2Prop(false, 0x610, true, true, true, new byte[9] { 0, 0, 12, 0, 0/*NumberLight*/, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)LightTime });
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[7] { 12, 0, 0/*NumberLight*/, 0, (byte)(LightTime >> 16), (byte)(LightTime >> 8), (byte)LightTime });
                 }
                 finally
                 {
@@ -6755,7 +6753,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 {
-                    SetSpw2Prop(false, 0x610, true, true, true, new byte[9] { 0, 0, 11, 0, (byte)((LineShutter << 4) | 0/*NumberShutter*/), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)ShutterTime });
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[7] {11, 0, (byte)((LineShutter << 4) | 0/*NumberShutter*/), 0, (byte)(ShutterTime >> 16), (byte)(ShutterTime >> 8), (byte)ShutterTime });
                 }
                 finally
                 {
@@ -6772,7 +6770,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 {
-                    SetSpw2Prop(false, 0x610, false, true, true, 1 == SelConf ? new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf) } : new byte[7] { 0, 0, 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf) });
+                    SetSpw2Prop(false, 0x610, false, true, true, 1 == SelConf ? new byte[7] { 10, 0, SelConf, 0, (byte)((ModeConf << 4) | CompressConf), 0, 0 } : new byte[7] { 10, 0, SelConf, 0, (byte)((Convert.ToByte(ExchangeConf) << 3) | (ActivateConf << 2) | (LineSendConf << 1) | LineRecvConf), 0, 0 });
                 }
                 finally
                 {
@@ -6789,7 +6787,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 {
-                    SetSpw2Prop(false, 0x610, true, true, true, new byte[5] { 0, 0, 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) });
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[3] { 8, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) });
                 }
                 finally
                 {
@@ -6802,7 +6800,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 {
-                    SetSpw2Prop(false, 0x610, true, true, true, new byte[5] { 0, 0, 0x0F, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) });
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[3] { 0x0F, 0, (byte)((Convert.ToByte(PwrDetector) << 4) | SelDetector) });
                 }
                 finally
                 {
@@ -6819,7 +6817,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 {
-                    SetSpw2Prop(false, 0x610, false, false, true, new byte[3] { 0, 0, 5 });
+                    SetSpw2Prop(false, 0x610, false, false, true, new byte[3] { 5, 0, 0 });
                 }
                 finally
                 {
@@ -6836,7 +6834,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 {
-                    SetSpw2Prop(false, 0x610, true, true, true, new byte[5] { 0, 0, 1, 0, Convert.ToByte(IsIssueTest) });
+                    SetSpw2Prop(false, 0x610, true, true, true, new byte[3] { 1, 0, Convert.ToByte(IsIssueTest) });
                 }
                 finally
                 {
@@ -6853,7 +6851,7 @@ namespace Egse.Devices
                 PushSpw2Prop();
                 try
                 { 
-                    SetSpw2Prop(false, 0x610, false, true, true, new byte[9] { 0, 0, 4, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, 0 /*Param2*/, 0 /*Param3*/ });
+                    SetSpw2Prop(false, 0x610, false, true, true, new byte[7] { 4, 0, AlgoType, (byte)(Threshold >> 8), (byte)Threshold, Param1, 0 /*Param2*/});
                 }
                 finally
                 {
