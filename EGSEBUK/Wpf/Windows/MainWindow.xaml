@@ -16,7 +16,8 @@
         mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="auto" />
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
@@ -25,28 +26,12 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <local:CyclogramControl x:Name="CycloGrid"
-                                Grid.Row="1"
+                                Grid.RowSpan="3"
                                 Grid.Column="1"
                                 IsTabStop="True"
                                 TabIndex="33" />
-        <Grid Grid.Row="0"
-              Grid.Column="1"
-              Width="200"
-              HorizontalAlignment="Right">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0"
-                    Content="О программе"
-                    TabIndex="33"
-                    Click="Button_Click" />
-            <Button Grid.Column="1"
-                    Click="CloseButton_Click"
-                    Content="Выход"
-                    TabIndex="100" />
-        </Grid>
-        <StackPanel Grid.Row="1" Grid.Column="0">
+        
+        <StackPanel Grid.Row="2" Grid.Column="0">
             <Grid x:Name="GridTelemetry"
                   Margin="0"
                   Background="{StaticResource BackBrush}">
@@ -624,18 +609,32 @@
                               TabIndex="31" />
                 </StackPanel>
             </Grid>
+            
         </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Content="О программе"
+                    TabIndex="33"
+                    Click="Button_Click" />
+            <Button Grid.Column="1"
+                    Click="CloseButton_Click"
+                    Content="Выход"
+                    TabIndex="100" />
+        </Grid>
         <Label x:Name="ConnectionLabel"
-               Grid.Row="0"
-               Grid.Column="0"
                Margin="1"
+               Padding="0"
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center"
                Background="Tomato"
                BorderBrush="LightBlue"
                BorderThickness="1"
                FontSize="20" />
-        <StatusBar Grid.Row="2"
+        <StatusBar Grid.Row="3"
                    Grid.ColumnSpan="2"
                    Background="{StaticResource BackBrush}">
             <StatusBar.ItemsPanel>

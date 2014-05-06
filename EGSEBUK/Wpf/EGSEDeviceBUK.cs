@@ -26,6 +26,7 @@ namespace Egse.Devices
     using Egse.Protocols;
     using Egse.USB;
     using Egse.Utilites;
+    using System.Threading;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -1868,15 +1869,15 @@ namespace Egse.Devices
             IsConnected = isConnected;
             if (IsConnected)
             {
-                Device.CmdSetDeviceTime();
+                RefreshAllControlsValues();
                 Task.Run(() =>
                 {
                     // задержка для получения текущих значений от прибора
-                    Task.Delay(1500);
-                    RefreshAllControlsValues();
+                    Thread.Sleep(3000);                    
                     Device.CmdSetDeviceLogicAddr();
-                    Spacewire1Notify.SD1SendTime = 1000;
-                });
+                    Device.CmdSetDeviceTime();
+                    Spacewire1Notify.SD1SendTime = 1000;                                
+                });                
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
             }
             else
@@ -5094,7 +5095,7 @@ namespace Egse.Devices
             /// <summary>
             /// SPTP: Счетчик миллисекунд для НП1 (через сколько готовы данные).
             /// </summary>
-            private int sd1SendTime = 1000;
+            private int sd1SendTime = 0;
 
             /// <summary>
             /// SPTP: Кол-во байт в пакете НП1.
