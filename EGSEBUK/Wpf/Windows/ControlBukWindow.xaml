@@ -6,12 +6,13 @@
         xmlns:d="clr-namespace:Egse.Devices"
         xmlns:l="clr-namespace:Egse.Defaults"
         Title="Команды управления БУК"
+        Height="568"
         Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
         Visibility="{Binding IsShowControlBuk,
                              Converter={StaticResource BooleanToVisibilityConverter},
-                             Mode=TwoWay}" Height="568">
+                             Mode=TwoWay}">
     <StackPanel x:Name="GridControlBuk"
                 Margin="4"
                 Background="{StaticResource BackBrush}">
@@ -37,23 +38,18 @@
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IntfReady}"
-                                         Value="True">
-                                <Setter Property="Background"
-                                        Value="{StaticResource ConnectedBrush}" />
-                                <Setter Property="Text"
-                                        Value="Интерфейс spacewire готов" />
+                            <DataTrigger Binding="{Binding IntfReady}" Value="True">
+                                <Setter Property="Background" Value="{StaticResource ConnectedBrush}" />
+                                <Setter Property="Text" Value="Интерфейс spacewire готов" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding IntfReady}"
-                                         Value="False">
-                                <Setter Property="Background"
-                                        Value="{StaticResource UnConnectedBrush}" />
-                                <Setter Property="Text"
-                                        Value="Интерфейс spacewire не готов" />
+                            <DataTrigger Binding="{Binding IntfReady}" Value="False">
+                                <Setter Property="Background" Value="{StaticResource UnConnectedBrush}" />
+                                <Setter Property="Text" Value="Интерфейс spacewire не готов" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBlock.Style></TextBlock>
+                </TextBlock.Style>
+            </TextBlock>
             <Label Grid.Row="1"
                    Grid.ColumnSpan="2"
                    Content="Команда"
@@ -96,10 +92,8 @@
                     Content="Выдать"
                     TabIndex="8">
                 <Button.Background>
-                    <LinearGradientBrush EndPoint="0.5,1"
-                                         StartPoint="0.5,0">
-                        <GradientStop Color="#FFDEDDD7"
-                                      Offset="1" />
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <GradientStop Offset="1" Color="#FFDEDDD7" />
                         <GradientStop Color="#FFFF9707" />
                     </LinearGradientBrush>
                 </Button.Background>
@@ -137,7 +131,7 @@
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdGetFrame}"
                     Content="Выдать"
-                    TabIndex="1"/>
+                    TabIndex="1" />
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -164,29 +158,28 @@
                         Orientation="Horizontal">
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="Тип алгоритма" />
-                    <TextBox TabIndex="2"
-                             Text="{Binding AlgoType}" />
+                    <TextBox TabIndex="2" Text="{Binding AlgoType}" />
                 </StackPanel>
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="Порог для определения ЗНЩ" />
-                    <TextBox TabIndex="3"
-                             Text="{Binding Threshold}" />
+                    <TextBox TabIndex="3" Text="{Binding Threshold}" />
                 </StackPanel>
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="Параметр 1" />
-                    <TextBox TabIndex="4"
-                             Text="{Binding Param1}" />
+                    <TextBox TabIndex="4" Text="{Binding Param1}" />
                 </StackPanel>
-                <!--<StackPanel Margin="10,0,0,0">
+                <!--
+                    <StackPanel Margin="10,0,0,0">
                     <Label Content="Параметр 2" />
                     <TextBox TabIndex="5"
-                             Text="{Binding Param2}" />
-                </StackPanel>
-                <StackPanel Margin="10,0,0,0">
+                    Text="{Binding Param2}" />
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
                     <Label Content="Параметр 3" />
                     <TextBox TabIndex="6"
-                             Text="{Binding Param3}" />
-                </StackPanel>-->
+                    Text="{Binding Param3}" />
+                    </StackPanel>
+                -->
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdThreshold}"
@@ -222,31 +215,37 @@
                 <Button Margin="5"
                         Command="{Binding IssueCmdSelDetectorUfesOff}"
                         Content="Выкл. УФЭС" />
-                <Button Margin="5" Command="{Binding IssueCmdSelDetectorVufesOn}"
+                <Button Margin="5"
+                        Command="{Binding IssueCmdSelDetectorVufesOn}"
                         Content="Вкл. ВУФЭС" />
-                <Button Margin="5" Command="{Binding IssueCmdSelDetectorVufesOff}"
+                <Button Margin="5"
+                        Command="{Binding IssueCmdSelDetectorVufesOff}"
                         Content="Выкл. ВУФЭС" />
-                <Button Margin="5" Command="{Binding IssueCmdSelDetectorSdshOn}"
+                <Button Margin="5"
+                        Command="{Binding IssueCmdSelDetectorSdshOn}"
                         Content="Вкл. СДЩ" />
-                <Button Margin="5" Command="{Binding IssueCmdSelDetectorSdshOff}"
+                <Button Margin="5"
+                        Command="{Binding IssueCmdSelDetectorSdshOff}"
                         Content="Выкл. СДЩ" />
-                <!--<StackPanel Margin="10,0,0,0">
+                <!--
+                    <StackPanel Margin="10,0,0,0">
                     <Label Content="Детектор" />
                     <ComboBox TabIndex="9"
-                              IsEditable="False"
-                              SelectedIndex="{Binding SelDetector}">
-                        <System:String>УФЭС</System:String>
-                        <System:String>ВУФЭС</System:String>
-                        <System:String>СДЩ</System:String>
+                    IsEditable="False"
+                    SelectedIndex="{Binding SelDetector}">
+                    <System:String>УФЭС</System:String>
+                    <System:String>ВУФЭС</System:String>
+                    <System:String>СДЩ</System:String>
                     </ComboBox>
-                </StackPanel>
-                <CheckBox TabIndex="10"
-                          Grid.Column="2"
-                          Grid.ColumnSpan="6"
-                          Margin="10,0,0,0"
-                          VerticalAlignment="Center"
-                          Content="Подать питание на детектор"
-                          IsChecked="{Binding PwrDetector}" />-->
+                    </StackPanel>
+                    <CheckBox TabIndex="10"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="6"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    Content="Подать питание на детектор"
+                    IsChecked="{Binding PwrDetector}" />
+                -->
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdSelDetector}"
@@ -277,30 +276,29 @@
                         Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <StackPanel Margin="10,0,0,0"
-                            Orientation="Horizontal">
-                        <StackPanel>
-                            <Label Content="Режим работы" />
-                            <ComboBox TabIndex="13"
-                                      IsEditable="False"
-                                      SelectedIndex="{Binding ModeConf}">
-                                <System:String>Нормальный</System:String>
-                                <System:String>Тестовый</System:String>
-                            </ComboBox>
-                        </StackPanel>
-                        <StackPanel Margin="10,0,0,0">
-                            <Label Content="Параметр сжатия" />
-                            <ComboBox TabIndex="14"
-                                      IsEditable="False"
-                                      SelectedIndex="{Binding CompressConf}">
-                                <System:String>Нет сжатия</System:String>
-                                <System:String>Есть сжатие</System:String>
-                                <System:String>Есть сжатие с параметром 1</System:String>
-                            </ComboBox>
-                        </StackPanel>
+                <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+                    <StackPanel>
+                        <Label Content="Режим работы" />
+                        <ComboBox IsEditable="False"
+                                  SelectedIndex="{Binding ModeConf}"
+                                  TabIndex="13">
+                            <System:String>Нормальный</System:String>
+                            <System:String>Тестовый</System:String>
+                        </ComboBox>
                     </StackPanel>
-          
-                
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="Параметр сжатия" />
+                        <ComboBox IsEditable="False"
+                                  SelectedIndex="{Binding CompressConf}"
+                                  TabIndex="14">
+                            <System:String>Нет сжатия</System:String>
+                            <System:String>Есть сжатие</System:String>
+                            <System:String>Есть сжатие с параметром 1</System:String>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+
+
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdConfigBuk}"
@@ -330,43 +328,42 @@
                         Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <StackPanel Margin="10,0,0,0"
-                            Orientation="Horizontal">
-                        <StackPanel>
-                            <Label Content="Линия отправки в КВВ" />
-                            <ComboBox IsEditable="False"
-                                      SelectedIndex="{Binding LineSendConf}"
-                                      TabIndex="15">
-                                <System:String>Основная</System:String>
-                                <System:String>Резервная</System:String>
-                            </ComboBox>
-                        </StackPanel>
-                        <StackPanel Margin="10,0,0,0">
-                            <Label Content="Линия приема от КВВ" />
-                            <ComboBox TabIndex="16"
-                                      IsEditable="False"
-                                      SelectedIndex="{Binding LineRecvConf}">
-                                <System:String>Основная</System:String>
-                                <System:String>Резервная</System:String>
-                            </ComboBox>
-                        </StackPanel>
-                        <StackPanel Margin="10,0,0,0">
-                            <Label Content="Активация" />
-                            <ComboBox TabIndex="17"
-                                      IsEditable="False"
-                                      SelectedIndex="{Binding ActivateConf}"
-                                      Style="{StaticResource ComboBoxInError}">
-                                <System:String>Активировать КВВ1</System:String>
-                                <System:String>Активировать КВВ2</System:String>
-                            </ComboBox>
-                        </StackPanel>
-                        <CheckBox TabIndex="18"
-                                  Margin="10,0,0,0"
-                                  VerticalAlignment="Center"
-                                  Content="Опрос КВВ"
-                                  IsChecked="{Binding ExchangeConf}" />
+                <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+                    <StackPanel>
+                        <Label Content="Линия отправки в КВВ" />
+                        <ComboBox IsEditable="False"
+                                  SelectedIndex="{Binding LineSendConf}"
+                                  TabIndex="15">
+                            <System:String>Основная</System:String>
+                            <System:String>Резервная</System:String>
+                        </ComboBox>
                     </StackPanel>
-      
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="Линия приема от КВВ" />
+                        <ComboBox IsEditable="False"
+                                  SelectedIndex="{Binding LineRecvConf}"
+                                  TabIndex="16">
+                            <System:String>Основная</System:String>
+                            <System:String>Резервная</System:String>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Margin="10,0,0,0">
+                        <Label Content="Активация" />
+                        <ComboBox IsEditable="False"
+                                  SelectedIndex="{Binding ActivateConf}"
+                                  Style="{StaticResource ComboBoxInError}"
+                                  TabIndex="17">
+                            <System:String>Активировать КВВ1</System:String>
+                            <System:String>Активировать КВВ2</System:String>
+                        </ComboBox>
+                    </StackPanel>
+                    <CheckBox Margin="10,0,0,0"
+                              VerticalAlignment="Center"
+                              Content="Опрос КВВ"
+                              IsChecked="{Binding ExchangeConf}"
+                              TabIndex="18" />
+                </StackPanel>
+
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdConfigKvv}"
@@ -396,11 +393,13 @@
                         Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <!--<StackPanel Margin="10,0,0,0">
+                <!--
+                    <StackPanel Margin="10,0,0,0">
                     <Label Content="Номер затвор" />
                     <TextBox TabIndex="20"
-                             Text="{Binding NumberShutter}" />
-                </StackPanel>-->
+                    Text="{Binding NumberShutter}" />
+                    </StackPanel>
+                -->
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="Линия передачи" />
                     <ComboBox IsEditable="False"
@@ -412,8 +411,7 @@
                 </StackPanel>
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="Длительность открытия затвора" />
-                    <TextBox TabIndex="22"
-                             Text="{Binding ShutterTime}" />
+                    <TextBox TabIndex="22" Text="{Binding ShutterTime}" />
                 </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
@@ -444,15 +442,16 @@
                         Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <!--<StackPanel Margin="10,0,0,0">
+                <!--
+                    <StackPanel Margin="10,0,0,0">
                     <Label Content="Номер засветки" />
                     <TextBox TabIndex="24"
-                             Text="{Binding NumberLight}" />
-                </StackPanel>-->
+                    Text="{Binding NumberLight}" />
+                    </StackPanel>
+                -->
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="Длительность засветки" />
-                    <TextBox TabIndex="25"
-                             Text="{Binding LightTime}" />
+                    <TextBox TabIndex="25" Text="{Binding LightTime}" />
                 </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
@@ -485,8 +484,12 @@
                         Orientation="Horizontal">
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="УКС" />
-                    <TextBox TabIndex="27" Width="100" MaxLength="11"
-                             Text="{Binding CmdBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" />
+                    <TextBox Width="100"
+                             MaxLength="11"
+                             TabIndex="27"
+                             Text="{Binding CmdBytes,
+                                            Converter={StaticResource BytesToStrConverter},
+                                            ValidatesOnDataErrors=True}" />
                 </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
@@ -518,9 +521,8 @@
                         Background="White"
                         Orientation="Horizontal">
                 <StackPanel Margin="10,0,0,0">
-                    <Label Content="Команда"  Width="200"/>
-                    <TextBox TabIndex="29"
-                             Text="{Binding DataBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" />
+                    <Label Width="200" Content="Команда" />
+                    <TextBox TabIndex="29" Text="{Binding DataBytes, Converter={StaticResource BytesToStrConverter}, ValidatesOnDataErrors=True}" />
                 </StackPanel>
             </StackPanel>
             <Button Grid.Column="8"
@@ -568,7 +570,7 @@
                         Content="Вкл. СДЩ" />
                 <Button Margin="5"
                         Command="{Binding IssueCmdIndicateDetectorSdshOff}"
-                        Content="Выкл. СДЩ" />                
+                        Content="Выкл. СДЩ" />
             </StackPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdSelDetector}"

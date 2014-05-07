@@ -8354,15 +8354,10 @@ namespace Egse.Devices
                     {
                         return this.Data.ToTk((byte)LogicBuk, (byte)LogicBusk, Apid, IsConfirmReceipt, IsConfirmExecution).ToArray();
                     }
-                    else
-                    {
-                        return this.Data.ToSptp((byte)LogicBuk, (byte)LogicBusk).ToArray();
-                    }
+                    
                 }
-                else
-                {
-                    return new byte[] { };
-                }
+
+                return (null == this.Data ? new byte[] { } : this.Data).ToSptp((byte)LogicBuk, (byte)LogicBusk).ToArray();
             }
 
             public override void UpdateProperties()

@@ -929,6 +929,24 @@ namespace Egse.Protocols.UnitTest
         /// Spacewires the SPTP MSG event args_ get new_ returns equal token value.
         /// </summary>
         [TestMethod]
+        public void SpacewireSptpMsgEventArgs_GetNewZeroData_ReturnsEqualTokenValue()
+        {
+            byte to = 0x77;
+            byte from = 0x66;
+
+            byte[] buf = new byte[] {};
+
+            SpacewireSptpMsgEventArgs msg = SpacewireSptpMsgEventArgs.GetNew(buf, to, from);
+
+            CollectionAssert.AreEqual(buf, msg.Data, "Ошибка в парсинге данных кадра");
+            Assert.AreEqual(to, msg.SptpInfo.To, "Ошибка в парсинге свойства SptpInfo.To");
+            Assert.AreEqual(SpacewireSptpMsgEventArgs.SptpProtocol.Standard, msg.SptpInfo.ProtocolId, "Ошибка в парсинге свойства SptpInfo.ProtocolId");
+            Assert.AreEqual(SpacewireSptpMsgEventArgs.SptpType.Data, msg.SptpInfo.MsgType, "Ошибка в парсинге свойства SptpInfo.MsgType");
+            Assert.AreEqual(from, msg.SptpInfo.From, "Ошибка в парсинге свойства SptpInfo.From");
+
+            string str = msg.SptpInfo.ToString(false);
+        }
+
         public void SpacewireSptpMsgEventArgs_GetNew_ReturnsEqualTokenValue()
         {
             byte to = 0x77;
