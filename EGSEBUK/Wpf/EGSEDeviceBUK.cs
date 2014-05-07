@@ -3261,6 +3261,7 @@ namespace Egse.Devices
                     }
 
                     OnPropertyChanged();
+                    OnPropertyChanged(() => this.RawDataFileSizeFormated);
                 }
             }
 
@@ -7567,6 +7568,7 @@ namespace Egse.Devices
                     }
 
                     OnPropertyChanged();
+                    OnPropertyChanged(() => this.RawDataFileSizeFormated);
                 }
             }
 
@@ -8986,6 +8988,7 @@ namespace Egse.Devices
                     }
 
                     OnPropertyChanged();
+                    OnPropertyChanged(() => this.RawDataFileSizeFormated);
                 }
             }
 
