@@ -11,7 +11,7 @@
         FontSize="{StaticResource BaseFontSize}"
         Visibility="{Binding IsShowControlBuk,
                              Converter={StaticResource BooleanToVisibilityConverter},
-                             Mode=TwoWay}">
+                             Mode=TwoWay}" Height="568">
     <StackPanel x:Name="GridControlBuk"
                 Margin="4"
                 Background="{StaticResource BackBrush}">
@@ -107,7 +107,7 @@
         </Grid>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
