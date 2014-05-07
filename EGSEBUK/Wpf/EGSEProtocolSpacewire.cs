@@ -1305,11 +1305,12 @@ namespace Egse.Protocols
         public SpacewireTm604MsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data, time1, time2, error)
         {
+            /*
             if (790 > data.Length)
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireTm604Data"));
             }
-
+            */
             try
             {
                 this.msgInfo = Converter.MarshalTo<Tm604>(data);
@@ -1420,7 +1421,7 @@ namespace Egse.Protocols
             /// <summary>
             /// The buf
             /// </summary>
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 254)]
             private byte[] buf;
 
             /// <summary>
@@ -1435,7 +1436,7 @@ namespace Egse.Protocols
                 {
                     if (null == this.buf)
                     {
-                        return new byte[256];
+                        return new byte[254];
                     }
 
                     return this.buf;
