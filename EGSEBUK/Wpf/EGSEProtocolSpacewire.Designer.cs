@@ -61,7 +61,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;не кратно 4&gt;.
+        ///   Looks up a localized string similar to &lt;ошибка длины сообщения&gt;.
         /// </summary>
         internal static string eBadSize {
             get {
