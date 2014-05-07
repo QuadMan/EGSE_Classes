@@ -1033,7 +1033,7 @@ namespace Egse.Protocols
         /// </returns>
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]", BadSize);
         }
 
         /// <summary>
@@ -1793,7 +1793,7 @@ namespace Egse.Protocols
         /// </returns>
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]");
+            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]", BadSize);
         }
 
         /// <summary>
@@ -2107,7 +2107,7 @@ namespace Egse.Protocols
         /// <summary>
         /// Данные сообщения.
         /// </summary>
-        private byte[] _data;
+        private byte[] data;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireSptpMsgEventArgs" />.
@@ -2127,7 +2127,7 @@ namespace Egse.Protocols
             
             try
             { 
-                this.msgInfo = Converter.MarshalTo<Sptp>(data, out _data);
+                this.msgInfo = Converter.MarshalTo<Sptp>(data, out this.data);
             }
             catch (Exception e)
             {
@@ -2181,6 +2181,14 @@ namespace Egse.Protocols
             }
         }
 
+        protected string BadSize
+        {
+            get
+            {
+                return 0 == base.Data.Length % 4 ? string.Empty : Resource.Get(@"eBadSize");
+            }
+        }
+
         /// <summary>
         /// Получает данные сообщения.
         /// </summary>
@@ -2188,7 +2196,7 @@ namespace Egse.Protocols
         {
             get
             {
-                return _data;
+                return this.data;
             }
         }
 
@@ -2268,7 +2276,7 @@ namespace Egse.Protocols
         /// </returns>
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true));
+            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), BadSize);
         }
 
         /// <summary>

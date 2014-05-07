@@ -65,7 +65,7 @@ namespace Egse.Protocols.UnitTest
         {
             // формируем массив из 10 байт и проверяем формирование посылки
             Random rnd = new Random();
-            byte[] buf = new byte[22];
+            byte[] buf = new byte[23];
             rnd.NextBytes(buf);
             buf[8] = 0x00;
             buf[9] = 0x02;

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="eBadSize" xml:space="preserve">
+    <value>&lt;не кратно 4&gt;</value>
+  </data>
   <data name="eBigSpacewireData" xml:space="preserve">
     <value>Размер кадра слишком большой!</value>
   </data>
@@ -154,7 +157,7 @@
     <value>{7} - ICD(Идентификатор пакета[Номер версии:{0}, Тип:{1}, Флаг заголовка данных:{2}, APID:0x{3:X}] - Поле контроля последовательности[Флаг сегментации:{4}, Счетчик последовательности:{5}, Длина поля данных:{6}])</value>
   </data>
   <data name="stSptpMsgToString" xml:space="preserve">
-    <value>: ({0}d) {1} [{2}]</value>
+    <value>: ({0}d{3}) {1} [{2}]</value>
   </data>
   <data name="stSptpString" xml:space="preserve">
     <value>SPTP[{0:X},{1:X},{2:X},{3:X}]</value>
@@ -163,7 +166,7 @@
     <value>SPTP(Идентификатор пакета[Назначение:{0},Протокол:0x{1:X},Тип:{2},Инициатор:{3}])</value>
   </data>
   <data name="stTkMsgToString" xml:space="preserve">
-    <value>: ({0}d) {1} [{2}] {3}</value>
+    <value>: ({0}d{4}) {1} [{2}] {3}</value>
   </data>
   <data name="stTkString" xml:space="preserve">
     <value>{5} - TK[H:{0:X},P:{1:X},Q:{2:X},S:{3:X},s:{4:X}]</value>
@@ -172,7 +175,7 @@
     <value>{5} - TK(Флаг вторичного заголовка CCSDS:{0},Номер версии ТМ-пакета PUS:{1},Тип квитирования:{2},Тип сервиса:{3},Подтип сервиса:{4})</value>
   </data>
   <data name="stTmMsgToString" xml:space="preserve">
-    <value>: ({0}d) {1} [{2}] {3}</value>
+    <value>: ({0}d{4}) {1} [{2}] {3}</value>
   </data>
   <data name="stTmString" xml:space="preserve">
     <value>{7} - TM[R:{0:X},V:{1:X},P:{2:X},S:{3:X},s:{4:X},R:{5:X},{6}]</value>

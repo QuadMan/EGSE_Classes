@@ -61,6 +61,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;не кратно 4&gt;.
+        /// </summary>
+        internal static string eBadSize {
+            get {
+                return ResourceManager.GetString("eBadSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Размер кадра слишком большой!.
         /// </summary>
         internal static string eBigSpacewireData {
@@ -169,7 +178,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to : ({0}d) {1} [{2}].
+        ///   Looks up a localized string similar to : ({0}d{3}) {1} [{2}].
         /// </summary>
         internal static string stSptpMsgToString {
             get {
@@ -196,7 +205,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to : ({0}d) {1} [{2}] {3}.
+        ///   Looks up a localized string similar to : ({0}d{4}) {1} [{2}] {3}.
         /// </summary>
         internal static string stTkMsgToString {
             get {
@@ -223,7 +232,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to : ({0}d) {1} [{2}] {3}.
+        ///   Looks up a localized string similar to : ({0}d{4}) {1} [{2}] {3}.
         /// </summary>
         internal static string stTmMsgToString {
             get {
