@@ -5632,9 +5632,14 @@ namespace Egse.Devices
             private byte selConf;
 
             /// <summary>
-            /// The issue command configuration
+            /// The issue KVV command configuration
             /// </summary>
-            private ICommand issueCmdConfig;
+            private ICommand issueKvvCmdConfig;
+
+            /// <summary>
+            /// The issue BUK command configuration
+            /// </summary>
+            private ICommand issueBukCmdConfig;
 
             /// <summary>
             /// The mode conf
@@ -5998,24 +6003,24 @@ namespace Egse.Devices
             {
                 get
                 {
-                    if (this.issueCmdConfig == null)
+                    if (this.issueBukCmdConfig == null)
                     {
-                        this.issueCmdConfig = new RelayCommand((obj) => { SelConf = 1; CmdConfig(obj); }, obj => { return true; });
+                        this.issueBukCmdConfig = new RelayCommand((obj) => { SelConf = 1; CmdConfig(obj); }, obj => { return true; });
                     }
 
-                    return this.issueCmdConfig;
+                    return this.issueBukCmdConfig;
                 }
             }
             public ICommand IssueCmdConfigKvv
             {
                 get
                 {
-                    if (this.issueCmdConfig == null)
+                    if (this.issueKvvCmdConfig == null)
                     {
-                        this.issueCmdConfig = new RelayCommand((obj) => { SelConf = 2; CmdConfig(obj); }, obj => { return true; });
+                        this.issueKvvCmdConfig = new RelayCommand((obj) => { SelConf = 2; CmdConfig(obj); }, obj => { return true; });
                     }
 
-                    return this.issueCmdConfig;
+                    return this.issueKvvCmdConfig;
                 }
             }
             /// <summary>
