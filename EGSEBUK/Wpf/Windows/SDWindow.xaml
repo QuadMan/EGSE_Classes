@@ -8,10 +8,10 @@
         Closing="Window_Closing"
         FontFamily="{StaticResource BaseFontFamily}"
         FontSize="{StaticResource BaseFontSize}"
+        IsVisibleChanged="Window_IsVisibleChanged"
         Visibility="{Binding IsShowSD,
                              Converter={StaticResource BooleanToVisibilityConverter},
-                             Mode=TwoWay}"
-        IsVisibleChanged="Window_IsVisibleChanged">
+                             Mode=TwoWay}">
     <Grid x:Name="GridSD"
           Margin="4"
           Background="{StaticResource BackBrush}">

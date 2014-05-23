@@ -20,7 +20,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Grid.ColumnSpan="3"
@@ -30,7 +30,8 @@
                     <MultiBinding StringFormat="{}Время последнего обновления: {0}">
                         <Binding Path="UpdateTime" />
                     </MultiBinding>
-                </TextBlock.Text></TextBlock>
+                </TextBlock.Text>
+            </TextBlock>
             <StackPanel Grid.Row="1">
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Наименование параметра" />
                 <TextBlock Style="{StaticResource FormattedTextBlock}" Text="Номер версии прошивки ПЛИС" />

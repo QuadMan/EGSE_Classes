@@ -5287,7 +5287,7 @@ namespace Egse.Devices
 
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.IssueEnable, Convert.ToInt32(value));
-                    ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(0));
+                    //ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(0));
                     OnPropertyChanged();
                 }
             }
@@ -5332,7 +5332,7 @@ namespace Egse.Devices
                     }
 
                     this.isConnect = value;
-                    ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.Connect, Convert.ToInt32(value));
+                    ControlValuesList[Global.Spacewire1.Control].SetProperty(Global.Spacewire1.Control.Connect, Convert.ToInt32(value), false);
                     OnPropertyChanged();
                 }
             }
@@ -7913,7 +7913,7 @@ namespace Egse.Devices
                     }
 
                     this.isConnect = value;
-                    ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(value));
+                    ControlValuesList[Global.Spacewire2.Control].SetProperty(Global.Spacewire2.Control.Connect, Convert.ToInt32(value), false);
                     OnPropertyChanged();
                 }
             }
@@ -8670,7 +8670,7 @@ namespace Egse.Devices
 
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.IssueEnable, Convert.ToInt32(value));
-                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(0));
+                    //ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(0));
                     OnPropertyChanged();
                 }
             }
@@ -8715,7 +8715,7 @@ namespace Egse.Devices
                     }
 
                     this.isConnect = value;
-                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(value));
+                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(value), false);
                     OnPropertyChanged();
                 }
             }
@@ -9397,7 +9397,7 @@ namespace Egse.Devices
 
                     this.isIssueEnable = value;
                     ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.IssueEnable, Convert.ToInt32(value));
-                    ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(0));
+                    //ControlValuesList[Global.Spacewire3.Control].SetProperty(Global.Spacewire3.Control.Connect, Convert.ToInt32(0));
                     OnPropertyChanged();
                 }
             }
@@ -9442,7 +9442,7 @@ namespace Egse.Devices
                     }
 
                     this.isConnect = value;
-                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(value));
+                    ControlValuesList[Global.Spacewire4.Control].SetProperty(Global.Spacewire4.Control.Connect, Convert.ToInt32(value), false);
                     OnPropertyChanged();
                 }
             }
