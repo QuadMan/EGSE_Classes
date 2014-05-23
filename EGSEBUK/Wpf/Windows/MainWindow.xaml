@@ -30,612 +30,670 @@
                                 IsTabStop="True"
                                 TabIndex="33" />
         <DockPanel Grid.Row="1">
-        <StackPanel DockPanel.Dock="Top">
-            <Grid x:Name="GridTelemetry"
-                  Margin="0"
-                  Background="{StaticResource BackBrush}">
-                <StackPanel>
-                    <Label Content="Управление питанием" Style="{StaticResource FlatHeader}" />
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Row="2"
-                                Grid.RowSpan="2"
-                                Grid.Column="2"
-                                Command="{Binding IssuePowerBusk1Command}"
-                                TabIndex="3"
-                                Tag="{Binding IsPowerBusk1,
-                                              Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{StaticResource FlatButtonCheck}" />
-                        <Button Grid.Row="2"
-                                Grid.RowSpan="2"
-                                Grid.Column="3"
-                                Command="{Binding IssuePowerBusk2Command}"
-                                TabIndex="4"
-                                Tag="{Binding IsPowerBusk2,
-                                              Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{StaticResource FlatButtonCheck}" />
-                        <Button Grid.Row="4"
-                                Grid.RowSpan="2"
-                                Grid.Column="2"
-                                Command="{Binding IssuePowerBund1Command}"
-                                TabIndex="7"
-                                Tag="{Binding IsPowerBund1,
-                                              Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{StaticResource FlatButtonCheck}" />
-                        <Button Grid.Row="4"
-                                Grid.RowSpan="2"
-                                Grid.Column="3"
-                                Command="{Binding IssuePowerBund2Command}"
-                                TabIndex="8"
-                                Tag="{Binding IsPowerBund2,
-                                              Converter={StaticResource BoolToIndexConverter}}"
-                                Template="{StaticResource FlatButtonCheck}" />
-                        <Label Grid.Row="0"
-                               Grid.RowSpan="2"
-                               Grid.Column="0"
-                               Grid.ColumnSpan="2"
-                               Content="Прибор выдачи РК"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="2"
-                               Grid.RowSpan="2"
-                               Grid.Column="0"
-                               Content="БУСК"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="4"
-                               Grid.RowSpan="2"
-                               Grid.Column="0"
-                               Content="БУНД"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="1"
-                               Margin="1"
-                               Background="White" />
-                        <CheckBox Grid.Row="2"
-                                  Grid.Column="1"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Content="А"
-                                  IsChecked="{Binding IsBuskLineA,
+            <StackPanel DockPanel.Dock="Top">
+                <Grid x:Name="GridTelemetry"
+                      Margin="0"
+                      Background="{StaticResource BackBrush}">
+                    <StackPanel>
+                        <Label Content="Управление питанием" Style="{StaticResource FlatHeader}" />
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Row="2"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="2"
+                                    Command="{Binding IssuePowerOnBusk1Command}"
+                                    Content="ВКЛ"
+                                    Focusable="False"
+                                    TabIndex="3" />
+                            <Button Grid.Row="2"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="3"
+                                    Command="{Binding IssuePowerOffBusk1Command}"
+                                    Content="ВЫКЛ"
+                                    Focusable="False"
+                                    TabIndex="3" />
+                            <Button Grid.Row="2"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="4"
+                                    Command="{Binding IssuePowerOnBusk2Command}"
+                                    Content="ВКЛ"
+                                    Focusable="False"
+                                    TabIndex="4" />
+                            <Button Grid.Row="2"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="5"
+                                    Command="{Binding IssuePowerOffBusk2Command}"
+                                    Content="ВЫКЛ"
+                                    Focusable="False"
+                                    TabIndex="4" />
+                            <Button Grid.Row="4"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="2"
+                                    Command="{Binding IssuePowerOnBund1Command}"
+                                    Content="ВКЛ"
+                                    Focusable="False"
+                                    TabIndex="7" />
+                            <Button Grid.Row="4"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="3"
+                                    Command="{Binding IssuePowerOffBund1Command}"
+                                    Content="ВЫКЛ"
+                                    Focusable="False"
+                                    TabIndex="7" />
+                            <Button Grid.Row="4"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="4"
+                                    Command="{Binding IssuePowerOnBund2Command}"
+                                    Content="ВКЛ"
+                                    Focusable="False"
+                                    TabIndex="8" />
+                            <Button Grid.Row="4"
+                                    Grid.RowSpan="2"
+                                    Grid.Column="5"
+                                    Command="{Binding IssuePowerOffBund2Command}"
+                                    Content="ВЫКЛ"
+                                    Focusable="False"
+                                    TabIndex="8" />
+                            <Label Grid.Row="0"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="2"
+                                   Content="Прибор выдачи РК"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="2"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="0"
+                                   Content="БУСК"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="4"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="0"
+                                   Content="БУНД"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="1"
+                                   Margin="1"
+                                   Background="White" />
+                            <CheckBox Grid.Row="2"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="А"
+                                      IsChecked="{Binding IsBuskLineA,
+                                                          Mode=TwoWay}"
+                                      TabIndex="1" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="1"
+                                   Margin="1"
+                                   Background="White" />
+                            <CheckBox Grid.Row="3"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="Б"
+                                      IsChecked="{Binding IsBuskLineB,
+                                                          Mode=TwoWay}"
+                                      TabIndex="2" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="1"
+                                   Margin="1"
+                                   Background="White" />
+                            <CheckBox Grid.Row="4"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="А"
+                                      IsChecked="{Binding IsBundLineA,
+                                                          Mode=TwoWay}"
+                                      TabIndex="5" />
+                            <Label Grid.Row="5"
+                                   Grid.Column="1"
+                                   Margin="1"
+                                   Background="White" />
+                            <CheckBox Grid.Row="5"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="Б"
+                                      IsChecked="{Binding IsBundLineB,
+                                                          Mode=TwoWay}"
+                                      TabIndex="6" />
+                            <Label Grid.Row="0"
+                                   Grid.Column="2"
+                                   Grid.ColumnSpan="4"
+                                   Content="БУК"
+                                   Template="{StaticResource FlatLabel}" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="4"
+                                       Grid.ColumnSpan="2"
+                                       Margin="1"
+                                       Text="ПК2"
+                                       TextAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPower2}" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource ConnectedBrush}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsPower2}" Value="False">
+                                                <Setter Property="Background" Value="{StaticResource UnConnectedBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="2"
+                                       Grid.ColumnSpan="2"
+                                       Margin="1"
+                                       Text="ПК1"
+                                       TextAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsPower1}" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource ConnectedBrush}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsPower1}" Value="False">
+                                                <Setter Property="Background" Value="{StaticResource UnConnectedBrush}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                        <Label Content="Управление датчиками затворов" Style="{StaticResource FlatHeader}" />
+                        <Grid Grid.Row="2" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="1" Background="White">
+                                <RadioButton HorizontalContentAlignment="Center"
+                                             Content="Автоматическое"
+                                             GroupName="control"
+                                             TabIndex="9" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2"
+                                        Margin="1"
+                                        Background="White">
+                                <RadioButton x:Name="ManualControlSet"
+                                             HorizontalContentAlignment="Center"
+                                             Content="Ручное"
+                                             GroupName="control"
+                                             IsChecked="{Binding IsIssueManualShutter}"
+                                             TabIndex="10" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid x:Name="GridShutter" IsEnabled="{Binding IsChecked, ElementName=ManualControlSet}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Row="3" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВКЛ "
+                                             GroupName="ufesOpen"
+                                             IsChecked="{Binding IssueUfesOpen,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="11" />
+                                <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton Grid.Column="2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВЫКЛ "
+                                             GroupName="ufesOpen"
+                                             IsChecked="{Binding IssueUfesOpen,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="12" />
+                            </Grid>
+                            <Grid Grid.Row="4" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВКЛ "
+                                             GroupName="vufesOpen"
+                                             IsChecked="{Binding IssueVufesOpen,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="13" />
+                                <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton Grid.Column="2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВЫКЛ "
+                                             GroupName="vufesOpen"
+                                             IsChecked="{Binding IssueVufesOpen,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="14" />
+                            </Grid>
+                            <Grid Grid.Row="5" Grid.Column="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВКЛ "
+                                             GroupName="sdshOpen"
+                                             IsChecked="{Binding IssueSdshOpen,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="15" />
+                                <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton Grid.Column="2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВЫКЛ "
+                                             GroupName="sdshOpen"
+                                             IsChecked="{Binding IssueSdshOpen,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="16" />
+                            </Grid>
+                            <Grid Grid.Row="3" Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВКЛ "
+                                             GroupName="ufesClose"
+                                             IsChecked="{Binding IssueUfesClose,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="17" />
+                                <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton Grid.Column="2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВЫКЛ "
+                                             GroupName="ufesClose"
+                                             IsChecked="{Binding IssueUfesClose,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="18" />
+                            </Grid>
+                            <Grid Grid.Row="4" Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВКЛ "
+                                             GroupName="vufesClose"
+                                             IsChecked="{Binding IssueVufesClose,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="19" />
+                                <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton Grid.Column="2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВЫКЛ "
+                                             GroupName="vufesClose"
+                                             IsChecked="{Binding IssueVufesClose,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="20" />
+                            </Grid>
+                            <Grid Grid.Row="5" Grid.Column="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВКЛ "
+                                             GroupName="sdshClose"
+                                             IsChecked="{Binding IssueSdshClose,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="21" />
+                                <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
+                                <RadioButton Grid.Column="2"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Content="ВЫКЛ "
+                                             GroupName="sdshClose"
+                                             IsChecked="{Binding IssueSdshClose,
+                                                                 ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
+                                                                 Converter={StaticResource EnumToBoolConverter}}"
+                                             TabIndex="22" />
+                            </Grid>
+                            <Label Grid.Row="1"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="0"
+                                   Content="Каналы БС"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="0"
+                                   Content=" УФЭС "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="0"
+                                   Content=" ВУФЭС "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="5"
+                                   Grid.Column="0"
+                                   Content=" СДЩ "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Content="Датчик"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="1"
+                                   Content="открытия"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="2"
+                                   Content="закрытия"
+                                   Template="{StaticResource FlatLabel}" />
+                        </Grid>
+                        <Label Content="Телеметрия каналы БС" Style="{StaticResource FlatHeader}" />
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="2"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Tag="{Binding UfesPower1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Tag="{Binding VufesPower1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Tag="{Binding SdchshPower1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="2"
+                                   Tag="{Binding UfesPower2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}"
+                                   Visibility="Collapsed" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="2"
+                                   Tag="{Binding VufesPower2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}"
+                                   Visibility="Collapsed" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="2"
+                                   Tag="{Binding SdchshPower2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}"
+                                   Visibility="Collapsed" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="3"
+                                   Tag="{Binding UfesLight1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="3"
+                                   Tag="{Binding VufesLight1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="3"
+                                   Tag="{Binding SdchshLight1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="4"
+                                   Tag="{Binding UfesLight2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="5"
+                                   Tag="{Binding UfesLock1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="6"
+                                   Tag="{Binding UfesLock2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="4"
+                                   Tag="{Binding VufesLight2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="5"
+                                   Tag="{Binding VufesLock1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="6"
+                                   Tag="{Binding VufesLock2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="4"
+                                   Tag="{Binding SdchshLight2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="5"
+                                   Tag="{Binding SdchshLock1,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="6"
+                                   Tag="{Binding SdchshLock2,
+                                                 Converter={StaticResource BoolToIndexConverter}}"
+                                   Template="{StaticResource FlatLabelCheck}" />
+                            <Label Grid.Row="0"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="0"
+                                   Content="Каналы БС"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="2"
+                                   Grid.Column="0"
+                                   Content=" УФЭС "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="3"
+                                   Grid.Column="0"
+                                   Content=" ВУФЭС "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="4"
+                                   Grid.Column="0"
+                                   Content=" СДЩ "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="0"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Content="Питание"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="0"
+                                   Grid.Column="3"
+                                   Grid.ColumnSpan="2"
+                                   Content="Подсветка"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Column="5"
+                                   Grid.ColumnSpan="2"
+                                   Content="Затворы"
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   Content=" ОСН "
+                                   Template="{StaticResource FlatLabel}"
+                                   Visibility="Collapsed" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="2"
+                                   Content=" РЕЗ "
+                                   Template="{StaticResource FlatLabel}"
+                                   Visibility="Collapsed" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="3"
+                                   Content=" ОСН "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="4"
+                                   Content=" РЕЗ "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="5"
+                                   Content=" ОСН "
+                                   Template="{StaticResource FlatLabel}" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="6"
+                                   Content=" РЕЗ "
+                                   Template="{StaticResource FlatLabel}" />
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+                <Grid Margin="0" Background="{StaticResource BackBrush}">
+                    <StackPanel Margin="1" Background="White">
+                        <Label Content="Окна управления" Style="{StaticResource FlatHeader}" />
+                        <CheckBox Margin="4"
+                                  Content="Имитатор КВВ"
+                                  IsChecked="{Binding IsShowHsi,
                                                       Mode=TwoWay}"
-                                  TabIndex="1" />
-                        <Label Grid.Row="3"
-                               Grid.Column="1"
-                               Margin="1"
-                               Background="White" />
-                        <CheckBox Grid.Row="3"
-                                  Grid.Column="1"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Content="Б"
-                                  IsChecked="{Binding IsBuskLineB,
+                                  TabIndex="23" />
+                        <CheckBox Margin="4"
+                                  Content="Имитатор БМ-4 (БУСК, БУНД)"
+                                  IsChecked="{Binding IsShowSpacewire,
                                                       Mode=TwoWay}"
-                                  TabIndex="2" />
-                        <Label Grid.Row="4"
-                               Grid.Column="1"
-                               Margin="1"
-                               Background="White" />
-                        <CheckBox Grid.Row="4"
-                                  Grid.Column="1"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Content="А"
-                                  IsChecked="{Binding IsBundLineA,
+                                  TabIndex="24" />
+                        <CheckBox Margin="4"
+                                  Content="Имитатор каналов БС"
+                                  IsChecked="{Binding IsShowSD,
                                                       Mode=TwoWay}"
-                                  TabIndex="5" />
-                        <Label Grid.Row="5"
-                               Grid.Column="1"
-                               Margin="1"
-                               Background="White" />
-                        <CheckBox Grid.Row="5"
-                                  Grid.Column="1"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
-                                  Content="Б"
-                                  IsChecked="{Binding IsBundLineB,
+                                  TabIndex="25" />
+                        <Separator />
+                        <CheckBox Margin="4"
+                                  Content="Имитатор БУК (для КВВ)"
+                                  IsChecked="{Binding IsShowSimHsi,
                                                       Mode=TwoWay}"
-                                  TabIndex="6" />
-                        <Label Grid.Row="0"
-                               Grid.Column="2"
-                               Grid.ColumnSpan="2"
-                               Content="БУК"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="2"
-                               Content="ПК1"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="3"
-                               Content="ПК2"
-                               Template="{StaticResource FlatLabel}" />
-                    </Grid>
-                    <Label Content="Управление датчиками затворов" Style="{StaticResource FlatHeader}" />
-                    <Grid Grid.Row="2" Grid.Column="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Margin="1" Background="White">
-                            <RadioButton HorizontalContentAlignment="Center"
-                                         Content="Автоматическое"
-                                         GroupName="control"
-                                         TabIndex="9" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="2"
-                                    Margin="1"
-                                    Background="White">
-                            <RadioButton x:Name="ManualControlSet"
-                                         HorizontalContentAlignment="Center"
-                                         Content="Ручное"
-                                         GroupName="control"
-                                         IsChecked="{Binding IsIssueManualShutter}"
-                                         TabIndex="10" />
-                        </StackPanel>
-                    </Grid>
-                    <Grid x:Name="GridShutter" IsEnabled="{Binding IsChecked, ElementName=ManualControlSet}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid Grid.Row="3" Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВКЛ "
-                                         GroupName="ufesOpen"
-                                         IsChecked="{Binding IssueUfesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="11" />
-                            <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton Grid.Column="2"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВЫКЛ "
-                                         GroupName="ufesOpen"
-                                         IsChecked="{Binding IssueUfesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="12" />
-                        </Grid>
-                        <Grid Grid.Row="4" Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВКЛ "
-                                         GroupName="vufesOpen"
-                                         IsChecked="{Binding IssueVufesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="13" />
-                            <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton Grid.Column="2"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВЫКЛ "
-                                         GroupName="vufesOpen"
-                                         IsChecked="{Binding IssueVufesOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="14" />
-                        </Grid>
-                        <Grid Grid.Row="5" Grid.Column="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВКЛ "
-                                         GroupName="sdshOpen"
-                                         IsChecked="{Binding IssueSdshOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="15" />
-                            <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton Grid.Column="2"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВЫКЛ "
-                                         GroupName="sdshOpen"
-                                         IsChecked="{Binding IssueSdshOpen,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="16" />
-                        </Grid>
-                        <Grid Grid.Row="3" Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВКЛ "
-                                         GroupName="ufesClose"
-                                         IsChecked="{Binding IssueUfesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="17" />
-                            <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton Grid.Column="2"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВЫКЛ "
-                                         GroupName="ufesClose"
-                                         IsChecked="{Binding IssueUfesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="18" />
-                        </Grid>
-                        <Grid Grid.Row="4" Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВКЛ "
-                                         GroupName="vufesClose"
-                                         IsChecked="{Binding IssueVufesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="19" />
-                            <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton Grid.Column="2"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВЫКЛ "
-                                         GroupName="vufesClose"
-                                         IsChecked="{Binding IssueVufesClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="20" />
-                        </Grid>
-                        <Grid Grid.Row="5" Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВКЛ "
-                                         GroupName="sdshClose"
-                                         IsChecked="{Binding IssueSdshClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.On},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="21" />
-                            <Label Grid.Column="2" Template="{StaticResource FlatLabelCheck}" />
-                            <RadioButton Grid.Column="2"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Content="ВЫКЛ "
-                                         GroupName="sdshClose"
-                                         IsChecked="{Binding IssueSdshClose,
-                                                             ConverterParameter={x:Static local1:EgseBukNotify+SciDevState.Off},
-                                                             Converter={StaticResource EnumToBoolConverter}}"
-                                         TabIndex="22" />
-                        </Grid>
-                        <Label Grid.Row="1"
-                               Grid.RowSpan="2"
-                               Grid.Column="0"
-                               Content="Каналы БС"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="3"
-                               Grid.Column="0"
-                               Content=" УФЭС "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="4"
-                               Grid.Column="0"
-                               Content=" ВУФЭС "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="5"
-                               Grid.Column="0"
-                               Content=" СДЩ "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="1"
-                               Grid.ColumnSpan="2"
-                               Content="Датчик"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="1"
-                               Content="открытия"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="2"
-                               Content="закрытия"
-                               Template="{StaticResource FlatLabel}" />
-                    </Grid>
-                    <Label Content="Телеметрия каналы БС" Style="{StaticResource FlatHeader}" />
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="2"
-                               Grid.Column="1"
-                               Grid.ColumnSpan="2"
-                               Tag="{Binding UfesPower1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="3"
-                               Grid.Column="1"
-                               Grid.ColumnSpan="2"
-                               Tag="{Binding VufesPower1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="4"
-                               Grid.Column="1"
-                               Grid.ColumnSpan="2"
-                               Tag="{Binding SdchshPower1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="2"
-                               Tag="{Binding UfesPower2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}"
-                               Visibility="Collapsed" />
-                        <Label Grid.Row="3"
-                               Grid.Column="2"
-                               Tag="{Binding VufesPower2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}"
-                               Visibility="Collapsed" />
-                        <Label Grid.Row="4"
-                               Grid.Column="2"
-                               Tag="{Binding SdchshPower2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}"
-                               Visibility="Collapsed" />
-                        <Label Grid.Row="2"
-                               Grid.Column="3"
-                               Tag="{Binding UfesLight1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="3"
-                               Grid.Column="3"
-                               Tag="{Binding VufesLight1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="4"
-                               Grid.Column="3"
-                               Tag="{Binding SdchshLight1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="4"
-                               Tag="{Binding UfesLight2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="5"
-                               Tag="{Binding UfesLock1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="6"
-                               Tag="{Binding UfesLock2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="3"
-                               Grid.Column="4"
-                               Tag="{Binding VufesLight2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="3"
-                               Grid.Column="5"
-                               Tag="{Binding VufesLock1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="3"
-                               Grid.Column="6"
-                               Tag="{Binding VufesLock2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="4"
-                               Grid.Column="4"
-                               Tag="{Binding SdchshLight2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="4"
-                               Grid.Column="5"
-                               Tag="{Binding SdchshLock1,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="4"
-                               Grid.Column="6"
-                               Tag="{Binding SdchshLock2,
-                                             Converter={StaticResource BoolToIndexConverter}}"
-                               Template="{StaticResource FlatLabelCheck}" />
-                        <Label Grid.Row="0"
-                               Grid.RowSpan="2"
-                               Grid.Column="0"
-                               Content="Каналы БС"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="2"
-                               Grid.Column="0"
-                               Content=" УФЭС "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="3"
-                               Grid.Column="0"
-                               Content=" ВУФЭС "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="4"
-                               Grid.Column="0"
-                               Content=" СДЩ "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="0"
-                               Grid.RowSpan="2"
-                               Grid.Column="1"
-                               Grid.ColumnSpan="2"
-                               Content="Питание"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="0"
-                               Grid.Column="3"
-                               Grid.ColumnSpan="2"
-                               Content="Подсветка"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Column="5"
-                               Grid.ColumnSpan="2"
-                               Content="Затворы"
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="1"
-                               Content=" ОСН "
-                               Template="{StaticResource FlatLabel}"
-                               Visibility="Collapsed" />
-                        <Label Grid.Row="1"
-                               Grid.Column="2"
-                               Content=" РЕЗ "
-                               Template="{StaticResource FlatLabel}"
-                               Visibility="Collapsed" />
-                        <Label Grid.Row="1"
-                               Grid.Column="3"
-                               Content=" ОСН "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="4"
-                               Content=" РЕЗ "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="5"
-                               Content=" ОСН "
-                               Template="{StaticResource FlatLabel}" />
-                        <Label Grid.Row="1"
-                               Grid.Column="6"
-                               Content=" РЕЗ "
-                               Template="{StaticResource FlatLabel}" />
-                    </Grid>
-                </StackPanel>
-            </Grid>
-            <Grid Margin="0" Background="{StaticResource BackBrush}">
-                <StackPanel Margin="1" Background="White">
-                    <Label Content="Окна управления" Style="{StaticResource FlatHeader}" />
-                    <CheckBox Margin="4"
-                              Content="Имитатор КВВ"
-                              IsChecked="{Binding IsShowHsi,
-                                                  Mode=TwoWay}"
-                              TabIndex="23" />
-                    <CheckBox Margin="4"
-                              Content="Имитатор БМ-4 (БУСК, БУНД)"
-                              IsChecked="{Binding IsShowSpacewire,
-                                                  Mode=TwoWay}"
-                              TabIndex="24" />
-                    <CheckBox Margin="4"
-                              Content="Имитатор каналов БС"
-                              IsChecked="{Binding IsShowSD,
-                                                  Mode=TwoWay}"
-                              TabIndex="25" />
-                    <Separator />
-                    <CheckBox Margin="4"
-                              Content="Имитатор БУК (для КВВ)"
-                              IsChecked="{Binding IsShowSimHsi,
-                                                  Mode=TwoWay}"
-                              TabIndex="26" />
-                    <CheckBox Margin="4"
-                              Content="Имитатор БУК (для БМ-4)"
-                              IsChecked="{Binding IsShowSimSpacewire,
-                                                  Mode=TwoWay}"
-                              TabIndex="27" />
-                    <CheckBox Margin="4"
-                              Content="Имитатор БУК (для каналов БС)"
-                              IsChecked="{Binding IsShowSimSD,
-                                                  Mode=TwoWay}"
-                              TabIndex="28" />
-                    <Separator />
-                    <CheckBox Margin="4"
-                              Content="Команды управления БУК"
-                              IsChecked="{Binding IsShowControlBuk,
-                                                  Mode=TwoWay}"
-                              TabIndex="29" />
-                    <CheckBox Margin="4"
-                              Content="Телеметрия БУК"
-                              IsChecked="{Binding IsShowTeleBuk,
-                                                  Mode=TwoWay}"
-                              TabIndex="30" />
-                    <CheckBox Margin="4"
-                              Content="Телеметрия КВВ"
-                              IsChecked="{Binding IsShowTeleKvv,
-                                                  Mode=TwoWay}"
-                              TabIndex="31" />
-                </StackPanel>
-            </Grid>
-            
-        </StackPanel>
-            <Grid VerticalAlignment="Bottom" DockPanel.Dock="Bottom" Height="40">
+                                  TabIndex="26" />
+                        <CheckBox Margin="4"
+                                  Content="Имитатор БУК (для БМ-4)"
+                                  IsChecked="{Binding IsShowSimSpacewire,
+                                                      Mode=TwoWay}"
+                                  TabIndex="27" />
+                        <CheckBox Margin="4"
+                                  Content="Имитатор БУК (для каналов БС)"
+                                  IsChecked="{Binding IsShowSimSD,
+                                                      Mode=TwoWay}"
+                                  TabIndex="28" />
+                        <Separator />
+                        <CheckBox Margin="4"
+                                  Content="Команды управления БУК"
+                                  IsChecked="{Binding IsShowControlBuk,
+                                                      Mode=TwoWay}"
+                                  TabIndex="29" />
+                        <CheckBox Margin="4"
+                                  Content="Телеметрия БУК"
+                                  IsChecked="{Binding IsShowTeleBuk,
+                                                      Mode=TwoWay}"
+                                  TabIndex="30" />
+                        <CheckBox Margin="4"
+                                  Content="Телеметрия КВВ"
+                                  IsChecked="{Binding IsShowTeleKvv,
+                                                      Mode=TwoWay}"
+                                  TabIndex="31" />
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+            <Grid Height="40"
+                  VerticalAlignment="Bottom"
+                  DockPanel.Dock="Bottom">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0"
-                        Content="О программе"
-                        TabIndex="33"
                         Margin="7"
-                        Click="Button_Click" />
+                        Click="Button_Click"
+                        Content="О программе"
+                        TabIndex="33" />
                 <Button Grid.Column="1"
+                        Margin="7"
                         Click="CloseButton_Click"
                         Content="Выход"
-                        Margin="7"
                         TabIndex="100" />
             </Grid>
         </DockPanel>
         <Label x:Name="ConnectionLabel"
                Margin="1"
-               Padding="0"
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center"
                Background="Tomato"
                BorderBrush="LightBlue"
                BorderThickness="1"
-               FontSize="20" />
+               FontSize="20"
+               Padding="0" />
         <StatusBar Grid.Row="2"
                    Grid.ColumnSpan="2"
                    Background="{StaticResource BackBrush}">

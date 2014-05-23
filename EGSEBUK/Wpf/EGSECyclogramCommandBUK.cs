@@ -3700,7 +3700,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (!x.TelemetryNotify.IsPowerBusk1)
                             {
-                                x.TelemetryNotify.IssuePowerBusk1Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOnBusk1Command.Execute(null);
                             }
                             else
                             {
@@ -3713,7 +3713,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (x.TelemetryNotify.IsPowerBusk1)
                             {
-                                x.TelemetryNotify.IssuePowerBusk1Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOffBusk1Command.Execute(null);
                             }
                             else
                             {
@@ -3726,7 +3726,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (!x.TelemetryNotify.IsPowerBund1)
                             {
-                                x.TelemetryNotify.IssuePowerBund1Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOnBund1Command.Execute(null);
                             }
                             else
                             {
@@ -3739,7 +3739,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (x.TelemetryNotify.IsPowerBund1)
                             {
-                                x.TelemetryNotify.IssuePowerBund1Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOffBund1Command.Execute(null);
                             }
                             else
                             {
@@ -3752,7 +3752,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (!x.TelemetryNotify.IsPowerBusk2)
                             {
-                                x.TelemetryNotify.IssuePowerBusk2Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOnBusk2Command.Execute(null);
                             }
                             else
                             {
@@ -3765,7 +3765,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (x.TelemetryNotify.IsPowerBusk2)
                             {
-                                x.TelemetryNotify.IssuePowerBusk2Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOffBusk2Command.Execute(null);
                             }
                             else
                             {
@@ -3778,7 +3778,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (!x.TelemetryNotify.IsPowerBund2)
                             {
-                                x.TelemetryNotify.IssuePowerBund2Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOnBund2Command.Execute(null);
                             }
                             else
                             {
@@ -3791,7 +3791,7 @@ namespace Egse.Cyclogram.Command
                         {
                             if (x.TelemetryNotify.IsPowerBund2)
                             {
-                                x.TelemetryNotify.IssuePowerBund2Command.Execute(null);
+                                x.TelemetryNotify.IssuePowerOffBund2Command.Execute(null);
                             }
                             else
                             {

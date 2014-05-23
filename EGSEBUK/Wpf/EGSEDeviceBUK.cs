@@ -4064,12 +4064,12 @@ namespace Egse.Devices
             /// <summary>
             /// Телеметрия: Запитан ПК1 от БУСК.
             /// </summary>
-            private bool isPowerBusk1;
+            private bool powerBusk1;
 
             /// <summary>
             /// Телеметрия: Запитан ПК2 от БУСК.
             /// </summary>
-            private bool isPowerBusk2;
+            private bool powerBusk2;
 
             /// <summary>
             /// Телеметрия: Запитан ПК1 от БУНД.
@@ -4079,7 +4079,7 @@ namespace Egse.Devices
             /// <summary>
             /// Телеметрия: Запитан ПК2 от БУНД.
             /// </summary>
-            private bool isPowerBund2;
+            private bool powerBund2;
 
             /// <summary>
             /// Телеметрия: Питание УФЭС ОСН.
@@ -4175,25 +4175,25 @@ namespace Egse.Devices
             /// Экземпляр команды на [выдачу питания БУСК ПК1].
             /// </summary>
             [field: NonSerialized]
-            private ICommand issuePowerBusk1Command;
-
-            /// <summary>
-            /// Экземпляр команды на [выдачу питания БУСК ПК2].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand issuePowerBusk2Command;
-
-            /// <summary>
-            /// Экземпляр команды на [выдачу питания БУНД ПК1].
-            /// </summary>
-            [field: NonSerialized]
-            private ICommand issuePowerBund1Command;
+            private ICommand issuePowerOnBusk1Command;
 
             /// <summary>
             /// Экземпляр команды на [выдачу питания БУНД ПК2].
             /// </summary>
             [field: NonSerialized]
-            private ICommand issuePowerBund2Command;
+            private ICommand issuePowerOffBusk1Command;
+            [field: NonSerialized]
+            private ICommand issuePowerOffBusk2Command;
+            [field: NonSerialized]
+            private ICommand issuePowerOnBusk2Command;
+            [field: NonSerialized]
+            private ICommand issuePowerOffBund1Command;
+            [field: NonSerialized]
+            private ICommand issuePowerOnBund1Command;
+            [field: NonSerialized]
+            private ICommand issuePowerOffBund2Command;
+            [field: NonSerialized]
+            private ICommand issuePowerOnBund2Command;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Telemetry" />.
@@ -4324,6 +4324,22 @@ namespace Egse.Devices
                 }
             }
 
+            public bool IsPower1
+            {
+                get
+                {
+                    return IsPowerBusk1 || IsPowerBund1;
+                }
+            }
+
+            public bool IsPower2
+            {
+                get
+                {
+                    return IsPowerBusk2 || IsPowerBund2;
+                }
+            }
+
             /// <summary>
             /// Получает значение, показывающее, есть ли [питание первого полукомплекта БУСК].
             /// </summary>
@@ -4334,19 +4350,20 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return this.isPowerBusk1;
+                    return this.powerBusk1;
                 }
 
                 private set 
-                {
-                    if (value == this.isPowerBusk1)
+                {                    
+                    if (value == this.powerBusk1)
                     {
                         return;
                     }
 
-                    this.isPowerBusk1 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!value), false);
+                    this.powerBusk1 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(value), false);
                     OnPropertyChanged();
+                    OnPropertyChanged(() => this.IsPower1);
                 }
             }
 
@@ -4356,16 +4373,29 @@ namespace Egse.Devices
             /// <value>
             /// Команда на [выдачу питания БУСК ПК1].
             /// </value>
-            public ICommand IssuePowerBusk1Command
+            public ICommand IssuePowerOnBusk1Command
             {
                 get
                 {
-                    if (null == this.issuePowerBusk1Command)
+                    if (null == this.issuePowerOnBusk1Command)
                     {
-                        this.issuePowerBusk1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!IsPowerBusk1)); IsPowerBusk1 = !IsPowerBusk1; }, obj => { return true; });
+                        this.issuePowerOnBusk1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, 1); });
                     }
 
-                    return this.issuePowerBusk1Command;
+                    return this.issuePowerOnBusk1Command;
+                }
+            }
+
+            public ICommand IssuePowerOffBusk1Command
+            {
+                get
+                {
+                    if (null == this.issuePowerOffBusk1Command)
+                    {
+                        this.issuePowerOffBusk1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, 0); });
+                    }
+
+                    return this.issuePowerOffBusk1Command;
                 }
             }
 
@@ -4379,19 +4409,20 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return this.isPowerBusk2;
+                    return this.powerBusk2;
                 }
 
                 private set 
-                {
-                    if (value == this.isPowerBusk2)
+                {                    
+                    if (value == this.powerBusk2)
                     {
                         return;
                     }
 
-                    this.isPowerBusk2 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!value), false);
+                    this.powerBusk2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(value), false);
                     OnPropertyChanged();
+                    OnPropertyChanged(() => this.IsPower2);
                 }
             }
 
@@ -4401,19 +4432,31 @@ namespace Egse.Devices
             /// <value>
             /// Команда на [выдачу питания БУСК ПК2].
             /// </value>
-            public ICommand IssuePowerBusk2Command
+            public ICommand IssuePowerOnBusk2Command
             {
                 get
                 {
-                    if (null == this.issuePowerBusk2Command)
+                    if (null == this.issuePowerOnBusk2Command)
                     {
-                        this.issuePowerBusk2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!IsPowerBusk2)); IsPowerBusk2 = !IsPowerBusk2; }, obj => { return true; });
+                        this.issuePowerOnBusk2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, 1); });
                     }
 
-                    return this.issuePowerBusk2Command;
+                    return this.issuePowerOnBusk2Command;
                 }
             }
 
+            public ICommand IssuePowerOffBusk2Command
+            {
+                get
+                {
+                    if (null == this.issuePowerOffBusk2Command)
+                    {
+                        this.issuePowerOffBusk2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, 0); });
+                    }
+
+                    return this.issuePowerOffBusk2Command;
+                }
+            }
             /// <summary>
             /// Получает значение, показывающее, есть ли [питание первого полукомплекта БУНД].
             /// </summary>
@@ -4428,15 +4471,16 @@ namespace Egse.Devices
                 }
 
                 private set 
-                {
+                {                    
                     if (value == this.powerBund1)
                     {
                         return;
                     }
 
                     this.powerBund1 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, Convert.ToInt32(!value), false);
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(value), false);
                     OnPropertyChanged();
+                    OnPropertyChanged(() => this.IsPower1);
                 }
             }
 
@@ -4446,16 +4490,29 @@ namespace Egse.Devices
             /// <value>
             /// Команда на [выдачу питания БУНД ПК1].
             /// </value>
-            public ICommand IssuePowerBund1Command
+            public ICommand IssuePowerOnBund1Command
             {
                 get
                 {
-                    if (null == this.issuePowerBund1Command)
+                    if (null == this.issuePowerOnBund1Command)
                     {
-                        this.issuePowerBund1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, Convert.ToInt32(!IsPowerBund1)); IsPowerBund1 = !IsPowerBund1; }, obj => { return true; });
+                        this.issuePowerOnBund1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, 1); });
                     }
 
-                    return this.issuePowerBund1Command;
+                    return this.issuePowerOnBund1Command;
+                }
+            }
+
+            public ICommand IssuePowerOffBund1Command
+            {
+                get
+                {
+                    if (null == this.issuePowerOffBund1Command)
+                    {
+                        this.issuePowerOffBund1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, 0); });
+                    }
+
+                    return this.issuePowerOffBund1Command;
                 }
             }
 
@@ -4469,19 +4526,20 @@ namespace Egse.Devices
             {
                 get
                 {
-                    return this.isPowerBund2;
+                    return this.powerBund2;
                 }
 
                 private set 
-                {
-                    if (value == this.isPowerBund2)
+                {                    
+                    if (value == this.powerBund2)
                     {
                         return;
                     }
 
-                    this.isPowerBund2 = value;
-                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, Convert.ToInt32(!value), false);
+                    this.powerBund2 = value;
+                    ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(value), false);
                     OnPropertyChanged();
+                    OnPropertyChanged(() => this.IsPower2);
                 }
             }
 
@@ -4491,16 +4549,29 @@ namespace Egse.Devices
             /// <value>
             /// Команда на [выдачу питания БУНД ПК2].
             /// </value>
-            public ICommand IssuePowerBund2Command
+            public ICommand IssuePowerOnBund2Command
             {
                 get
                 {
-                    if (null == this.issuePowerBund2Command)
+                    if (null == this.issuePowerOnBund2Command)
                     {
-                        this.issuePowerBund2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, Convert.ToInt32(!IsPowerBund2)); IsPowerBund2 = !IsPowerBund2; }, obj => { return true; });
+                        this.issuePowerOnBund2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, 1); });
                     }
 
-                    return this.issuePowerBund2Command;
+                    return this.issuePowerOnBund2Command;
+                }
+            }
+
+            public ICommand IssuePowerOffBund2Command
+            {
+                get
+                {
+                    if (null == this.issuePowerOffBund2Command)
+                    {
+                        this.issuePowerOffBund2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, 0); });
+                    }
+
+                    return this.issuePowerOffBund2Command;
                 }
             }
 
@@ -5032,10 +5103,10 @@ namespace Egse.Devices
             /// </summary>
             protected override void InitProperties()
             {
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk1, 15, 1, Device.CmdPowerBusk1, value => IsPowerBusk1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => IsPowerBusk2 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => IsPowerBund1 = 1 == value);
-                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => IsPowerBund2 = 1 == value);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk1, 15, 1, Device.CmdPowerBusk1, value => IsPowerBusk1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBusk2, 14, 1, Device.CmdPowerBusk2, value => IsPowerBusk2 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund1, 12, 1, Device.CmdPowerBund1, value => IsPowerBund1 = 1 == value, true);
+                ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.PowerBund2, 13, 1, Device.CmdPowerBund2, value => IsPowerBund2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight1, 10, 1, delegate { }, value => UfesLight1 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.UfesLight2, 9, 1, delegate { }, value => UfesLight2 = 1 == value, true);
                 ControlValuesList[Global.Telemetry].AddProperty(Global.Telemetry.VufesLight1, 8, 1, delegate { }, value => VufesLight1 = 1 == value, true);
@@ -5597,16 +5668,6 @@ namespace Egse.Devices
             private byte param1;
 
             /// <summary>
-            /// The param3
-            /// </summary>
-            //private byte param3;
-
-            /// <summary>
-            /// The param2
-            /// </summary>
-            //private byte param2;
-
-            /// <summary>
             /// The issue command get tele
             /// </summary>
             private ICommand issueCmdGetTele;
@@ -5672,11 +5733,6 @@ namespace Egse.Devices
             private bool exchangeConf;
 
             /// <summary>
-            /// The number shutter
-            /// </summary>
-            //private byte numberShutter;
-
-            /// <summary>
             /// The shutter time
             /// </summary>
             private int shutterTime;
@@ -5685,11 +5741,6 @@ namespace Egse.Devices
             /// The issue command shutter
             /// </summary>
             private ICommand issueCmdShutter;
-
-            /// <summary>
-            /// The number light
-            /// </summary>
-            //private byte numberLight;
 
             /// <summary>
             /// The light time
@@ -6325,31 +6376,6 @@ namespace Egse.Devices
             }
 
             /// <summary>
-            /// Gets the number light.
-            /// </summary>
-            /// <value>
-            /// The number light.
-            /// </value>
-            //public byte NumberLight
-            //{
-            //    get
-            //    {
-            //        return this.numberLight;
-            //    }
-
-            //    private set
-            //    {
-            //        if (value == this.numberLight)
-            //        { 
-            //            return;
-            //        }
-
-            //        this.numberLight = value;
-            //        OnPropertyChanged();
-            //    }
-            //}
-
-            /// <summary>
             /// Gets the light time.
             /// </summary>
             /// <value>
@@ -6398,31 +6424,6 @@ namespace Egse.Devices
                     OnPropertyChanged();
                 }
             }
-
-            /// <summary>
-            /// Gets the number shutter.
-            /// </summary>
-            /// <value>
-            /// The number shutter.
-            /// </value>
-            //public byte NumberShutter
-            //{
-            //    get
-            //    {
-            //        return this.numberShutter;
-            //    }
-
-            //    private set
-            //    {
-            //        if (value == this.numberShutter)
-            //        {
-            //            return;
-            //        }
-
-            //        this.numberShutter = value;
-            //        OnPropertyChanged();
-            //    }
-            //}
 
             /// <summary>
             /// Gets the shutter time.
@@ -6547,57 +6548,7 @@ namespace Egse.Devices
                     this.param1 = value;
                     OnPropertyChanged();
                 }
-            }
-
-            /// <summary>
-            /// Gets the param2.
-            /// </summary>
-            /// <value>
-            /// The param2.
-            /// </value>
-            //public byte Param2
-            //{
-            //    get
-            //    {
-            //        return this.param2;
-            //    }
-
-            //    private set
-            //    {
-            //        if (value == this.param2)
-            //        {
-            //            return;
-            //        }
-
-            //        this.param2 = value;
-            //        OnPropertyChanged();
-            //    }
-            //}
-
-            /// <summary>
-            /// Gets the param3.
-            /// </summary>
-            /// <value>
-            /// The param3.
-            /// </value>
-            //public byte Param3
-            //{
-            //    get
-            //    {
-            //        return this.param3;
-            //    }
-
-            //    private set
-            //    {
-            //        if (value == this.param3)
-            //        {
-            //            return;
-            //        }
-
-            //        this.param3 = value;
-            //        OnPropertyChanged();
-            //    }
-            //}
+            }          
 
             /// <summary>
             /// Gets the threshold.

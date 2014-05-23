@@ -23,7 +23,6 @@ namespace Egse.Defaults
         /// Интерфейс управления прибором.
         /// </summary>
         private EgseBukNotify _intfEGSE;
-        private Timer timer;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireWindow" />.
