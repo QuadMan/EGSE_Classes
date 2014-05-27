@@ -4002,10 +4002,10 @@ namespace Egse.Devices
                 ControlValuesList[Global.Hsi.Line1].AddProperty(Global.Hsi.Line1.IssueEnable, 0, 1, Device.CmdHsiLine1, value => IsIssueEnable1 = 1 == value);
                 ControlValuesList[Global.Hsi.Line2].AddProperty(Global.Hsi.Line2.Line, 1, 2, Device.CmdHsiLine2, value => IssueLine2 = (Line)value);
                 ControlValuesList[Global.Hsi.Line2].AddProperty(Global.Hsi.Line2.IssueEnable, 0, 1, Device.CmdHsiLine2, value => IsIssueEnable2 = 1 == value);
-                ControlValuesList[Global.Hsi.Line1StateCounter].AddProperty(Global.Hsi.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value, true);
-                ControlValuesList[Global.Hsi.Line1FrameCounter].AddProperty(Global.Hsi.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value, true);
-                ControlValuesList[Global.Hsi.Line2StateCounter].AddProperty(Global.Hsi.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value, true);
-                ControlValuesList[Global.Hsi.Line2FrameCounter].AddProperty(Global.Hsi.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value, true);
+                ControlValuesList[Global.Hsi.Line1StateCounter].AddProperty(Global.Hsi.Line1StateCounter, 0, 32, delegate { }, value => StateCounter1 = value >= StateCounter1corrFactor ? value + StateCounter1corrFactor : value, true);
+                ControlValuesList[Global.Hsi.Line1FrameCounter].AddProperty(Global.Hsi.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value >= FrameCounter1corrFactor ? value + FrameCounter1corrFactor : value, true);
+                ControlValuesList[Global.Hsi.Line2StateCounter].AddProperty(Global.Hsi.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value >= StateCounter2corrFactor ? value + StateCounter2corrFactor : value, true);
+                ControlValuesList[Global.Hsi.Line2FrameCounter].AddProperty(Global.Hsi.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value >= FrameCounter2corrFactor ? value + FrameCounter2corrFactor : value, true);
                 ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.LineIn, 2, 1, Device.CmdSimHsiControl, value => IssueLineRecv = (SimLine)value);
                 ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.LineOut, 1, 1, Device.CmdSimHsiControl, value => IssueLineSend = (SimLine)value);
                 ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.IssuePoll, 0, 1, Device.CmdSimHsiControl, value => IsIssuePoll = 1 == value);
@@ -4029,11 +4029,19 @@ namespace Egse.Devices
                 this.RequestDataMain = 0;
                 this.CmdCounter1 = 0;
                 this.CmdCounter2 = 0;
-                this.StateCounter1 = 0;
-                this.FrameCounter1 = 0;
-                this.StateCounter2 = 0;
-                this.FrameCounter2 = 0;
+                this.StateCounter1corrFactor = -this.StateCounter1;
+                this.FrameCounter1corrFactor = -this.FrameCounter1;
+                this.StateCounter2corrFactor = -this.StateCounter2;
+                this.FrameCounter2corrFactor = -this.FrameCounter2;
             }
+
+            public int StateCounter1corrFactor { get; set; }
+
+            public int FrameCounter1corrFactor { get; set; }
+
+            public int StateCounter2corrFactor { get; set; }
+
+            public int FrameCounter2corrFactor { get; set; }
         }
 
         /// <summary>
