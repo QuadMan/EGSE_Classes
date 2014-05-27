@@ -3178,7 +3178,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.stateCounter1 = value;
+                    lock (statistics)
+                    {
+                        this.stateCounter1 = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3327,7 +3330,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.frameCounter1 = value;
+                    lock (statistics)
+                    {
+                        this.frameCounter1 = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3352,7 +3358,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.stateCounter2 = value;
+                    lock (statistics)
+                    {
+                        this.stateCounter2 = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3377,7 +3386,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.frameCounter2 = value;
+                    lock (statistics)
+                    {
+                        this.frameCounter2 = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3704,10 +3716,15 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.requestStateMain = value;
+                    lock (statistics)
+                    {
+                        this.requestStateMain = value;
+                    }
                     OnPropertyChanged();
                 }
             }
+
+            private object statistics = new object();
 
             /// <summary>
             /// Получает или задает количество запросов статусов по резервной линии.
@@ -3729,7 +3746,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.requestStateResv = value;
+                    lock (statistics)
+                    {
+                        this.requestStateResv = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3754,7 +3774,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.requestDataMain = value;
+                    lock (statistics)
+                    {
+                        this.requestDataMain = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3779,7 +3802,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.requestDataResv = value;
+                    lock (statistics)
+                    {
+                        this.requestDataResv = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3804,7 +3830,10 @@ namespace Egse.Devices
                         return; 
                     }
 
-                    this.cmdCounter1 = value;
+                    lock (statistics)
+                    {
+                        this.cmdCounter1 = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3829,7 +3858,10 @@ namespace Egse.Devices
                         return;
                     }
 
-                    this.cmdCounter2 = value;
+                    lock (statistics)
+                    {
+                        this.cmdCounter2 = value;
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -3987,6 +4019,20 @@ namespace Egse.Devices
                 ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueBusy2, 4, 1, Device.CmdHsiState, value => IsIssueBusy2 = 1 == value);
                 ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueMe1, 2, 1, Device.CmdHsiState, value => IsIssueMe1 = 1 == value);
                 ControlValuesList[Global.Hsi.State].AddProperty(Global.Hsi.State.IssueMe2, 5, 1, Device.CmdHsiState, value => IsIssueMe2 = 1 == value);
+            }
+
+            internal void ClearStatistics()
+            {
+                this.RequestStateMain = 0;
+                this.RequestStateResv = 0;
+                this.RequestDataResv = 0;
+                this.RequestDataMain = 0;
+                this.CmdCounter1 = 0;
+                this.CmdCounter2 = 0;
+                this.StateCounter1 = 0;
+                this.FrameCounter1 = 0;
+                this.StateCounter2 = 0;
+                this.FrameCounter2 = 0;
             }
         }
 

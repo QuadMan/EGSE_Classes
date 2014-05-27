@@ -21,7 +21,7 @@ namespace Egse.Defaults
         /// <summary>
         /// Интерфейс управления прибором.
         /// </summary>
-        private EgseBukNotify _intfEGSE;
+        private EgseBukNotify intfEGSE;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="HsiWindow" />.
@@ -37,11 +37,11 @@ namespace Egse.Defaults
         /// <param name="intfEGSE">Интерфейс управления прибором.</param>
         public void Init(EgseBukNotify intfEGSE)
         {
-            _intfEGSE = intfEGSE;
-            _intfEGSE.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
-            _intfEGSE.GotHsiCmdMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiCmdMsg);
-            DataContext = _intfEGSE;
-            GridHsi.DataContext = _intfEGSE.HsiNotify;
+            this.intfEGSE = intfEGSE;
+            this.intfEGSE.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
+            this.intfEGSE.GotHsiCmdMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiCmdMsg);
+            DataContext = this.intfEGSE;
+            GridHsi.DataContext = this.intfEGSE.HsiNotify;
             MonitorList.DataContext = new MonitorListViewModel();
             MonitorListCmd.DataContext = new MonitorListViewModel();    
         }
@@ -57,11 +57,11 @@ namespace Egse.Defaults
             string hsiMsg;
             if (msg.Data.Length > 30)
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
+                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
             }
             else
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
             SendToMonitor(hsiMsg);
@@ -78,11 +78,11 @@ namespace Egse.Defaults
             string hsiMsg;
             if (msg.Data.Length > 30)
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
+                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
             }
             else
             {
-                hsiMsg = _intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
+                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
             }
 
             SendToMonitorCmd(hsiMsg);
@@ -106,7 +106,7 @@ namespace Egse.Defaults
                 }
             }
 
-            if (_intfEGSE.HsiNotify.IsSaveTxtData)
+            if (this.intfEGSE.HsiNotify.IsSaveTxtData)
             {
                 LogsClass.LogHsi.LogText = txtMsg;
             }            
@@ -151,6 +151,7 @@ namespace Egse.Defaults
         {
             try
             {
+                this.intfEGSE.HsiNotify.ClearStatistics();
                 Extensions.ClearMonitor(MonitorList);
             }
             catch (Exception exc)
