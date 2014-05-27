@@ -436,7 +436,7 @@
                                    Content="закрытия"
                                    Template="{StaticResource FlatLabel}" />
                         </Grid>
-                        <Label Content="Телеметрия каналы БС" Style="{StaticResource FlatHeader}" />
+                        <Label Content="Телеметрия каналов БС" Style="{StaticResource FlatHeader}" />
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition />

@@ -180,6 +180,8 @@ namespace Egse.Constants
                 /// </summary>
                 public readonly string Line = "3cbe73537ddb4cb9a7af999eff3e6324";
 
+                public readonly string ResetStatistics = "4b049ff3b9f94a95a1a489301830892e";
+
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
                 /// </summary>
@@ -261,6 +263,8 @@ namespace Egse.Constants
                 /// Индекс свойства [Линия передачи].
                 /// </summary>
                 public readonly string Line = "cf351176e276489dac1248af4fb043ec";
+
+                public readonly string ResetStatistics = "18083494300a48e69653e575ee9df0d9";
 
                 /// <summary>
                 /// Неявно преобразует объект к типу "строка". 
