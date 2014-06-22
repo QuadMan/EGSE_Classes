@@ -239,6 +239,9 @@ namespace Egse.Devices
         /// </summary>
         private const int Hsi2ControlAddr = 0x31;
 
+        private const int Hsi1ControlResetAddr = 0x33;
+        private const int Hsi2ControlResetAddr = 0x34;
+
         /// <summary>
         /// Адресный байт "Дополнительные байты".
         /// </summary>
@@ -826,6 +829,16 @@ namespace Egse.Devices
         internal void CmdHsiLine2(int value)
         {
             SendToUSB(Hsi2ControlAddr, new byte[1] { (byte)value });
+        }
+
+        internal void CmdResetHsiLine2(int value)
+        {
+            SendToUSB(Hsi2ControlResetAddr, new byte[1] { (byte)value });
+        }
+
+        internal void CmdResetHsiLine1(int value)
+        {
+            SendToUSB(Hsi1ControlResetAddr, new byte[1] { (byte)value });
         }
 
         /// <summary>
@@ -4006,8 +4019,8 @@ namespace Egse.Devices
                 ControlValuesList[Global.Hsi.Line1FrameCounter].AddProperty(Global.Hsi.Line1FrameCounter, 0, 32, delegate { }, value => FrameCounter1 = value, true);
                 ControlValuesList[Global.Hsi.Line2StateCounter].AddProperty(Global.Hsi.Line2StateCounter, 0, 32, delegate { }, value => StateCounter2 = value, true);
                 ControlValuesList[Global.Hsi.Line2FrameCounter].AddProperty(Global.Hsi.Line2FrameCounter, 0, 32, delegate { }, value => FrameCounter2 = value, true);
-                ControlValuesList[Global.Hsi.Line1].AddProperty(Global.Hsi.Line1.ResetStatistics, 3, 1, Device.CmdHsiLine1, delegate { });
-                ControlValuesList[Global.Hsi.Line2].AddProperty(Global.Hsi.Line2.ResetStatistics, 3, 1, Device.CmdHsiLine2, delegate { });
+                ControlValuesList[Global.Hsi.Line1].AddProperty(Global.Hsi.Line1.ResetStatistics, 3, 1, Device.CmdResetHsiLine1, delegate { });
+                ControlValuesList[Global.Hsi.Line2].AddProperty(Global.Hsi.Line2.ResetStatistics, 3, 1, Device.CmdResetHsiLine2, delegate { });
                 ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.LineIn, 2, 1, Device.CmdSimHsiControl, value => IssueLineRecv = (SimLine)value);
                 ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.LineOut, 1, 1, Device.CmdSimHsiControl, value => IssueLineSend = (SimLine)value);
                 ControlValuesList[Global.SimHsi.Control].AddProperty(Global.SimHsi.Control.IssuePoll, 0, 1, Device.CmdSimHsiControl, value => IsIssuePoll = 1 == value);
