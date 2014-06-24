@@ -101,9 +101,9 @@ namespace Egse.Cyclogram
             errString = String.Empty;
             switch (Params.Length)
             {
-                case 1: if (Params[0] != "STOP")
+                case 1: if (Params[0] != "END")
                     {
-                        errString = "Должен быть параметр STOP";
+                        errString = "Должен быть параметр END";
                         return false;
                     }
                     break;
@@ -125,7 +125,7 @@ namespace Egse.Cyclogram
                     }
                     break;
                 default:
-                    errString = "Формат команды должен быть следующий: LOOP START N или LOOP STOP";
+                    errString = "Формат команды должен быть следующий: LOOP START N или LOOP END";
                     return false;
             }
             return true;
