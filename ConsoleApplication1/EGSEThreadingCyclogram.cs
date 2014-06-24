@@ -67,6 +67,16 @@ namespace Egse.Threading
     /// </summary>
     public class CyclogramThread
     {
+        public void SetToLine(uint lineNum)
+        {
+            cycloPos.SetToLine((int)lineNum);
+        }
+
+        public CyclogramLine GetCurCyclogramLine()
+        {
+            return cycloPos.CurCmd;
+        }
+
         /// <summary>
         /// The _cyclo thread
         /// </summary>

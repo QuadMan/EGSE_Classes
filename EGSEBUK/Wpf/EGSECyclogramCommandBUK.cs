@@ -3807,7 +3807,7 @@ namespace Egse.Cyclogram.Command
 
                 if (err)
                 {
-                    Task.Run(() => { MessageBox.Show(msgOnError); });
+                    Task.Run(() => { /* MessageBox.Show(msgOnError); */ });
                 }
             }
         }

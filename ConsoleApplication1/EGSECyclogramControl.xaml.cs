@@ -18,6 +18,10 @@ namespace Egse.Cyclogram
     /// </summary>
     public partial class CyclogramControl : UserControl
     {
+        uint _loopCount = 0;
+        uint _originalLoopCount = 0;
+        CyclogramLine _gotoCmd = null;
+
         /// <summary>
         /// Нить работы циклограммы.
         /// </summary>
@@ -46,6 +50,8 @@ namespace Egse.Cyclogram
             SetButtonsByState(CurState.cycloNone);
             _cycCommandsAvailable.AddCommand("aa6e98173bf04ae1aa63e95751bbb856", new CyclogramLine("NOP", NopTest, NopExec, string.Empty));
             _cycCommandsAvailable.AddCommand("b05d3add0acd436da6f8ac89e105d1f3", new CyclogramLine("STOP", StopTest, StopExec, string.Empty));
+            _cycCommandsAvailable.AddCommand("n75d3add0acd436da6f8fc89e105d1f3", new CyclogramLine("LOOP", LoopTest, LoopExec, String.Empty));
+
         }
 
         /// <summary>
@@ -87,7 +93,68 @@ namespace Egse.Cyclogram
             _cycloThread.StopAndSetNextCmd();
             return true;
         }
-        
+
+        // LOOP START 100
+        // LOOP END
+        public bool LoopTest(string[] Params, out string errString)
+        {
+            errString = String.Empty;
+            switch (Params.Length)
+            {
+                case 1: if (Params[0] != "STOP")
+                    {
+                        errString = "Должен быть параметр STOP";
+                        return false;
+                    }
+                    break;
+                case 2: if (Params[0] != "START")
+                    {
+                        errString = "Должен быть параметр START";
+                        return false;
+                    }
+                    uint cycCount;
+                    if (!UInt32.TryParse(Params[1], out cycCount))
+                    {
+                        errString = "Ошибка преобразования количества циклов";
+                        return false;
+                    }
+                    if ((cycCount < 1) || (cycCount > 65535))
+                    {
+                        errString = "Количество циклов должно быть от 1 до 65535";
+                        return false;
+                    }
+                    break;
+                default:
+                    errString = "Формат команды должен быть следующий: LOOP START N или LOOP STOP";
+                    return false;
+            }
+            return true;
+        }
+
+        public bool LoopExec(string[] Params)
+        {
+            // TODO: переделать
+            switch (Params.Length)
+            {
+                case 1:
+                    if (--_loopCount > 0)
+                    {
+                        _cycloThread.SetToLine((uint)_gotoCmd.Line);
+                        _gotoCmd.Str = "LOOP " + _loopCount + " (" + _originalLoopCount + ")";
+                    }
+                    break;
+                case 2:
+                    _loopCount = UInt32.Parse(Params[1]);
+                    _originalLoopCount = _loopCount;
+                    _gotoCmd = _cycloThread.GetCurCyclogramLine();
+                    _gotoCmd.Str = "LOOP " + _loopCount + " (" + _originalLoopCount + ")";
+                    break;
+            }
+            return true;
+        }
+
+   
+
         /// <summary>
         /// Проверка команды [NOP].
         /// </summary>
