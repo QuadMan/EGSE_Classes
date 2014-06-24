@@ -2665,26 +2665,27 @@ namespace Egse.Cyclogram.Command
             {
                 return !isParamCountErr;
             }
-
-            // задаемся минимальным количеством параметров для команды (1).
-            isParamCountErr = false;
-
-            if (2 > cmdParams.Length)
-            {
-                if (!IncludeTest<HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
-                {
-                    errString = string.Format(Resource.Get(@"eArg1"), errParam);
-                    return false;
-                }
-
-                return !isParamCountErr;
-            }
-
+            
             if (!IncludeTest<Activate, HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg1"), errParam);
                 return false;
             }
+            // задаемся минимальным количеством параметров для команды (1).
+            isParamCountErr = false;
+
+            if (2 > cmdParams.Length)
+            {
+                return !isParamCountErr;
+            }
+
+            //if (!IncludeTest<HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
+            //{
+            //    errString = string.Format(Resource.Get(@"eArg1"), errParam);
+            //    return false;
+            //}
+
+
 
             if (!IncludeTest<HexPackageBukKvvImit>(cmdParams[1], out errParam, ref uniParam))
             {
