@@ -29,12 +29,12 @@ namespace Egse.Utilites
         /// <summary>
         /// Разрешена/запрещена запись в log-файл
         /// </summary>
-        private bool _enableTextWrite;
+        private bool enableTextWrite;
 
         /// <summary>
         /// Разрешена/запрещена запись времени в log-файл
         /// </summary>
-        private bool _enableTimeWrite;
+        private bool enableTimeWrite;
 
         /// <summary>
         /// Объект StreamWriter, работающий с log-файлом
@@ -64,10 +64,11 @@ namespace Egse.Utilites
         /// <param name="fileName">Имя лог-файла</param>
         public TxtLogger(string fileName)
         {
-            _enableTextWrite = true;
-            _enableTimeWrite = true;
+            this.enableTextWrite = true;
+            this.enableTimeWrite = true;
             this.defaultFileName = fileName;
-            MakeNewFile(this.defaultFileName);       
+            this.isNeedNewLog = true;
+            //MakeNewFile(this.defaultFileName);       
         }
 
         public event FileSystemEventHandler GotLogChange;
@@ -90,7 +91,7 @@ namespace Egse.Utilites
         {
             get
             {
-                return new FileInfo(FileName).Length;
+                return !string.IsNullOrEmpty(FileName) ? new FileInfo(FileName).Length : 0;
             }
         }
 
@@ -108,17 +109,20 @@ namespace Egse.Utilites
             }
 
             set
-            {
-                if (this.isNeedNewLog)
+            {                
+                if (this.enableTextWrite)
                 {
-                    this.isNeedNewLog = false;
-                    this.streamWriter.Close();
-                    MakeNewFile(this.defaultFileName);
-                }
+                    if (this.isNeedNewLog)
+                    {
+                        this.isNeedNewLog = false;
+                        if (null != this.streamWriter)
+                        {
+                            this.streamWriter.Close();
+                        }
+                        MakeNewFile(this.defaultFileName);
+                    }
 
-                if (_enableTextWrite)
-                {
-                    if (_enableTimeWrite)
+                    if (this.enableTimeWrite)
                     {
                         this.logTime = DateTime.Now;
                         this.streamWriter.Write("{0:d2}:{1:d2}:{2:d2}:{3:d3} ", this.logTime.Hour, this.logTime.Minute, this.logTime.Second, this.logTime.Millisecond);
@@ -136,16 +140,16 @@ namespace Egse.Utilites
         /// Получает или задает значение, показывающее, можно ли производить запись текста в log-файл.
         /// По умолчанию: разрешена.
         /// </summary>
-        public bool LogEnable
+        public bool Enabled
         {
             get
             {
-                return _enableTextWrite;
+                return this.enableTextWrite;
             }
 
             set
             {
-                _enableTextWrite = value; 
+                this.enableTextWrite = value; 
             }
         }
 
@@ -157,12 +161,12 @@ namespace Egse.Utilites
         {
             get 
             {
-                return _enableTimeWrite;
+                return this.enableTimeWrite;
             }
 
             set 
             {
-                _enableTimeWrite = value;
+                this.enableTimeWrite = value;
             }
         }        
 
@@ -306,7 +310,7 @@ namespace Egse.Utilites
             {
                 foreach (TxtLogger tl in txtLoggers)
                 {
-                    tl.LogEnable = value;
+                    tl.Enabled = value;
                 }
             }
         }

@@ -1139,6 +1139,8 @@ namespace Egse.Devices
         public EgseBukNotify()
         {
             IsConnected = false;
+            LogsClass.LogUSB.Enabled = false;
+            LogsClass.LogErrors.Enabled = false;
 
             _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogEncoder, false, false);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
