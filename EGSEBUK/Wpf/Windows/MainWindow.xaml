@@ -224,9 +224,11 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <StackPanel Margin="1" Background="White">
-                                <RadioButton HorizontalContentAlignment="Center"
+                                <RadioButton x:Name="AutoControlSet"
+                                    HorizontalContentAlignment="Center"
                                              Content="Автоматическое"
-                                             GroupName="control"
+                                             GroupName="cnt"
+                                             IsChecked="{Binding IsIssueAutoShutter, Mode=OneWay}"
                                              TabIndex="9" />
                             </StackPanel>
                             <StackPanel Grid.Column="2"
@@ -235,8 +237,8 @@
                                 <RadioButton x:Name="ManualControlSet"
                                              HorizontalContentAlignment="Center"
                                              Content="Ручное"
-                                             GroupName="control"
-                                             IsChecked="{Binding IsIssueManualShutter}"
+                                             GroupName="cnt"
+                                             IsChecked="{Binding IsIssueManualShutter }"
                                              TabIndex="10" />
                             </StackPanel>
                         </Grid>

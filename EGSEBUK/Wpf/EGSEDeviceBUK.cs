@@ -1348,6 +1348,14 @@ namespace Egse.Devices
             }
         }
 
+        public bool IsIssueAutoShutter
+        {
+            get
+            {
+                return !this.isIssueManualShutter;
+            }
+        }
+
         /// <summary>
         /// Получает или задает значение, показывающее, что [ручное управление датчиками затворов включено].
         /// </summary>
@@ -1357,12 +1365,12 @@ namespace Egse.Devices
         public bool IsIssueManualShutter 
         { 
             get
-            {
+            {                
                 return this.isIssueManualShutter;
             }
 
             set 
-            {
+            {               
                 if (value == this.isIssueManualShutter)
                 { 
                     return;
@@ -1370,7 +1378,8 @@ namespace Egse.Devices
 
                 this.isIssueManualShutter = value;
                 ControlValuesList[Global.Shutters].SetProperty(Global.Shutters.Auto, Convert.ToInt32(!value));
-                this.OnPropertyChanged();
+                OnPropertyChanged();
+                OnPropertyChanged(() => this.IsIssueAutoShutter); 
             } 
         }
 

@@ -28,6 +28,8 @@ namespace Egse.Defaults
             : this()
         {
             this.Owner = parent;
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();                                        
+            version.Content = assembly.GetName().Version.ToString();
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿<Window x:Class="Egse.Defaults.AboutBoxSimple"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="{Binding Mode=OneTime, Source={StaticResource aboutProvider}, XPath=Title}"
+        xmlns:local="clr-namespace:Egse.Defaults"
+        x:Class="Egse.Defaults.AboutBoxSimple"
         x:Uid="idAboutBox"
         Style="{DynamicResource AboutDialogStyle}"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style x:Key="AboutDialogStyle"
-               TargetType="Window">
+               TargetType="{x:Type Window}">
             <Setter Property="Height"
                     Value="Auto" />
             <Setter Property="Width"
@@ -43,7 +43,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style TargetType="Label">
+        <Style TargetType="{x:Type Label}">
             <Setter Property="Padding"
                     Value="0" />
         </Style>
@@ -55,7 +55,7 @@
         <Style x:Key="LinkLabelStyle">
             <Setter Property="Control.Padding"
                     Value="0" />
-            <Setter Property="Control.VerticalAlignment"
+            <Setter Property="FrameworkElement.VerticalAlignment"
                     Value="Center" />
         </Style>
         <Style x:Key="ReadOnlyDescStyle"
@@ -85,6 +85,11 @@
                     Value="True" />
         </Style>
     </Window.Resources>
+    <Window.Title>
+        <Binding Mode="OneTime"
+                 Source="{StaticResource aboutProvider}"
+                 XPath="Title" />
+    </Window.Title>
     <StackPanel x:Uid="clientArea"
                 Style="{StaticResource BackgroundStyle}">
         <StackPanel x:Uid="displayArea"
@@ -100,7 +105,8 @@
                        Content="Версия - " />
                 <Label x:Name="version"
                        x:Uid="version"
-                       Content="{Binding Mode=OneTime, XPath=Version}" />
+                      />
+                
             </StackPanel>
             <Label x:Name="copyright"
                    x:Uid="copyright"
@@ -126,8 +132,7 @@
                         Content="OK" />
                 <Label x:Name="productLink"
                        x:Uid="productLink"
-                       Style="{StaticResource LinkLabelStyle}">                   
-                </Label>
+                       Style="{StaticResource LinkLabelStyle}" />
             </DockPanel>
         </StackPanel>
     </StackPanel>

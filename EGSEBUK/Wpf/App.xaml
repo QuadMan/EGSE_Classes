@@ -6,18 +6,20 @@
              StartupUri="Windows/MainWindow.xaml">
     <Application.Resources>
         <XmlDataProvider x:Key="aboutProvider"
-                         XPath="ApplicationInfo"
                          IsAsynchronous="False"
-                         IsInitialLoadEnabled="True">
+                         IsInitialLoadEnabled="True"
+                         XPath="ApplicationInfo">
             <x:XData>
                 <ApplicationInfo xmlns="">
                     <Title>О программе</Title>
                     <Product>КИА БУК ПО</Product>
                     <Company>ИКИ РАН</Company>
                     <Copyright>Copyright © 2014 - IKI RSSI, laboratory №711</Copyright>
-                    <Description>КИА БУК ПО предназначена для проведения наземной экспериментальной отработки блока БУК.
-КИА БУК должна имитировать работу СЭС и ТМС КА, приборов КНА проекта «Спектр-УФ».</Description>
-                    <Version>1.0</Version>                  
+                    <Description>
+                        КИА БУК ПО предназначена для проведения наземной экспериментальной отработки блока БУК.
+                        КИА БУК должна имитировать работу СЭС и ТМС КА, приборов КНА проекта «Спектр-УФ».
+                    </Description>
+
                 </ApplicationInfo>
             </x:XData>
         </XmlDataProvider>
