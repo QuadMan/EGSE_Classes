@@ -3592,29 +3592,29 @@ namespace Egse.Cyclogram.Command
                     {
                         x.HsiNotify.IsIssueReady1 = true;
                     }
-                    else if (en.HasFlag(KvvImitTransaction.Busy))
+                    if (en.HasFlag(KvvImitTransaction.Busy))
                     {
                         x.HsiNotify.IsIssueBusy1 = true;
                     }
-                    else if (en.HasFlag(KvvImitTransaction.Me))
+                    if (en.HasFlag(KvvImitTransaction.Me))
                     {
                         x.HsiNotify.IsIssueMe1 = true;
                     }
-                    else if (!en.HasFlag(KvvImitTransaction.Ready))
+                    if (!en.HasFlag(KvvImitTransaction.Ready))
                     {
                         if (x.HsiNotify.IsIssueReady1)
                         {
                             x.HsiNotify.IsIssueReady1 = false;
                         }
                     }
-                    else if (!en.HasFlag(KvvImitTransaction.Busy))
+                    if (!en.HasFlag(KvvImitTransaction.Busy))
                     {
                         if (x.HsiNotify.IsIssueBusy1)
                         {
                             x.HsiNotify.IsIssueBusy1 = false;
                         }
                     }
-                    else if (!en.HasFlag(KvvImitTransaction.Me))
+                    if (!en.HasFlag(KvvImitTransaction.Me))
                     {
                         if (x.HsiNotify.IsIssueMe1)
                         {
@@ -3654,29 +3654,29 @@ namespace Egse.Cyclogram.Command
                     {
                         x.HsiNotify.IsIssueReady2 = true;
                     }
-                    else if (en.HasFlag(KvvImitTransaction.Busy))
+                    if (en.HasFlag(KvvImitTransaction.Busy))
                     {
                         x.HsiNotify.IsIssueBusy2 = true;
                     }
-                    else if (en.HasFlag(KvvImitTransaction.Me))
+                    if (en.HasFlag(KvvImitTransaction.Me))
                     {
                         x.HsiNotify.IsIssueMe2 = true;
                     }
-                    else if (!en.HasFlag(KvvImitTransaction.Ready))
+                    if (!en.HasFlag(KvvImitTransaction.Ready))
                     {
                         if (x.HsiNotify.IsIssueReady2)
                         {
                             x.HsiNotify.IsIssueReady2 = false;
                         }
                     }
-                    else if (!en.HasFlag(KvvImitTransaction.Busy))
+                    if (!en.HasFlag(KvvImitTransaction.Busy))
                     {
                         if (x.HsiNotify.IsIssueBusy2)
                         {
                             x.HsiNotify.IsIssueBusy2 = false;
                         }
                     }
-                    else if (!en.HasFlag(KvvImitTransaction.Me))
+                    if (!en.HasFlag(KvvImitTransaction.Me))
                     {
                         if (x.HsiNotify.IsIssueMe2)
                         {
