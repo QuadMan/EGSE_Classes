@@ -1141,6 +1141,7 @@ namespace Egse.Devices
             IsConnected = false;
             LogsClass.LogUSB.Enabled = false;
             LogsClass.LogErrors.Enabled = false;
+            LogsClass.LogEncoder.Enabled = false;
 
             _decoderUSB = new ProtocolUSB7C6E(null, LogsClass.LogEncoder, false, false);
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(OnMessageFunc);
@@ -3939,6 +3940,7 @@ namespace Egse.Devices
 
             public override void UpdateProperties()
             {
+                OnPropertyChanged(() => this.RawDataFileSizeFormated);
                 OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 
