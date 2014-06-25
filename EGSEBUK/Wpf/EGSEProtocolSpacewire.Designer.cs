@@ -79,6 +79,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;EEP=0x{0}&gt;.
+        /// </summary>
+        internal static string eErrorMark {
+            get {
+                return ResourceManager.GetString("eErrorMark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Размер кадра spacewire меньше 4 байт!.
         /// </summary>
         internal static string eSmallSpacewireData {
@@ -178,7 +187,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to : ({0}d{3}) {1} [{2}].
+        ///   Looks up a localized string similar to : ({0}d{3}{4}) {1} [{2}].
         /// </summary>
         internal static string stSptpMsgToString {
             get {
@@ -205,7 +214,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to : ({0}d{4}) {1} [{2}] {3}.
+        ///   Looks up a localized string similar to : ({0}d{4}{5}) {1} [{2}] {3}.
         /// </summary>
         internal static string stTkMsgToString {
             get {
@@ -232,7 +241,7 @@ namespace Wpf {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to : ({0}d{4}) {1} [{2}] {3}.
+        ///   Looks up a localized string similar to : ({0}d{4}{5}) {1} [{2}] {3}.
         /// </summary>
         internal static string stTmMsgToString {
             get {

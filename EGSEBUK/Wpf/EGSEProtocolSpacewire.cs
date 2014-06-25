@@ -1033,7 +1033,7 @@ namespace Egse.Protocols
         /// </returns>
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]", BadSize);
+            return string.Format(Resource.Get(@"stTmMsgToString"), this.DataLen, this.TmInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? string.Empty : "CRC error, [" + this.NeededCrc.ToString("X4") + "]", base.BadSize, base.ErrorMark);
         }
 
         /// <summary>
@@ -1794,7 +1794,7 @@ namespace Egse.Protocols
         /// </returns>
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]", BadSize);
+            return string.Format(Resource.Get(@"stTkMsgToString"), this.DataLen, this.TkInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.Crc == this.NeededCrc ? " " : "CRC error, [" + this.NeededCrc.ToString("X4") + "]", base.BadSize, base.ErrorMark);
         }
 
         /// <summary>
@@ -2190,6 +2190,14 @@ namespace Egse.Protocols
             }
         }
 
+        protected string ErrorMark
+        {
+            get
+            {
+                return 0 == this.Error ? string.Empty : string.Format(Resource.Get(@"eErrorMark"), this.Error.ToString("X2"));
+            }
+        }
+
         /// <summary>
         /// Получает данные сообщения.
         /// </summary>
@@ -2277,7 +2285,7 @@ namespace Egse.Protocols
         /// </returns>
         public override string ToString()
         {
-            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), BadSize);
+            return string.Format(Resource.Get(@"stSptpMsgToString"), this.DataLen, this.SptpInfo.ToString(false), Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.BadSize, this.ErrorMark);
         }
 
         /// <summary>

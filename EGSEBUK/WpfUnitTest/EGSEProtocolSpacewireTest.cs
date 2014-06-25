@@ -83,7 +83,7 @@ namespace Egse.Protocols.UnitTest
             buf[buf.Length - 2] = (byte)(Crc16.Get(testCrc, testCrc.Length) >> 8);
             buf[buf.Length - 1] = (byte)Crc16.Get(testCrc, testCrc.Length);
             SpacewireTmMsgEventArgs msg = new SpacewireTmMsgEventArgs(buf, 0x00, 0x00, 0x00);
-
+            //msg.Error = 0xFF;
             Assert.AreEqual((buf[buf.Length - 2] << 8) | buf[buf.Length - 1], msg.Crc, "Ошибка в парсинге CRC");
 
             Assert.AreEqual(Crc16.Get(testCrc, testCrc.Length), msg.Crc, "Ошибка в расчете CRC");
@@ -91,6 +91,7 @@ namespace Egse.Protocols.UnitTest
             Assert.AreEqual(msg.NeededCrc, msg.Crc, "Ошибка в расчете CRC (внутренний метод)");
 
             string str = msg.TmInfo.ToString(false);
+            string str2 = msg.ToString();
         }
 
         /// <summary>
