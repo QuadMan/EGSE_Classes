@@ -54,15 +54,8 @@ namespace Egse.Defaults
         public void OnHsiMsg(object sender, HsiMsgEventArgs msg)
         {
             new { msg }.CheckNotNull(); 
-            string hsiMsg;
-            if (msg.Data.Length > 30)
-            {
-                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
-            }
-            else
-            {
-                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
-            }
+
+            string hsiMsg = this.intfEGSE.DeviceTime.ToString() + msg.ToString();
 
             SendToMonitor(hsiMsg);
         }
@@ -75,15 +68,8 @@ namespace Egse.Defaults
         public void OnHsiCmdMsg(object sender, HsiMsgEventArgs msg)
         {
             new { msg }.CheckNotNull();
-            string hsiMsg;
-            if (msg.Data.Length > 30)
-            {
-                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data, isSmart: true);
-            }
-            else
-            {
-                hsiMsg = this.intfEGSE.DeviceTime.ToString() + ": [" + msg.Info.Line.Description() + "] (" + msg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(msg.Data);
-            }
+
+            string hsiMsg = this.intfEGSE.DeviceTime.ToString() + msg.ToString();
 
             SendToMonitorCmd(hsiMsg);
         }

@@ -123,4 +123,7 @@
   <data name="eSmallHsiData" xml:space="preserve">
     <value>Размер кадра hsi меньше 4 байт!</value>
   </data>
+  <data name="stHsiMsgToString" xml:space="preserve">
+    <value>: [{0}] ({1}d) {2}</value>
+  </data>
 </root>

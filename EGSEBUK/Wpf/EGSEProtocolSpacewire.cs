@@ -132,7 +132,7 @@ namespace Egse.Protocols
                     {
                         if (_isEmptyProto && SpacewireEmptyProtoMsgEventArgs.Test(arr))
                         {
-                            pack = new SpacewireEmptyProtoMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
+                            pack = new SpacewireEmptyProtoMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0], (byte)msg.Addr);
                         }
                         else if (SpacewireTkMsgEventArgs.Test(arr))
                         {
@@ -2053,13 +2053,16 @@ namespace Egse.Protocols
         /// <param name="time2">Значение TimeTick2.</param>
         /// <param name="error">Значение Error.</param>
         /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
-        public SpacewireEmptyProtoMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
+        public SpacewireEmptyProtoMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00, byte addr = 0x00)
             : base(data)
         {
             if (0 >= data.Length)
             {
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
             }
+
+            this.Addr = addr;
+            this.Error = error;
         }
 
         /// <summary>
@@ -2072,6 +2075,10 @@ namespace Egse.Protocols
                 return base.Data;
             }
         }
+
+        public byte Error { get; set; }
+
+        public byte Addr { get; set; }
 
         /// <summary>
         /// "Сырая" проверка на принадлежность к empty-сообщению.
@@ -2129,6 +2136,7 @@ namespace Egse.Protocols
             try
             { 
                 this.msgInfo = Converter.MarshalTo<Sptp>(data, out this.data);
+                this.Error = error;
             }
             catch (Exception e)
             {

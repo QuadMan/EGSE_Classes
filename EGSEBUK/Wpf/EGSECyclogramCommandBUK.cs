@@ -2351,7 +2351,7 @@ namespace Egse.Cyclogram.Command
                 return !isParamCountErr;
             }
 
-            if (!IncludeTest<SwitcherBm4Imit>(cmdParams[1], out errParam, ref uniParam))
+            if (!IncludeTest<SwitcherBm4Imit, ExchangeBm4Imit>(cmdParams[1], out errParam, ref uniParam))
             {
                 errString = string.Format(Resource.Get(@"eArg2"), errParam);
                 return false;
@@ -2665,27 +2665,26 @@ namespace Egse.Cyclogram.Command
             {
                 return !isParamCountErr;
             }
-            
-            if (!IncludeTest<Activate, HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
-            {
-                errString = string.Format(Resource.Get(@"eArg1"), errParam);
-                return false;
-            }
+                        
             // задаемся минимальным количеством параметров для команды (1).
             isParamCountErr = false;
 
             if (2 > cmdParams.Length)
             {
+                if (!IncludeTest<Activate, HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
+                {
+                    errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                    return false;
+                }
+
                 return !isParamCountErr;
             }
 
-            //if (!IncludeTest<HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
-            //{
-            //    errString = string.Format(Resource.Get(@"eArg1"), errParam);
-            //    return false;
-            //}
-
-
+            if (!IncludeTest<Activate, HexPackageBukKvvImit>(cmdParams[0], out errParam, ref uniParam))
+            {
+                errString = string.Format(Resource.Get(@"eArg1"), errParam);
+                return false;
+            }
 
             if (!IncludeTest<HexPackageBukKvvImit>(cmdParams[1], out errParam, ref uniParam))
             {
@@ -3066,17 +3065,17 @@ namespace Egse.Cyclogram.Command
             /// <summary>
             /// The line a
             /// </summary>
-            private static readonly Action<EgseBukNotify> LineA = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = false; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = false; });
+            private static readonly Action<EgseBukNotify> LineA = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.A; PowerTransactionExec(x, transaction);/* x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = false; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = false;*/ });
           
             /// <summary>
             /// The line b
             /// </summary>
-            private static readonly Action<EgseBukNotify> LineB = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = false; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = false; x.TelemetryNotify.IsBundLineB = true; });
+            private static readonly Action<EgseBukNotify> LineB = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.B; PowerTransactionExec(x, transaction);/*x.TelemetryNotify.IsBuskLineA = false; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = false; x.TelemetryNotify.IsBundLineB = true;*/ });
            
             /// <summary>
             /// The line ab
             /// </summary>
-            private static readonly Action<EgseBukNotify> LineAB = new Action<EgseBukNotify>(x => { x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = true; });
+            private static readonly Action<EgseBukNotify> LineAB = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.A; transaction |= (ushort)PowerTransaction.B; PowerTransactionExec(x, transaction);/*x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = true;*/ });
             
             /// <summary>
             /// The control automatic
@@ -3416,6 +3415,10 @@ namespace Egse.Cyclogram.Command
                 /// </summary>
                 Off = 0x20,
 
+                A = 0x40,
+
+                B = 0x80,
+
                 /// <summary>
                 /// The busk set1 on
                 /// </summary>
@@ -3695,6 +3698,18 @@ namespace Egse.Cyclogram.Command
             {
                 string msgOnError = string.Format(Resource.Get(@"eDuplicate"), ((PowerTransaction)ta).Description());
                 bool err = false;
+                Enum en = (PowerTransaction)ta;
+                if (en.HasFlag(PowerTransaction.Busk))
+                {
+                    x.TelemetryNotify.IsBuskLineA = en.HasFlag(PowerTransaction.A);
+                    x.TelemetryNotify.IsBuskLineB = en.HasFlag(PowerTransaction.B);
+                }
+                else if (en.HasFlag(PowerTransaction.Bund))
+                {
+                    x.TelemetryNotify.IsBundLineA = en.HasFlag(PowerTransaction.A);
+                    x.TelemetryNotify.IsBundLineB = en.HasFlag(PowerTransaction.B);
+                }
+
                 switch ((PowerTransaction)ta)
                 {
                     case PowerTransaction.BuskSet1On:

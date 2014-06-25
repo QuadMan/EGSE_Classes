@@ -22,7 +22,7 @@ namespace Egse.Defaults
         /// <summary>
         /// Интерфейс управления прибором.
         /// </summary>
-        private EgseBukNotify _intfEGSE;
+        private EgseBukNotify intfEGSE;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SpacewireWindow" />.
@@ -38,10 +38,10 @@ namespace Egse.Defaults
         /// <param name="intfEGSE">Интерфейс управления прибором.</param>
         public void Init(EgseBukNotify intfEGSE)
         {
-            _intfEGSE = intfEGSE;
-            _intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
-            DataContext = _intfEGSE;
-            GridSpacewire.DataContext = _intfEGSE.Spacewire2Notify;
+            this.intfEGSE = intfEGSE;
+            this.intfEGSE.GotSpacewire2Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
+            DataContext = this.intfEGSE;
+            GridSpacewire.DataContext = this.intfEGSE.Spacewire2Notify;
             MonitorList.DataContext = new MonitorListViewModel();
         }
 
@@ -53,9 +53,8 @@ namespace Egse.Defaults
         public void OnSpacewireMsg(object sender, BaseMsgEventArgs msg)
         {
             new { msg }.CheckNotNull();
-            string spacewireMsg = string.Empty;
 
-            spacewireMsg = _intfEGSE.DeviceTime.ToString() + msg.ToString();
+            string spacewireMsg = this.intfEGSE.DeviceTime.ToString() + msg.ToString();
 
             SendToMonitor(spacewireMsg);            
         }
@@ -78,7 +77,7 @@ namespace Egse.Defaults
                 }
             }
 
-            if (_intfEGSE.Spacewire2Notify.IsSaveTxtData)
+            if (this.intfEGSE.Spacewire2Notify.IsSaveTxtData)
             {
                 LogsClass.LogSpacewire2.LogText = txtMsg;
             }

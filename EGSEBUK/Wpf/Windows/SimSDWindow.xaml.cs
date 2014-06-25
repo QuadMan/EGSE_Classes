@@ -18,7 +18,7 @@ namespace Egse.Defaults
         /// <summary>
         /// Интерфейс управления прибором.
         /// </summary>
-        private EgseBukNotify _intfEGSE;
+        private EgseBukNotify intfEGSE;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SimSDWindow" />.
@@ -34,9 +34,9 @@ namespace Egse.Defaults
         /// <param name="intfEGSE">Интерфейс управления прибором.</param>
         public void Init(EgseBukNotify intfEGSE)
         {
-            _intfEGSE = intfEGSE;
-            DataContext = _intfEGSE;
-            GridSimSD.DataContext = _intfEGSE.Spacewire4Notify;
+            this.intfEGSE = intfEGSE;
+            DataContext = this.intfEGSE;
+            GridSimSD.DataContext = this.intfEGSE.Spacewire4Notify;
         }
 
         /// <summary>

@@ -13,6 +13,7 @@ namespace Egse.Protocols
     using System.Runtime.InteropServices;
     using System.Windows;
     using Egse.Utilites;
+    using Egse.Defaults;
 
     /// <summary>
     /// Класс декодера по протоколу ВСИ.
@@ -278,6 +279,11 @@ namespace Egse.Protocols
         public static new bool Test(byte[] data)
         {
             return null != data ? 1 < data.Length : false;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stHsiMsgToString"), this.Info.Line.Description(), this.Data.Length, Converter.ByteArrayToHexStr(this.Data, isSmart: true));
         }
 
         /// <summary>

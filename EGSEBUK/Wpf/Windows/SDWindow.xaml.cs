@@ -57,14 +57,7 @@ namespace Egse.Defaults
             if (msg is SpacewireEmptyProtoMsgEventArgs)
             {
                 SpacewireEmptyProtoMsgEventArgs emptyMsg = msg as SpacewireEmptyProtoMsgEventArgs;
-                if (emptyMsg.Data.Length > 30)
-                {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + emptyMsg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(emptyMsg.Data, isSmart: true);
-                }
-                else
-                {
-                    spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + emptyMsg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(emptyMsg.Data);
-                }
+                spacewireMsg = _intfEGSE.DeviceTime.ToString() + (emptyMsg.Addr == (byte)Egse.Devices.EgseBukNotify.Spacewire3.Addr.InData ? "<" : ">") + " (" + emptyMsg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(emptyMsg.Data, isSmart: true) + (0 == emptyMsg.Error ? string.Empty : " Ошибка: 0x" + emptyMsg.Error.ToString("X2"));
             }
             else if (msg is SpacewireErrorMsgEventArgs)
             {
