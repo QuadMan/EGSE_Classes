@@ -128,7 +128,12 @@ namespace Egse.Defaults
                 {
                     MessageBox.Show(exc.Message);
                 }
-            }   
+            }
+
+            if (this.intfEGSE.HsiNotify.IsSaveTxtData)
+            {
+                LogsClass.LogHsi.LogText = txtMsg;
+            }  
         }
 
         /// <summary>

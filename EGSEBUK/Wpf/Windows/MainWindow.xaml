@@ -436,7 +436,8 @@
                                    Content="закрытия"
                                    Template="{StaticResource FlatLabel}" />
                         </Grid>
-                        <Label Content="Телеметрия каналов БС" Style="{StaticResource FlatHeader}" />
+                        <Label Content="Телеметрия каналов БС" Style="{StaticResource FlatHeader}"
+                               MouseDoubleClick="Label_MouseDoubleClick" />
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition />
@@ -721,6 +722,10 @@
                            HorizontalAlignment="Right"
                            Padding="1">
                 <StackPanel Orientation="Horizontal">
+                    <Label x:Name="RTMonTele"
+                           Content="{Binding DeviceRTMonTele}"
+                           Template="{StaticResource FlatLabel}"
+                           Visibility="Hidden" />
                     <Label Content="{Binding DeviceSpeed, Converter={StaticResource DeviceSpeedToStrConverter}}" Template="{StaticResource FlatLabel}" />
                     <Label Content="{Binding DeviceTrafic, Converter={StaticResource DeviceTraficToStrConverter}}" Template="{StaticResource FlatLabel}" />
                     <Label Content="{Binding DeviceTime, Converter={StaticResource EgseTimeToStrConverter}}" Template="{StaticResource FlatLabel}" />

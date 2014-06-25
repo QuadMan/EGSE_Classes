@@ -159,4 +159,7 @@
   <data name="eNotSendCmd" xml:space="preserve">
     <value>Команду не удалось отправить!</value>
   </data>
+  <data name="stRTMonTele" xml:space="preserve">
+    <value>Телеметрия: 0x</value>
+  </data>
 </root>

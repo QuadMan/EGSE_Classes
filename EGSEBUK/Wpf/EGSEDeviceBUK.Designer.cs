@@ -133,6 +133,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Телеметрия: 0x.
+        /// </summary>
+        internal static string stRTMonTele {
+            get {
+                return ResourceManager.GetString("stRTMonTele", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to sdbuk.
         /// </summary>
         internal static string stSdLogName {

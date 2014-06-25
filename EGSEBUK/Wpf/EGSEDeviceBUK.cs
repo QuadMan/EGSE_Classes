@@ -1749,6 +1749,14 @@ namespace Egse.Devices
             }
         }
 
+        public string DeviceRTMonTele
+        {
+            get
+            {
+                return Resource.Get(@"stRTMonTele") + ControlValuesList[Global.Telemetry].UsbValue.ToString("X8");
+            }
+        }
+
         /// <summary>
         /// Получает значение трафика по USB.
         /// </summary>
@@ -2792,7 +2800,7 @@ namespace Egse.Devices
             /// <summary>
             /// Сохранять в текстовый лог-файл.
             /// </summary>
-            private bool isSaveTxtData = true;
+            private bool isSaveTxtData;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Hsi" />.
@@ -2801,6 +2809,7 @@ namespace Egse.Devices
             public Hsi(EgseBukNotify owner)
                 : base(owner)
             {
+                this.IsSaveTxtData = true;
                 LogsClass.LogHsi.GotLogChange += (sender, e) => OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 
@@ -7233,7 +7242,7 @@ namespace Egse.Devices
             /// <summary>
             /// Сохранять ли текстовый лог-файл.
             /// </summary>
-            private bool isSaveTxtData = true;
+            private bool isSaveTxtData;
 
             /// <summary>
             /// Словарь для корректного подсчета счетчика телекоманд.
@@ -7253,6 +7262,7 @@ namespace Egse.Devices
             public Spacewire2(EgseBukNotify owner)
                 : base(owner)
             {
+                this.IsSaveTxtData = true;
                 counterIcd = new Dictionary<short, AutoCounter>();
                 LogsClass.LogSpacewire2.GotLogChange += (sender, e) => OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
@@ -8615,7 +8625,7 @@ namespace Egse.Devices
             /// <summary>
             /// Сохранять ли текстовый лог-файл.
             /// </summary>
-            private bool isSaveTxtData = true;
+            private bool isSaveTxtData;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire3" />.
@@ -8624,6 +8634,7 @@ namespace Egse.Devices
             public Spacewire3(EgseBukNotify owner)
                 : base(owner)
             {
+                this.IsSaveTxtData = true;
                 LogsClass.LogSpacewire3.GotLogChange += (sender, e) => OnPropertyChanged(() => this.TxtDataFileSizeFormated);
             }
 

@@ -156,5 +156,10 @@ namespace Egse.Defaults
             AboutBoxSimple aboutBox = new AboutBoxSimple(this);
             aboutBox.ShowDialog();
         }
+
+        private void Label_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            RTMonTele.Visibility = Visibility.Hidden == RTMonTele.Visibility ? Visibility.Visible : Visibility.Hidden;
+        }
     }
 }
