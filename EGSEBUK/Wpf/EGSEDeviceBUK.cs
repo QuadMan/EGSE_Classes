@@ -9602,7 +9602,7 @@ namespace Egse.Devices
                     }
 
                     this.isIssueEEP = value;
-                    ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.Eep, Convert.ToInt32(value), false);
+                   // ControlValuesList[Global.Spacewire4.Record].SetProperty(Global.Spacewire4.Record.Eep, Convert.ToInt32(value), false);
                     OnPropertyChanged();
                 }
             }
@@ -9745,10 +9745,10 @@ namespace Egse.Devices
                             obj => 
                             { 
                                 IsIssuePackage = true; 
-                                if (IsIssueEep) 
+                               /* if (IsIssueEep) 
                                 { 
                                     IsIssueEep = false; 
-                                } 
+                                } */
                             }, 
                             obj => { return !IsRecordBusy; });
                     }
@@ -9860,7 +9860,7 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire4.Control].AddProperty(Global.Spacewire4.Control.TimeMark, 4, 1, Device.CmdSpacewire4Control, value => IsIssueTimeMark = 1 == value);
                 ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.EOPSend, 1, 1, delegate { }, value => IsIssueEOP = 1 == value);
                 ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.IssueAuto, 4, 1, delegate { }, value => IsIssueAuto = 1 == value);
-                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.Eep, 2, 1, delegate { }, value => IsIssueEep = 1 == value);
+                ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.Eep, 2, 1, delegate { }, delegate { } /*value => IsIssueEep = 1 == value*/);
                 ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.RecordBusy, 3, 1, delegate { }, value => IsRecordBusy = 1 == value);
                 ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.IssuePackage, 0, 1, Device.CmdSpacewire4Record, value => IsIssuePackage = 1 == value);
             }
