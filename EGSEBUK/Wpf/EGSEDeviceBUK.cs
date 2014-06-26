@@ -1199,7 +1199,7 @@ namespace Egse.Devices
             _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderHsi.OnMessageFunc);
 
             ControlValuesList.Add(Global.Shutters, new ControlValue());
-            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.Auto, 14, 1, Device.CmdAutoShutters, value => IsIssueManualShutter = !Convert.ToBoolean(value));
+            ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.Auto, 13, 1, Device.CmdAutoShutters, value => IsIssueManualShutter = !Convert.ToBoolean(value));
             ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesOpen, 10, 1, Device.CmdShutters, value => IssueUfesOpen = (SciDevState)value);
             ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.UfesClose, 8, 1, Device.CmdShutters, value => IssueUfesClose = (SciDevState)value);
             ControlValuesList[Global.Shutters].AddProperty(Global.Shutters.VufesOpen, 6, 1, Device.CmdShutters, value => IssueVufesOpen = (SciDevState)value);
