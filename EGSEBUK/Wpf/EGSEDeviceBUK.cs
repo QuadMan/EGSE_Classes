@@ -1018,22 +1018,22 @@ namespace Egse.Devices
         /// <summary>
         /// Экземпляр декодера протокола Spacewire.
         /// </summary>
-        private ProtocolSpacewire _decoderSpacewireBusk;
+        private ProtocolSpacewire decoderSpacewire2In;
 
         /// <summary>
         /// Экземпляр декодера протокола Spacewire.
         /// </summary>
-        private ProtocolSpacewire _decoderSpacewireBuk;
+        private ProtocolSpacewire decoderSpacewire2Out;
 
         /// <summary>
         /// Экземпляр декодера протокола Spacewire.
         /// </summary>
-        private ProtocolSpacewire _decoderSpacewireSDIn;
+        private ProtocolSpacewire decoderSpacewire3In;
 
         /// <summary>
         /// Экземпляр декодера протокола Spacewire.
         /// </summary>
-        private ProtocolSpacewire _decoderSpacewireSDOut;
+        private ProtocolSpacewire decoderSpacewire3Out;
 
         /// <summary>
         /// Экземпляр декодера протокола ВСИ.
@@ -1168,33 +1168,33 @@ namespace Egse.Devices
             UITestNotify = new UITest(this);
             UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
 
-            _decoderSpacewireBusk = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
-            _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
-            _decoderSpacewireBusk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
-            _decoderSpacewireBusk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = (byte)(e.TimeTickInfo.Value | Spacewire2Notify.BuskTickTime2); });
-            _decoderSpacewireBusk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime2 = e.TimeTickInfo.Value; });
-            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBusk.OnMessageFunc);
+            this.decoderSpacewire2In = new ProtocolSpacewire((uint)Spacewire2.Addr.Data, (uint)Spacewire2.Addr.End, (uint)Spacewire2.Addr.Time1, (uint)Spacewire2.Addr.Time2);
+            this.decoderSpacewire2In.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            this.decoderSpacewire2In.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
+            this.decoderSpacewire2In.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime1 = (byte)(e.TimeTickInfo.Value | Spacewire2Notify.BuskTickTime2); });
+            this.decoderSpacewire2In.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BuskTickTime2 = e.TimeTickInfo.Value; });
+            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(this.decoderSpacewire2In.OnMessageFunc);
 
-            _decoderSpacewireBuk = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
-            _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
-            _decoderSpacewireBuk.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
-            _decoderSpacewireBuk.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = (byte)(e.TimeTickInfo.Value | Spacewire2Notify.BukTickTime2); });
-            _decoderSpacewireBuk.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.TimeTickInfo.Value; });
-            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireBuk.OnMessageFunc);
+            this.decoderSpacewire2Out = new ProtocolSpacewire((uint)Spacewire2.Addr.BukData, (uint)Spacewire2.Addr.BukEnd, (uint)Spacewire2.Addr.BukTime1, (uint)Spacewire2.Addr.BukTime2);
+            this.decoderSpacewire2Out.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire2Msg);
+            this.decoderSpacewire2Out.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire2Notify.OnSpacewire2MsgRawSave);
+            this.decoderSpacewire2Out.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime1 = (byte)(e.TimeTickInfo.Value | Spacewire2Notify.BukTickTime2); });
+            this.decoderSpacewire2Out.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire2Notify.BukTickTime2 = e.TimeTickInfo.Value; });
+            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(this.decoderSpacewire2Out.OnMessageFunc);
 
-            _decoderSpacewireSDIn = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2, true);
-            _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
-            _decoderSpacewireSDIn.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
-            _decoderSpacewireSDIn.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime1 = e.TimeTickInfo.Value; });
-            _decoderSpacewireSDIn.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime2 = e.TimeTickInfo.Value; });
-            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDIn.OnMessageFunc);
+            this.decoderSpacewire3In = new ProtocolSpacewire((uint)Spacewire3.Addr.InData, (uint)Spacewire3.Addr.InEnd, (uint)Spacewire3.Addr.InTime1, (uint)Spacewire3.Addr.InTime2, true);
+            this.decoderSpacewire3In.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
+            this.decoderSpacewire3In.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
+            this.decoderSpacewire3In.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime1 = e.TimeTickInfo.Value; });
+            this.decoderSpacewire3In.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.BukTickTime2 = e.TimeTickInfo.Value; });
+            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(this.decoderSpacewire3In.OnMessageFunc);
 
-            _decoderSpacewireSDOut = new ProtocolSpacewire((uint)Spacewire3.Addr.OutData, (uint)Spacewire3.Addr.OutEnd, (uint)Spacewire3.Addr.OutTime1, (uint)Spacewire3.Addr.OutTime2, true);
-            _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
-            _decoderSpacewireSDOut.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
-            _decoderSpacewireSDOut.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime1 = e.TimeTickInfo.Value; });
-            _decoderSpacewireSDOut.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime2 = e.TimeTickInfo.Value; });
-            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(_decoderSpacewireSDOut.OnMessageFunc);
+            this.decoderSpacewire3Out = new ProtocolSpacewire((uint)Spacewire3.Addr.OutData, (uint)Spacewire3.Addr.OutEnd, (uint)Spacewire3.Addr.OutTime1, (uint)Spacewire3.Addr.OutTime2, true);
+            this.decoderSpacewire3Out.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewire3Msg);
+            this.decoderSpacewire3Out.GotSpacewireMsg += new ProtocolSpacewire.SpacewireMsgEventHandler(Spacewire3Notify.OnSpacewire3MsgRawSave);
+            this.decoderSpacewire3Out.GotSpacewireTimeTick1Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime1 = e.TimeTickInfo.Value; });
+            this.decoderSpacewire3Out.GotSpacewireTimeTick2Msg += new ProtocolSpacewire.SpacewireTimeTickMsgEventHandler((sender, e) => { Spacewire3Notify.SDTickTime2 = e.TimeTickInfo.Value; });
+            _decoderUSB.GotProtocolMsg += new ProtocolUSBBase.ProtocolMsgEventHandler(this.decoderSpacewire3Out.OnMessageFunc);
 
             _decoderHsi = new ProtocolHsi((uint)Hsi.Addr);
             _decoderHsi.GotHsiMsg += new ProtocolHsi.HsiMsgEventHandler(OnHsiMsg);
@@ -9337,7 +9337,7 @@ namespace Egse.Devices
             /// </summary>
             /// <param name="sender">The sender.</param>
             /// <param name="e">The <see cref="SpacewireSptpMsgEventArgs"/> instance containing the event data.</param>
-            public virtual void OnSpacewire3MsgRawSave(object sender, BaseMsgEventArgs e)
+            public virtual void OnSpacewire3MsgRawSave(object sender, BaseMsgEventArgs msg)
             {
                 if (null != this.rawDataStream)
                 {
@@ -9348,10 +9348,10 @@ namespace Egse.Devices
 
                     if (this.rawDataStream.CanWrite)
                     {
-                        if (e is SpacewireSptpMsgEventArgs)
+                        if (msg is SpacewireEmptyProtoMsgEventArgs)
                         {
-                            SpacewireSptpMsgEventArgs sptp = e as SpacewireSptpMsgEventArgs;
-                            this.rawDataTask = this.rawDataStream.WriteAsync(sptp.Data, 0, sptp.Data.Length);
+                            SpacewireEmptyProtoMsgEventArgs spacewireMsg = msg as SpacewireEmptyProtoMsgEventArgs;
+                            this.rawDataTask = this.rawDataStream.WriteAsync(spacewireMsg.Data, 0, spacewireMsg.Data.Length);
                             OnPropertyChanged(() => this.RawDataFileSizeFormated);
                         }
                     }
