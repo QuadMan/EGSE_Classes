@@ -3065,17 +3065,17 @@ namespace Egse.Cyclogram.Command
             /// <summary>
             /// The line a
             /// </summary>
-            private static readonly Action<EgseBukNotify> LineA = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.A; PowerTransactionExec(x, transaction);/* x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = false; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = false;*/ });
+            private static readonly Action<EgseBukNotify> LineA = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.A; PowerTransactionExec(x, transaction); });
           
             /// <summary>
             /// The line b
             /// </summary>
-            private static readonly Action<EgseBukNotify> LineB = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.B; PowerTransactionExec(x, transaction);/*x.TelemetryNotify.IsBuskLineA = false; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = false; x.TelemetryNotify.IsBundLineB = true;*/ });
+            private static readonly Action<EgseBukNotify> LineB = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.B; PowerTransactionExec(x, transaction); });
            
             /// <summary>
             /// The line ab
             /// </summary>
-            private static readonly Action<EgseBukNotify> LineAB = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.A; transaction |= (ushort)PowerTransaction.B; PowerTransactionExec(x, transaction);/*x.TelemetryNotify.IsBuskLineA = true; x.TelemetryNotify.IsBuskLineB = true; x.TelemetryNotify.IsBundLineA = true; x.TelemetryNotify.IsBundLineB = true;*/ });
+            private static readonly Action<EgseBukNotify> LineAB = new Action<EgseBukNotify>(x => { transaction |= (ushort)PowerTransaction.A; transaction |= (ushort)PowerTransaction.B; PowerTransactionExec(x, transaction); });
             
             /// <summary>
             /// The control automatic
@@ -3496,7 +3496,8 @@ namespace Egse.Cyclogram.Command
                         x.IsIssueManualShutter = true;
                         x.IssueUfesOpen = EgseBukNotify.SciDevState.Off;
                     }
-                    else if (en.HasFlag(ShutterTransaction.SensCloseOn))
+
+                    if (en.HasFlag(ShutterTransaction.SensCloseOn))
                     {
                         x.IsIssueManualShutter = true;
                         x.IssueUfesClose = EgseBukNotify.SciDevState.On;
@@ -3519,7 +3520,8 @@ namespace Egse.Cyclogram.Command
                         x.IsIssueManualShutter = true;
                         x.IssueVufesOpen = EgseBukNotify.SciDevState.Off;
                     }
-                    else if (en.HasFlag(ShutterTransaction.SensCloseOn))
+                    
+                    if (en.HasFlag(ShutterTransaction.SensCloseOn))
                     {
                         x.IsIssueManualShutter = true;
                         x.IssueVufesClose = EgseBukNotify.SciDevState.On;
@@ -3542,7 +3544,8 @@ namespace Egse.Cyclogram.Command
                         x.IsIssueManualShutter = true;
                         x.IssueSdshOpen = EgseBukNotify.SciDevState.Off;
                     }
-                    else if (en.HasFlag(ShutterTransaction.SensCloseOn))
+                    
+                    if (en.HasFlag(ShutterTransaction.SensCloseOn))
                     {
                         x.IsIssueManualShutter = true;
                         x.IssueSdshClose = EgseBukNotify.SciDevState.On;
