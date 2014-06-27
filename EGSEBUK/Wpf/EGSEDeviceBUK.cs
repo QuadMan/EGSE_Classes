@@ -878,17 +878,7 @@ namespace Egse.Devices
         /// <param name="value">Бит управления.</param>
         internal void CmdAutoShutters(int value)
         {
-            byte x;
-            if (0 != value)
-            {
-                x = 1;
-            }
-            else
-            {
-                x = 0;
-            }
-
-            SendToUSB(ShutterAutoAddr, new byte[1] { x });
+            SendToUSB(ShutterAutoAddr, new byte[1] { Convert.ToByte(IsBitSet(value, 13)) });
         }
 
         /// <summary>
