@@ -150,6 +150,9 @@
   <data name="eUnknowSpacewireData" xml:space="preserve">
     <value>Неизвестный кадр spacewire!</value>
   </data>
+  <data name="stEmptyProtoMsgToString" xml:space="preserve">
+    <value>: ({0}d) [{1}] {2}</value>
+  </data>
   <data name="stErrorMsgToString" xml:space="preserve">
     <value>: ({0}d) [{1}] Ошибка: {2}</value>
   </data>

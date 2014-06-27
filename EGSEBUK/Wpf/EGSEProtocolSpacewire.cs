@@ -132,7 +132,7 @@ namespace Egse.Protocols
                     {
                         if (_isEmptyProto && SpacewireEmptyProtoMsgEventArgs.Test(arr))
                         {
-                            pack = new SpacewireEmptyProtoMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0], (byte)msg.Addr);
+                            pack = new SpacewireEmptyProtoMsgEventArgs(arr, _currentTime1, _currentTime2, msg.Data[0]);
                         }
                         else if (SpacewireTkMsgEventArgs.Test(arr))
                         {
@@ -2053,7 +2053,7 @@ namespace Egse.Protocols
         /// <param name="time2">Значение TimeTick2.</param>
         /// <param name="error">Значение Error.</param>
         /// <exception cref="System.ContextMarshalException">Если длина сообщения не достаточна для декодирования.</exception>
-        public SpacewireEmptyProtoMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00, byte addr = 0x00)
+        public SpacewireEmptyProtoMsgEventArgs(byte[] data, byte time1, byte time2, byte error = 0x00)
             : base(data)
         {
             if (0 >= data.Length)
@@ -2061,7 +2061,6 @@ namespace Egse.Protocols
                 throw new ContextMarshalException(Resource.Get(@"eSmallSpacewireData"));
             }
 
-            this.Addr = addr;
             this.Error = error;
         }
 
@@ -2077,8 +2076,6 @@ namespace Egse.Protocols
         }
 
         public byte Error { get; set; }
-
-        public byte Addr { get; set; }
 
         /// <summary>
         /// "Сырая" проверка на принадлежность к empty-сообщению.
@@ -2099,6 +2096,16 @@ namespace Egse.Protocols
         public override byte[] ToArray()
         {
             return base.Data;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(Resource.Get(@"stEmptyProtoMsgToString"), this.DataLen, Converter.ByteArrayToHexStr(this.Data, isSmart: true), this.ErrorMark());
+        }
+
+        private string ErrorMark()
+        {
+            return 0 == Error ? string.Empty : "Ошибка";
         }
     }
 

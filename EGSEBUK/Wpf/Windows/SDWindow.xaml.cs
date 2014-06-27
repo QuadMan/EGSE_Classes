@@ -21,7 +21,7 @@ namespace Egse.Defaults
         /// <summary>
         /// Интерфейс управления прибором.
         /// </summary>
-        private EgseBukNotify _intfEGSE;
+        private EgseBukNotify intfEGSE;
 
         /// <summary>
         /// Инициализирует новый экземпляр класса <see cref="SDWindow" />.
@@ -37,10 +37,10 @@ namespace Egse.Defaults
         /// <param name="intfEGSE">Интерфейс управления прибором.</param>
         public void Init(EgseBukNotify intfEGSE)
         {
-            _intfEGSE = intfEGSE;
-            DataContext = _intfEGSE;
-            _intfEGSE.GotSpacewire3Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
-            GridSD.DataContext = _intfEGSE.Spacewire3Notify;
+            this.intfEGSE = intfEGSE;
+            DataContext = this.intfEGSE;
+            this.intfEGSE.GotSpacewire3Msg += new ProtocolSpacewire.SpacewireMsgEventHandler(OnSpacewireMsg);
+            GridSD.DataContext = this.intfEGSE.Spacewire3Notify;
             MonitorList.DataContext = new MonitorListViewModel();
         }
 
@@ -52,19 +52,7 @@ namespace Egse.Defaults
         public void OnSpacewireMsg(object sender, BaseMsgEventArgs msg)
         {
             new { msg }.CheckNotNull();
-            string spacewireMsg = string.Empty;
-
-            if (msg is SpacewireEmptyProtoMsgEventArgs)
-            {
-                SpacewireEmptyProtoMsgEventArgs emptyMsg = msg as SpacewireEmptyProtoMsgEventArgs;
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + (emptyMsg.Addr == (byte)Egse.Devices.EgseBukNotify.Spacewire3.Addr.InData ? "<" : ">") + " (" + emptyMsg.Data.Length.ToString() + ") " + Converter.ByteArrayToHexStr(emptyMsg.Data, isSmart: true) + (0 == emptyMsg.Error ? string.Empty : " Ошибка");
-            }
-            else if (msg is SpacewireErrorMsgEventArgs)
-            {
-                SpacewireErrorMsgEventArgs err = msg as SpacewireErrorMsgEventArgs;
-                spacewireMsg = _intfEGSE.DeviceTime.ToString() + ": (" + err.Data.Length.ToString() + ") [" + Converter.ByteArrayToHexStr(err.Data) + "] Ошибка: " + err.ErrorMessage();
-            }
-
+            string spacewireMsg = this.intfEGSE.DeviceTime.ToString() + msg.ToString();     
             SendToMonitor(spacewireMsg);
         }
 
@@ -86,7 +74,7 @@ namespace Egse.Defaults
                 }
             }
 
-            if (_intfEGSE.Spacewire3Notify.IsSaveTxtData)
+            if (this.intfEGSE.Spacewire3Notify.IsSaveTxtData)
             {
                 LogsClass.LogSpacewire3.LogText = txtMsg;
             }

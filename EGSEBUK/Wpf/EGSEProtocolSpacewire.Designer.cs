@@ -160,6 +160,15 @@ namespace Wpf {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to : ({0}d) [{1}] {2}.
+        /// </summary>
+        internal static string stEmptyProtoMsgToString {
+            get {
+                return ResourceManager.GetString("stEmptyProtoMsgToString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to : ({0}d) [{1}] Ошибка: {2}.
         /// </summary>
         internal static string stErrorMsgToString {
