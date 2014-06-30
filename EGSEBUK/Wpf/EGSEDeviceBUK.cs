@@ -736,7 +736,7 @@ namespace Egse.Devices
                 SendToUSB(Spacewire4RecordDataAddr, _intfBUK.Spacewire4Notify.Data);                
             }
 
-            byte snd = (byte)(value | (Convert.ToByte(_intfBUK.Spacewire4Notify.IsIssueEep) << 2) | (1 << 1));
+            byte snd = (byte)(value | (Convert.ToByte(_intfBUK.Spacewire4Notify.IsIssueEep) << 2) | 2);
 
             SendToUSB(Spacewire4RecordSendAddr, new byte[1] { snd });
         }

@@ -225,10 +225,11 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Margin="1" Background="White">
                                 <RadioButton x:Name="AutoControlSet"
-                                    HorizontalContentAlignment="Center"
+                                             HorizontalContentAlignment="Center"
                                              Content="Автоматическое"
                                              GroupName="cnt"
-                                             IsChecked="{Binding IsIssueAutoShutter, Mode=OneWay}"
+                                             IsChecked="{Binding IsIssueAutoShutter,
+                                                                 Mode=OneWay}"
                                              TabIndex="9" />
                             </StackPanel>
                             <StackPanel Grid.Column="2"
@@ -238,7 +239,7 @@
                                              HorizontalContentAlignment="Center"
                                              Content="Ручное"
                                              GroupName="cnt"
-                                             IsChecked="{Binding IsIssueManualShutter }"
+                                             IsChecked="{Binding IsIssueManualShutter}"
                                              TabIndex="10" />
                             </StackPanel>
                         </Grid>
@@ -438,8 +439,9 @@
                                    Content="закрытия"
                                    Template="{StaticResource FlatLabel}" />
                         </Grid>
-                        <Label Content="Телеметрия каналов БС" Style="{StaticResource FlatHeader}"
-                               MouseDoubleClick="Label_MouseDoubleClick" />
+                        <Label Content="Телеметрия каналов БС"
+                               MouseDoubleClick="Label_MouseDoubleClick"
+                               Style="{StaticResource FlatHeader}" />
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition />

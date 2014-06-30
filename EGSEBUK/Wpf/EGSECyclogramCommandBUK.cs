@@ -2910,7 +2910,7 @@ namespace Egse.Cyclogram.Command
             /// <summary>
             /// The issue eep
             /// </summary>
-            private static readonly Action<EgseBukNotify> IssueEep = new Action<EgseBukNotify>(x => { x.Spacewire4Notify.IsIssueEep = true; });
+            private static readonly Action<EgseBukNotify> IssueEep = new Action<EgseBukNotify>(x => { transaction |= (ushort)BukDetectorImitCmdTransaction.Eep; });
            
             /// <summary>
             /// The device busk
@@ -3245,7 +3245,7 @@ namespace Egse.Cyclogram.Command
             /// <summary>
             /// The buk detector imit hexadecimal package argument
             /// </summary>
-            private static readonly Action<EgseBukNotify, object> BukDetectorImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire4Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.Spacewire4Notify.IssuePackageCommand.Execute(null); });
+            private static readonly Action<EgseBukNotify, object> BukDetectorImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire4Notify.IsIssueEep = ((BukDetectorImitCmdTransaction)transaction).HasFlag(BukDetectorImitCmdTransaction.Eep); x.Spacewire4Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.Spacewire4Notify.IssuePackageCommand.Execute(null); });
          
             /// <summary>
             /// The BM4 imit hexadecimal package argument
@@ -3357,6 +3357,11 @@ namespace Egse.Cyclogram.Command
                 /// The sens close off
                 /// </summary>
                 SensCloseOff = 0x40
+            }
+
+            private enum BukDetectorImitCmdTransaction : ushort
+            {
+                Eep = 0x01
             }
 
             /// <summary>
