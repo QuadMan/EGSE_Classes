@@ -726,6 +726,10 @@
                            HorizontalAlignment="Right"
                            Padding="1">
                 <StackPanel Orientation="Horizontal">
+                    <Label x:Name="RTMonInc"
+                           Content="{Binding TestIncrement}"
+                           Template="{StaticResource FlatLabel}"
+                           Visibility="Hidden" />
                     <Label x:Name="RTMonTele"
                            Content="{Binding DeviceRTMonTele}"
                            Template="{StaticResource FlatLabel}"

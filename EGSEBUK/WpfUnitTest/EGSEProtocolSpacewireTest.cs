@@ -350,6 +350,8 @@ namespace Egse.Protocols.UnitTest
             Assert.AreEqual(buf[11], msg.TkInfo.Service, "Ошибка в парсинге свойства TkInfo.Service");
             Assert.AreEqual(buf[12], msg.TkInfo.SubService, "Ошибка в парсинге свойства TkInfo.SubService");
             Assert.AreEqual((byte)((buf[10] >> 4) & 0x7), msg.TkInfo.Version, "Ошибка в парсинге свойства TkInfo.Version");
+
+            string test2 = msg.ToString();
         }
 
         /// <summary>

@@ -2085,6 +2085,8 @@ namespace Egse.Devices
             OnPropertyChanged(() => this.DeviceSpeed);
             OnPropertyChanged(() => this.DeviceTrafic);
             OnPropertyChanged(() => this.BytesAvailable);
+            OnPropertyChanged(() => this.DeviceRTMonTele);
+            OnPropertyChanged(() => this.TestIncrement);
             Spacewire1Notify.UpdateProperties();
             Spacewire2Notify.UpdateProperties();
             Spacewire3Notify.UpdateProperties();
@@ -2232,6 +2234,7 @@ namespace Egse.Devices
                         break;
                     case TeleDataAddr:
                         ControlValuesList[Global.Telemetry].UsbValue = (msg.Data[2] << 16) | (msg.Data[3] << 8) | msg.Data[4];
+                        TestIncrement++;
                         break;
                 }
             }
@@ -9857,5 +9860,7 @@ namespace Egse.Devices
                 ControlValuesList[Global.Spacewire4.Record].AddProperty(Global.Spacewire4.Record.IssuePackage, 0, 1, Device.CmdSpacewire4Record, value => IsIssuePackage = 1 == value);
             }
         }
+
+        public long TestIncrement { get; set; }
     }
 }

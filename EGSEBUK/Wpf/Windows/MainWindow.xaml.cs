@@ -160,6 +160,7 @@ namespace Egse.Defaults
 
         private void Label_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            RTMonInc.Visibility = Visibility.Hidden == RTMonInc.Visibility ? Visibility.Visible : Visibility.Hidden;
             RTMonTele.Visibility = Visibility.Hidden == RTMonTele.Visibility ? Visibility.Visible : Visibility.Hidden;
         }
     }
