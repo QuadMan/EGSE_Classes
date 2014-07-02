@@ -2087,6 +2087,7 @@ namespace Egse.Devices
             OnPropertyChanged(() => this.BytesAvailable);
             OnPropertyChanged(() => this.DeviceRTMonTele);
             OnPropertyChanged(() => this.TestIncrement);
+            TelemetryNotify.UpdateProperties(); 
             Spacewire1Notify.UpdateProperties();
             Spacewire2Notify.UpdateProperties();
             Spacewire3Notify.UpdateProperties();
@@ -5178,6 +5179,12 @@ namespace Egse.Devices
             protected override void InitControlValue()
             {
                 ControlValuesList.Add(Global.Telemetry, new ControlValue());
+            }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.IsPower1);
+                OnPropertyChanged(() => this.IsPower2);
             }
 
             /// <summary>
