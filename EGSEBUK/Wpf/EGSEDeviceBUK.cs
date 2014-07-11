@@ -1894,13 +1894,14 @@ namespace Egse.Devices
             IsConnected = isConnected;
             if (IsConnected)
             {
+                Device.CmdSetDeviceLogicAddr();
                 RefreshAllControlsValues();
                 Task.Run(() =>
                 {
                     // задержка для получения текущих значений от прибора
-                    Thread.Sleep(3000);                    
-                    Device.CmdSetDeviceLogicAddr();
-                    Device.CmdSetDeviceTime();
+                    Thread.Sleep(3000); 
+                    Device.CmdSetDeviceTime();                   
+                    Device.CmdSetDeviceLogicAddr();                    
                     Spacewire1Notify.SD1SendTime = 1000;                                
                 });                
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
@@ -4462,7 +4463,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOnBusk1Command)
                     {
-                        this.issuePowerOnBusk1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, 1); });
+                        this.issuePowerOnBusk1Command = new RelayCommand(obj => { IsPowerBusk1 = true; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, 1); });
                     }
 
                     return this.issuePowerOnBusk1Command;
@@ -4475,7 +4476,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOffBusk1Command)
                     {
-                        this.issuePowerOffBusk1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, 0); });
+                        this.issuePowerOffBusk1Command = new RelayCommand(obj => { IsPowerBusk1 = false; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk1, 0); });
                     }
 
                     return this.issuePowerOffBusk1Command;
@@ -4521,7 +4522,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOnBusk2Command)
                     {
-                        this.issuePowerOnBusk2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, 1); });
+                        this.issuePowerOnBusk2Command = new RelayCommand(obj => { IsPowerBusk2 = true; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, 1); });
                     }
 
                     return this.issuePowerOnBusk2Command;
@@ -4534,7 +4535,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOffBusk2Command)
                     {
-                        this.issuePowerOffBusk2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, 0); });
+                        this.issuePowerOffBusk2Command = new RelayCommand(obj => { IsPowerBusk2 = false; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBusk2, 0); });
                     }
 
                     return this.issuePowerOffBusk2Command;
@@ -4579,7 +4580,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOnBund1Command)
                     {
-                        this.issuePowerOnBund1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, 1); });
+                        this.issuePowerOnBund1Command = new RelayCommand(obj => { IsPowerBund1 = true; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, 1); });
                     }
 
                     return this.issuePowerOnBund1Command;
@@ -4592,7 +4593,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOffBund1Command)
                     {
-                        this.issuePowerOffBund1Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, 0); });
+                        this.issuePowerOffBund1Command = new RelayCommand(obj => { IsPowerBund1 = false; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund1, 0); });
                     }
 
                     return this.issuePowerOffBund1Command;
@@ -4638,7 +4639,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOnBund2Command)
                     {
-                        this.issuePowerOnBund2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, 1); });
+                        this.issuePowerOnBund2Command = new RelayCommand(obj => { IsPowerBund2 = true; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, 1); });
                     }
 
                     return this.issuePowerOnBund2Command;
@@ -4651,7 +4652,7 @@ namespace Egse.Devices
                 {
                     if (null == this.issuePowerOffBund2Command)
                     {
-                        this.issuePowerOffBund2Command = new RelayCommand(obj => { ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, 0); });
+                        this.issuePowerOffBund2Command = new RelayCommand(obj => { IsPowerBund2 = false; ControlValuesList[Global.Telemetry].SetProperty(Global.Telemetry.PowerBund2, 0); });
                     }
 
                     return this.issuePowerOffBund2Command;
