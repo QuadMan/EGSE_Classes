@@ -151,7 +151,7 @@
             <Label Grid.ColumnSpan="2"
                    Content="Порог для определения ЗНЩ"
                    Style="{StaticResource FlatHeader}" />
-            <StackPanel Grid.Column="2"
+            <WrapPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
                         Margin="1"
                         Background="White"
@@ -180,7 +180,7 @@
                     Text="{Binding Param3}" />
                     </StackPanel>
                 -->
-            </StackPanel>
+            </WrapPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdThreshold}"
                     Content="Выдать"
@@ -204,7 +204,7 @@
             <Label Grid.ColumnSpan="2"
                    Content="Выбрать детектор"
                    Style="{StaticResource FlatHeader}" />
-            <StackPanel Grid.Column="2"
+            <WrapPanel Grid.Column="2"
                         Grid.ColumnSpan="7"
                         Margin="1"
                         Background="White"
@@ -246,7 +246,7 @@
                     Content="Подать питание на детектор"
                     IsChecked="{Binding PwrDetector}" />
                 -->
-            </StackPanel>
+            </WrapPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdSelDetector}"
                     Content="Выдать"
@@ -323,12 +323,12 @@
             <Label Grid.ColumnSpan="2"
                    Content="Конфигурация КВВ"
                    Style="{StaticResource FlatHeader}" />
-            <StackPanel Grid.Column="2"
+            <WrapPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
                         Margin="1"
                         Background="White"
                         Orientation="Horizontal">
-                <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+                <WrapPanel Margin="10,0,0,0" Orientation="Horizontal">
                     <StackPanel>
                         <Label Content="Линия отправки в КВВ" />
                         <ComboBox IsEditable="False"
@@ -362,9 +362,8 @@
                               Content="Опрос КВВ"
                               IsChecked="{Binding ExchangeConf}"
                               TabIndex="18" />
-                </StackPanel>
-
-            </StackPanel>
+                </WrapPanel>
+            </WrapPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdConfigKvv}"
                     Content="Выдать"
@@ -388,7 +387,7 @@
             <Label Grid.ColumnSpan="2"
                    Content="Открытие затворов"
                    Style="{StaticResource FlatHeader}" />
-            <StackPanel Grid.Column="2"
+            <WrapPanel Grid.Column="2"
                         Grid.ColumnSpan="6"
                         Margin="1"
                         Background="White"
@@ -413,7 +412,7 @@
                     <Label Content="Длительность открытия затвора" />
                     <TextBox TabIndex="22" Text="{Binding ShutterTime}" />
                 </StackPanel>
-            </StackPanel>
+            </WrapPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdShutter}"
                     Content="Выдать"
@@ -548,7 +547,7 @@
             <Label Grid.ColumnSpan="2"
                    Content="Аварийное управление реле светодиодов"
                    Style="{StaticResource FlatHeader}" />
-            <StackPanel Grid.Column="2"
+            <WrapPanel Grid.Column="2"
                         Grid.ColumnSpan="7"
                         Margin="1"
                         Background="White"
@@ -571,7 +570,7 @@
                 <Button Margin="5"
                         Command="{Binding IssueCmdIndicateDetectorSdshOff}"
                         Content="Выкл. СДЩ" />
-            </StackPanel>
+            </WrapPanel>
             <Button Grid.Column="8"
                     Command="{Binding IssueCmdSelDetector}"
                     Content="Выдать"
