@@ -11,6 +11,7 @@ namespace Egse.Threading
     using System.Threading;
     using Egse.Cyclogram;
     using Egse.Utilites;
+    using System.Windows;
 
     /// <summary>
     /// Делегат, вызываемый при изменении состояния циклограмм (выполняет, пауза)

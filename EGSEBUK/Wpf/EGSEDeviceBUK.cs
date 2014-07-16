@@ -27,6 +27,7 @@ namespace Egse.Devices
     using Egse.USB;
     using Egse.Utilites;
     using System.Threading;
+    using System.Windows;
 
     /// <summary>
     /// Конкретный класс устройства КИА.
@@ -731,7 +732,10 @@ namespace Egse.Devices
             SendToUSB(Spacewire4RecordFlushAddr, new byte[1] { 1 });
             if ((null != _intfBUK.Spacewire4Notify.Data) && (0 < _intfBUK.Spacewire4Notify.Data.Length))
             {
-                _intfBUK.Spacewire4Notify.DataToSaveList();
+                if (_intfBUK.Spacewire4Notify.IsNeedSaveData)
+                {
+                    _intfBUK.Spacewire4Notify.DataToSaveList();
+                }
 
                 SendToUSB(Spacewire4RecordDataAddr, _intfBUK.Spacewire4Notify.Data);                
             }
@@ -890,7 +894,10 @@ namespace Egse.Devices
             SendToUSB(SimHsiRecordTXFlagAddr, new byte[1] { 2 });            
             if ((null != _intfBUK.HsiNotify.Data) && (0 < _intfBUK.HsiNotify.Data.Length))
             {
-                _intfBUK.HsiNotify.DataToSaveList();
+                if (_intfBUK.HsiNotify.IsNeedSaveData)
+                {
+                    _intfBUK.HsiNotify.DataToSaveList();
+                }
 
                 SendToUSB(SimHsiRecordByteNumberAddr, new byte[1] { Convert.ToByte(_intfBUK.HsiNotify.Data.Length) });
                 SendToUSB(SimHsiRecordFlushAddr, new byte[1] { 1 });
@@ -1225,6 +1232,7 @@ namespace Egse.Devices
         /// Вызывается, когда [получено сообщение по spacewire 3].
         /// </summary>
         public event ProtocolSpacewire.SpacewireMsgEventHandler GotSpacewire3Msg;
+        private bool isNeedSaveData;
 
         /// <summary>
         /// Состояние прибора.
@@ -2876,6 +2884,24 @@ namespace Egse.Devices
             /// </value>
             public byte[] Data { get; set; }
 
+            internal bool IsNeedSaveData
+            {
+                get
+                {
+                    return this.isNeedSaveData;
+                }
+
+                set
+                {
+                    if (value == this.isNeedSaveData)
+                    {
+                        return;
+                    }
+
+                    this.isNeedSaveData = value;
+                }
+            }
+
             /// <summary>
             /// Получает или задает значение, показывающее, что [установлено состояние статуса ПК1: готов].
             /// </summary>
@@ -3756,6 +3782,7 @@ namespace Egse.Devices
             }
 
             private object statistics = new object();
+            private bool isNeedSaveData = true;
 
             /// <summary>
             /// Получает или задает количество запросов статусов по резервной линии.
@@ -9449,6 +9476,7 @@ namespace Egse.Devices
             /// </summary>
             [field: NonSerialized]
             private ICommand issuePackageCommand;
+            private bool isNeedSaveData = true;
 
             /// <summary>
             /// Инициализирует новый экземпляр класса <see cref="Spacewire4" />.
@@ -9583,7 +9611,25 @@ namespace Egse.Devices
                     return _issueTimeMarkCommand;
                 }
             }
-            
+
+            internal bool IsNeedSaveData
+            {
+                get
+                {
+                    return this.isNeedSaveData;
+                }
+
+                set
+                {
+                    if (value == this.isNeedSaveData)
+                    {
+                        return;
+                    }
+
+                    this.isNeedSaveData = value;
+                }
+            }
+
             /// <summary>
             /// Получает или задает значение, показывающее, что [выдается EEP].
             /// </summary>

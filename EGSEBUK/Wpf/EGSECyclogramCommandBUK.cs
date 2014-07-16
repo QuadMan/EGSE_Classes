@@ -3240,22 +3240,50 @@ namespace Egse.Cyclogram.Command
             /// <summary>
             /// The buk KVV imit hexadecimal package argument
             /// </summary>
-            private static readonly Action<EgseBukNotify, object> BukKvvImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.HsiNotify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.HsiNotify.IssueCmdCommand.Execute(null); });
+            private static readonly Action<EgseBukNotify, object> BukKvvImitHexPackageArg = new Action<EgseBukNotify, object>(BukKvvImitHexPackageArgExec);
          
             /// <summary>
             /// The buk detector imit hexadecimal package argument
             /// </summary>
-            private static readonly Action<EgseBukNotify, object> BukDetectorImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire4Notify.IsIssueEep = ((BukDetectorImitCmdTransaction)transaction).HasFlag(BukDetectorImitCmdTransaction.Eep); x.Spacewire4Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.Spacewire4Notify.IssuePackageCommand.Execute(null); });
+            private static readonly Action<EgseBukNotify, object> BukDetectorImitHexPackageArg = new Action<EgseBukNotify, object>(BukDetectorImitHexPackageArgExec);
          
             /// <summary>
             /// The BM4 imit hexadecimal package argument
             /// </summary>
-            private static readonly Action<EgseBukNotify, object> Bm4ImitHexPackageArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire2Notify.IsConfirmExecution = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Execut); x.Spacewire2Notify.IsConfirmReceipt = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Receipt); x.Spacewire2Notify.IsMakeTeleCmd = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Tele); x.Spacewire2Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); x.Spacewire2Notify.IssuePackageCommand.Execute(null); });
+            private static readonly Action<EgseBukNotify, object> Bm4ImitHexPackageArg = new Action<EgseBukNotify, object>(Bm4ImitHexPackageArgExec);
 
             /// <summary>
             /// Используется для формирования команды.
             /// </summary>
             private static ushort transaction;
+
+            private static void BukKvvImitHexPackageArgExec(EgseBukNotify x, object obj)
+            {
+                x.HsiNotify.IsNeedSaveData = false;
+                x.HsiNotify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); 
+                x.HsiNotify.IssueCmdCommand.Execute(null);
+                x.HsiNotify.IsNeedSaveData = true;
+            }
+
+            private static void BukDetectorImitHexPackageArgExec(EgseBukNotify x, object obj)
+            {
+                x.Spacewire4Notify.IsNeedSaveData = false;
+                x.Spacewire4Notify.IsIssueEep = ((BukDetectorImitCmdTransaction)transaction).HasFlag(BukDetectorImitCmdTransaction.Eep); 
+                x.Spacewire4Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>)); 
+                x.Spacewire4Notify.IssuePackageCommand.Execute(null);
+                x.Spacewire4Notify.IsNeedSaveData = true;
+            }
+
+            private static void Bm4ImitHexPackageArgExec(EgseBukNotify x, object obj)
+            {               
+                x.Spacewire2Notify.IsNeedSaveData = false;
+                x.Spacewire2Notify.IsConfirmExecution = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Execut);
+                x.Spacewire2Notify.IsConfirmReceipt = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Receipt);
+                x.Spacewire2Notify.IsMakeTeleCmd = ((Bm4ImitCmdTransaction)transaction).HasFlag(Bm4ImitCmdTransaction.Tele);
+                x.Spacewire2Notify.Data = Converter.HexStrToByteArray(string.Join(@" ", obj as List<string>));
+                x.Spacewire2Notify.IssuePackageCommand.Execute(null);
+                x.Spacewire2Notify.IsNeedSaveData = true;               
+            }
 
             /// <summary>
             /// Возможные состояния формирования команды KVV_IMIT.
