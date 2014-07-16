@@ -1467,7 +1467,7 @@ namespace Egse.Cyclogram.Command
             }
             else if (x.Contains(@"hex"))
             {
-                return cmd.Contains(x.Replace(@"hex", string.Empty)) && int.TryParse(cmd.Replace(x.Replace(@"hex", string.Empty), string.Empty).Trim('0').Trim('x'), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out hex);
+                return cmd.Contains(x.Replace(@"hex", string.Empty)) && int.TryParse(cmd.Replace(x.Replace(@"hex", string.Empty), string.Empty).Trim('x'), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out hex);
             }
             else
             {
