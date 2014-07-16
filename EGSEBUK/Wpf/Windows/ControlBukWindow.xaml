@@ -152,10 +152,10 @@
                    Content="Порог для определения ЗНЩ"
                    Style="{StaticResource FlatHeader}" />
             <WrapPanel Grid.Column="2"
-                        Grid.ColumnSpan="6"
-                        Margin="1"
-                        Background="White"
-                        Orientation="Horizontal">
+                       Grid.ColumnSpan="6"
+                       Margin="1"
+                       Background="White"
+                       Orientation="Horizontal">
                 <StackPanel Margin="10,0,0,0">
                     <Label Content="Тип алгоритма" />
                     <TextBox TabIndex="2" Text="{Binding AlgoType}" />
@@ -205,10 +205,10 @@
                    Content="Выбрать детектор"
                    Style="{StaticResource FlatHeader}" />
             <WrapPanel Grid.Column="2"
-                        Grid.ColumnSpan="7"
-                        Margin="1"
-                        Background="White"
-                        Orientation="Horizontal">
+                       Grid.ColumnSpan="7"
+                       Margin="1"
+                       Background="White"
+                       Orientation="Horizontal">
                 <Button Margin="10,5,5,5"
                         Command="{Binding IssueCmdSelDetectorUfesOn}"
                         Content="Вкл. УФЭС" />
@@ -324,10 +324,10 @@
                    Content="Конфигурация КВВ"
                    Style="{StaticResource FlatHeader}" />
             <WrapPanel Grid.Column="2"
-                        Grid.ColumnSpan="6"
-                        Margin="1"
-                        Background="White"
-                        Orientation="Horizontal">
+                       Grid.ColumnSpan="6"
+                       Margin="1"
+                       Background="White"
+                       Orientation="Horizontal">
                 <WrapPanel Margin="10,0,0,0" Orientation="Horizontal">
                     <StackPanel>
                         <Label Content="Линия отправки в КВВ" />
@@ -388,10 +388,10 @@
                    Content="Открытие затворов"
                    Style="{StaticResource FlatHeader}" />
             <WrapPanel Grid.Column="2"
-                        Grid.ColumnSpan="6"
-                        Margin="1"
-                        Background="White"
-                        Orientation="Horizontal">
+                       Grid.ColumnSpan="6"
+                       Margin="1"
+                       Background="White"
+                       Orientation="Horizontal">
                 <!--
                     <StackPanel Margin="10,0,0,0">
                     <Label Content="Номер затвор" />
@@ -548,10 +548,10 @@
                    Content="Аварийное управление реле светодиодов"
                    Style="{StaticResource FlatHeader}" />
             <WrapPanel Grid.Column="2"
-                        Grid.ColumnSpan="7"
-                        Margin="1"
-                        Background="White"
-                        Orientation="Horizontal">
+                       Grid.ColumnSpan="7"
+                       Margin="1"
+                       Background="White"
+                       Orientation="Horizontal">
                 <Button Margin="10,5,5,5"
                         Command="{Binding IssueCmdIndicateDetectorUfesOn}"
                         Content="Вкл. УФЭС" />
