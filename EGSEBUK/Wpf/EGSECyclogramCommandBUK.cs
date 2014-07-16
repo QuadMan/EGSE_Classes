@@ -3155,7 +3155,7 @@ namespace Egse.Cyclogram.Command
             /// <summary>
             /// The apid argument
             /// </summary>
-            private static readonly Action<EgseBukNotify, object> ApidArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire2Notify.Apid = (short)obj; });
+            private static readonly Action<EgseBukNotify, object> ApidArg = new Action<EgseBukNotify, object>((x, obj) => { x.Spacewire2Notify.Apid = Convert.ToInt16(obj); });
             
             /// <summary>
             /// The receive main
@@ -3813,117 +3813,7 @@ namespace Egse.Cyclogram.Command
                         err = true;
                     }
                 }
-                     
-                //switch ((PowerTransaction)ta)
-                //{
-                //    case PowerTransaction.BuskSet1On:
-                //        {
-                //            if (!x.TelemetryNotify.IsPowerBusk1)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOnBusk1Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    case PowerTransaction.BuskSet1Off:
-                //        {
-                //            if (x.TelemetryNotify.IsPowerBusk1)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOffBusk1Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    case PowerTransaction.BundSet1On:
-                //        {
-                //            if (!x.TelemetryNotify.IsPowerBund1)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOnBund1Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    case PowerTransaction.BundSet1Off:
-                //        {
-                //            if (x.TelemetryNotify.IsPowerBund1)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOffBund1Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    case PowerTransaction.BuskSet2On:
-                //        {
-                //            if (!x.TelemetryNotify.IsPowerBusk2)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOnBusk2Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    case PowerTransaction.BuskSet2Off:
-                //        {
-                //            if (x.TelemetryNotify.IsPowerBusk2)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOffBusk2Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    case PowerTransaction.BundSet2On:
-                //        {
-                //            if (!x.TelemetryNotify.IsPowerBund2)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOnBund2Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    case PowerTransaction.BundSet2Off:
-                //        {
-                //            if (x.TelemetryNotify.IsPowerBund2)
-                //            {
-                //                x.TelemetryNotify.IssuePowerOffBund2Command.Execute(null);
-                //            }
-                //            else
-                //            {
-                //                err = true;
-                //            }
-                //        }
-
-                //        break;
-                //    default:
-                //        break;
-                //}
-
+                                    
                 if (err)
                 {
                     Task.Run(() => { /* MessageBox.Show(msgOnError); */ });
