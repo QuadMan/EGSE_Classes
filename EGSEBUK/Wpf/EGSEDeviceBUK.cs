@@ -2090,8 +2090,6 @@ namespace Egse.Devices
         /// </summary>
         private void UpdateProperties()
         {
-            OnPropertyChanged(this.Spacewire2Notify, "IsConnect");
-            OnPropertyChanged(this.Spacewire4Notify, "IsConnect");
             OnPropertyChanged(() => this.DeviceTime);
             OnPropertyChanged(() => this.DeviceSpeed);
             OnPropertyChanged(() => this.DeviceTrafic);
@@ -3967,7 +3965,7 @@ namespace Egse.Devices
             public override void UpdateProperties()
             {
                 OnPropertyChanged(() => this.RawDataFileSizeFormated);
-                OnPropertyChanged(() => this.TxtDataFileSizeFormated);
+                OnPropertyChanged(() => this.TxtDataFileSizeFormated);                
             }
 
             /// <summary>
@@ -5507,6 +5505,11 @@ namespace Egse.Devices
                     ControlValuesList[Global.Spacewire1.SPTPControl].SetProperty(Global.Spacewire1.SPTPControl.SD1TransData, Convert.ToInt32(value));
                     OnPropertyChanged();
                 }
+            }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.IsConnect);
             }
 
             /// <summary>
@@ -8441,6 +8444,7 @@ namespace Egse.Devices
             public override void UpdateProperties()
             {
                 OnPropertyChanged(() => this.TxtDataFileSizeFormated);
+                OnPropertyChanged(() => this.IsConnect);
             }
 
             /// <summary>
@@ -9345,6 +9349,7 @@ namespace Egse.Devices
             public override void UpdateProperties()
             {
                 OnPropertyChanged(() => this.TxtDataFileSizeFormated);
+                OnPropertyChanged(() => this.IsConnect);
             }
 
             /// <summary>
@@ -9632,6 +9637,11 @@ namespace Egse.Devices
 
                     this.isNeedSaveData = value;
                 }
+            }
+
+            public override void UpdateProperties()
+            {
+                OnPropertyChanged(() => this.IsConnect);
             }
 
             /// <summary>
