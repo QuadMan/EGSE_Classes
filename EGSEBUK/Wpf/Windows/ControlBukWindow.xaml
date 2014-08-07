@@ -385,7 +385,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Label Grid.ColumnSpan="2"
-                   Content="Открытие затворов"
+                   Content="Закрытие затворов"
                    Style="{StaticResource FlatHeader}" />
             <WrapPanel Grid.Column="2"
                        Grid.ColumnSpan="6"
@@ -399,7 +399,7 @@
                     Text="{Binding NumberShutter}" />
                     </StackPanel>
                 -->
-                <StackPanel Margin="10,0,0,0">
+                <StackPanel Margin="10,0,0,0" Visibility="Collapsed">
                     <Label Content="Линия передачи" />
                     <ComboBox IsEditable="False"
                               SelectedIndex="{Binding LineShutter}"
@@ -409,7 +409,7 @@
                     </ComboBox>
                 </StackPanel>
                 <StackPanel Margin="10,0,0,0">
-                    <Label Content="Длительность открытия затвора" />
+                    <Label Content="Длительность закрытия затвора" />
                     <TextBox TabIndex="22" Text="{Binding ShutterTime}" />
                 </StackPanel>
             </WrapPanel>
