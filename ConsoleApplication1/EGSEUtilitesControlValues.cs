@@ -44,22 +44,22 @@ namespace Egse.Utilites
         /// <summary>
         /// Значение, которое получаем из USB.
         /// </summary>
-        private int _usbValue;
+        private int usbValue;
 
         /// <summary>
         /// Значение, которое уставливается из интерфейса.
         /// </summary>
-        private int _uiValue;
+        private int uiValue;
 
         /// <summary>
         /// Значение счетчика времени до проверки совпадения GetValue и SetValue.
         /// </summary>
-        private int _timerCnt;
+        private int timerCnt;
 
         /// <summary>
         /// Значение по-умолчанию, которое накладывается всегда на устанавливаемое значение.
         /// </summary>
-        private int _defaultValue;
+        private int defaultValue;
 
         /// <summary>
         /// Флаг говорящий о том, что не нужно записывать значения в USB, используется при первой инициализации.
@@ -77,10 +77,10 @@ namespace Egse.Utilites
         /// <param name="defaultValue">Можем задать значение по-умолчанию, если нужно, чтобы определенные биты всегда были установлены</param>
         public ControlValue(int defaultValue = 0)
         {
-            _usbValue = 0;
-            _uiValue = 0;
-            _timerCnt = 0;
-            _defaultValue = defaultValue;
+            this.usbValue = 0;
+            this.uiValue = 0;
+            this.timerCnt = 0;
+            this.defaultValue = defaultValue;
         }
 
         /// <summary>
@@ -96,12 +96,12 @@ namespace Egse.Utilites
         {
             get
             {
-                return _usbValue;
+                return this.usbValue;
             }
 
             set
             {
-                _usbValue = value;   
+                this.usbValue = value;   
                 if (_hasIndicate)
                 {
                     CheckPropertiesForChanging(true);
@@ -116,13 +116,13 @@ namespace Egse.Utilites
         {
             get
             {
-                return _uiValue;
+                return this.uiValue;
             }
 
             set
             {
-                _uiValue = value;
-                _timerCnt = LimitUiUpdateTick;       // проверим значение из USB через некоторое время
+                this.uiValue = value;
+                this.timerCnt = LimitUiUpdateTick;       // проверим значение из USB через некоторое время
             }
         }
 
@@ -193,8 +193,8 @@ namespace Egse.Utilites
             }
 
             valueP &= mask >> cv.BitIdx;
-            _uiValue &= ~mask;
-            _uiValue |= valueP << cv.BitIdx;
+            this.uiValue &= ~mask;
+            this.uiValue |= valueP << cv.BitIdx;
             if (_refreshFlag)
             {
                 return true;
@@ -202,8 +202,8 @@ namespace Egse.Utilites
 
             if (autoSendValue)
             {
-                _timerCnt = LimitUiUpdateTick;
-                cv.SetUsbEvent(_uiValue);
+                this.timerCnt = LimitUiUpdateTick;
+                cv.SetUsbEvent(this.uiValue);
             }
 
             return true;
@@ -215,19 +215,29 @@ namespace Egse.Utilites
         /// </summary>
         public void RefreshGetValue()
         {
-            _timerCnt = LimitUiUpdateTick;
+            this.timerCnt = LimitUiUpdateTick;
             _refreshFlag = true;
         }
 
+        /// <summary>
+        /// Метод для принудительного обнуления USB значений.
+        /// </summary>
+        public void Reset()
+        {
+            this.usbValue = this.defaultValue;
+            this.uiValue = this.defaultValue;
+            this.timerCnt = 0;
+        }
+        
         /// <summary>
         /// Один тик таймера (вызывается из внешнего прерывания и может быть любым, хоть 1 секунда, хоть 500 мс)
         /// </summary>
         public void TimerTick()
         {
-            if ((_timerCnt > 0) && (--_timerCnt == 0))
+            if ((this.timerCnt > 0) && (--this.timerCnt == 0))
             {
                 // пришло время для проверки Get и Set Value
-                if ((_uiValue != _usbValue) || _refreshFlag)
+                if ((this.uiValue != this.usbValue) || _refreshFlag)
                 {
                     CheckPropertiesForChanging(false);
                 }
@@ -271,8 +281,8 @@ namespace Egse.Utilites
 
             foreach (KeyValuePair<string, CVProperty> pair in _dictionaryCV)
             {
-                usbVal = GetCVProperty(pair.Value, _usbValue);
-                uiVal = GetCVProperty(pair.Value, _uiValue);
+                usbVal = GetCVProperty(pair.Value, this.usbValue);
+                uiVal = GetCVProperty(pair.Value, this.uiValue);
                 
                 if (((usbVal != -1) && (uiVal != -1) && (usbVal != uiVal)) || _refreshFlag)
                 {

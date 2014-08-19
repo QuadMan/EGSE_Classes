@@ -1138,7 +1138,7 @@ namespace Egse.Devices
         public EgseBukNotify()
         {
             IsConnected = false;
-            LogsClass.LogUSB.Enabled = false;
+            LogsClass.LogUSB.Enabled = true;
             LogsClass.LogErrors.Enabled = false;
             LogsClass.LogEncoder.Enabled = false;
 
@@ -1902,14 +1902,14 @@ namespace Egse.Devices
             IsConnected = isConnected;
             if (IsConnected)
             {
-                Device.CmdSetDeviceLogicAddr();
+                ResetAllControlsValues();
+                Device.CmdSetDeviceTime();
                 RefreshAllControlsValues();
                 Task.Run(() =>
                 {
                     // задержка для получения текущих значений от прибора
-                    Thread.Sleep(3000); 
-                    Device.CmdSetDeviceTime();                   
-                    Device.CmdSetDeviceLogicAddr();                    
+                    Thread.Sleep(4000);
+                    Device.CmdSetDeviceLogicAddr();                   
                     Spacewire1Notify.SD1SendTime = 1000;                                
                 });                
                 LogsClass.LogMain.LogText = Resource.Get(@"stDeviceName") + Resource.Get(@"stConnected");
@@ -1923,6 +1923,7 @@ namespace Egse.Devices
                 Spacewire2Notify.Deserialize();
                 Spacewire3Notify.Deserialize();
                 Spacewire4Notify.Deserialize();
+                ResetAllControlsValues();
             }
         }
 
@@ -1934,7 +1935,16 @@ namespace Egse.Devices
             Debug.Assert(ControlValuesList != null, Resource.Get(@"eNotAssigned"));
             foreach (var cv in ControlValuesList)
             {
-                (cv.Value as ControlValue).RefreshGetValue();
+                (cv.Value as ControlValue).RefreshGetValue();               
+            }
+        }
+
+        public void ResetAllControlsValues()
+        {
+            Debug.Assert(ControlValuesList != null, Resource.Get(@"eNotAssigned"));
+            foreach (var cv in ControlValuesList)
+            {
+                (cv.Value as ControlValue).Reset();
             }
         }
 

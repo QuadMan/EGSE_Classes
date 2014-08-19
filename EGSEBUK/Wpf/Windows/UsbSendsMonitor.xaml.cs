@@ -106,6 +106,7 @@ namespace Egse.Defaults
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
+            _intfEGSE.UITestNotify.UsbLogFile = LogsClass.LogUSB.FileName;
             List<string> last = Monitor.Items.Cast<string>().ToList();                                         
             Monitor.Items.Clear();
             PopulateList(_intfEGSE.UITestNotify.UsbLogFile);
